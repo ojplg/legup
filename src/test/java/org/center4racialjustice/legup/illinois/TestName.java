@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.illinois;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.regex.Pattern;
+
 public class TestName {
 
     @Test
@@ -50,4 +52,15 @@ public class TestName {
         Assert.assertEquals("F", name.getMiddleInitial());
         Assert.assertEquals("Jr", name.getSuffix());
     }
+
+    @Test
+    public void lastNameMatchesRegex(){
+        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Smith"));
+    }
+
+    @Test
+    public void fullNameMatchesRegex(){
+        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Jones, Samantha B"));
+    }
+
 }

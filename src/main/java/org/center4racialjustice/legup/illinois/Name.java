@@ -10,10 +10,14 @@ public class Name {
     public static String fullNameRegex = "([A-Z][a-z]+), ([A-Z][a-z]+)\\s?([A-Z])?";
     public static String fullNameWithSuffixRegex = "([A-Z][a-z]+) ([A-Z][a-z])\\., ([A-Z][a-z]+)\\s?([A-Z])?";
 
+    public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
+
     public static Pattern simpleLastNamePattern = Pattern.compile(simpleLastNameRegex);
     public static Pattern firstInitialPattern = Pattern.compile(firstInitialRegex);
     public static Pattern fullNamePattern = Pattern.compile(fullNameRegex);
     public static Pattern fullNameWithSuffixPattern = Pattern.compile(fullNameWithSuffixRegex);
+
+    public static Pattern unifiedPattern = Pattern.compile(unifiedRegex);
 
     private final String firstName;
     private final String firstInitial;
