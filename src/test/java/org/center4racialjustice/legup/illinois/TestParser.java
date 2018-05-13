@@ -1,3 +1,5 @@
+package org.center4racialjustice.legup.illinois;
+
 import org.junit.Test;
 import org.junit.Assert;
 

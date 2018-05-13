@@ -1,3 +1,5 @@
+package org.center4racialjustice.legup.illinois;
+
 import java.util.ArrayList;
 import java.util.List;
 

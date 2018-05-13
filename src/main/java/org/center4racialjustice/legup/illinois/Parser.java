@@ -1,3 +1,5 @@
+package org.center4racialjustice.legup.illinois;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
