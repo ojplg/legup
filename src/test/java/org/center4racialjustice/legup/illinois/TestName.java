@@ -61,6 +61,12 @@ public class TestName {
     @Test
     public void fullNameMatchesRegex(){
         Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Jones, Samantha B"));
+        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Barickman, Jason A"));
+    }
+
+    @Test
+    public void fullNameWithSuffix(){
+        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Clayborne Jr., James F"));
     }
 
 }

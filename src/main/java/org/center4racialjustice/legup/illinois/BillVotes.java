@@ -10,8 +10,8 @@ public class BillVotes {
     int expectedYeas;
     int expectedPresent;
     int expectedNotVoting;
-    List<String> nays = new ArrayList<>();
-    List<String> yeas = new ArrayList<>();
-    List<String> presents = new ArrayList<>();
-    List<String> notVotings = new ArrayList<>();
+    List<Name> nays = new ArrayList<>();
+    List<Name> yeas = new ArrayList<>();
+    List<Name> presents = new ArrayList<>();
+    List<Name> notVotings = new ArrayList<>();
 }

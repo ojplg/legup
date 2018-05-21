@@ -12,6 +12,8 @@ public class Name {
 
     public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
 
+    public static String nameCharacters = "[A-Za-z\\., ]";
+
     public static Pattern simpleLastNamePattern = Pattern.compile(simpleLastNameRegex);
     public static Pattern firstInitialPattern = Pattern.compile(firstInitialRegex);
     public static Pattern fullNamePattern = Pattern.compile(fullNameRegex);
@@ -56,6 +58,14 @@ public class Name {
         throw new RuntimeException("Could not figure out this name: '" + input + "'");
     }
 
+    public static Name fromFirstLastMiddleInitial(String firstName, String lastName, String middleInitial){
+        return new Name(firstName, middleInitial, lastName, null, null);
+    }
+
+    public static Name fromFirstLast(String firstName, String lastName){
+        return new Name(firstName, null, lastName, null, null);
+    }
+
     public Name(String firstName, String middleInitial, String lastName, String firstInitial, String suffix){
         this.lastName = lastName;
         this.firstName = firstName;
@@ -83,4 +93,9 @@ public class Name {
     public String getSuffix() {
         return suffix;
     }
+
+    public String toString(){
+        return lastName;
+    }
+
 }

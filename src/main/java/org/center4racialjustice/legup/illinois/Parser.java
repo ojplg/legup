@@ -47,6 +47,14 @@ public class Parser {
     private static Pattern alternateSummaryPattern =
             Pattern.compile("YEAS NAYS PRESENT NOT VOTING(\\d+) (\\d+) (\\d+) (\\d+)");
 
+    private static Pattern voteLinePattern =
+            Pattern.compile("(NV|Y|N|P) .*");
+
+    public static boolean isVoteLine(String line){
+        Matcher voteLineMatcher = voteLinePattern.matcher(line);
+        return voteLineMatcher.matches();
+    }
+
     public static BillVotes parseFile(String filename) {
         String content = readFileToString(filename);
         String[] lines = content.split("\n");
@@ -82,6 +90,15 @@ public class Parser {
                 bv.expectedPresent = Integer.parseInt(presents);
                 String notVotings = alternateSummaryMatcher.group(4);
                 bv.expectedNotVoting = Integer.parseInt(notVotings);
+            }
+
+            Matcher voteLineMatcher = voteLinePattern.matcher(line);
+            while( voteLineMatcher.find() ){
+                System.out.println("VOTE LINE !!! " + line);
+                System.out.println("COUNT " + voteLineMatcher.groupCount());
+                System.out.println(voteLineMatcher.group(1));
+//                System.out.println(voteLineMatcher.group(2));
+//                System.out.println(voteLineMatcher.group(3));
             }
         }
 
