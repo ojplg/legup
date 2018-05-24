@@ -115,4 +115,13 @@ public class TestParser {
         Assert.assertTrue(Parser.isVoteLine("NV Silverstein, Ira I NV Steans, Heather A"));
     }
 
+    @Test
+    public void parseVoteRecord() {
+        Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
+        VoteRecord expected = new VoteRecord(alfred, Vote.Yea);
+        String input = "Y Redblatt, Alfred";
+        VoteRecord parsed = Parser.parseVoteRecord(input);
+        Assert.assertEquals(expected, parsed);
+    }
+
 }

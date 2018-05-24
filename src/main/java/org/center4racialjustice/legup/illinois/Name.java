@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Name {
+public final class Name {
 
     public static String simpleLastNameRegex = "([A-Z][a-z]+)";
     public static String firstInitialRegex = "([A-Z][a-z]+), ([A-Z])\\.";
@@ -98,4 +98,28 @@ public class Name {
         return lastName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Name name = (Name) o;
+
+        if (firstName != null ? !firstName.equals(name.firstName) : name.firstName != null) return false;
+        if (firstInitial != null ? !firstInitial.equals(name.firstInitial) : name.firstInitial != null) return false;
+        if (lastName != null ? !lastName.equals(name.lastName) : name.lastName != null) return false;
+        if (middleInitial != null ? !middleInitial.equals(name.middleInitial) : name.middleInitial != null)
+            return false;
+        return suffix != null ? suffix.equals(name.suffix) : name.suffix == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = firstName != null ? firstName.hashCode() : 0;
+        result = 31 * result + (firstInitial != null ? firstInitial.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (middleInitial != null ? middleInitial.hashCode() : 0);
+        result = 31 * result + (suffix != null ? suffix.hashCode() : 0);
+        return result;
+    }
 }
