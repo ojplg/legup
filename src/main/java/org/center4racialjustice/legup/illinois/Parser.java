@@ -12,33 +12,39 @@ public class Parser {
 
     public static String readFileToString(String filename)  {
         PDDocument doc = new PDDocument();
+        InputStream fileStream = null;
+        String content;
         try
         {
-            InputStream fileStream = doc.getClass().getResourceAsStream(filename);
-            if ( fileStream == null ){
-                System.out.println("No such file");
-            }
+            doc.close();
+            fileStream = doc.getClass().getResourceAsStream(filename);
             doc = PDDocument.load(fileStream);
 
             PDFTextStripper stripper = new PDFTextStripper();
-            String content = stripper.getText(doc);
+            content = stripper.getText(doc);
+            doc.close();
+            fileStream.close();
 
-            return content;
         }
         catch (IOException ioe){
             throw new RuntimeException(ioe);
         }
         finally
         {
-            if( doc != null )
-            {
-                try {
-                    doc.close();
-                } catch (IOException ioe){
-                    throw new RuntimeException(ioe);
-                }
-            }
+//            try {
+//                if (fileStream != null) {
+//                    System.out.println("Closing stream");
+//                    fileStream.close();
+//                }
+//                if (doc != null) {
+//                    System.out.println("Closing doc");
+//                    doc.close();
+//                }
+//            } catch (IOException ioe){
+//                throw new RuntimeException(ioe);
+//            }
         }
+        return content;
     }
 
     private static Pattern billNumberPattern = Pattern.compile("Senate Bill No. (\\d+)");
