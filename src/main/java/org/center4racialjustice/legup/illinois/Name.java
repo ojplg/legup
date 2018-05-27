@@ -28,17 +28,18 @@ public final class Name {
     private final String suffix;
 
     public static Name fromAnyString(String input){
-        Matcher simpleLastNameMatcher = simpleLastNamePattern.matcher(input);
+        String trimmedInput = input.trim();
+        Matcher simpleLastNameMatcher = simpleLastNamePattern.matcher(trimmedInput);
         if( simpleLastNameMatcher.matches() ){
             return new Name(null, null, input, null, null);
         }
-        Matcher firstInitialMatcher = firstInitialPattern.matcher(input);
+        Matcher firstInitialMatcher = firstInitialPattern.matcher(trimmedInput);
         if ( firstInitialMatcher.matches() ){
             String lastName = firstInitialMatcher.group(1);
             String firstInitial = firstInitialMatcher.group(2);
             return new Name(null, null, lastName, firstInitial, null);
         }
-        Matcher fullNameMatcher = fullNamePattern.matcher(input);
+        Matcher fullNameMatcher = fullNamePattern.matcher(trimmedInput);
         if( fullNameMatcher.matches() ){
             String lastName = fullNameMatcher.group(1);
             String firstName = fullNameMatcher.group(2);
@@ -46,7 +47,7 @@ public final class Name {
             return new Name(firstName, middleInitial, lastName, null, null);
         }
 
-        Matcher fullNameWithSuffixMatcher = fullNameWithSuffixPattern.matcher(input);
+        Matcher fullNameWithSuffixMatcher = fullNameWithSuffixPattern.matcher(trimmedInput);
         if( fullNameWithSuffixMatcher.matches() ){
             String lastName = fullNameWithSuffixMatcher.group(1);
             String suffix = fullNameWithSuffixMatcher.group(2);
@@ -55,7 +56,7 @@ public final class Name {
             return new Name(firstName, middleInitial, lastName, null, suffix);
         }
 
-        throw new RuntimeException("Could not figure out this name: '" + input + "'");
+        throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
     }
 
     public static Name fromFirstLastMiddleInitial(String firstName, String lastName, String middleInitial){

@@ -5,6 +5,8 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,7 +59,10 @@ public class Parser {
             Pattern.compile("(NV|Y|N|P) .*");
 
     private static Pattern voteRecordPattern =
-            Pattern.compile("(NV|Y|N|P) ([A-Za-z\\., ]+)");
+            Pattern.compile("(NV|Y|N|P) ([A-Za-z\\., ]+?)");
+
+    private static Pattern voteRecordLinePattern =
+            Pattern.compile("((NV|Y|N|P) ([A-Za-z\\., ]+?))+");
 
 
     public static boolean isVoteLine(String line){
@@ -75,6 +80,92 @@ public class Parser {
             return new VoteRecord(name, vote);
         }
         throw new RuntimeException("Not a vote record: " + input);
+    }
+
+    public static enum ParseState {
+        InName,PossibleVote,PossibleNV;
+    }
+
+    public static List<VoteRecord> parseVoteRecordLine(String input){
+        List<VoteRecord> records = new ArrayList<>();
+        StringBuilder buf = new StringBuilder();
+        char last = 0;
+        ParseState state = null;
+        Vote vote = null;
+
+        char[] chars = input.toCharArray();
+        for( char c : chars ){
+            switch (c) {
+                case 'N':
+                    if( vote != null ){
+                        Name name = Name.fromAnyString(buf.toString());
+                        VoteRecord record = new VoteRecord(name, vote);
+                        records.add(record);
+                        vote = null;
+                        buf = new StringBuilder();
+                    }
+                    state = ParseState.PossibleVote;
+                    last = c;
+                    break;
+                case 'Y':
+                    if( vote != null ){
+                        Name name = Name.fromAnyString(buf.toString());
+                        VoteRecord record = new VoteRecord(name, vote);
+                        records.add(record);
+                        vote = null;
+                        buf = new StringBuilder();
+                    }
+                    state = ParseState.PossibleVote;
+                    last = c;
+                    break;
+                case 'P':
+                    if( vote != null ){
+                        Name name = Name.fromAnyString(buf.toString());
+                        VoteRecord record = new VoteRecord(name, vote);
+                        records.add(record);
+                        vote = null;
+                        buf = new StringBuilder();
+                    }
+                    state = ParseState.PossibleVote;
+                    last = c;
+                    break;
+                case 'V':
+                    if( vote != null ){
+                        Name name = Name.fromAnyString(buf.toString());
+                        VoteRecord record = new VoteRecord(name, vote);
+                        records.add(record);
+                        vote = null;
+                        buf = new StringBuilder();
+                    }
+                    if ( last == 'N' && state == ParseState.PossibleVote ){
+                        state=ParseState.PossibleNV;
+                    }
+                    last = c;
+                    break;
+                case ' ':
+                    if( state == ParseState.PossibleNV ) {
+                        vote = Vote.NotVoting;
+                        state = ParseState.InName;
+                    }
+                    if ( state == ParseState.PossibleVote ){
+                        vote = Vote.fromCode(Character.toString(last));
+                        state = ParseState.InName;
+                    }
+                    if ( state == ParseState.InName ){
+                        buf.append(' ');
+                    }
+                    break;
+                default :
+                    buf.append(c);
+                    break;
+            }
+        }
+
+        Name name = Name.fromAnyString(buf.toString());
+        VoteRecord lastRecord = new VoteRecord(name, vote);
+        records.add(lastRecord);
+
+        return records;
     }
 
     public static BillVotes parseFile(String filename) {
@@ -116,9 +207,9 @@ public class Parser {
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
             while( voteLineMatcher.find() ){
-                System.out.println("VOTE LINE !!! " + line);
-                System.out.println("COUNT " + voteLineMatcher.groupCount());
-                System.out.println(voteLineMatcher.group(1));
+//                System.out.println("VOTE LINE !!! " + line);
+//                System.out.println("COUNT " + voteLineMatcher.groupCount());
+//                System.out.println(voteLineMatcher.group(1));
 //                System.out.println(voteLineMatcher.group(2));
 //                System.out.println(voteLineMatcher.group(3));
             }

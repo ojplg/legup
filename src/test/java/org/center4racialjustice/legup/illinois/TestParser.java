@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.illinois;
 import org.junit.Test;
 import org.junit.Assert;
 
+import java.util.List;
+
 public class TestParser {
 
     private final String bill8FileName = "/pdfs/10000SB0008_02082017_002000T.pdf";
@@ -124,4 +126,24 @@ public class TestParser {
         Assert.assertEquals(expected, parsed);
     }
 
+    @Test
+    public void parseLongVoteRecord() {
+        Name james = Name.fromAnyString("Clayborne Jr., James F");
+        VoteRecord expected = new VoteRecord(james, Vote.NotVoting);
+        String input = "NV Clayborne Jr., James F";
+        VoteRecord parsed = Parser.parseVoteRecord(input);
+        Assert.assertEquals(expected, parsed);
+    }
+
+    @Test
+    public void parseVoteRecordLine(){
+        Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
+        VoteRecord expected1 = new VoteRecord(alfred, Vote.Yea);
+        Name james = Name.fromAnyString("Clayborne Jr., James F");
+        VoteRecord expected2 = new VoteRecord(james, Vote.NotVoting);
+        String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
+        List<VoteRecord> records = Parser.parseVoteRecordLine(input);
+        VoteRecord[] expectedRecords = new VoteRecord[] { expected1, expected2};
+        Assert.assertArrayEquals(expectedRecords, records.toArray());
+    }
 }
