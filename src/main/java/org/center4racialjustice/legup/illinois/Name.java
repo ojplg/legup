@@ -5,10 +5,10 @@ import java.util.regex.Pattern;
 
 public final class Name {
 
-    public static String simpleLastNameRegex = "([A-Z][a-z]+)";
-    public static String firstInitialRegex = "([A-Z][a-z]+), ([A-Z])\\.";
-    public static String fullNameRegex = "([A-Z][a-z]+), ([A-Z][a-z]+)\\s?([A-Z])?";
-    public static String fullNameWithSuffixRegex = "([A-Z][a-z]+) ([A-Z][a-z])\\., ([A-Z][a-z]+)\\s?([A-Z])?";
+    public static String simpleLastNameRegex = "([A-Z][A-Za-zñ\\-]+)";
+    public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z])\\.";
+    public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
+    public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\., ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
     public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
 
@@ -57,6 +57,18 @@ public final class Name {
         }
 
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
+    }
+
+    public static boolean isName(String input){
+        try {
+            fromAnyString(input);
+            return true;
+        } catch (RuntimeException re){
+            if (re.getMessage().startsWith("Could not figure out this name")){
+                return false;
+            }
+            throw re;
+        }
     }
 
     public static Name fromFirstLastMiddleInitial(String firstName, String lastName, String middleInitial){

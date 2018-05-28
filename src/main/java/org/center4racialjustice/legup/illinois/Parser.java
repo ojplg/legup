@@ -97,7 +97,7 @@ public class Parser {
         for( char c : chars ){
             switch (c) {
                 case 'N':
-                    if( vote != null ){
+                    if( vote != null && Name.isName(buf.toString()) ){
                         Name name = Name.fromAnyString(buf.toString());
                         VoteRecord record = new VoteRecord(name, vote);
                         records.add(record);
@@ -108,7 +108,7 @@ public class Parser {
                     last = c;
                     break;
                 case 'Y':
-                    if( vote != null ){
+                    if( vote != null && Name.isName(buf.toString()) ){
                         Name name = Name.fromAnyString(buf.toString());
                         VoteRecord record = new VoteRecord(name, vote);
                         records.add(record);
@@ -119,7 +119,7 @@ public class Parser {
                     last = c;
                     break;
                 case 'P':
-                    if( vote != null ){
+                    if( vote != null && Name.isName(buf.toString()) ){
                         Name name = Name.fromAnyString(buf.toString());
                         VoteRecord record = new VoteRecord(name, vote);
                         records.add(record);
@@ -156,14 +156,20 @@ public class Parser {
                     }
                     break;
                 default :
+                    if( state == ParseState.PossibleVote ){
+                        buf.append(last);
+                        state = ParseState.InName;
+                    }
                     buf.append(c);
                     break;
             }
         }
 
-        Name name = Name.fromAnyString(buf.toString());
-        VoteRecord lastRecord = new VoteRecord(name, vote);
-        records.add(lastRecord);
+        if (vote != null && buf.length() > 0) {
+            Name name = Name.fromAnyString(buf.toString());
+            VoteRecord lastRecord = new VoteRecord(name, vote);
+            records.add(lastRecord);
+        }
 
         return records;
     }
@@ -206,12 +212,12 @@ public class Parser {
             }
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
-            while( voteLineMatcher.find() ){
-//                System.out.println("VOTE LINE !!! " + line);
-//                System.out.println("COUNT " + voteLineMatcher.groupCount());
-//                System.out.println(voteLineMatcher.group(1));
-//                System.out.println(voteLineMatcher.group(2));
-//                System.out.println(voteLineMatcher.group(3));
+            if( voteLineMatcher.matches() ){
+                System.out.println("VOTE LINE !!! " + line);
+                List<VoteRecord> records = parseVoteRecordLine(line);
+                for(VoteRecord record : records ){
+                    bv.addVoteRecord(record);
+                }
             }
         }
 

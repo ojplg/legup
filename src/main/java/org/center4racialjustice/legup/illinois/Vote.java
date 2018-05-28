@@ -2,10 +2,15 @@ package org.center4racialjustice.legup.illinois;
 
 public final class Vote {
 
-    public static final Vote Yea = new Vote("Y");
-    public static final Vote Nay = new Vote("N");
-    public static final Vote NotVoting = new Vote("NV");
-    public static final Vote Present = new Vote("P");
+    public static final String YeaCode = "Y";
+    public static final String NayCode = "N";
+    public static final String NotVotingCode = "NV";
+    public static final String PresentCode = "P";
+
+    public static final Vote Yea = new Vote(YeaCode);
+    public static final Vote Nay = new Vote(NayCode);
+    public static final Vote NotVoting = new Vote(NotVotingCode);
+    public static final Vote Present = new Vote(PresentCode);
 
     public static final Vote fromCode(String code){
         switch (code){

@@ -136,14 +136,27 @@ public class TestParser {
     }
 
     @Test
-    public void parseVoteRecordLine(){
+    public void parseVoteRecordLine() {
         Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
         VoteRecord expected1 = new VoteRecord(alfred, Vote.Yea);
         Name james = Name.fromAnyString("Clayborne Jr., James F");
         VoteRecord expected2 = new VoteRecord(james, Vote.NotVoting);
         String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
         List<VoteRecord> records = Parser.parseVoteRecordLine(input);
-        VoteRecord[] expectedRecords = new VoteRecord[] { expected1, expected2};
+        VoteRecord[] expectedRecords = new VoteRecord[]{expected1, expected2};
         Assert.assertArrayEquals(expectedRecords, records.toArray());
+    }
+
+    @Test
+    public void parseVoteRecordLineWithSpecialCharacterInName(){
+        String input = "Y Nybo, Chris Y Oberweis, Jim";
+        Name chris = Name.fromFirstLast("Chris", "Nybo");
+        Name jim = Name.fromFirstLast("Jim", "Oberweis");
+        VoteRecord v1 = new VoteRecord(chris, Vote.Yea);
+        VoteRecord v2 = new VoteRecord(jim, Vote.Yea);
+        List<VoteRecord> records = Parser.parseVoteRecordLine(input);
+        VoteRecord[] expectedRecords = new VoteRecord[] { v1, v2 };
+        Assert.assertArrayEquals(expectedRecords, records.toArray());
+
     }
 }
