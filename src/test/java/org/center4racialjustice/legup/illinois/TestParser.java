@@ -157,6 +157,22 @@ public class TestParser {
         List<VoteRecord> records = Parser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[] { v1, v2 };
         Assert.assertArrayEquals(expectedRecords, records.toArray());
+    }
 
+    @Test
+    public void parseVoteRecordLineWithGoofballLastName(){
+        String input = "Y  Clayborne       Y  Landek     P  Oberweis     Y  Van Pelt";
+        Name clayborne = Name.fromAnyString("Clayborne");
+        Name landek = Name.fromAnyString("Landek");
+        Name oberweis = Name.fromAnyString("Oberweis");
+        Name vanpelt = Name.fromAnyString("Van Pelt");
+        VoteRecord[] expectedRecords = new VoteRecord[] {
+                new VoteRecord(clayborne, Vote.Yea),
+                new VoteRecord(landek, Vote.Yea),
+                new VoteRecord(oberweis, Vote.Present),
+                new VoteRecord(vanpelt, Vote.Yea)
+        };
+        List<VoteRecord> records = Parser.parseVoteRecordLine(input);
+        Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
 }

@@ -95,6 +95,7 @@ public class Parser {
 
         char[] chars = input.toCharArray();
         for( char c : chars ){
+            System.out.println(" > " + state +" " + c);
             switch (c) {
                 case 'N':
                     if( vote != null && Name.isName(buf.toString()) ){
@@ -130,17 +131,19 @@ public class Parser {
                     last = c;
                     break;
                 case 'V':
-                    if( vote != null ){
-                        Name name = Name.fromAnyString(buf.toString());
-                        VoteRecord record = new VoteRecord(name, vote);
-                        records.add(record);
-                        vote = null;
-                        buf = new StringBuilder();
-                    }
+//                    if( vote != null ){
+//                        Name name = Name.fromAnyString(buf.toString());
+//                        VoteRecord record = new VoteRecord(name, vote);
+//                        records.add(record);
+//                        vote = null;
+//                        buf = new StringBuilder();
+//                    }
                     if ( last == 'N' && state == ParseState.PossibleVote ){
                         state=ParseState.PossibleNV;
                     }
-                    last = c;
+                    if ( state == ParseState.InName ){
+                        buf.append(c);
+                    }
                     break;
                 case ' ':
                     if( state == ParseState.PossibleNV ) {

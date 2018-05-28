@@ -35,4 +35,12 @@ public class VoteRecord {
         result = 31 * result + vote.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "VoteRecord{" +
+                "name=" + name +
+                ", vote=" + vote +
+                '}';
+    }
 }

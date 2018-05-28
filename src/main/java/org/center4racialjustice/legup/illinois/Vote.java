@@ -46,4 +46,11 @@ public final class Vote {
     public int hashCode() {
         return code.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Vote{" +
+                "code='" + code + '\'' +
+                '}';
+    }
 }

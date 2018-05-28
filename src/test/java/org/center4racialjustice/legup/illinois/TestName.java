@@ -69,4 +69,14 @@ public class TestName {
         Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Clayborne Jr., James F"));
     }
 
+    @Test
+    public void twoPartLastName(){
+        Name name = Name.fromAnyString("Van Pelt");
+        Assert.assertEquals("Van Pelt", name.getLastName());
+        Assert.assertNull(name.getFirstInitial());
+        Assert.assertNull(name.getFirstName());
+        Assert.assertNull(name.getMiddleInitial());
+
+    }
+
 }
