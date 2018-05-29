@@ -48,48 +48,48 @@ public class TestParser {
         Assert.assertEquals(8, bv.expectedNotVoting);
     }
 
-//    @Test
-//    public void testVoteCollections(){
-//        /*
-//        NV Barickman, Jason A NV Brady, William E
-//        Y Clayborne Jr., James F NV Cullerton, John J
-//        Y Harmon, Don Y Hunter, Mattie
-//        Y Lightford, Kimberly A Y Link, Terry
-//        Y Mulroe, John G NV Muñoz, Antonio
-//        Y Nybo, Chris Y Oberweis, Jim
-//        NV Raoul, Kwame Y Rezin, Sue
-//        NV Silverstein, Ira I NV Steans, Heather A
-//        NV Syverson, Dave
-//        */
-//        Name[] expectedNotVoting =
-//                {
-//                        Name.fromFirstLastMiddleInitial("Jason","Barickman", "A"),
-//                        Name.fromFirstLastMiddleInitial("William", "Brady", "E"),
-//                        Name.fromFirstLastMiddleInitial("Cullerton", "John", "J"),
-//                        Name.fromFirstLast("Kwame", "Raoul"),
-//                        Name.fromFirstLast("Antonio","Muñoz"),
-//                        Name.fromFirstLastMiddleInitial("Ira", "Silverstein", "I"),
-//                        Name.fromFirstLastMiddleInitial("Heather", "Steans", "A"),
-//                        Name.fromFirstLast("Dave","Syverson")
-//                };
-//
-//        Name[] expectedYeas =
-//                {
-//                        new Name("James","F", "Clayborn",null, "Jr"),
-//                        Name.fromFirstLast("Don", "Harmon"),
-//                        Name.fromFirstLast("Mattie","Hunter"),
-//                        Name.fromFirstLastMiddleInitial("Kimberly", "Lightford", "A"),
-//                        Name.fromFirstLast("Terry", "Link"),
-//                        Name.fromFirstLast("John", "Mulroe"),
-//                        Name.fromFirstLast("Chris", "Nybo"),
-//                        Name.fromFirstLast("Jim", "Oberweis"),
-//                        Name.fromFirstLast("Sue","Rezin")
-//                };
-//
-//        BillVotes bv = Parser.parseFile(bill2781FileName);
-//        Assert.assertArrayEquals(expectedNotVoting, bv.notVotings.toArray(new Name[8]));
-//        Assert.assertArrayEquals(expectedYeas, bv.yeas.toArray(new Name[9]));
-//    }
+    @Test
+    public void testVoteCollections(){
+        /*
+        NV Barickman, Jason A NV Brady, William E
+        Y Clayborne Jr., James F NV Cullerton, John J
+        Y Harmon, Don Y Hunter, Mattie
+        Y Lightford, Kimberly A Y Link, Terry
+        Y Mulroe, John G NV Muñoz, Antonio
+        Y Nybo, Chris Y Oberweis, Jim
+        NV Raoul, Kwame Y Rezin, Sue
+        NV Silverstein, Ira I NV Steans, Heather A
+        NV Syverson, Dave
+        */
+        Name[] expectedNotVoting =
+                {
+                        Name.fromFirstLastMiddleInitial("Jason","Barickman", "A"),
+                        Name.fromFirstLastMiddleInitial("William", "Brady", "E"),
+                        Name.fromFirstLastMiddleInitial("John", "Cullerton", "J"),
+                        Name.fromFirstLast("Antonio","Muñoz"),
+                        Name.fromFirstLast("Kwame", "Raoul"),
+                        Name.fromFirstLastMiddleInitial("Ira", "Silverstein", "I"),
+                        Name.fromFirstLastMiddleInitial("Heather", "Steans", "A"),
+                        Name.fromFirstLast("Dave","Syverson")
+                };
+
+        Name[] expectedYeas =
+                {
+                        new Name("James","F", "Clayborne",null, "Jr"),
+                        Name.fromFirstLast("Don", "Harmon"),
+                        Name.fromFirstLast("Mattie","Hunter"),
+                        Name.fromFirstLastMiddleInitial("Kimberly", "Lightford", "A"),
+                        Name.fromFirstLast("Terry", "Link"),
+                        Name.fromFirstLastMiddleInitial("John", "Mulroe", "G"),
+                        Name.fromFirstLast("Chris", "Nybo"),
+                        Name.fromFirstLast("Jim", "Oberweis"),
+                        Name.fromFirstLast("Sue","Rezin")
+                };
+
+        BillVotes bv = Parser.parseFile(bill2781FileName);
+        Assert.assertArrayEquals(expectedNotVoting, bv.notVotings.toArray(new Name[8]));
+        Assert.assertArrayEquals(expectedYeas, bv.yeas.toArray(new Name[9]));
+    }
 
     @Test
     public void senateBillNumberNotAVoteLine(){

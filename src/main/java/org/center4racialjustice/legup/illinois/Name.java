@@ -108,8 +108,15 @@ public final class Name {
         return suffix;
     }
 
-    public String toString(){
-        return lastName;
+    @Override
+    public String toString() {
+        return "Name{" +
+                "firstName='" + firstName + '\'' +
+                ", firstInitial='" + firstInitial + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", middleInitial='" + middleInitial + '\'' +
+                ", suffix='" + suffix + '\'' +
+                '}';
     }
 
     @Override
