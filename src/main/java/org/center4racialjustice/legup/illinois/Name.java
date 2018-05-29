@@ -28,7 +28,7 @@ public final class Name {
     private final String suffix;
 
     public static Name fromAnyString(String input){
-        System.out.println(" Original string '" + input + "'");
+//        System.out.println(" Original string '" + input + "'");
         String trimmedInput = input.trim();
         Matcher simpleLastNameMatcher = simpleLastNamePattern.matcher(trimmedInput);
         if( simpleLastNameMatcher.matches() ){
