@@ -13,14 +13,10 @@ public final class Name {
 
     public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
 
-    public static String nameCharacters = "[A-Za-z\\., ]";
-
     public static Pattern simpleLastNamePattern = Pattern.compile(simpleLastNameRegex);
     public static Pattern firstInitialPattern = Pattern.compile(firstInitialRegex);
     public static Pattern fullNamePattern = Pattern.compile(fullNameRegex);
     public static Pattern fullNameWithSuffixPattern = Pattern.compile(fullNameWithSuffixRegex);
-
-    public static Pattern unifiedPattern = Pattern.compile(unifiedRegex);
 
     private final String firstName;
     private final String firstInitial;
