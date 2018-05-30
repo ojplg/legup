@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public final class Name {
 
+    public static String president = "Mr. President";
     public static String simpleLastNameRegex = "([A-Z][A-Za-zñ\\- ]+)";
     public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z])\\.";
     public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
@@ -28,8 +29,10 @@ public final class Name {
     private final String suffix;
 
     public static Name fromAnyString(String input){
-//        System.out.println(" Original string '" + input + "'");
         String trimmedInput = input.trim();
+        if( trimmedInput.equals(president)){
+            return new Name(null, null, president, null, null);
+        }
         Matcher simpleLastNameMatcher = simpleLastNamePattern.matcher(trimmedInput);
         if( simpleLastNameMatcher.matches() ){
             return new Name(null, null, trimmedInput, null, null);

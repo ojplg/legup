@@ -82,18 +82,12 @@ public class Parser {
         throw new RuntimeException("Not a vote record: " + input);
     }
 
-    public enum ParseState {
-        InName,PossibleVote,PossibleNV;
-    }
-
     public static int findNextPossibleRecordIndex(String input){
-        System.out.println("Checking " + input);
         String[] markers = { "N ", "Y ", "P ", "NV "};
         int earliestIndex = input.length();
         for(String marker : markers){
             int idx = input.indexOf(marker);
             if ( idx >= 0 && idx < earliestIndex ){
-                System.out.println("Found " + marker + " at  " + idx);
                 earliestIndex = idx;
             }
         }
@@ -116,7 +110,6 @@ public class Parser {
             if( divider == -1 ){
                 Name name = Name.fromAnyString(end);
                 VoteRecord record = new VoteRecord(name, vote);
-                System.out.println("Final record " + record);
                 remainder = "";
                 records.add(record);
             } else {
@@ -124,103 +117,11 @@ public class Parser {
                 remainder = end.substring(divider);
                 Name name = Name.fromAnyString(nameString);
                 VoteRecord record = new VoteRecord(name, vote);
-                System.out.println("Record " + record);
                 records.add(record);
             }
         }
         return records;
     }
-
-//    public static List<VoteRecord> parseVoteRecordLine(String input){
-//        List<VoteRecord> records = new ArrayList<>();
-//        StringBuilder buf = new StringBuilder();
-//        char last = 0;
-//        ParseState state = null;
-//        Vote vote = null;
-//
-//        char[] chars = input.toCharArray();
-//        for( char c : chars ){
-//            System.out.println(" > " + state +" " + c);
-//            switch (c) {
-//                case 'N':
-//                    if( vote != null && Name.isName(buf.toString()) ){
-//                        Name name = Name.fromAnyString(buf.toString());
-//                        VoteRecord record = new VoteRecord(name, vote);
-//                        records.add(record);
-//                        vote = null;
-//                        buf = new StringBuilder();
-//                    }
-//                    state = ParseState.PossibleVote;
-//                    last = c;
-//                    break;
-//                case 'Y':
-//                    if( vote != null && Name.isName(buf.toString()) ){
-//                        Name name = Name.fromAnyString(buf.toString());
-//                        VoteRecord record = new VoteRecord(name, vote);
-//                        records.add(record);
-//                        vote = null;
-//                        buf = new StringBuilder();
-//                    }
-//                    state = ParseState.PossibleVote;
-//                    last = c;
-//                    break;
-//                case 'P':
-//                    if( vote != null && Name.isName(buf.toString()) ){
-//                        Name name = Name.fromAnyString(buf.toString());
-//                        VoteRecord record = new VoteRecord(name, vote);
-//                        records.add(record);
-//                        vote = null;
-//                        buf = new StringBuilder();
-//                    }
-//                    state = ParseState.PossibleVote;
-//                    last = c;
-//                    break;
-//                case 'V':
-////                    if( vote != null ){
-////                        Name name = Name.fromAnyString(buf.toString());
-////                        VoteRecord record = new VoteRecord(name, vote);
-////                        records.add(record);
-////                        vote = null;
-////                        buf = new StringBuilder();
-////                    }
-//                    if ( last == 'N' && state == ParseState.PossibleVote ){
-//                        state=ParseState.PossibleNV;
-//                    }
-//                    if ( state == ParseState.InName ){
-//                        buf.append(c);
-//                    }
-//                    break;
-//                case ' ':
-//                    if( state == ParseState.PossibleNV ) {
-//                        vote = Vote.NotVoting;
-//                        state = ParseState.InName;
-//                    }
-//                    if ( state == ParseState.PossibleVote ){
-//                        vote = Vote.fromCode(Character.toString(last));
-//                        state = ParseState.InName;
-//                    }
-//                    if ( state == ParseState.InName ){
-//                        buf.append(' ');
-//                    }
-//                    break;
-//                default :
-//                    if( state == ParseState.PossibleVote ){
-//                        buf.append(last);
-//                        state = ParseState.InName;
-//                    }
-//                    buf.append(c);
-//                    break;
-//            }
-//        }
-//
-//        if (vote != null && buf.length() > 0) {
-//            Name name = Name.fromAnyString(buf.toString());
-//            VoteRecord lastRecord = new VoteRecord(name, vote);
-//            records.add(lastRecord);
-//        }
-//
-//        return records;
-//    }
 
     public static BillVotes parseFile(String filename) {
         String content = readFileToString(filename);
@@ -261,7 +162,6 @@ public class Parser {
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
             if( voteLineMatcher.matches() ){
-                System.out.println("VOTE LINE !!! " + line);
                 List<VoteRecord> records = parseVoteRecordLine(line);
                 for(VoteRecord record : records ){
                     bv.addVoteRecord(record);
