@@ -70,18 +70,6 @@ public class Parser {
         return voteLineMatcher.matches();
     }
 
-    public static VoteRecord parseVoteRecord(String input){
-        Matcher matcher = voteRecordPattern.matcher(input);
-        if ( matcher.matches() ){
-            String voteCode = matcher.group(1);
-            String nameString = matcher.group(2);
-            Vote vote = Vote.fromCode(voteCode);
-            Name name = Name.fromAnyString(nameString);
-            return new VoteRecord(name, vote);
-        }
-        throw new RuntimeException("Not a vote record: " + input);
-    }
-
     public static int findNextPossibleRecordIndex(String input){
         String[] markers = { "N ", "Y ", "P ", "NV "};
         int earliestIndex = input.length();

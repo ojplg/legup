@@ -123,25 +123,7 @@ public class TestParser {
     public void longNamesCanBeVoteLines(){
         Assert.assertTrue(Parser.isVoteLine("NV Silverstein, Ira I NV Steans, Heather A"));
     }
-
-    @Test
-    public void parseVoteRecord() {
-        Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
-        VoteRecord expected = new VoteRecord(alfred, Vote.Yea);
-        String input = "Y Redblatt, Alfred";
-        VoteRecord parsed = Parser.parseVoteRecord(input);
-        Assert.assertEquals(expected, parsed);
-    }
-
-    @Test
-    public void parseLongVoteRecord() {
-        Name james = Name.fromAnyString("Clayborne Jr., James F");
-        VoteRecord expected = new VoteRecord(james, Vote.NotVoting);
-        String input = "NV Clayborne Jr., James F";
-        VoteRecord parsed = Parser.parseVoteRecord(input);
-        Assert.assertEquals(expected, parsed);
-    }
-
+    
     @Test
     public void parseVoteRecordLine() {
         Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
