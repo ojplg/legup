@@ -9,6 +9,7 @@ public class TestParser {
 
     private final String bill8FileName = "/pdfs/10000SB0008_02082017_002000T.pdf";
     private final String bill2781FileName = "/pdfs/10000SB2781_19952.pdf";
+    private final String bill3179FileName = "/pdfs/10000HB3179_05262017_048000T.pdf";
 
     @Test
     public void testFileLoading(){
@@ -180,5 +181,11 @@ public class TestParser {
         };
         List<VoteRecord> records = Parser.parseVoteRecordLine(input);
         Assert.assertArrayEquals(expectedRecords, records.toArray());
+    }
+
+    @Test
+    public void houseBillCanBeParsed(){
+        BillVotes bv = Parser.parseFile(bill3179FileName);
+        bv.checkVoteCounts();
     }
 }
