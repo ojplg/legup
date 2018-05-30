@@ -34,4 +34,19 @@ public class BillVotes {
                 throw new RuntimeException("Unrecognized vote type");
         }
     }
+
+    public void checkVoteCounts(){
+        if (nays.size() != expectedNays){
+            throw new RuntimeException("Bad Nays count. Expected " + expectedNays + " calculated " + nays.size());
+        }
+        if (yeas.size() != expectedYeas){
+            throw new RuntimeException("Bad Yeas count. Expected " + expectedYeas + " calculated " + yeas.size());
+        }
+        if (presents.size() != expectedPresent){
+            throw new RuntimeException("Bad Present count. Expected " + expectedPresent + " calculated " + presents.size());
+        }
+        if (notVotings.size() != expectedNotVoting){
+            throw new RuntimeException("Bad NotVoting count. Expected " + expectedNotVoting + " calculated " + notVotings.size());
+        }
+    }
 }

@@ -92,6 +92,12 @@ public class TestParser {
     }
 
     @Test
+    public void checkVoteCountsWorks(){
+        BillVotes bv = Parser.parseFile(bill2781FileName);
+        bv.checkVoteCounts();
+    }
+
+    @Test
     public void senateBillNumberNotAVoteLine(){
         Assert.assertFalse(
                 Parser.isVoteLine("Senate Bill No. 8"));
