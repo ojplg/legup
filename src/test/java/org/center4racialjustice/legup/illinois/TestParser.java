@@ -123,7 +123,7 @@ public class TestParser {
     public void longNamesCanBeVoteLines(){
         Assert.assertTrue(Parser.isVoteLine("NV Silverstein, Ira I NV Steans, Heather A"));
     }
-    
+
     @Test
     public void parseVoteRecordLine() {
         Name alfred = Name.fromFirstLast("Alfred", "Redblatt");

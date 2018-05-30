@@ -58,13 +58,6 @@ public class Parser {
     private static Pattern voteLinePattern =
             Pattern.compile("(NV|Y|N|P) .*");
 
-    private static Pattern voteRecordPattern =
-            Pattern.compile("(NV|Y|N|P) ([A-Za-z\\., ]+?)");
-
-    private static Pattern voteRecordLinePattern =
-            Pattern.compile("((NV|Y|N|P) ([A-Za-z\\., ]+?))+");
-
-
     public static boolean isVoteLine(String line){
         Matcher voteLineMatcher = voteLinePattern.matcher(line);
         return voteLineMatcher.matches();
