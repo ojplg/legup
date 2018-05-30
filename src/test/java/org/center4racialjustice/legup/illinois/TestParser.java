@@ -13,9 +13,9 @@ public class TestParser {
     @Test
     public void testFileLoading(){
         String content = Parser.readFileToString(bill8FileName);
-        System.out.println(content);
+        Assert.assertTrue(content.length() > 1);
         String next = Parser.readFileToString(bill2781FileName);
-        System.out.println(next);
+        Assert.assertTrue(next.length() > 1);
     }
 
     @Test
