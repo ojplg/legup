@@ -12,10 +12,18 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-    public static String readFileToString(String filename)  {
+    public static String readFileToString(String filename){
+        try {
+            return readFileToStringExceptions(filename);
+        } catch (IOException ioe){
+            throw new RuntimeException(ioe);
+        }
+    }
+
+    public static String readFileToStringExceptions(String filename)
+    throws IOException {
         PDDocument doc = new PDDocument();
         InputStream fileStream = null;
-        String content;
         try
         {
             doc.close();
@@ -23,30 +31,13 @@ public class Parser {
             doc = PDDocument.load(fileStream);
 
             PDFTextStripper stripper = new PDFTextStripper();
-            content = stripper.getText(doc);
-            doc.close();
-            fileStream.close();
-
-        }
-        catch (IOException ioe){
-            throw new RuntimeException(ioe);
+            return stripper.getText(doc);
         }
         finally
         {
-//            try {
-//                if (fileStream != null) {
-//                    System.out.println("Closing stream");
-//                    fileStream.close();
-//                }
-//                if (doc != null) {
-//                    System.out.println("Closing doc");
-//                    doc.close();
-//                }
-//            } catch (IOException ioe){
-//                throw new RuntimeException(ioe);
-//            }
+            doc.close();
+            fileStream.close();
         }
-        return content;
     }
 
     private static Pattern billNumberPattern = Pattern.compile("Senate Bill No. (\\d+)");
