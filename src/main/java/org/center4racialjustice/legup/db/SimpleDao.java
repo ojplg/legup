@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Dao<T extends Identifiable> {
+public class SimpleDao<T extends Identifiable> {
 
     private final Supplier<T> supplier;
     private final String table;
@@ -13,7 +13,7 @@ public class Dao<T extends Identifiable> {
 
     private final Connection connection;
 
-    public Dao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
+    public SimpleDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
         this.supplier = supplier;
         this.table = table;
         this.columnList = columnList;

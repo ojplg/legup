@@ -73,6 +73,9 @@ public class DaoHelper {
                         Function<T, Long> longGetter = column.getGetter();
                         preparedStatement.setLong(index, longGetter.apply(item));
                         break;
+                    case Reference:
+                        
+                        break;
                 }
 
             }

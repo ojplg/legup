@@ -19,10 +19,10 @@ public class PersonDao {
                     );
 
 
-    private final Dao<Person> dao;
+    private final SimpleDao<Person> dao;
 
     public PersonDao(Connection connection){
-        this.dao = new Dao<>(connection, () -> new Person(), table, columnList);
+        this.dao = new SimpleDao<>(connection, () -> new Person(), table, columnList);
     }
 
     public long save(Person person) {
