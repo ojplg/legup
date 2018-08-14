@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.db;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class LegislatorDao {
+public class LegislatorDao implements Dao<Legislator> {
 
     private static String table = "legislators";
 
@@ -42,5 +44,9 @@ public class LegislatorDao {
         List<Legislator> legislators =
                 DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Legislator(), finders);
         return DaoHelper.fromSingletonList(legislators, "Table " + table + ", ID " + id);
+    }
+
+    public List<Legislator> readAll(){
+        throw new NotImplementedException();
     }
 }
