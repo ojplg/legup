@@ -13,20 +13,18 @@ import java.util.function.Function;
 
 public class PersonDao {
 
+    private static String table = "persons";
+
     private static List<Column> columnList =
             Arrays.asList(
-                    new Column<Person, Long>("ID", ColumnType.Long, Person::getId, Person::setId),
-                    new Column<Person, String>("PREFIX", ColumnType.String, Person::getPrefix, Person::setPrefix),
-                    new Column<Person, String>("FIRST_NAME", ColumnType.String, Person::getFirstName, Person::setFirstName),
-                    new Column<Person, String>("MIDDLE_NAME", ColumnType.String, Person::getMiddleName, Person::setMiddleName),
-                    new Column<Person, String>("LAST_NAME", ColumnType.String, Person::getLastName, Person::setLastName),
-                    new Column<Person, String>("SUFFIX", ColumnType.String, Person::getSuffix, Person::setSuffix)
+                    new Column<>("ID", ColumnType.Long, Person::getId, Person::setId),
+                    new Column<>("PREFIX", ColumnType.String, Person::getPrefix, Person::setPrefix),
+                    new Column<>("FIRST_NAME", ColumnType.String, Person::getFirstName, Person::setFirstName),
+                    new Column<>("MIDDLE_NAME", ColumnType.String, Person::getMiddleName, Person::setMiddleName),
+                    new Column<>("LAST_NAME", ColumnType.String, Person::getLastName, Person::setLastName),
+                    new Column<>("SUFFIX", ColumnType.String, Person::getSuffix, Person::setSuffix)
                     );
 
-    private static List<String> columns =
-            Arrays.asList("ID", "PREFIX", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "SUFFIX");
-
-    private static String table = "persons";
 
     private final Connection connection;
 
@@ -34,9 +32,6 @@ public class PersonDao {
         this.connection = connection;
     }
 
-    public String columnsAsString(){
-        return String.join(", ", columns);
-    }
 
     public long save(Person person) throws SQLException {
         if( person.getId() == null ){
@@ -46,26 +41,9 @@ public class PersonDao {
         }
     }
 
-
-
-    private String insertStatement(){
-        StringBuilder bldr = new StringBuilder();
-        for(int idx=0; idx<columnList.size()-2; idx++){
-            bldr.append("?, ");
-        }
-        bldr.append("? ");
-
-        String sql = "insert into " + table + " ( " + columnsAsString() + " ) "
-                + " values ( DEFAULT, "
-                + bldr.toString()
-                + " ) "
-                + " RETURNING ID ";
-        return sql;
-    }
-
     private long insert(Person person) throws SQLException {
 
-        String sql = insertStatement();
+        String sql = DaoHelper.insertStatement(table, columnList);
 
         PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -126,7 +104,7 @@ public class PersonDao {
 
             statement = connection.createStatement();
 
-            String sql = "select " + columnsAsString() + " from " + table
+            String sql = "select " + DaoHelper.columnsAsString(columnList) + " from " + table
                     + " where id = " + id;
 
             resultSet = statement.executeQuery(sql);
@@ -177,7 +155,7 @@ public class PersonDao {
 
             statement = connection.createStatement();
 
-            resultSet = statement.executeQuery("select " + columnsAsString() + " from " + table);
+            resultSet = statement.executeQuery("select " + DaoHelper.columnsAsString(columnList) + " from " + table);
 
             List<Person> personList = new ArrayList<>();
 
