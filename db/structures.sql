@@ -12,6 +12,9 @@ create table persons (
     suffix text
 );
 
+grant all on sequence person_seq to legupuser;
+grant all on table persons to legupuser;
+
 create sequence legislator_seq start 1;
 
 create table legislators (
@@ -22,6 +25,9 @@ create table legislators (
     person_id integer
 );
 
+grant all on sequence legislator_seq to legupuser;
+grant all on table legislators to legupuser;
+
 create sequence bill_seq start 1;
 
 create table bills (
@@ -29,6 +35,9 @@ create table bills (
     bill_number integer not null,
     assembly text
 );
+
+grant all on sequence bill_seq to legupuser;
+grant all on table bills to legupuser;
 
 create sequence vote_seq start 1;
 
@@ -38,6 +47,9 @@ create table votes (
     legislator_id integer not null,
     code text not null
 );    
+
+grant all on sequence vote_seq to legupuser;
+grant all on table votes to legupuser;
 
 end;
 
