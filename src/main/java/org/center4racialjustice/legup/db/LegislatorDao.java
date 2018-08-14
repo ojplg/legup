@@ -34,7 +34,6 @@ public class LegislatorDao implements Dao<Legislator> {
     public long save(Legislator legislator){
         long personID = personDao.save(legislator.getPerson());
         Map<String, Long> ids = Collections.singletonMap("PERSON_ID", personID);
-        System.out.println("Saved person with id " + personID);
         return DaoHelper.save(connection, table, columnList, legislator, ids);
     }
 
