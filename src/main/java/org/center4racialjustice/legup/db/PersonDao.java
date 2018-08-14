@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -55,11 +54,22 @@ public class PersonDao {
                 + " RETURNING ID ";
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, person.getPrefix());
-        statement.setString(2, person.getFirstName());
-        statement.setString(3, person.getMiddleName());
-        statement.setString(4, person.getLastName());
-        statement.setString(5, person.getSuffix());
+
+        for(int index= 1; index<columnList.size(); index++){
+            Column column = columnList.get(index);
+            ColumnType columnType = column.getColumnType();
+            switch(columnType){
+                case String:
+                    Function<Person, String> stringGetter = column.getGetter();
+                    statement.setString(index, stringGetter.apply(person));
+                    break;
+                case Long:
+                    Function<Person, Long> longGetter = column.getGetter();
+                    statement.setLong(index, longGetter.apply(person));
+                    break;
+            }
+
+        }
 
         ResultSet resultSet = statement.executeQuery();
         resultSet.next();
@@ -143,7 +153,7 @@ public class PersonDao {
 
         return person;
     }
-    
+
     public List<Person> readAll() throws SQLException {
 
         Statement statement = null;
