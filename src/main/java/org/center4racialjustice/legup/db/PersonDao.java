@@ -7,9 +7,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class PersonDao {
+
+    private static List<Column> columnList =
+            Arrays.asList(
+                    new Column<Person, Long>("ID", ColumnType.Long, Person::getId, Person::setId),
+                    new Column<Person, String>("PREFIX", ColumnType.String, Person::getPrefix, Person::setPrefix),
+                    new Column<Person, String>("FIRST_NAME", ColumnType.String, Person::getFirstName, Person::setFirstName),
+                    new Column<Person, String>("MIDDLE_NAME", ColumnType.String, Person::getMiddleName, Person::setMiddleName),
+                    new Column<Person, String>("LAST_NAME", ColumnType.String, Person::getLastName, Person::setLastName),
+                    new Column<Person, String>("SUFFIX", ColumnType.String, Person::getSuffix, Person::setSuffix)
+                    );
 
     private static List<String> columns =
             Arrays.asList("ID", "PREFIX", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "SUFFIX");
@@ -95,21 +108,7 @@ public class PersonDao {
             resultSet = statement.executeQuery(sql);
 
             if (resultSet.next()) {
-
-                String prefix = resultSet.getString("PREFIX");
-                String firstName = resultSet.getString("FIRST_NAME");
-                String middleName = resultSet.getString("MIDDLE_NAME");
-                String lastName = resultSet.getString("LAST_NAME");
-                String suffix = resultSet.getString("SUFFIX");
-
-                Person person = new Person();
-                person.setId(id);
-                person.setPrefix(prefix);
-                person.setFirstName(firstName);
-                person.setMiddleName(middleName);
-                person.setLastName(lastName);
-                person.setSuffix(suffix);
-
+                Person person = populate(resultSet);
                 return person;
             } else {
                 return null;
@@ -125,6 +124,26 @@ public class PersonDao {
 
     }
 
+    private Person populate(ResultSet resultSet) throws SQLException {
+        Person person = new Person();
+
+        for (Column column: columnList) {
+            String name = column.getName();
+            ColumnType columnType = column.getColumnType();
+            BiConsumer setter = column.getSetter();
+            switch (columnType){
+                case Long:
+                    setter.accept(person, resultSet.getLong(name));
+                    break;
+                case String:
+                    setter.accept(person, resultSet.getString(name));
+                    break;
+            }
+        }
+
+        return person;
+    }
+    
     public List<Person> readAll() throws SQLException {
 
         Statement statement = null;
@@ -139,21 +158,7 @@ public class PersonDao {
             List<Person> personList = new ArrayList<>();
 
             while (resultSet.next()) {
-                long id = resultSet.getLong("ID");
-                String prefix = resultSet.getString("PREFIX");
-                String firstName = resultSet.getString("FIRST_NAME");
-                String middleName = resultSet.getString("MIDDLE_NAME");
-                String lastName = resultSet.getString("LAST_NAME");
-                String suffix = resultSet.getString("SUFFIX");
-
-                Person person = new Person();
-                person.setId(id);
-                person.setPrefix(prefix);
-                person.setFirstName(firstName);
-                person.setMiddleName(middleName);
-                person.setLastName(lastName);
-                person.setSuffix(suffix);
-
+                Person person = populate(resultSet);
                 personList.add(person);
             }
 
