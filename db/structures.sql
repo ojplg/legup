@@ -19,10 +19,11 @@ create sequence legislator_seq start 1;
 
 create table legislators (
     id integer PRIMARY KEY,
+    district integer,
     party text,
     assembly text,
     year integer,
-    person_id integer
+    person_id integer 
 );
 
 grant all on sequence legislator_seq to legupuser;
