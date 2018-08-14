@@ -39,5 +39,5 @@ create table votes (
     code text not null
 );    
 
-
+end;
 
