@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.db;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class PersonDao {
@@ -20,41 +19,22 @@ public class PersonDao {
                     );
 
 
-    private final Connection connection;
+    private final Dao<Person> dao;
 
     public PersonDao(Connection connection){
-        this.connection = connection;
+        this.dao = new Dao<>(connection, () -> new Person(), table, columnList);
     }
 
     public long save(Person person) {
-        if( person.getId() == null ){
-            return insert(person);
-        } else {
-            return update(person);
-        }
-    }
-
-    private long insert(Person person) {
-        return DaoHelper.doInsert(person, table, columnList, connection);
-    }
-
-    private long update(Person person) {
-        return DaoHelper.doUpdate(person, table, columnList, connection);
+        return dao.save(person);
     }
 
     public Person read(long id) {
-        List<Person> persons = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Person());
-        if (persons.isEmpty()){
-            return null;
-        }
-        if( persons.size() == 1){
-            return persons.get(0);
-        }
-        throw new RuntimeException("Found " + persons.size() + " items with id " + id);
+        return dao.read(id);
     }
 
     public List<Person> readAll() {
-        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), () -> new Person());
+        return dao.readAll();
     }
 
 }

@@ -208,4 +208,12 @@ public class DaoHelper {
         }
     }
 
+    public static <T extends Identifiable> long save(T item, String table, List<Column> columnList, Connection connection) {
+        if( item.getId() == null ){
+            return doInsert(item, table, columnList, connection);
+        } else {
+            return doUpdate(item, table, columnList, connection);
+        }
+    }
+
 }
