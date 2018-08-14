@@ -13,7 +13,7 @@ public class SimpleDao<T extends Identifiable> implements Dao<T> {
 
     private final Connection connection;
 
-    public SimpleDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
+    SimpleDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
         this.supplier = supplier;
         this.table = table;
         this.columnList = columnList;
@@ -21,15 +21,15 @@ public class SimpleDao<T extends Identifiable> implements Dao<T> {
     }
 
     public long save(T item){
-        return DaoHelper.save(item, table, columnList, connection);
+        return DaoHelper.save(connection, table, columnList, item, Collections.emptyMap());
     }
 
     public T read(long id){
-        List<T> found = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier);
+        List<T> found = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier, Collections.emptyMap());
         return DaoHelper.fromSingletonList(found, "Table: " + table + ", ID: " + id);
     }
 
     public List<T> readAll(){
-        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), supplier);
+        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), supplier, Collections.emptyMap());
     }
 }

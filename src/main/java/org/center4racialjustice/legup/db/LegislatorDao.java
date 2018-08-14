@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class LegislatorDao {
 
@@ -28,12 +30,17 @@ public class LegislatorDao {
     }
 
     public long save(Legislator legislator){
-        return DaoHelper.save(legislator, table, columnList, connection);
+        long personID = personDao.save(legislator.getPerson());
+        Map<String, Long> ids = Collections.singletonMap("PERSON_ID", personID);
+        System.out.println("Saved person with id " + personID);
+        return DaoHelper.save(connection, table, columnList, legislator, ids);
     }
 
     public Legislator read(long id){
+        Function<Long, Person> personFinder = personDao::read;
+        Map<String, Function> finders = Collections.singletonMap("PERSON_ID", personFinder);
         List<Legislator> legislators =
-                DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Legislator());
+                DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Legislator(), finders);
         return DaoHelper.fromSingletonList(legislators, "Table " + table + ", ID " + id);
     }
 }

@@ -7,34 +7,37 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class DaoHelper {
+class DaoHelper {
 
-    public static String columnsAsString(List<Column> columnList){
-        List<String> columnNames = columnList.stream().map(column -> column.getName()).collect(Collectors.toList());
+    private static String columnsAsString(List<Column> columnList){
+        List<String> columnNames = columnList.stream().map(Column::getName).collect(Collectors.toList());
         return String.join(", ", columnNames);
     }
 
-    public static String insertStatement(String table, List<Column> columnList){
+    private static String insertStatement(String table, List<Column> columnList){
         StringBuilder bldr = new StringBuilder();
+        bldr.append("insert into ");
+        bldr.append(table);
+        bldr.append(" ( ");
+        bldr.append(columnsAsString(columnList));
+        bldr.append(" ) values ( DEFAULT, ");
         for(int idx=0; idx<columnList.size()-2; idx++){
             bldr.append("?, ");
         }
         bldr.append("? ");
+        bldr.append(" ) ");
+        bldr.append(" RETURNING ID ");
 
-        String sql = "insert into " + table + " ( " + columnsAsString(columnList) + " ) "
-                + " values ( DEFAULT, "
-                + bldr.toString()
-                + " ) "
-                + " RETURNING ID ";
-        return sql;
+        return bldr.toString();
     }
 
-    public static <T extends Identifiable> String updateStatement(String table, List<Column> columnList, T item){
+    private static <T extends Identifiable> String updateStatement(String table, List<Column> columnList, T item){
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
         sql.append(" set ");
@@ -52,13 +55,12 @@ public class DaoHelper {
         return sql.toString();
     }
 
-    public static <T extends Identifiable> Long doInsert(T item, String table, List<Column> columnList, Connection connection){
+    public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<Column> columnList, T item, Map<String, Long> references){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        String sql = DaoHelper.insertStatement(table, columnList);
 
         try {
-            String sql = DaoHelper.insertStatement(table, columnList);
-
             preparedStatement = connection.prepareStatement(sql);
 
             for (int index = 1; index < columnList.size(); index++) {
@@ -74,7 +76,7 @@ public class DaoHelper {
                         preparedStatement.setLong(index, longGetter.apply(item));
                         break;
                     case Reference:
-
+                        preparedStatement.setLong(index, references.get(column.getName()));
                         break;
                 }
 
@@ -82,10 +84,9 @@ public class DaoHelper {
 
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            long id = resultSet.getLong("id");
-            return id;
+            return resultSet.getLong("id");
         } catch (SQLException se){
-            throw new RuntimeException(se);
+            throw new RuntimeException("Wrapped SQL exception for " + sql, se);
         } finally {
             try {
                 if (resultSet != null) {
@@ -100,7 +101,7 @@ public class DaoHelper {
         }
     }
 
-    public static <T extends Identifiable> long doUpdate(T item, String table, List<Column> columnList, Connection connection){
+    public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<Column> columnList, T item, Map<String, Long> references){
         String sql = DaoHelper.updateStatement(table, columnList, item);
 
         PreparedStatement preparedStatement = null;
@@ -122,12 +123,14 @@ public class DaoHelper {
                         Long longValue = longGetter.apply(item);
                         preparedStatement.setLong(idx, longValue);
                         break;
+                    case Reference:
+                        preparedStatement.setLong(idx, references.get(column.getName()));
+                        break;
                 }
             }
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            long id = resultSet.getLong("id");
-            return id;
+            return resultSet.getLong("id");
         } catch (SQLException se) {
             throw new RuntimeException(se);
         } finally {
@@ -144,7 +147,8 @@ public class DaoHelper {
         }
     }
 
-    public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
+    public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier,
+                                 Map<String, Function> finders) throws SQLException {
         T item = supplier.get();
 
         for (Column column: columnList) {
@@ -158,12 +162,19 @@ public class DaoHelper {
                 case String:
                     setter.accept(item, resultSet.getString(name));
                     break;
+                case Reference:
+                    Function finder = finders.get(name);
+                    long id = resultSet.getLong(name);
+                    Object referent = finder.apply(id);
+                    setter.accept(item, referent);
+                    break;
             }
         }
         return item;
     }
 
-    public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids, Supplier<T> supplier){
+    public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids,
+                                   Supplier<T> supplier, Map<String,Function> finders){
 
         Statement statement = null;
         ResultSet resultSet = null;
@@ -190,7 +201,7 @@ public class DaoHelper {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = DaoHelper.populate(resultSet, columnList, supplier);
+                T item = DaoHelper.populate(resultSet, columnList, supplier, finders);
                 items.add(item);
             }
 
@@ -211,15 +222,15 @@ public class DaoHelper {
         }
     }
 
-    public static <T extends Identifiable> long save(T item, String table, List<Column> columnList, Connection connection) {
+    public static <T extends Identifiable> long save(Connection connection, String table, List<Column> columnList, T item, Map<String, Long> references) {
         if( item.getId() == null ){
-            return doInsert(item, table, columnList, connection);
+            return doInsert(connection, table, columnList, item, references);
         } else {
-            return doUpdate(item, table, columnList, connection);
+            return doUpdate(connection, table, columnList, item, references);
         }
     }
 
-    public static <T> T fromSingletonList(List<T> items, String errorMsg) {
+    static <T> T fromSingletonList(List<T> items, String errorMsg) {
         if (items.isEmpty()) {
             return null;
         }
