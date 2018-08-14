@@ -19,10 +19,8 @@ public class TestPersonDao {
             return DriverManager.getConnection(
                             "jdbc:postgresql://localhost:5432/legup","legupuser", "legupuserpass");
 
-        } catch (ClassNotFoundException cnfe){
-            throw new RuntimeException(cnfe);
-        } catch (SQLException se) {
-            throw new RuntimeException(se);
+        } catch (ClassNotFoundException | SQLException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -88,7 +86,7 @@ public class TestPersonDao {
     }
 
     @Test
-    public void testDoesUpdates() throws SQLException {
+    public void testDoesUpdates()  {
         Connection connection = connect();
         PersonDao dao = new PersonDao(connection);
 
