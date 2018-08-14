@@ -16,8 +16,6 @@ public class PersonDao {
 
     private static String table = "persons";
 
-    private static String sequence = "person_seq";
-
     private final Connection connection;
 
     public PersonDao(Connection connection){
