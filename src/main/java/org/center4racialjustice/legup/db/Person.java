@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.db;
 import lombok.Data;
 
 @Data
-public class Person {
+public class Person implements Identifiable {
     private Long id;
     private String prefix;
     private String firstName;

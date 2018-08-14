@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class PersonDao {
 
@@ -32,7 +31,6 @@ public class PersonDao {
         this.connection = connection;
     }
 
-
     public long save(Person person) throws SQLException {
         if( person.getId() == null ){
             return insert(person);
@@ -41,35 +39,9 @@ public class PersonDao {
         }
     }
 
-    private long insert(Person person) throws SQLException {
-
-        String sql = DaoHelper.insertStatement(table, columnList);
-
-        PreparedStatement statement = connection.prepareStatement(sql);
-
-        for(int index= 1; index<columnList.size(); index++){
-            Column column = columnList.get(index);
-            ColumnType columnType = column.getColumnType();
-            switch(columnType){
-                case String:
-                    Function<Person, String> stringGetter = column.getGetter();
-                    statement.setString(index, stringGetter.apply(person));
-                    break;
-                case Long:
-                    Function<Person, Long> longGetter = column.getGetter();
-                    statement.setLong(index, longGetter.apply(person));
-                    break;
-            }
-
-        }
-
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        long id = resultSet.getLong("id");
-        resultSet.close();
-        statement.close();
-        return id;
-     }
+    private long insert(Person person) {
+        return DaoHelper.doInsert(person, table, columnList, connection);
+    }
 
     private long update(Person person) throws SQLException {
         String sql = "update " + table + " set "
