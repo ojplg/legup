@@ -46,12 +46,26 @@ public class PersonDao {
         }
     }
 
-    private long insert(Person person) throws SQLException {
+
+
+    private String insertStatement(){
+        StringBuilder bldr = new StringBuilder();
+        for(int idx=0; idx<columnList.size()-2; idx++){
+            bldr.append("?, ");
+        }
+        bldr.append("? ");
 
         String sql = "insert into " + table + " ( " + columnsAsString() + " ) "
                 + " values ( DEFAULT, "
-                + "?, ?, ?, ?, ? ) "
+                + bldr.toString()
+                + " ) "
                 + " RETURNING ID ";
+        return sql;
+    }
+
+    private long insert(Person person) throws SQLException {
+
+        String sql = insertStatement();
 
         PreparedStatement statement = connection.prepareStatement(sql);
 
