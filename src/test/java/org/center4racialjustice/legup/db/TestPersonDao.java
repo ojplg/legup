@@ -121,8 +121,6 @@ public class TestPersonDao {
         Assert.assertEquals("Johnson", herbie.getMiddleName());
         Assert.assertEquals("McGee", herbie.getLastName());
 
-
-
     }
 
 }

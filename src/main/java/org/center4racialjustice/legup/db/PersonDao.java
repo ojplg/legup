@@ -1,13 +1,9 @@
 package org.center4racialjustice.legup.db;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class PersonDao {
 
@@ -30,7 +26,7 @@ public class PersonDao {
         this.connection = connection;
     }
 
-    public long save(Person person) throws SQLException {
+    public long save(Person person) {
         if( person.getId() == null ){
             return insert(person);
         } else {
@@ -42,88 +38,23 @@ public class PersonDao {
         return DaoHelper.doInsert(person, table, columnList, connection);
     }
 
-
-    private long update(Person person) throws SQLException {
+    private long update(Person person) {
         return DaoHelper.doUpdate(person, table, columnList, connection);
     }
 
-    public Person read(long id) throws SQLException {
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-
-            statement = connection.createStatement();
-
-            String sql = "select " + DaoHelper.columnsAsString(columnList) + " from " + table
-                    + " where id = " + id;
-
-            resultSet = statement.executeQuery(sql);
-
-            if (resultSet.next()) {
-                Person person = populate(resultSet);
-                return person;
-            } else {
-                return null;
-            }
-        } finally {
-            if( resultSet != null ){
-                resultSet.close();
-            }
-            if( statement != null){
-                statement.close();
-            }
+    public Person read(long id) {
+        List<Person> persons = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Person());
+        if (persons.isEmpty()){
+            return null;
         }
-
+        if( persons.size() == 1){
+            return persons.get(0);
+        }
+        throw new RuntimeException("Found " + persons.size() + " items with id " + id);
     }
 
-    private Person populate(ResultSet resultSet) throws SQLException {
-        Person person = new Person();
-
-        for (Column column: columnList) {
-            String name = column.getName();
-            ColumnType columnType = column.getColumnType();
-            BiConsumer setter = column.getSetter();
-            switch (columnType){
-                case Long:
-                    setter.accept(person, resultSet.getLong(name));
-                    break;
-                case String:
-                    setter.accept(person, resultSet.getString(name));
-                    break;
-            }
-        }
-
-        return person;
-    }
-
-    public List<Person> readAll() throws SQLException {
-
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-
-            statement = connection.createStatement();
-
-            resultSet = statement.executeQuery("select " + DaoHelper.columnsAsString(columnList) + " from " + table);
-
-            List<Person> personList = new ArrayList<>();
-
-            while (resultSet.next()) {
-                Person person = populate(resultSet);
-                personList.add(person);
-            }
-
-            return personList;
-        } finally {
-            if( resultSet != null ){
-                resultSet.close();
-            }
-            if( statement != null){
-                statement.close();
-            }
-        }
+    public List<Person> readAll() {
+        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), () -> new Person());
     }
 
 }

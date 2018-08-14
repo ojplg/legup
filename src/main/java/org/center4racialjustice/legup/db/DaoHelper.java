@@ -4,8 +4,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class DaoHelper {
@@ -133,6 +137,73 @@ public class DaoHelper {
                 }
             } catch (SQLException se){
                 // TODO: Log here.
+            }
+        }
+    }
+
+    public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
+        T item = supplier.get();
+
+        for (Column column: columnList) {
+            String name = column.getName();
+            ColumnType columnType = column.getColumnType();
+            BiConsumer setter = column.getSetter();
+            switch (columnType){
+                case Long:
+                    setter.accept(item, resultSet.getLong(name));
+                    break;
+                case String:
+                    setter.accept(item, resultSet.getString(name));
+                    break;
+            }
+        }
+        return item;
+    }
+
+    public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids, Supplier<T> supplier){
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            statement = connection.createStatement();
+
+            StringBuilder sql =  new StringBuilder("select ");
+            sql.append(DaoHelper.columnsAsString(columnList));
+            sql.append(" from ");
+            sql.append(table);
+            if( ids.size() == 1 ){
+                sql.append(" where id = ");
+                sql.append(ids.get(0));
+            } else if ( ids.size() > 1 ){
+                sql.append(" where id in (");
+                sql.append(String.join(", ", ids.stream().map(l -> l.toString()).collect(Collectors.toList())));
+                sql.append(" )");
+            }
+
+            resultSet = statement.executeQuery(sql.toString());
+
+            List<T> items = new ArrayList<>();
+
+            while (resultSet.next()) {
+                T item = DaoHelper.populate(resultSet, columnList, supplier);
+                items.add(item);
+            }
+
+            return items;
+        } catch (SQLException se){
+            throw new RuntimeException(se);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException se){
+                //TODO : Log here.
             }
         }
     }
