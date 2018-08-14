@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SimpleDao<T extends Identifiable> {
+public class SimpleDao<T extends Identifiable> implements Dao<T> {
 
     private final Supplier<T> supplier;
     private final String table;
@@ -26,14 +26,7 @@ public class SimpleDao<T extends Identifiable> {
 
     public T read(long id){
         List<T> found = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier);
-
-        if (found.isEmpty()){
-            return null;
-        }
-        if( found.size() == 1){
-            return found.get(0);
-        }
-        throw new RuntimeException("Found " + found.size() + " items with id " + id + " in table " + table);
+        return DaoHelper.fromSingletonList(found, "Table: " + table + ", ID: " + id);
     }
 
     public List<T> readAll(){

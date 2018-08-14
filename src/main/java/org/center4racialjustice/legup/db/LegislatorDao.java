@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.db;
 
 import java.sql.Connection;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class LegislatorDao {
@@ -18,16 +19,21 @@ public class LegislatorDao {
                     new Column<>("PERSON_ID", ColumnType.Reference, Legislator::getPerson, Legislator::setPerson)
             );
 
+    private final Dao<Person> personDao;
+    private final Connection connection;
 
     public LegislatorDao(Connection connection){
-
+        this.connection = connection;
+        personDao = new PersonDao(connection);
     }
 
     public long save(Legislator legislator){
-        return -1;
+        return DaoHelper.save(legislator, table, columnList, connection);
     }
 
     public Legislator read(long id){
-        return null;
+        List<Legislator> legislators =
+                DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Legislator());
+        return DaoHelper.fromSingletonList(legislators, "Table " + table + ", ID " + id);
     }
 }

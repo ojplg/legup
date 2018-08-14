@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
-public class PersonDao {
+public class PersonDao implements Dao<Person> {
 
     private static String table = "persons";
 
@@ -19,7 +19,7 @@ public class PersonDao {
                     );
 
 
-    private final SimpleDao<Person> dao;
+    private final Dao<Person> dao;
 
     public PersonDao(Connection connection){
         this.dao = new SimpleDao<>(connection, () -> new Person(), table, columnList);

@@ -74,7 +74,7 @@ public class DaoHelper {
                         preparedStatement.setLong(index, longGetter.apply(item));
                         break;
                     case Reference:
-                        
+
                         break;
                 }
 
@@ -218,5 +218,16 @@ public class DaoHelper {
             return doUpdate(item, table, columnList, connection);
         }
     }
+
+    public static <T> T fromSingletonList(List<T> items, String errorMsg) {
+        if (items.isEmpty()) {
+            return null;
+        }
+        if (items.size() == 1) {
+            return items.get(0);
+        }
+        throw new RuntimeException("Found " + items.size() + " items. Message: " + errorMsg);
+    }
+
 
 }
