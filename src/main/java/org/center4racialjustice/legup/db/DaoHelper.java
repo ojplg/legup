@@ -30,6 +30,24 @@ public class DaoHelper {
         return sql;
     }
 
+    public static <T extends Identifiable> String updateStatement(String table, List<Column> columnList, T item){
+        StringBuilder sql = new StringBuilder("update ");
+        sql.append(table);
+        sql.append(" set ");
+        for(int idx=1; idx<columnList.size(); idx++){
+            Column column = columnList.get(idx);
+            sql.append(column.getName());
+            sql.append(" = ? ");
+            if (idx < columnList.size() - 1){
+                sql.append(", ");
+            }
+        }
+        sql.append(" where id = ");
+        sql.append(item.getId());
+        sql.append(" RETURNING ID");
+        return sql.toString();
+    }
+
     public static <T extends Identifiable> Long doInsert(T item, String table, List<Column> columnList, Connection connection){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -73,6 +91,50 @@ public class DaoHelper {
                 // TODO: Log here.
             }
         }
-
     }
+
+    public static <T extends Identifiable> long doUpdate(T item, String table, List<Column> columnList, Connection connection){
+        String sql = DaoHelper.updateStatement(table, columnList, item);
+
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            for(int idx=1; idx<columnList.size(); idx++){
+                Column column = columnList.get(idx);
+                ColumnType columnType = column.getColumnType();
+                switch (columnType){
+                    case String:
+                        Function<T, String> stringGetter = column.getGetter();
+                        String stringValue = stringGetter.apply(item);
+                        preparedStatement.setString(idx, stringValue);
+                        break;
+                    case Long:
+                        Function<T, Long> longGetter = column.getGetter();
+                        Long longValue = longGetter.apply(item);
+                        preparedStatement.setLong(idx, longValue);
+                        break;
+                }
+            }
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            long id = resultSet.getLong("id");
+            return id;
+        } catch (SQLException se) {
+            throw new RuntimeException(se);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException se){
+                // TODO: Log here.
+            }
+        }
+    }
+
 }

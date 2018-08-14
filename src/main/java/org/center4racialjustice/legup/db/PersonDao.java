@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.db;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,29 +42,9 @@ public class PersonDao {
         return DaoHelper.doInsert(person, table, columnList, connection);
     }
 
+
     private long update(Person person) throws SQLException {
-        String sql = "update " + table + " set "
-                + " prefix = ?, "
-                + " first_name = ?, "
-                + " middle_name = ?, "
-                + " last_name = ?, "
-                + " suffix = ? "
-                + " where id = " + person.getId()
-                + " RETURNING ID";
-
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, person.getPrefix());
-        statement.setString(2, person.getFirstName());
-        statement.setString(3, person.getMiddleName());
-        statement.setString(4, person.getLastName());
-        statement.setString(5, person.getSuffix());
-
-        ResultSet resultSet = statement.executeQuery();
-        resultSet.next();
-        long id = resultSet.getLong("id");
-        resultSet.close();
-        statement.close();
-        return id;
+        return DaoHelper.doUpdate(person, table, columnList, connection);
     }
 
     public Person read(long id) throws SQLException {
