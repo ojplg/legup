@@ -28,19 +28,21 @@ public class PersonDao {
         return String.join(", ", columns);
     }
 
-    public void save(Person person) throws SQLException {
+    public long save(Person person) throws SQLException {
         if( person.getId() == null ){
-            insert(person);
+            return insert(person);
         } else {
-            update(person);
+            return update(person);
         }
     }
 
-    private void insert(Person person) throws SQLException {
+    private long insert(Person person) throws SQLException {
 
         String sql = "insert into " + table + " ( " + columnsAsString() + " ) "
                 + " values ( DEFAULT, "
-                + "?, ?, ?, ?, ? )";
+                + "?, ?, ?, ?, ? ) "
+                + " RETURNING ID ";
+
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, person.getPrefix());
         statement.setString(2, person.getFirstName());
@@ -48,18 +50,23 @@ public class PersonDao {
         statement.setString(4, person.getLastName());
         statement.setString(5, person.getSuffix());
 
-        statement.execute();
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+        long id = resultSet.getLong("id");
+        resultSet.close();
         statement.close();
+        return id;
      }
 
-    private void update(Person person) throws SQLException {
+    private long update(Person person) throws SQLException {
         String sql = "update " + table + " set "
-                + " prefix = ? "
-                + " first_name = ? "
-                + " middle_name = ? "
-                + " last_name = ? "
+                + " prefix = ?, "
+                + " first_name = ?, "
+                + " middle_name = ?, "
+                + " last_name = ?, "
                 + " suffix = ? "
-                + " where id = " + person.getId();
+                + " where id = " + person.getId()
+                + " RETURNING ID";
 
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, person.getPrefix());
@@ -68,12 +75,15 @@ public class PersonDao {
         statement.setString(4, person.getLastName());
         statement.setString(5, person.getSuffix());
 
-        statement.execute();
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+        long id = resultSet.getLong("id");
+        resultSet.close();
         statement.close();
-
+        return id;
     }
 
-    private Person read(long id) throws SQLException {
+    public Person read(long id) throws SQLException {
         Statement statement = null;
         ResultSet resultSet = null;
 
