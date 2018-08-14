@@ -4,7 +4,7 @@ begin;
 create sequence person_seq start 1;
 
 create table persons (
-    id integer PRIMARY KEY,
+    id integer PRIMARY KEY DEFAULT nextval('person_seq'),
     prefix text,
     first_name text,
     middle_name text,
