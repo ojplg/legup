@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.illinois.MemberHtmlParser;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.util.List;
 
 public class AppHandler extends AbstractHandler {
 
@@ -27,6 +30,9 @@ public class AppHandler extends AbstractHandler {
             case "/locate_members_form" :
                 renderChooserPage(request, httpServletResponse);
                 break;
+            case "/load_members" :
+                doLoadMembers(request, httpServletResponse);
+                break;
         }
 
     }
@@ -38,6 +44,21 @@ public class AppHandler extends AbstractHandler {
 
         VelocityContext vc = new VelocityContext();
         renderVelocityTemplate("/templates/locate_members_form.vtl", vc, response.getWriter());
+        request.setHandled(true);
+    }
+
+    private void doLoadMembers(Request request, HttpServletResponse response)
+    throws IOException {
+        System.out.println("Doing members load");
+        String memberUrl = request.getParameter("url");
+
+        MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
+        List<Legislator> legislators = parser.getNames();
+
+        VelocityContext vc = new VelocityContext();
+        vc.put("legislators", legislators);
+
+        renderVelocityTemplate("/templates/member_table.vtl", vc, response.getWriter());
         request.setHandled(true);
     }
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LegUp</title>
+</head>
+<body>
+
+    <h3>Member Review Table</h3>
+
+    <table>
+
+    #foreach( $legislator in $legislators )
+        <tr>
+            <td>$legislator.Name.FirstName</td>
+            <td>$legislator.Name.LastName</td>
+            <td>$legislator.Party</td>
+            <td>$legislator.District</td>
+        </tr>
+    #end
+
+    </table>
+
+</body>
+</html>
