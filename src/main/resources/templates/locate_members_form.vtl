@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LegUp</title>
+</head>
+<body>
+
+    <form action="/app/load-members" method="post">
+        <h3>Member Load Form</h3>
+
+        <p>Use this form to upload members.</p>
+
+        <label>Session Number</label>
+        <input type="text" name="session_number" value="100"/>
+
+        <label>Assembly</label>
+        <input type="text" name="assembly" value="House"/>
+
+        <label>URL of listing</label>
+        <input type="text" name="url" value="http://www.ilga.gov/house/default.asp"/>
+
+        <br/>
+
+        <input type="submit" value="Load Members"/>
+    </form>
+
+</body>
+</html>

@@ -15,7 +15,7 @@ public class ServerStarter {
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setWelcomeFiles(new String[]{ "html/index.html"});
+        resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
         resourceHandler.setResourceBase("target/classes");
 
         ContextHandler appHandler = new ContextHandler();
@@ -23,11 +23,10 @@ public class ServerStarter {
         appHandler.setHandler(new AppHandler());
 
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { appHandler, resourceHandler });
+        handlers.setHandlers(new Handler[]{appHandler, resourceHandler});
 
         server.setHandler(handlers);
 
         server.start();
     }
-
 }
