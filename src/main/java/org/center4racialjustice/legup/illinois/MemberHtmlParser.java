@@ -21,7 +21,7 @@ public class MemberHtmlParser {
 
     public static MemberHtmlParser load(String url) {
         try {
-            Document doc = Jsoup.connect("http://www.ilga.gov/house/default.asp").get();
+            Document doc = Jsoup.connect(url).get();
             return new MemberHtmlParser(doc);
         } catch (IOException ex){
             throw new RuntimeException(ex);
