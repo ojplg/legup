@@ -5,12 +5,38 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
+
+    public static String readFileFromUrl(String url)
+    throws IOException {
+        PDDocument doc = new PDDocument();
+        doc.close();
+
+        URL url_ = new URL(url);
+
+        HttpURLConnection connection = (HttpURLConnection) url_.openConnection();
+        connection.connect();
+
+        InputStream inputStream = connection.getInputStream();
+
+        try {
+            doc = PDDocument.load(inputStream);
+            PDFTextStripper stripper = new PDFTextStripper();
+            String text =  stripper.getText(doc);
+            System.out.println("Got the text");
+            return text;
+        } finally {
+            doc.close();
+            inputStream.close();
+        }
+    }
 
     public static String readFileToString(String filename){
         try {
@@ -97,6 +123,10 @@ public class Parser {
 
     public static BillVotes parseFile(String filename) {
         String content = readFileToString(filename);
+        return parseFileContents(content);
+    }
+
+    public static BillVotes parseFileContents(String content){
         String[] lines = content.split("\n");
         BillVotes bv = new BillVotes();
         bv.content = content;
@@ -143,4 +173,6 @@ public class Parser {
 
         return bv;
     }
+
+
 }

@@ -3,7 +3,9 @@ package org.center4racialjustice.legup.web;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.illinois.BillVotes;
 import org.center4racialjustice.legup.illinois.MemberHtmlParser;
+import org.center4racialjustice.legup.illinois.Parser;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -28,22 +30,54 @@ public class AppHandler extends AbstractHandler {
 
         switch(appPath){
             case "/locate_members_form" :
-                renderChooserPage(request, httpServletResponse);
+                renderLocateMembersPage(request, httpServletResponse);
                 break;
             case "/load_members" :
                 doLoadMembers(request, httpServletResponse);
+                break;
+            case "/load_bill_form" :
+                renderLoadBillFormPage(request, httpServletResponse);
+                break;
+            case "/load_bill" :
+                doLoadBill(request, httpServletResponse);
                 break;
         }
 
     }
 
-    private void renderChooserPage(Request request, HttpServletResponse response)
+    private void renderLoadBillFormPage(Request request, HttpServletResponse response)
+            throws IOException {
+
+        System.out.println("Doing load bill form page");
+
+        VelocityContext vc = new VelocityContext();
+        renderVelocityTemplate("/templates/load_bill_form.vtl", vc, response.getWriter());
+        request.setHandled(true);
+    }
+
+
+    private void renderLocateMembersPage(Request request, HttpServletResponse response)
             throws IOException {
 
         System.out.println("Doing chooser form");
 
         VelocityContext vc = new VelocityContext();
         renderVelocityTemplate("/templates/locate_members_form.vtl", vc, response.getWriter());
+        request.setHandled(true);
+    }
+
+    private void doLoadBill(Request request, HttpServletResponse response) throws IOException {
+        String billUrl = request.getParameter("url");
+        String contents = Parser.readFileFromUrl(billUrl);
+        BillVotes votes = Parser.parseFileContents(contents);
+
+        VelocityContext vc = new VelocityContext();
+        vc.put("yeas", votes.getYeas());
+        vc.put("nays", votes.getNays());
+        vc.put("presents", votes.getPresents());
+        vc.put("notVotings", votes.getNotVotings());
+
+        renderVelocityTemplate("/templates/bill_votes_page.vtl", vc, response.getWriter());
         request.setHandled(true);
     }
 

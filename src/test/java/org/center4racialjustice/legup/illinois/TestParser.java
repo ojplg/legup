@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.junit.Test;
 import org.junit.Assert;
 
+import java.io.IOException;
 import java.util.List;
 
 public class TestParser {
@@ -169,5 +170,16 @@ public class TestParser {
     public void houseBillCanBeParsed(){
         BillVotes bv = Parser.parseFile(bill3179FileName);
         bv.checkVoteCounts();
+    }
+
+    @Test
+    public void readOverHttp() throws IOException  {
+        String url = "http://www.ilga.gov/legislation/votehistory/100/senate/10000SB0001_05172017_009000T.pdf";
+
+        String contents = Parser.readFileFromUrl(url);
+
+        System.out.println("contents  ");
+        System.out.println(contents);
+
     }
 }

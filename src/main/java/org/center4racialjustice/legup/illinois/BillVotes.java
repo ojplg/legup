@@ -35,6 +35,22 @@ public class BillVotes {
         }
     }
 
+    public List<Name> getNays(){
+        return nays;
+    }
+
+    public List<Name> getYeas(){
+        return yeas;
+
+    }
+    public List<Name> getPresents(){
+        return presents;
+    }
+
+    public List<Name> getNotVotings(){
+        return notVotings;
+    }
+
     public void checkVoteCounts(){
         if (nays.size() != expectedNays){
             throw new RuntimeException("Bad Nays count. Expected " + expectedNays + " calculated " + nays.size());
