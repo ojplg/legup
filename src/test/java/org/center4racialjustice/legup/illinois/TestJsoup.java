@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Legislator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class TestJsoup {
 
         MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
 
-        List<Name> names = parser.getNames();
+        List<Legislator> names = parser.getNames();
 
         System.out.println(names);
 

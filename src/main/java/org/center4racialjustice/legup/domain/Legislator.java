@@ -1,29 +1,13 @@
 package org.center4racialjustice.legup.domain;
 
-import java.util.Objects;
+import lombok.Data;
+import org.center4racialjustice.legup.illinois.Name;
 
+@Data
 public class Legislator {
-
-    private final String name;
+    private final Name name;
+    private final String party;
     private final Assembly assembly;
-
-    public Legislator(String name, Assembly assembly) {
-        this.name = name;
-        this.assembly = assembly;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Legislator that = (Legislator) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(assembly, that.assembly);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(name, assembly);
-    }
+    private final int district;
+    private final int session;
 }

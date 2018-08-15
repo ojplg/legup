@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Legislator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,13 +29,13 @@ public class MemberHtmlParser {
 
     }
 
-    public List<Name> getNames(){
+    public List<Legislator> getNames(){
         Elements tables = document.select("table");
         Element table = tables.get(4);
 
         Elements rows = table.select("tr");
 
-        List<Name> names = new ArrayList<>();
+        List<Legislator> members = new ArrayList<>();
 
         for(Element row : rows){
             //System.out.println(" ** ROW ** ");
@@ -45,12 +47,21 @@ public class MemberHtmlParser {
                 if( href.contains("MemberID=")){
                     String nameString = anchor.text();
                     Name name = Name.fromRegularOrderString(nameString);
-                    names.add(name);
+                    Element disctrictCell = cells.get(3);
+                    Element partyCell = cells.get(4);
+                    String districtString = disctrictCell.text();
+                    int district = Integer.parseInt(districtString);
+                    String partyCode = partyCell.text();
+
+                    Legislator leg = new Legislator(
+                            name, partyCode, Assembly.House, district, 100
+                    );
+                    members.add(leg);
                 }
 
             }
         }
-        return names;
+        return members;
     }
 
 }
