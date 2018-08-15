@@ -14,7 +14,7 @@ public final class Name {
     public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
     public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\., ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
-    public static String firstAndLastRegularOrder = "([A-Z][A-Za-z\\-']+) ([A-Z][A-Za-z\\-']+)";
+    public static String firstAndLastRegularOrder = "([A-Z][A-Za-z\\-']+) ([A-Z][A-Za-zñ\\-']+)";
     public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
     public static String firstAndLastRegularOrderWithSuffix = firstAndLastRegularOrder + ", ([A-Z][A-Za-z]+)\\.?";
     public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z]).? ([A-Z][A-Za-z']+)";
@@ -46,6 +46,8 @@ public final class Name {
         specialOverides.put("C.D. Davidsmeyer", new Name("C.D.","","Davidsmeyer", null, null));
         specialOverides.put("La Shawn K. Ford", new Name ("La Shawn", "K", "Ford", null,null));
         specialOverides.put("Andr� Thapedi", new Name("André","", "Thapedi", null, null));
+        specialOverides.put("Wm. Sam McCann", new Name("Wm.", "Sam", "McCann",null,null));
+        specialOverides.put("Antonio Mu�oz", new Name("Antonio",null,"Muñoz",null,null));
     }
 
     public static Name fromRegularOrderString(String input){

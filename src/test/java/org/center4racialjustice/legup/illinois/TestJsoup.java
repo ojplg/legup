@@ -11,7 +11,7 @@ public class TestJsoup {
     @Test
     public void testParsingHouseMembers() {
 
-        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
+        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/senate/default.asp");
 
         List<Legislator> names = parser.getNames();
 
