@@ -1,28 +1,22 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.util.List;
 
 public class TestJsoup {
 
     @Test
-    public void testParsingHouseMembers() throws IOException {
-        Document doc = Jsoup.connect("http://www.ilga.gov/house/default.asp").get();
+    public void testParsingHouseMembers() {
 
-        Elements tables = doc.select("table");
-        Element table = tables.get(4);
+        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
 
-        Elements rows = table.select("tr");
+        List<String> names = parser.getNames();
 
-        for(Element row : rows){
-            System.out.println(" ** ROW ** ");
-            System.out.println(row);
-        }
+        System.out.println(names);
+
+        Assert.assertNotNull(names);
 
     }
 
