@@ -1,5 +1,8 @@
 package org.center4racialjustice.legup.illinois;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +17,7 @@ public final class Name {
     public static String firstAndLastRegularOrder = "([A-Z][A-Za-z\\-']+) ([A-Z][A-Za-z\\-']+)";
     public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
     public static String firstAndLastRegularOrderWithSuffix = firstAndLastRegularOrder + ", ([A-Z][A-Za-z]+)\\.?";
-    public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z]). ([A-Z][A-Za-z']+)";
+    public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z]).? ([A-Z][A-Za-z']+)";
     public static String fullNameRegularOrderWithSuffix = fullNameRegularOrder + ", ([A-Z][A-Za-zñ]+).";
 
     public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
@@ -31,6 +34,7 @@ public final class Name {
     public static Pattern firstAndLastRegularOrderPattern = Pattern.compile(firstAndLastRegularOrder);
     public static Pattern firstAndLastRegularOrderWithSuffixPattern = Pattern.compile(firstAndLastRegularOrderWithSuffix);
 
+    private static Map<String, Name> specialOverides = new HashMap<>();
 
     private final String firstName;
     private final String firstInitial;
@@ -38,9 +42,19 @@ public final class Name {
     private final String middleInitial;
     private final String suffix;
 
+    static {
+        specialOverides.put("C.D. Davidsmeyer", new Name("C.D.","","Davidsmeyer", null, null));
+        specialOverides.put("La Shawn K. Ford", new Name ("La Shawn", "K", "Ford", null,null));
+        specialOverides.put("Andr� Thapedi", new Name("André","", "Thapedi", null, null));
+    }
+
     public static Name fromRegularOrderString(String input){
 
         String trimmedInput = input.trim();
+
+        if (specialOverides.containsKey(trimmedInput)){
+            return specialOverides.get(trimmedInput);
+        }
 
         Matcher firstAndLastNameMatcher = firstAndLastRegularOrderPattern.matcher(trimmedInput);
         if( firstAndLastNameMatcher.matches()){
