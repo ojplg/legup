@@ -128,7 +128,7 @@ public class TestParser {
     public void parseVoteRecordLine() {
         Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
         VoteRecord expected1 = new VoteRecord(alfred, Vote.Yea);
-        Name james = Name.fromAnyString("Clayborne Jr., James F");
+        Name james = Name.fromLastNameFirstString("Clayborne Jr., James F");
         VoteRecord expected2 = new VoteRecord(james, Vote.NotVoting);
         String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
         List<VoteRecord> records = Parser.parseVoteRecordLine(input);
@@ -151,10 +151,10 @@ public class TestParser {
     @Test
     public void parseVoteRecordLineWithGoofballLastName(){
         String input = "Y  Clayborne       Y  Landek     P  Oberweis     Y  Van Pelt";
-        Name clayborne = Name.fromAnyString("Clayborne");
-        Name landek = Name.fromAnyString("Landek");
-        Name oberweis = Name.fromAnyString("Oberweis");
-        Name vanpelt = Name.fromAnyString("Van Pelt");
+        Name clayborne = Name.fromLastNameFirstString("Clayborne");
+        Name landek = Name.fromLastNameFirstString("Landek");
+        Name oberweis = Name.fromLastNameFirstString("Oberweis");
+        Name vanpelt = Name.fromLastNameFirstString("Van Pelt");
         VoteRecord[] expectedRecords = new VoteRecord[] {
                 new VoteRecord(clayborne, Vote.Yea),
                 new VoteRecord(landek, Vote.Yea),

@@ -12,7 +12,7 @@ public class TestJsoup {
 
         MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
 
-        List<String> names = parser.getNames();
+        List<Name> names = parser.getNames();
 
         System.out.println(names);
 

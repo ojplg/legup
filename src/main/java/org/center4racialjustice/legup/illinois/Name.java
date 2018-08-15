@@ -11,12 +11,26 @@ public final class Name {
     public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
     public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\., ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
+    public static String firstAndLastRegularOrder = "([A-Z][A-Za-z\\-']+) ([A-Z][A-Za-z\\-']+)";
+    public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
+    public static String firstAndLastRegularOrderWithSuffix = firstAndLastRegularOrder + ", ([A-Z][A-Za-z]+)\\.?";
+    public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z]). ([A-Z][A-Za-z']+)";
+    public static String fullNameRegularOrderWithSuffix = fullNameRegularOrder + ", ([A-Z][A-Za-zñ]+).";
+
     public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
 
     public static Pattern simpleLastNamePattern = Pattern.compile(simpleLastNameRegex);
     public static Pattern firstInitialPattern = Pattern.compile(firstInitialRegex);
     public static Pattern fullNamePattern = Pattern.compile(fullNameRegex);
     public static Pattern fullNameWithSuffixPattern = Pattern.compile(fullNameWithSuffixRegex);
+    public static Pattern threePartNameRegularOrderPattern = Pattern.compile(threePartNameRegularOrder);
+
+    public static Pattern fullNameRegularOrderPattern = Pattern.compile(fullNameRegularOrder);
+    public static Pattern fullNameRegularOrderWithSuffixPattern = Pattern.compile(fullNameRegularOrderWithSuffix);
+
+    public static Pattern firstAndLastRegularOrderPattern = Pattern.compile(firstAndLastRegularOrder);
+    public static Pattern firstAndLastRegularOrderWithSuffixPattern = Pattern.compile(firstAndLastRegularOrderWithSuffix);
+
 
     private final String firstName;
     private final String firstInitial;
@@ -24,7 +38,54 @@ public final class Name {
     private final String middleInitial;
     private final String suffix;
 
-    public static Name fromAnyString(String input){
+    public static Name fromRegularOrderString(String input){
+
+        String trimmedInput = input.trim();
+
+        Matcher firstAndLastNameMatcher = firstAndLastRegularOrderPattern.matcher(trimmedInput);
+        if( firstAndLastNameMatcher.matches()){
+            String firstName = firstAndLastNameMatcher.group(1);
+            String lastName = firstAndLastNameMatcher.group(2);
+            return new Name(firstName, null, lastName, null, null);
+        }
+
+        Matcher firstAndLastNameWithSuffixMatcher = firstAndLastRegularOrderWithSuffixPattern.matcher(trimmedInput);
+        if( firstAndLastNameWithSuffixMatcher.matches()){
+            String firstName = firstAndLastNameWithSuffixMatcher.group(1);
+            String lastName = firstAndLastNameWithSuffixMatcher.group(2);
+            String suffix = firstAndLastNameWithSuffixMatcher.group(3);
+            return new Name(firstName, null, lastName, null, suffix);
+        }
+
+        Matcher fullNameRegularOrderMatcher = fullNameRegularOrderPattern.matcher(trimmedInput);
+        if( fullNameRegularOrderMatcher.matches() ){
+            String firstName = fullNameRegularOrderMatcher.group(1);
+            String middleInitial = fullNameRegularOrderMatcher.group(2);
+            String lastName = fullNameRegularOrderMatcher.group(3);
+            return new Name(firstName, middleInitial, lastName, null, null);
+        }
+
+        Matcher fullNameRegularOrderWithSuffixMatcher = fullNameRegularOrderWithSuffixPattern.matcher(trimmedInput);
+        if( fullNameRegularOrderWithSuffixMatcher.matches() ){
+            String firstName = fullNameRegularOrderWithSuffixMatcher.group(1);
+            String middleInitial = fullNameRegularOrderWithSuffixMatcher.group(2);
+            String lastName = fullNameRegularOrderWithSuffixMatcher.group(3);
+            String suffix = fullNameRegularOrderWithSuffixMatcher.group(4);
+            return new Name(firstName, middleInitial, lastName, null, suffix);
+        }
+
+        Matcher threePartNameRegularOrderMatcher = threePartNameRegularOrderPattern.matcher(trimmedInput);
+        if( threePartNameRegularOrderMatcher.matches() ){
+            String firstName = threePartNameRegularOrderMatcher.group(1);
+            String middleInitial = threePartNameRegularOrderMatcher.group(2);
+            String lastName = threePartNameRegularOrderMatcher.group(3);
+            return new Name(firstName, middleInitial, lastName, null, null);
+        }
+
+        throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
+    }
+
+    public static Name fromLastNameFirstString(String input){
         String trimmedInput = input.trim();
         if( trimmedInput.equals(president)){
             return new Name(null, null, president, null, null);
@@ -46,7 +107,6 @@ public final class Name {
             String middleInitial = fullNameMatcher.group(3);
             return new Name(firstName, middleInitial, lastName, null, null);
         }
-
         Matcher fullNameWithSuffixMatcher = fullNameWithSuffixPattern.matcher(trimmedInput);
         if( fullNameWithSuffixMatcher.matches() ){
             String lastName = fullNameWithSuffixMatcher.group(1);
@@ -55,13 +115,12 @@ public final class Name {
             String middleInitial = fullNameWithSuffixMatcher.group(4);
             return new Name(firstName, middleInitial, lastName, null, suffix);
         }
-
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
     }
 
     public static boolean isName(String input){
         try {
-            fromAnyString(input);
+            fromLastNameFirstString(input);
             return true;
         } catch (RuntimeException re){
             if (re.getMessage().startsWith("Could not figure out this name")){

@@ -7,7 +7,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MemberHtmlParser {
@@ -28,27 +27,13 @@ public class MemberHtmlParser {
 
     }
 
-    private boolean isMemberRow(Element row){
-        Elements cells = row.select("td");
-        Element firstCell = cells.first();
-        Element anchor = firstCell.select("a").first();
-        if (anchor != null){
-            String href = anchor.attr("href");
-            if( href.contains("MemberID=")){
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public List<String> getNames(){
+    public List<Name> getNames(){
         Elements tables = document.select("table");
         Element table = tables.get(4);
 
         Elements rows = table.select("tr");
 
-        List<String> names = new ArrayList<>();
+        List<Name> names = new ArrayList<>();
 
         for(Element row : rows){
             //System.out.println(" ** ROW ** ");
@@ -58,7 +43,9 @@ public class MemberHtmlParser {
             if ( anchor != null ){
                 String href = anchor.attr("href");
                 if( href.contains("MemberID=")){
-                    names.add(anchor.text());
+                    String nameString = anchor.text();
+                    Name name = Name.fromRegularOrderString(nameString);
+                    names.add(name);
                 }
 
             }

@@ -80,14 +80,14 @@ public class Parser {
             String end = remainder.substring(firstSpace);
             int divider = findNextPossibleRecordIndex(end);
             if( divider == -1 ){
-                Name name = Name.fromAnyString(end);
+                Name name = Name.fromLastNameFirstString(end);
                 VoteRecord record = new VoteRecord(name, vote);
                 remainder = "";
                 records.add(record);
             } else {
                 String nameString = end.substring(0, divider);
                 remainder = end.substring(divider);
-                Name name = Name.fromAnyString(nameString);
+                Name name = Name.fromLastNameFirstString(nameString);
                 VoteRecord record = new VoteRecord(name, vote);
                 records.add(record);
             }
