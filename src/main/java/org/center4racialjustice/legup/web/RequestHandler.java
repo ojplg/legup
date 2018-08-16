@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -12,6 +14,8 @@ import java.sql.SQLException;
 
 public class RequestHandler {
 
+    private static final Logger log = LogManager.getLogger(RequestHandler.class);
+
     private final Handler handler;
 
     public RequestHandler(Handler handler){
@@ -21,7 +25,7 @@ public class RequestHandler {
     public void processRequest(Request request, HttpServletResponse httpServletResponse)
     throws IOException {
         try {
-            System.out.println("Processing request with " + handler.getClass().getName());
+            log.info("Processing request with " + handler.getClass().getName());
             String templatePath = "/templates/" + handler.getTemplate();
             Writer writer = httpServletResponse.getWriter();
             VelocityContext velocityContext = handler.handle(request, httpServletResponse);

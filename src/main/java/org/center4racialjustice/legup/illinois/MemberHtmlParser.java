@@ -38,7 +38,6 @@ public class MemberHtmlParser {
         List<Legislator> members = new ArrayList<>();
 
         for(Element row : rows){
-            //System.out.println(" ** ROW ** ");
             Elements cells = row.select("td");
             Element firstCell = cells.first();
             Element anchor = firstCell.selectFirst("a");

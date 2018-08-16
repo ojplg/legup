@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
 import org.center4racialjustice.legup.web.handlers.LoadMembers;
@@ -18,6 +20,8 @@ import java.util.Map;
 
 public class AppHandler extends AbstractHandler {
 
+    private static final Logger log = LogManager.getLogger(AppHandler.class);
+
     private final Map<String, RequestHandler> handlers = new HashMap<>();
 
     AppHandler(ConnectionPool connectionPool){
@@ -35,13 +39,13 @@ public class AppHandler extends AbstractHandler {
 
         String appPath = request.getPathInfo();
 
-        System.out.println("HANDLING !!" + appPath);
+        log.info("Handling request to" + appPath);
 
         if( handlers.containsKey(appPath) ){
             RequestHandler requestHandler = handlers.get(appPath);
             requestHandler.processRequest(request, httpServletResponse);
         } else {
-            System.out.println("UNKNOWN APPLICATION PATH " + appPath);
+            log.warn("UNKNOWN APPLICATION PATH " + appPath);
         }
 
     }
