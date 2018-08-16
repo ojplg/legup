@@ -27,7 +27,7 @@ public class SaveMembers implements Handler {
         String memberUrl = request.getParameter("url");
 
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
-        List<Legislator> legislators = parser.getNames();
+        List<Legislator> legislators = parser.getLegislators();
 
         Connection connection = connectionPool.getConnection();
         LegislatorDao dao = new LegislatorDao(connection);

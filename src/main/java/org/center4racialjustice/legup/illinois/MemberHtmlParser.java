@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MemberHtmlParser {
 
@@ -22,6 +24,12 @@ public class MemberHtmlParser {
     private MemberHtmlParser(Document document){
         this.document = document;
     }
+
+    private String assemblyRegex = "Current (House|Senate) Members";
+    private Pattern assemblyPattern = Pattern.compile(assemblyRegex);
+
+    private String sessionRegex = "(\\d+)\\w\\w General Assembly";
+    private Pattern sessionPattern = Pattern.compile(sessionRegex);
 
     public static MemberHtmlParser load(String url) {
         try {
@@ -33,13 +41,43 @@ public class MemberHtmlParser {
 
     }
 
-    public List<Legislator> getNames(){
+    public Assembly getAssembly(){
+        Elements spans = document.select("span");
+        for(Element span : spans){
+            String content = span.text();
+            Matcher matcher = assemblyPattern.matcher(content);
+            if ( matcher.matches() ){
+                String assemblyString = matcher.group(1);
+                return Assembly.fromString(assemblyString);
+            }
+        }
+        return null;
+    }
+
+    public Long getSessionNumber(){
+        Elements spans = document.select("span");
+        for(Element span : spans){
+            String content = span.text();
+            Matcher matcher = sessionPattern.matcher(content);
+            if ( matcher.matches() ){
+                String sessionString = matcher.group(1);
+                return Long.parseLong(sessionString);
+            }
+        }
+        return null;
+    }
+
+    public List<Legislator> getLegislators(){
+        Assembly assembly = getAssembly();
+        Long sessionNumber = getSessionNumber();
+
         Elements tables = document.select("table");
         Element table = tables.get(4);
 
         Elements rows = table.select("tr");
 
         List<Legislator> members = new ArrayList<>();
+
 
         for(Element row : rows){
             Elements cells = row.select("td");
@@ -55,18 +93,15 @@ public class MemberHtmlParser {
                     String districtString = disctrictCell.text();
                     int district = Integer.parseInt(districtString);
                     String partyCode = partyCell.text();
-
-                    // FIXME: Session number and assembly are hard-coded
-
                     Legislator leg = new Legislator();
                     leg.setFirstName(name.getFirstName());
                     leg.setMiddleInitialOrName(name.getMiddleInitial());
                     leg.setLastName(name.getLastName());
                     leg.setSuffix(name.getSuffix());
-                    leg.setAssembly(Assembly.House);
+                    leg.setAssembly(assembly);
                     leg.setDistrict(district);
                     leg.setParty(partyCode);
-                    leg.setSessionNumber(100);
+                    leg.setSessionNumber(sessionNumber);
 
                     members.add(leg);
                 }

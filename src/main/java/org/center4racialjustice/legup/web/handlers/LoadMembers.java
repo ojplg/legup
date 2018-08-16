@@ -15,7 +15,7 @@ public class LoadMembers implements Handler {
         String memberUrl = request.getParameter("url");
 
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
-        List<Legislator> legislators = parser.getNames();
+        List<Legislator> legislators = parser.getLegislators();
 
         VelocityContext vc = new VelocityContext();
         vc.put("legislators", legislators);
