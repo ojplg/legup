@@ -13,7 +13,6 @@ not work. Etc.
 Tech debt
 
 * Put in logging
-* Remove duplicate domain objects
 * Decide on how to implement joins in DAO framework
 * Inject connection logic/access to DAOs to web tier
 * Structure for web tier: some kind of simple handler interfacess
