@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.illinois.BillVotes;
+import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
@@ -42,6 +43,14 @@ public class CollateBillVotes implements Handler {
 
         velocityContext.put("legislator_count" , legislators.size());
         velocityContext.put("vote_count", billVotes.totalVotes());
+
+        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
+        collator.collate();
+
+        velocityContext.put("collated_yeas", collator.getYeas());
+        velocityContext.put("collated_nays", collator.getNays());
+        velocityContext.put("collated_not_votings", collator.getNotVotings());
+        velocityContext.put("collated_presents", collator.getPresents());
 
         return velocityContext;
 

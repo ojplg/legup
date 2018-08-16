@@ -5,3 +5,27 @@ Legislators found: $legislator_count
 <br/>
 
 Votes found: $vote_count
+
+<br/>
+
+<h5>Yays</h5>
+
+<table>
+
+    <tr>
+        <th>Legislator First Name</th>
+        <th>Legislator Last Name</th>
+        <th>Voter Last Name</th>
+        <th>Vote</th>
+    </tr>
+
+#foreach( $collated_vote in $collated_yeas )
+    <tr>
+        <td>$collated_vote.Legislator.firstName</td>
+        <td>$collated_vote.Legislator.LastName</td>
+        <td>$collated_vote.Name.lastName</td>
+        <td>$collated_vote.Vote.Code</td>
+    </tr>
+#end
+
+</table>

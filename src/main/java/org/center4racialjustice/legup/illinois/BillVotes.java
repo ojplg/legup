@@ -7,6 +7,9 @@ import java.util.List;
 
 
 public class BillVotes {
+
+    // FIXME: Privacy needed here now.
+
     String content;
     int billNumber;
     int expectedNays;

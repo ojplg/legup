@@ -44,6 +44,10 @@ public final class Name {
         return suffix;
     }
 
+    public boolean matches(Name name){
+        return this.lastName.equals(name.lastName);
+    }
+
     @Override
     public String toString() {
         return "Name{" +
