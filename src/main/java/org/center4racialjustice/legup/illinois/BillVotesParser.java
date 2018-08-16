@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Parser {
+public class BillVotesParser {
 
     private static final NameParser nameParser = new NameParser(new HashMap<>());
 

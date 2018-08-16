@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-public class TestParser {
+public class TestBillVotesParser {
 
     private final String bill8FileName = "/pdfs/10000SB0008_02082017_002000T.pdf";
     private final String bill2781FileName = "/pdfs/10000SB2781_19952.pdf";
@@ -17,27 +17,27 @@ public class TestParser {
 
     @Test
     public void testFileLoading(){
-        String content = Parser.readFileToString(bill8FileName);
+        String content = BillVotesParser.readFileToString(bill8FileName);
         Assert.assertTrue(content.length() > 1);
-        String next = Parser.readFileToString(bill2781FileName);
+        String next = BillVotesParser.readFileToString(bill2781FileName);
         Assert.assertTrue(next.length() > 1);
     }
 
     @Test
     public void testBillNumber8(){
-        BillVotes bv = Parser.parseFile(bill8FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill8FileName);
         Assert.assertEquals(8, bv.billNumber);
     }
 
     @Test
     public void testBillNumber2781(){
-        BillVotes bv = Parser.parseFile(bill2781FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
         Assert.assertEquals(2781, bv.billNumber);
     }
 
     @Test
     public void testExpectedCounts8(){
-        BillVotes bv = Parser.parseFile(bill8FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill8FileName);
         Assert.assertEquals(34, bv.expectedYeas);
         Assert.assertEquals(14, bv.expectedNays);
         Assert.assertEquals(11, bv.expectedPresent);
@@ -46,7 +46,7 @@ public class TestParser {
 
     @Test
     public void testExpectedCounts2781(){
-        BillVotes bv = Parser.parseFile(bill2781FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
         Assert.assertEquals(bv.content, 9, bv.expectedYeas );
         Assert.assertEquals(0, bv.expectedNays);
         Assert.assertEquals(0, bv.expectedPresent);
@@ -91,41 +91,41 @@ public class TestParser {
                         Name.fromFirstLast("Sue","Rezin")
                 };
 
-        BillVotes bv = Parser.parseFile(bill2781FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
         Assert.assertArrayEquals(expectedNotVoting, bv.notVotings.toArray(new Name[8]));
         Assert.assertArrayEquals(expectedYeas, bv.yeas.toArray(new Name[9]));
     }
 
     @Test
     public void checkVoteCountsWorks(){
-        BillVotes bv = Parser.parseFile(bill2781FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
         bv.checkVoteCounts();
     }
 
     @Test
     public void senateBillNumberNotAVoteLine(){
         Assert.assertFalse(
-                Parser.isVoteLine("Senate Bill No. 8"));
+                BillVotesParser.isVoteLine("Senate Bill No. 8"));
     }
 
     @Test
     public void stateOfIllinoisNotAVoteLine(){
-        Assert.assertFalse(Parser.isVoteLine("State of Illinois"));
+        Assert.assertFalse(BillVotesParser.isVoteLine("State of Illinois"));
     }
 
     @Test
     public void singleNotVoteIsAVoteLine(){
-        Assert.assertTrue(Parser.isVoteLine("NV Syverson, Dave"));
+        Assert.assertTrue(BillVotesParser.isVoteLine("NV Syverson, Dave"));
     }
 
     @Test
     public void complexNamesCanBeVoteLines(){
-        Assert.assertTrue(Parser.isVoteLine("Y Clayborne Jr., James F NV Cullerton, John J"));
+        Assert.assertTrue(BillVotesParser.isVoteLine("Y Clayborne Jr., James F NV Cullerton, John J"));
     }
 
     @Test
     public void longNamesCanBeVoteLines(){
-        Assert.assertTrue(Parser.isVoteLine("NV Silverstein, Ira I NV Steans, Heather A"));
+        Assert.assertTrue(BillVotesParser.isVoteLine("NV Silverstein, Ira I NV Steans, Heather A"));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class TestParser {
         Name james = nameParser.fromLastNameFirstString("Clayborne Jr., James F");
         VoteRecord expected2 = new VoteRecord(james, Vote.NotVoting);
         String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
-        List<VoteRecord> records = Parser.parseVoteRecordLine(input);
+        List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[]{expected1, expected2};
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
@@ -148,7 +148,7 @@ public class TestParser {
         Name jim = Name.fromFirstLast("Jim", "Oberweis");
         VoteRecord v1 = new VoteRecord(chris, Vote.Yea);
         VoteRecord v2 = new VoteRecord(jim, Vote.Yea);
-        List<VoteRecord> records = Parser.parseVoteRecordLine(input);
+        List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[] { v1, v2 };
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
@@ -167,13 +167,13 @@ public class TestParser {
                 new VoteRecord(oberweis, Vote.Present),
                 new VoteRecord(vanpelt, Vote.Yea)
         };
-        List<VoteRecord> records = Parser.parseVoteRecordLine(input);
+        List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
 
     @Test
     public void houseBillCanBeParsed(){
-        BillVotes bv = Parser.parseFile(bill3179FileName);
+        BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
         bv.checkVoteCounts();
     }
 
@@ -181,7 +181,7 @@ public class TestParser {
     public void readOverHttp() throws IOException  {
         String url = "http://www.ilga.gov/legislation/votehistory/100/senate/10000SB0001_05172017_009000T.pdf";
 
-        String contents = Parser.readFileFromUrl(url);
+        String contents = BillVotesParser.readFileFromUrl(url);
 
         Assert.assertNotNull(contents);
     }
