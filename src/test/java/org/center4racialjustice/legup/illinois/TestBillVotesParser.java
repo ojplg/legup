@@ -15,11 +15,11 @@ public class TestBillVotesParser {
     private final String bill8FileName = "/pdfs/10000SB0008_02082017_002000T.pdf";
     private final String bill2781FileName = "/pdfs/10000SB2781_19952.pdf";
     private final String bill3179FileName = "/pdfs/10000HB3179_05262017_048000T.pdf";
+    private final String houseBill2771FileName =  "/pdfs/10000HB2771_04272017_028000T.pdf";
 
     @Test
     public void testSomeHouseBill(){
-        String path = "/pdfs/10000HB2771_04272017_028000T.pdf";
-        BillVotes billVotes = BillVotesParser.parseFile(path);
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName);
         Assert.assertNotNull(billVotes);
     }
 
@@ -46,6 +46,12 @@ public class TestBillVotesParser {
     public void testGetBillNumber_Senate(){
         BillVotes billVotes = BillVotesParser.parseFile(bill2781FileName);
         Assert.assertEquals(2781L, billVotes.getBillNumber());
+    }
+
+    @Test
+    public void testGetBillNumber_House_Alternate(){
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName);
+        Assert.assertEquals( billVotes.getContent(),2771L, billVotes.getBillNumber());;
     }
 
 

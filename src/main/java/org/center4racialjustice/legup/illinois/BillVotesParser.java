@@ -70,7 +70,8 @@ public class BillVotesParser {
         }
     }
 
-    private static Pattern billAssemblyAndNumberPattern = Pattern.compile("(Senate|House) Bill No. (\\d+)");
+    private static Pattern billAssemblyAndNumberPattern = Pattern.compile("(Senate|House) Bill No. (\\d+) *");
+    private static Pattern alternateBillAssemblyAndNumberPattern = Pattern.compile("(HOUSE|SENATE) BILL (\\d+) *");
     private static Pattern summaryPattern =
             Pattern.compile("(\\d+)\\s+YEAS\\s+(\\d+)\\s+NAYS\\s+(\\d+)\\s+PRESENT");
     private static Pattern alternateSummaryPattern =
@@ -137,9 +138,18 @@ public class BillVotesParser {
             String line = lines[idx];
 
             Matcher billNumberMatcher = billAssemblyAndNumberPattern.matcher(line);
-            while( billNumberMatcher.find() ){
+            if( billNumberMatcher.matches() ){
                 String assemblyString = billNumberMatcher.group(1);
                 String billNumberString = billNumberMatcher.group(2);
+                int billNumber = Integer.parseInt(billNumberString);
+                Assembly assembly = Assembly.fromString(assemblyString);
+                bv.setBillNumber(billNumber);
+                bv.setAssembly(assembly);
+            }
+            Matcher alternateBillNumberMatcher = alternateBillAssemblyAndNumberPattern.matcher(line);
+            if( alternateBillNumberMatcher.matches() ){
+                String assemblyString = alternateBillNumberMatcher.group(1);
+                String billNumberString = alternateBillNumberMatcher.group(2);
                 int billNumber = Integer.parseInt(billNumberString);
                 Assembly assembly = Assembly.fromString(assemblyString);
                 bv.setBillNumber(billNumber);

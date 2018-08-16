@@ -15,6 +15,8 @@ public class Assembly {
         switch(name){
             case "House" : return House;
             case "Senate" : return Senate;
+            case "HOUSE" : return House;
+            case "SENATE" : return Senate;
             default : throw new RuntimeException("Cannot recognize assembly named " + name);
         }
     }

@@ -9,9 +9,7 @@ import java.util.List;
 
 public class BillVotes {
 
-    // FIXME: Privacy needed here now.
-
-    private String content;
+    private final String content;
     private Assembly assembly;
     private int billNumber;
     private int expectedNays;
@@ -88,6 +86,10 @@ public class BillVotes {
 
     public int getBillNumber() {
         return billNumber;
+    }
+
+    public String getContent(){
+        return content;
     }
 
     public void setBillNumber(int billNumber) {
