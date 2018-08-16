@@ -29,8 +29,7 @@ public class Parser {
         try {
             doc = PDDocument.load(inputStream);
             PDFTextStripper stripper = new PDFTextStripper();
-            String text =  stripper.getText(doc);
-            return text;
+            return stripper.getText(doc);
         } finally {
             doc.close();
             inputStream.close();
