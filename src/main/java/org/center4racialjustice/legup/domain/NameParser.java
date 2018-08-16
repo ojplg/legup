@@ -1,17 +1,15 @@
-package org.center4racialjustice.legup.illinois;
+package org.center4racialjustice.legup.domain;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Name {
+public class NameParser {
 
     public static String president = "Mr. President";
     public static String simpleLastNameRegex = "([A-Z][A-Za-zñ\\- ]+)";
     public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z])\\.";
-    public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
+    public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
     public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\., ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
     public static String firstAndLastRegularOrder = "([A-Z][A-Za-z\\-']+) ([A-Z][A-Za-zñ\\-']+)";
@@ -34,15 +32,11 @@ public final class Name {
     public static Pattern firstAndLastRegularOrderPattern = Pattern.compile(firstAndLastRegularOrder);
     public static Pattern firstAndLastRegularOrderWithSuffixPattern = Pattern.compile(firstAndLastRegularOrderWithSuffix);
 
-    private static Map<String, Name> specialOverides = new HashMap<>();
+    private final Map<String, Name> specialOverides;
 
-    private final String firstName;
-    private final String firstInitial;
-    private final String lastName;
-    private final String middleInitial;
-    private final String suffix;
-
-    static {
+    public NameParser(Map<String, Name> specialOverides) {
+        this.specialOverides = specialOverides;
+        // TODO: Move these overrides out of here.
         specialOverides.put("C.D. Davidsmeyer", new Name("C.D.","","Davidsmeyer", null, null));
         specialOverides.put("La Shawn K. Ford", new Name ("La Shawn", "K", "Ford", null,null));
         specialOverides.put("Andr� Thapedi", new Name("André","", "Thapedi", null, null));
@@ -50,7 +44,7 @@ public final class Name {
         specialOverides.put("Antonio Mu�oz", new Name("Antonio",null,"Muñoz",null,null));
     }
 
-    public static Name fromRegularOrderString(String input){
+    public Name fromRegularOrderString(String input){
 
         String trimmedInput = input.trim();
 
@@ -101,7 +95,7 @@ public final class Name {
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
     }
 
-    public static Name fromLastNameFirstString(String input){
+    public Name fromLastNameFirstString(String input){
         String trimmedInput = input.trim();
         if( trimmedInput.equals(president)){
             return new Name(null, null, president, null, null);
@@ -134,87 +128,5 @@ public final class Name {
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
     }
 
-    public static boolean isName(String input){
-        try {
-            fromLastNameFirstString(input);
-            return true;
-        } catch (RuntimeException re){
-            if (re.getMessage().startsWith("Could not figure out this name")){
-                return false;
-            }
-            throw re;
-        }
-    }
 
-    public static Name fromFirstLastMiddleInitial(String firstName, String lastName, String middleInitial){
-        return new Name(firstName, middleInitial, lastName, null, null);
-    }
-
-    public static Name fromFirstLast(String firstName, String lastName){
-        return new Name(firstName, null, lastName, null, null);
-    }
-
-    public Name(String firstName, String middleInitial, String lastName, String firstInitial, String suffix){
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.middleInitial = middleInitial;
-        this.firstInitial = firstInitial;
-        this.suffix = suffix;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getFirstInitial() {
-        return firstInitial;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getMiddleInitial() {
-        return middleInitial;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    @Override
-    public String toString() {
-        return "Name{" +
-                "firstName='" + firstName + '\'' +
-                ", firstInitial='" + firstInitial + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", middleInitial='" + middleInitial + '\'' +
-                ", suffix='" + suffix + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Name name = (Name) o;
-
-        if (firstName != null ? !firstName.equals(name.firstName) : name.firstName != null) return false;
-        if (firstInitial != null ? !firstInitial.equals(name.firstInitial) : name.firstInitial != null) return false;
-        if (lastName != null ? !lastName.equals(name.lastName) : name.lastName != null) return false;
-        if (middleInitial != null ? !middleInitial.equals(name.middleInitial) : name.middleInitial != null)
-            return false;
-        return suffix != null ? suffix.equals(name.suffix) : name.suffix == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (firstInitial != null ? firstInitial.hashCode() : 0);
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (middleInitial != null ? middleInitial.hashCode() : 0);
-        result = 31 * result + (suffix != null ? suffix.hashCode() : 0);
-        return result;
-    }
 }

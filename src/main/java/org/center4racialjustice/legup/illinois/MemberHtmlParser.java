@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Assembly;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,11 +11,13 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MemberHtmlParser {
 
     private final Document document;
+    private final NameParser nameParser = new NameParser(new HashMap<>());
 
     private MemberHtmlParser(Document document){
         this.document = document;
@@ -45,7 +49,7 @@ public class MemberHtmlParser {
                 String href = anchor.attr("href");
                 if( href.contains("MemberID=")){
                     String nameString = anchor.text();
-                    Name name = Name.fromRegularOrderString(nameString);
+                    Name name = nameParser.fromRegularOrderString(nameString);
                     Element disctrictCell = cells.get(3);
                     Element partyCell = cells.get(4);
                     String districtString = disctrictCell.text();

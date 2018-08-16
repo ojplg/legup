@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Name;
+
 import java.util.ArrayList;
 import java.util.List;
 

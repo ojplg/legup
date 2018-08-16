@@ -1,9 +1,12 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.junit.Test;
 import org.junit.Assert;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public class TestParser {
@@ -129,7 +132,8 @@ public class TestParser {
     public void parseVoteRecordLine() {
         Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
         VoteRecord expected1 = new VoteRecord(alfred, Vote.Yea);
-        Name james = Name.fromLastNameFirstString("Clayborne Jr., James F");
+        NameParser nameParser = new NameParser(new HashMap<>());
+        Name james = nameParser.fromLastNameFirstString("Clayborne Jr., James F");
         VoteRecord expected2 = new VoteRecord(james, Vote.NotVoting);
         String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
         List<VoteRecord> records = Parser.parseVoteRecordLine(input);
@@ -152,10 +156,11 @@ public class TestParser {
     @Test
     public void parseVoteRecordLineWithGoofballLastName(){
         String input = "Y  Clayborne       Y  Landek     P  Oberweis     Y  Van Pelt";
-        Name clayborne = Name.fromLastNameFirstString("Clayborne");
-        Name landek = Name.fromLastNameFirstString("Landek");
-        Name oberweis = Name.fromLastNameFirstString("Oberweis");
-        Name vanpelt = Name.fromLastNameFirstString("Van Pelt");
+        NameParser nameParser = new NameParser(new HashMap<>());
+        Name clayborne = nameParser.fromLastNameFirstString("Clayborne");
+        Name landek = nameParser.fromLastNameFirstString("Landek");
+        Name oberweis = nameParser.fromLastNameFirstString("Oberweis");
+        Name vanpelt = nameParser.fromLastNameFirstString("Van Pelt");
         VoteRecord[] expectedRecords = new VoteRecord[] {
                 new VoteRecord(clayborne, Vote.Yea),
                 new VoteRecord(landek, Vote.Yea),
@@ -178,8 +183,6 @@ public class TestParser {
 
         String contents = Parser.readFileFromUrl(url);
 
-        System.out.println("contents  ");
-        System.out.println(contents);
-
+        Assert.assertNotNull(contents);
     }
 }

@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
-import org.center4racialjustice.legup.illinois.Name;
 
 @Data
 public class Legislator implements Identifiable {

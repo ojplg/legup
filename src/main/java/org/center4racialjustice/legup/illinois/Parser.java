@@ -2,17 +2,22 @@ package org.center4racialjustice.legup.illinois;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameParser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
+
+    private static final NameParser nameParser = new NameParser(new HashMap<>());
 
     public static String readFileFromUrl(String url)
     throws IOException {
@@ -104,14 +109,14 @@ public class Parser {
             String end = remainder.substring(firstSpace);
             int divider = findNextPossibleRecordIndex(end);
             if( divider == -1 ){
-                Name name = Name.fromLastNameFirstString(end);
+                Name name = nameParser.fromLastNameFirstString(end);
                 VoteRecord record = new VoteRecord(name, vote);
                 remainder = "";
                 records.add(record);
             } else {
                 String nameString = end.substring(0, divider);
                 remainder = end.substring(divider);
-                Name name = Name.fromLastNameFirstString(nameString);
+                Name name = nameParser.fromLastNameFirstString(nameString);
                 VoteRecord record = new VoteRecord(name, vote);
                 records.add(record);
             }

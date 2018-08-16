@@ -1,15 +1,17 @@
-package org.center4racialjustice.legup.illinois;
+package org.center4racialjustice.legup.domain;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
-public class TestName {
+public class TestNameParser {
 
     @Test
     public void justLastName(){
-        Name name = Name.fromLastNameFirstString("Jones");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("Jones");
         Assert.assertEquals("Jones", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
@@ -18,7 +20,8 @@ public class TestName {
 
     @Test
     public void lastNameWithFirstInitial() {
-        Name name = Name.fromLastNameFirstString("Brown, E.");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("Brown, E.");
         Assert.assertEquals("Brown", name.getLastName());
         Assert.assertEquals("E", name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
@@ -27,7 +30,8 @@ public class TestName {
 
     @Test
     public void fullName() {
-        Name name = Name.fromLastNameFirstString("Barickman, Jason A");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("Barickman, Jason A");
         Assert.assertEquals("Barickman", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("Jason", name.getFirstName());
@@ -36,7 +40,8 @@ public class TestName {
 
     @Test
     public void fullNameRegularOrder() {
-        Name name = Name.fromRegularOrderString("Steven A. Andersson");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromRegularOrderString("Steven A. Andersson");
         Assert.assertEquals("Steven", name.getFirstName());
         Assert.assertEquals("A", name.getMiddleInitial());
         Assert.assertEquals("Andersson", name.getLastName());
@@ -44,7 +49,8 @@ public class TestName {
 
     @Test
     public void fullNameRegularOrderWithSuffix(){
-        Name name = Name.fromRegularOrderString("Jaime M. Andrade, Jr.");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromRegularOrderString("Jaime M. Andrade, Jr.");
         Assert.assertEquals("Jaime", name.getFirstName());
         Assert.assertEquals("M", name.getMiddleInitial());
         Assert.assertEquals("Andrade", name.getLastName());
@@ -53,7 +59,8 @@ public class TestName {
 
     @Test
     public void fullNameRegularOrderWithFunnySuffix(){
-        Name name = Name.fromRegularOrderString("Jerry Costello, II");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromRegularOrderString("Jerry Costello, II");
         Assert.assertEquals("Jerry", name.getFirstName());
         Assert.assertEquals("Costello", name.getLastName());
         Assert.assertEquals("II", name.getSuffix());
@@ -61,7 +68,8 @@ public class TestName {
 
     @Test
     public void takeMiddleName(){
-        Name name = Name.fromRegularOrderString("Linda Chapa LaVia");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromRegularOrderString("Linda Chapa LaVia");
         Assert.assertEquals("Linda", name.getFirstName());
         Assert.assertEquals("Chapa", name.getMiddleInitial());
         Assert.assertEquals("LaVia", name.getLastName());
@@ -69,25 +77,34 @@ public class TestName {
 
     @Test
     public void regularNameWithHyphen(){
-        Name name = Name.fromRegularOrderString("Melissa Conyears-Ervin");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromRegularOrderString("Melissa Conyears-Ervin");
         Assert.assertEquals("Melissa", name.getFirstName());
         Assert.assertEquals("Conyears-Ervin", name.getLastName());
     }
 
     @Test
     public void nameWithApostrophe(){
-        Name name = Name.fromRegularOrderString("John C. D'Amico");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromRegularOrderString("John C. D'Amico");
         Assert.assertEquals("John", name.getFirstName());
         Assert.assertEquals("C", name.getMiddleInitial());
         Assert.assertEquals("D'Amico", name.getLastName());
 
     }
 
-
+    @Test
+    public void commaWithoutSpace(){
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("Harris,David");
+        Assert.assertEquals("David", name.getFirstName());
+        Assert.assertEquals("Harris", name.getLastName());
+    }
 
     @Test
     public void firstAndLastName(){
-        Name name = Name.fromLastNameFirstString("Nybo, Chris");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("Nybo, Chris");
         Assert.assertEquals("Nybo", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("Chris", name.getFirstName());
@@ -96,7 +113,8 @@ public class TestName {
 
     @Test
     public void withSuffix(){
-        Name name = Name.fromLastNameFirstString( "Clayborne Jr., James F");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString( "Clayborne Jr., James F");
         Assert.assertEquals("Clayborne", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("James", name.getFirstName());
@@ -106,30 +124,28 @@ public class TestName {
 
     @Test
     public void lastNameMatchesRegex(){
-        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Smith"));
+        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Smith"));
     }
 
     @Test
     public void fullNameMatchesRegex(){
-        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Jones, Samantha B"));
-        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Barickman, Jason A"));
+        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Jones, Samantha B"));
+        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Barickman, Jason A"));
     }
 
     @Test
     public void fullNameWithSuffix(){
-        Assert.assertTrue(Pattern.matches(Name.unifiedRegex, "Clayborne Jr., James F"));
+        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Clayborne Jr., James F"));
     }
 
     @Test
     public void twoPartLastName(){
-        Name name = Name.fromLastNameFirstString("Van Pelt");
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("Van Pelt");
         Assert.assertEquals("Van Pelt", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
         Assert.assertNull(name.getMiddleInitial());
 
     }
-
-
-
 }
