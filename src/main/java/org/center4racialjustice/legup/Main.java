@@ -8,6 +8,9 @@ public class Main {
         System.out.println("start me up");
 
         try {
+            // make sure postgres drivers are loaded
+            Class.forName("org.postgresql.Driver");
+
             ServerStarter serverStarter = new ServerStarter();
             serverStarter.start();
         } catch (Exception ex){

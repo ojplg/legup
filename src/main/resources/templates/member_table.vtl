@@ -8,6 +8,12 @@
 
     <h3>Member Review Table</h3>
 
+    <form action="/app/save_members">
+
+    <input type="hidden" name="session_number" value="$session_number"/>
+    <input type="hidden" name="assembly" value="$assembly"/>
+    <input type="hidden" name="url" value="$url"/>
+
     <table>
 
     #foreach( $legislator in $legislators )
@@ -20,6 +26,10 @@
     #end
 
     </table>
+
+    <input type="submit" value="Save"/>
+
+    </form>
 
 </body>
 </html>
