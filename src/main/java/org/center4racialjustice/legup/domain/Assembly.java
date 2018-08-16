@@ -11,4 +11,15 @@ public class Assembly {
         this.name = name;
     }
 
+    static Assembly fromString(String name){
+        switch(name){
+            case "House" : return House;
+            case "Senate" : return Senate;
+            default : throw new RuntimeException("Cannot recognize assembly named " + name);
+        }
+    }
+
+    public String toString(){
+        return name;
+    }
 }

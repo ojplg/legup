@@ -1,29 +1,22 @@
+-- script for the creation of structures necessary to support legup
+-- Try running
+-- psql -f structures.sql legup
+-- once the database and user have been created
 
 begin;
-
-create sequence person_seq start 1;
-
-create table persons (
-    id integer PRIMARY KEY DEFAULT nextval('person_seq'),
-    prefix text,
-    first_name text,
-    middle_name text,
-    last_name text,
-    suffix text
-);
-
-grant all on sequence person_seq to legupuser;
-grant all on table persons to legupuser;
 
 create sequence legislator_seq start 1;
 
 create table legislators (
     id integer PRIMARY KEY DEFAULT nextval('legislator_seq'),
+    first_name text,
+    middle_name_or_initial text,
+    last_name text,
+    suffix text,
     district integer,
-    party text,
     assembly text,
-    year integer,
-    person_id integer REFERENCES persons (id)
+    party text,
+    session_number integer
 );
 
 grant all on sequence legislator_seq to legupuser;

@@ -118,7 +118,7 @@ public class AppHandler extends AbstractHandler {
             Connection connection = ConnectionPool.getConnection();
             LegislatorDao dao = new LegislatorDao(connection);
             for (Legislator leg : legislators) {
-                dao.save(org.center4racialjustice.legup.db.Legislator.fromDomainLegislator(leg));
+                dao.save(leg);
             }
 
             connection.close();
@@ -139,7 +139,7 @@ public class AppHandler extends AbstractHandler {
         try {
             Connection connection = ConnectionPool.getConnection();
             LegislatorDao dao = new LegislatorDao(connection);
-            List<org.center4racialjustice.legup.db.Legislator> legislators = dao.readAll();
+            List<Legislator> legislators = dao.readAll();
             vc.put("legislators", legislators);
 
             connection.close();

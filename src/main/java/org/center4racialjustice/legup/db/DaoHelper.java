@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.Identifiable;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -7,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -55,7 +56,7 @@ class DaoHelper {
         return sql.toString();
     }
 
-    public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<Column> columnList, T item, Map<String, Long> references){
+    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<Column> columnList, T item){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String sql = DaoHelper.insertStatement(table, columnList);
@@ -74,9 +75,6 @@ class DaoHelper {
                     case Long:
                         Function<T, Long> longGetter = column.getGetter();
                         preparedStatement.setLong(index, longGetter.apply(item));
-                        break;
-                    case Reference:
-                        preparedStatement.setLong(index, references.get(column.getName()));
                         break;
                 }
 
@@ -101,7 +99,7 @@ class DaoHelper {
         }
     }
 
-    public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<Column> columnList, T item, Map<String, Long> references){
+    public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<Column> columnList, T item){
         String sql = DaoHelper.updateStatement(table, columnList, item);
 
         PreparedStatement preparedStatement = null;
@@ -122,9 +120,6 @@ class DaoHelper {
                         Function<T, Long> longGetter = column.getGetter();
                         Long longValue = longGetter.apply(item);
                         preparedStatement.setLong(idx, longValue);
-                        break;
-                    case Reference:
-                        preparedStatement.setLong(idx, references.get(column.getName()));
                         break;
                 }
             }
@@ -147,8 +142,7 @@ class DaoHelper {
         }
     }
 
-    public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier,
-                                 Map<String, Function> finders) throws SQLException {
+    public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
         T item = supplier.get();
 
         for (Column column: columnList) {
@@ -162,19 +156,13 @@ class DaoHelper {
                 case String:
                     setter.accept(item, resultSet.getString(name));
                     break;
-                case Reference:
-                    Function finder = finders.get(name);
-                    long id = resultSet.getLong(name);
-                    Object referent = finder.apply(id);
-                    setter.accept(item, referent);
-                    break;
             }
         }
         return item;
     }
 
     public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids,
-                                   Supplier<T> supplier, Map<String,Function> finders){
+                                   Supplier<T> supplier){
 
         Statement statement = null;
         ResultSet resultSet = null;
@@ -201,7 +189,7 @@ class DaoHelper {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = DaoHelper.populate(resultSet, columnList, supplier, finders);
+                T item = DaoHelper.populate(resultSet, columnList, supplier);
                 items.add(item);
             }
 
@@ -222,11 +210,11 @@ class DaoHelper {
         }
     }
 
-    public static <T extends Identifiable> long save(Connection connection, String table, List<Column> columnList, T item, Map<String, Long> references) {
+    public static <T extends Identifiable> long save(Connection connection, String table, List<Column> columnList, T item) {
         if( item.getId() == null ){
-            return doInsert(connection, table, columnList, item, references);
+            return doInsert(connection, table, columnList, item);
         } else {
-            return doUpdate(connection, table, columnList, item, references);
+            return doUpdate(connection, table, columnList, item);
         }
     }
 

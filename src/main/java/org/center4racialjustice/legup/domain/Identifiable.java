@@ -1,4 +1,4 @@
-package org.center4racialjustice.legup.db;
+package org.center4racialjustice.legup.domain;
 
 public interface Identifiable {
     Long getId();

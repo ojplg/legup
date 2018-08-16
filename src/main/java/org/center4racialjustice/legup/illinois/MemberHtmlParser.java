@@ -53,9 +53,18 @@ public class MemberHtmlParser {
                     int district = Integer.parseInt(districtString);
                     String partyCode = partyCell.text();
 
-                    Legislator leg = new Legislator(
-                            name, partyCode, Assembly.House, district, 100
-                    );
+                    // FIXME: Session number and assembly are hard-coded
+
+                    Legislator leg = new Legislator();
+                    leg.setFirstName(name.getFirstName());
+                    leg.setMiddleInitialOrName(name.getMiddleInitial());
+                    leg.setLastName(name.getLastName());
+                    leg.setSuffix(name.getSuffix());
+                    leg.setAssembly(Assembly.House);
+                    leg.setDistrict(district);
+                    leg.setParty(partyCode);
+                    leg.setSessionNumber(100);
+
                     members.add(leg);
                 }
 

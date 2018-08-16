@@ -1,11 +1,13 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.Identifiable;
+
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SimpleDao<T extends Identifiable> implements Dao<T> {
+public class OneTableDao<T extends Identifiable> implements Dao<T> {
 
     private final Supplier<T> supplier;
     private final String table;
@@ -13,7 +15,7 @@ public class SimpleDao<T extends Identifiable> implements Dao<T> {
 
     private final Connection connection;
 
-    SimpleDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
+    OneTableDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
         this.supplier = supplier;
         this.table = table;
         this.columnList = columnList;
@@ -21,15 +23,15 @@ public class SimpleDao<T extends Identifiable> implements Dao<T> {
     }
 
     public long save(T item){
-        return DaoHelper.save(connection, table, columnList, item, Collections.emptyMap());
+        return DaoHelper.save(connection, table, columnList, item);
     }
 
     public T read(long id){
-        List<T> found = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier, Collections.emptyMap());
+        List<T> found = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier);
         return DaoHelper.fromSingletonList(found, "Table: " + table + ", ID: " + id);
     }
 
     public List<T> readAll(){
-        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), supplier, Collections.emptyMap());
+        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), supplier);
     }
 }
