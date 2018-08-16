@@ -1,25 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>LegUp</title>
-</head>
-<body>
 
-    <h3>Member View</h3>
+<h3>Member View</h3>
 
-    <table>
+<table>
 
-    #foreach( $legislator in $legislators )
-        <tr>
-            <td>$legislator.FirstName</td>
-            <td>$legislator.LastName</td>
-            <td>$legislator.Party</td>
-            <td>$legislator.District</td>
-        </tr>
-    #end
+#foreach( $legislator in $legislators )
+    <tr>
+        <td>$legislator.FirstName</td>
+        <td>$legislator.LastName</td>
+        <td>$legislator.Party</td>
+        <td>$legislator.District</td>
+    </tr>
+#end
 
-    </table>
-
-</body>
-</html>
+</table>

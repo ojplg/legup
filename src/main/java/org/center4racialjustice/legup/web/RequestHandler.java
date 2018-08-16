@@ -1,13 +1,12 @@
 package org.center4racialjustice.legup.web;
 
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Writer;
 
 public class RequestHandler {
@@ -24,9 +23,9 @@ public class RequestHandler {
         String templatePath = "/templates/" + handler.getTemplate();
         Writer writer = httpServletResponse.getWriter();
         VelocityContext velocityContext = handler.handle(request, httpServletResponse);
-        Velocity.init();
-        InputStream in = this.getClass().getResourceAsStream(templatePath);
-        Velocity.evaluate(velocityContext, writer , "", new InputStreamReader(in));
+        velocityContext.put("contents",templatePath);
+        Template template = Velocity.getTemplate("/templates/container.vtl");
+        template.merge(velocityContext, writer);
         request.setHandled(true);
     }
 
