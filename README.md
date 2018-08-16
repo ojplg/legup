@@ -10,6 +10,8 @@ not work. Etc.
 
 # TODO list
 
+Do not forget to grep the code for TODO and FIXME. There are always things there.
+
 Technical Betterments
 
 * Decide on how to implement joins in DAO framework
@@ -18,7 +20,7 @@ Technical Betterments
 
 Features to work on
 
-* Match different names between PDFs and HTML
+* Match different names between PDFs and HTML (started)
 * Save results from parsing vote results
 
 
