@@ -10,10 +10,19 @@ not work. Etc.
 
 # TODO list
 
+Tech debt
+
+* Put in logging
 * Remove duplicate domain objects
 * Decide on how to implement joins in DAO framework
 * Inject connection logic/access to DAOs to web tier
 * Structure for web tier: some kind of simple handler interfacess
+
+Features to work on
+
+* Match different names between PDFs and HTML
+* Save results from parsing vote results
+
 
 See: [https://openstates.org/](https://openstates.org/)
 Code: [https://github.com/openstates/](https://github.com/openstates/)
