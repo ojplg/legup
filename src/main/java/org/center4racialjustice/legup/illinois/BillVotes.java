@@ -53,6 +53,10 @@ public class BillVotes {
         return notVotings;
     }
 
+    public int totalVotes(){
+        return nays.size() + yeas.size() + presents.size() + notVotings.size();
+    }
+
     public void checkVoteCounts(){
         if (nays.size() != expectedNays){
             throw new RuntimeException("Bad Nays count. Expected " + expectedNays + " calculated " + nays.size());

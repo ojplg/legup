@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.web.handlers.CollateBillVotes;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
 import org.center4racialjustice.legup.web.handlers.LoadMembers;
 import org.center4racialjustice.legup.web.handlers.RenderLoadBillFormPage;
@@ -31,6 +32,7 @@ public class AppHandler extends AbstractHandler {
         handlers.put("/load_members", new RequestHandler(new LoadMembers()));
         handlers.put("/save_members", new RequestHandler(new SaveMembers(connectionPool)));
         handlers.put("/view_members", new RequestHandler(new ViewMembers(connectionPool)));
+        handlers.put("/collate_bill_votes", new RequestHandler(new CollateBillVotes(connectionPool)));
     }
 
     @Override

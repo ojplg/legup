@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LoadBill implements Handler {
@@ -16,6 +17,10 @@ public class LoadBill implements Handler {
         String billUrl = request.getParameter("url");
         String contents = BillVotesParser.readFileFromUrl(billUrl);
         BillVotes votes = BillVotesParser.parseFileContents(contents);
+
+        HttpSession session = request.getSession();
+        // FIXME: Need a one-time ID here
+        session.setAttribute("billVotes", votes);
 
         VelocityContext vc = new VelocityContext();
         vc.put("yeas", votes.getYeas());
