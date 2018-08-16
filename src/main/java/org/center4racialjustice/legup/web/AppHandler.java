@@ -47,6 +47,9 @@ public class AppHandler extends AbstractHandler {
             case "/load_bill" :
                 doLoadBill(request, httpServletResponse);
                 break;
+            case "/view_members" :
+                doViewMembers(request, httpServletResponse);
+                break;
         }
 
     }
@@ -111,7 +114,6 @@ public class AppHandler extends AbstractHandler {
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
         List<Legislator> legislators = parser.getNames();
 
-        // do save here
         try {
             Connection connection = ConnectionPool.getConnection();
             LegislatorDao dao = new LegislatorDao(connection);
@@ -128,6 +130,27 @@ public class AppHandler extends AbstractHandler {
         vc.put("saved_member_count", legislators.size());
         renderVelocityTemplate("/templates/member_save_results.vtl", vc, response.getWriter());
         request.setHandled(true);
+    }
+
+    private void doViewMembers(Request request, HttpServletResponse response)
+    throws IOException {
+        VelocityContext vc = new VelocityContext();
+
+        try {
+            Connection connection = ConnectionPool.getConnection();
+            LegislatorDao dao = new LegislatorDao(connection);
+            List<org.center4racialjustice.legup.db.Legislator> legislators = dao.readAll();
+            vc.put("legislators", legislators);
+
+            connection.close();
+
+            renderVelocityTemplate("/templates/view_members.vtl", vc, response.getWriter());
+
+            request.setHandled(true);
+
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     private void renderVelocityTemplate(String templatePath, VelocityContext vc, Writer writer){

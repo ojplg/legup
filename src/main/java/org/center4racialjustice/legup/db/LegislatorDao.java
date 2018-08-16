@@ -46,6 +46,10 @@ public class LegislatorDao implements Dao<Legislator> {
     }
 
     public List<Legislator> readAll(){
-        throw new NotImplementedException();
+        Function<Long, Person> personFinder = personDao::read;
+        Map<String, Function> finders = Collections.singletonMap("PERSON_ID", personFinder);
+        List<Legislator> legislators =
+                DaoHelper.read(connection, table, columnList, Collections.emptyList(), () -> new Legislator(), finders);
+        return legislators;
     }
 }
