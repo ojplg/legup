@@ -15,7 +15,8 @@ Technical Betterments
 * Put in logging
 * Decide on how to implement joins in DAO framework
 * Improve injection db connection logic/access to web tier
-* Structure for web tier: some kind of simple handler interfacess
+* Actually make a real connection pool and automated reclamation
+* Shared header and injection of content for HTML/velocity
 
 Features to work on
 
