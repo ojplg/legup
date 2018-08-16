@@ -33,31 +33,31 @@ public class TestBillVotesParser {
     @Test
     public void testBillNumber8(){
         BillVotes bv = BillVotesParser.parseFile(bill8FileName);
-        Assert.assertEquals(8, bv.billNumber);
+        Assert.assertEquals(8, bv.getBillNumber());
     }
 
     @Test
     public void testBillNumber2781(){
         BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(2781, bv.billNumber);
+        Assert.assertEquals(2781, bv.getBillNumber());
     }
 
     @Test
     public void testExpectedCounts8(){
         BillVotes bv = BillVotesParser.parseFile(bill8FileName);
-        Assert.assertEquals(34, bv.expectedYeas);
-        Assert.assertEquals(14, bv.expectedNays);
-        Assert.assertEquals(11, bv.expectedPresent);
-        Assert.assertEquals(0, bv.expectedNotVoting);
+        Assert.assertEquals(34, bv.getExpectedYeas());
+        Assert.assertEquals(14, bv.getExpectedNays());
+        Assert.assertEquals(11, bv.getExpectedPresent());
+        Assert.assertEquals(0, bv.getExpectedNotVoting());
     }
 
     @Test
     public void testExpectedCounts2781(){
         BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(bv.content, 9, bv.expectedYeas );
-        Assert.assertEquals(0, bv.expectedNays);
-        Assert.assertEquals(0, bv.expectedPresent);
-        Assert.assertEquals(8, bv.expectedNotVoting);
+        Assert.assertEquals(9, bv.getExpectedYeas() );
+        Assert.assertEquals(0, bv.getExpectedNays());
+        Assert.assertEquals(0, bv.getExpectedPresent());
+        Assert.assertEquals(8, bv.getExpectedNotVoting());
     }
 
     @Test
@@ -99,8 +99,8 @@ public class TestBillVotesParser {
                 };
 
         BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertArrayEquals(expectedNotVoting, bv.notVotings.toArray(new Name[8]));
-        Assert.assertArrayEquals(expectedYeas, bv.yeas.toArray(new Name[9]));
+        Assert.assertArrayEquals(expectedNotVoting, bv.getNotVotings().toArray(new Name[8]));
+        Assert.assertArrayEquals(expectedYeas, bv.getYeas().toArray(new Name[9]));
     }
 
     @Test

@@ -131,8 +131,7 @@ public class BillVotesParser {
 
     public static BillVotes parseFileContents(String content){
         String[] lines = content.split("\n");
-        BillVotes bv = new BillVotes();
-        bv.content = content;
+        BillVotes bv = new BillVotes(content);
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
 
@@ -140,29 +139,29 @@ public class BillVotesParser {
             while( billNumberMatcher.find() ){
                 String found = billNumberMatcher.group(1);
                 int billNumber = Integer.parseInt(found);
-                bv.billNumber = billNumber;
+                bv.setBillNumber(billNumber);
             }
 
             Matcher summaryMatcher = summaryPattern.matcher(line);
             while (summaryMatcher.find()){
                 String yeas = summaryMatcher.group(1);
-                bv.expectedYeas = Integer.parseInt(yeas);
+                bv.setExpectedYeas(Integer.parseInt(yeas));
                 String nays = summaryMatcher.group(2);
-                bv.expectedNays = Integer.parseInt(nays);
+                bv.setExpectedNays(Integer.parseInt(nays));
                 String presents = summaryMatcher.group(3);
-                bv.expectedPresent = Integer.parseInt(presents);
+                bv.setExpectedPresent(Integer.parseInt(presents));
             }
 
             Matcher alternateSummaryMatcher = alternateSummaryPattern.matcher(line);
             while(alternateSummaryMatcher.find()){
                 String yeas = alternateSummaryMatcher.group(1);
-                bv.expectedYeas = Integer.parseInt(yeas);
+                bv.setExpectedYeas( Integer.parseInt(yeas));
                 String nays = alternateSummaryMatcher.group(2);
-                bv.expectedNays = Integer.parseInt(nays);
+                bv.setExpectedNays(Integer.parseInt(nays));
                 String presents = alternateSummaryMatcher.group(3);
-                bv.expectedPresent = Integer.parseInt(presents);
+                bv.setExpectedPresent(Integer.parseInt(presents));
                 String notVotings = alternateSummaryMatcher.group(4);
-                bv.expectedNotVoting = Integer.parseInt(notVotings);
+                bv.setExpectedNotVoting(Integer.parseInt(notVotings));
             }
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);

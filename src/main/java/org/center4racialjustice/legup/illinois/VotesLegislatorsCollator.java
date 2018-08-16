@@ -22,10 +22,10 @@ public class VotesLegislatorsCollator {
     }
 
     public void collate(){
-        yeas = collate(Vote.Yea, billVotes.yeas);
-        nays = collate(Vote.Nay, billVotes.nays);
-        notVotings = collate(Vote.NotVoting, billVotes.notVotings);
-        presents = collate(Vote.Present, billVotes.presents);
+        yeas = collate(Vote.Yea, billVotes.getYeas());
+        nays = collate(Vote.Nay, billVotes.getNays());
+        notVotings = collate(Vote.NotVoting, billVotes.getNotVotings());
+        presents = collate(Vote.Present, billVotes.getPresents());
     }
 
     private List<CollatedVote> collate(Vote vote, List<Name> voters){
