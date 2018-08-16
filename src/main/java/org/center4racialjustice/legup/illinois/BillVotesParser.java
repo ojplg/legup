@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.center4racialjustice.legup.domain.Assembly;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 
@@ -69,7 +70,7 @@ public class BillVotesParser {
         }
     }
 
-    private static Pattern billNumberPattern = Pattern.compile("Senate Bill No. (\\d+)");
+    private static Pattern billAssemblyAndNumberPattern = Pattern.compile("(Senate|House) Bill No. (\\d+)");
     private static Pattern summaryPattern =
             Pattern.compile("(\\d+)\\s+YEAS\\s+(\\d+)\\s+NAYS\\s+(\\d+)\\s+PRESENT");
     private static Pattern alternateSummaryPattern =
@@ -135,11 +136,14 @@ public class BillVotesParser {
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
 
-            Matcher billNumberMatcher = billNumberPattern.matcher(line);
+            Matcher billNumberMatcher = billAssemblyAndNumberPattern.matcher(line);
             while( billNumberMatcher.find() ){
-                String found = billNumberMatcher.group(1);
-                int billNumber = Integer.parseInt(found);
+                String assemblyString = billNumberMatcher.group(1);
+                String billNumberString = billNumberMatcher.group(2);
+                int billNumber = Integer.parseInt(billNumberString);
+                Assembly assembly = Assembly.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
+                bv.setAssembly(assembly);
             }
 
             Matcher summaryMatcher = summaryPattern.matcher(line);
