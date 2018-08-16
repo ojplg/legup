@@ -76,7 +76,7 @@ public class BillVotesParser {
             Pattern.compile("YEAS NAYS PRESENT NOT VOTING(\\d+) (\\d+) (\\d+) (\\d+)");
 
     private static Pattern voteLinePattern =
-            Pattern.compile("(NV|Y|N|P) .*");
+            Pattern.compile("(NV|Y|N|P|E) .*");
 
     public static boolean isVoteLine(String line){
         Matcher voteLineMatcher = voteLinePattern.matcher(line);
@@ -84,7 +84,7 @@ public class BillVotesParser {
     }
 
     public static int findNextPossibleRecordIndex(String input){
-        String[] markers = { "N ", "Y ", "P ", "NV "};
+        String[] markers = { "N ", "Y ", "P ", "NV ", "E "};
         int earliestIndex = input.length();
         for(String marker : markers){
             int idx = input.indexOf(marker);

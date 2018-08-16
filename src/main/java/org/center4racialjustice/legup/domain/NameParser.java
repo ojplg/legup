@@ -42,6 +42,7 @@ public class NameParser {
         specialOverides.put("Andr� Thapedi", new Name("André","", "Thapedi", null, null));
         specialOverides.put("Wm. Sam McCann", new Name("Wm.", "Sam", "McCann",null,null));
         specialOverides.put("Antonio Mu�oz", new Name("Antonio",null,"Muñoz",null,null));
+        specialOverides.put("Mr. Speaker", new Name("", null, "Speaker", null, null));
     }
 
     public Name fromRegularOrderString(String input){
@@ -96,7 +97,13 @@ public class NameParser {
     }
 
     public Name fromLastNameFirstString(String input){
+
         String trimmedInput = input.trim();
+
+        if (specialOverides.containsKey(trimmedInput)){
+            return specialOverides.get(trimmedInput);
+        }
+
         if( trimmedInput.equals(president)){
             return new Name(null, null, president, null, null);
         }

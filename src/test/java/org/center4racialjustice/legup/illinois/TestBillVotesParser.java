@@ -16,6 +16,13 @@ public class TestBillVotesParser {
     private final String bill3179FileName = "/pdfs/10000HB3179_05262017_048000T.pdf";
 
     @Test
+    public void testSomeHouseBill(){
+        String path = "/pdfs/10000HB2771_04272017_028000T.pdf";
+        BillVotes billVotes = BillVotesParser.parseFile(path);
+        Assert.assertNotNull(billVotes);
+    }
+
+    @Test
     public void testFileLoading(){
         String content = BillVotesParser.readFileToString(bill8FileName);
         Assert.assertTrue(content.length() > 1);

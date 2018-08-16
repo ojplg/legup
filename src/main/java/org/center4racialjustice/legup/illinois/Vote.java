@@ -18,6 +18,7 @@ public final class Vote {
             case "N" : return Nay;
             case "NV" : return NotVoting;
             case "P" : return Present;
+            case "E" : return NotVoting;
             default : throw new RuntimeException("No such code " + code);
         }
     }
