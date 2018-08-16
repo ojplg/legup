@@ -10,11 +10,11 @@ not work. Etc.
 
 # TODO list
 
-Tech debt
+Technical Betterments
 
 * Put in logging
 * Decide on how to implement joins in DAO framework
-* Inject connection logic/access to DAOs to web tier
+* Improve injection db connection logic/access to web tier
 * Structure for web tier: some kind of simple handler interfacess
 
 Features to work on

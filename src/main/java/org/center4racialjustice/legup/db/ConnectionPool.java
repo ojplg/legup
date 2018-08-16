@@ -6,10 +6,19 @@ import java.sql.SQLException;
 
 public class ConnectionPool {
 
-    public static Connection getConnection(){
+    private final String url;
+    private final String user;
+    private final String password;
+
+    public ConnectionPool(String url, String user, String password) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+    }
+
+    public Connection getConnection(){
         try {
-            return DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/legup", "legupuser", "legupuserpass");
+            return DriverManager.getConnection(url, user, password);
         } catch (SQLException ex){
             throw new RuntimeException(ex);
         }

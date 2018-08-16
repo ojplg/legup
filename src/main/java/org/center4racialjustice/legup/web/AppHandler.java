@@ -23,6 +23,12 @@ import java.util.List;
 
 public class AppHandler extends AbstractHandler {
 
+    private final ConnectionPool connectionPool;
+
+    AppHandler(ConnectionPool connectionPool){
+        this.connectionPool = connectionPool;
+    }
+
     @Override
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                    HttpServletResponse httpServletResponse) throws IOException {
@@ -115,7 +121,7 @@ public class AppHandler extends AbstractHandler {
         List<Legislator> legislators = parser.getNames();
 
         try {
-            Connection connection = ConnectionPool.getConnection();
+            Connection connection = connectionPool.getConnection();
             LegislatorDao dao = new LegislatorDao(connection);
             for (Legislator leg : legislators) {
                 dao.save(leg);
@@ -137,7 +143,7 @@ public class AppHandler extends AbstractHandler {
         VelocityContext vc = new VelocityContext();
 
         try {
-            Connection connection = ConnectionPool.getConnection();
+            Connection connection = connectionPool.getConnection();
             LegislatorDao dao = new LegislatorDao(connection);
             List<Legislator> legislators = dao.readAll();
             vc.put("legislators", legislators);

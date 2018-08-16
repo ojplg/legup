@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup;
 
+import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.web.ServerStarter;
 
 public class Main {
@@ -11,7 +12,13 @@ public class Main {
             // make sure postgres drivers are loaded
             Class.forName("org.postgresql.Driver");
 
-            ServerStarter serverStarter = new ServerStarter();
+            ConnectionPool pool = new ConnectionPool(
+                    "jdbc:postgresql://localhost:5432/legup",
+                    "legupuser",
+                    "legupuserpass"
+            );
+
+            ServerStarter serverStarter = new ServerStarter(pool);
             serverStarter.start();
         } catch (Exception ex){
             System.out.println("Could not start server");
