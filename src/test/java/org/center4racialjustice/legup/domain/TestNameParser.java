@@ -29,6 +29,13 @@ public class TestNameParser {
     }
 
     @Test
+    public void lastNameOnlyWithApostrophe(){
+        NameParser parser = new NameParser(new HashMap<>());
+        Name name = parser.fromLastNameFirstString("D'Amico");
+        Assert.assertEquals("D'Amico", name.getLastName());
+    }
+
+    @Test
     public void fullName() {
         NameParser parser = new NameParser(new HashMap<>());
         Name name = parser.fromLastNameFirstString("Barickman, Jason A");
