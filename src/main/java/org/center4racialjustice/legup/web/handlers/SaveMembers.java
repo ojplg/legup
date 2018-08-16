@@ -9,7 +9,6 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,23 +22,20 @@ public class SaveMembers implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse)
+    throws SQLException {
         String memberUrl = request.getParameter("url");
 
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
         List<Legislator> legislators = parser.getNames();
 
-        try {
-            Connection connection = connectionPool.getConnection();
-            LegislatorDao dao = new LegislatorDao(connection);
-            for (Legislator leg : legislators) {
-                dao.save(leg);
-            }
-
-            connection.close();
-        } catch (SQLException ex){
-            throw new RuntimeException(ex);
+        Connection connection = connectionPool.getConnection();
+        LegislatorDao dao = new LegislatorDao(connection);
+        for (Legislator leg : legislators) {
+            dao.save(leg);
         }
+
+        connection.close();
 
         VelocityContext vc = new VelocityContext();
         vc.put("saved_member_count", legislators.size());

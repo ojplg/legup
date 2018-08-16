@@ -8,6 +8,7 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.SQLException;
 
 public class RequestHandler {
 
@@ -18,15 +19,19 @@ public class RequestHandler {
     }
 
     public void processRequest(Request request, HttpServletResponse httpServletResponse)
-    throws IOException  {
-        System.out.println("Processing request with " + handler.getClass().getName());
-        String templatePath = "/templates/" + handler.getTemplate();
-        Writer writer = httpServletResponse.getWriter();
-        VelocityContext velocityContext = handler.handle(request, httpServletResponse);
-        velocityContext.put("contents",templatePath);
-        Template template = Velocity.getTemplate("/templates/container.vtl");
-        template.merge(velocityContext, writer);
-        request.setHandled(true);
+    throws IOException {
+        try {
+            System.out.println("Processing request with " + handler.getClass().getName());
+            String templatePath = "/templates/" + handler.getTemplate();
+            Writer writer = httpServletResponse.getWriter();
+            VelocityContext velocityContext = handler.handle(request, httpServletResponse);
+            velocityContext.put("contents", templatePath);
+            Template template = Velocity.getTemplate("/templates/container.vtl");
+            template.merge(velocityContext, writer);
+            request.setHandled(true);
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
 }

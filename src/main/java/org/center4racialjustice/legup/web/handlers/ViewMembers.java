@@ -8,7 +8,6 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,22 +21,18 @@ public class ViewMembers implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse)
+    throws SQLException {
         VelocityContext vc = new VelocityContext();
 
-        try {
-            Connection connection = connectionPool.getConnection();
-            LegislatorDao dao = new LegislatorDao(connection);
-            List<Legislator> legislators = dao.readAll();
-            vc.put("legislators", legislators);
+        Connection connection = connectionPool.getConnection();
+        LegislatorDao dao = new LegislatorDao(connection);
+        List<Legislator> legislators = dao.readAll();
+        vc.put("legislators", legislators);
 
-            connection.close();
+        connection.close();
 
-            return vc;
-
-        } catch (SQLException ex){
-            throw new RuntimeException(ex);
-        }
+        return vc;
 
     }
 

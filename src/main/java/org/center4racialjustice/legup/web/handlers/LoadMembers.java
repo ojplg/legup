@@ -7,12 +7,11 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 public class LoadMembers implements Handler {
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
         String memberUrl = request.getParameter("url");
 
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
