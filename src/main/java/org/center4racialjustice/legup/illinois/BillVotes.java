@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.List;
 public class BillVotes {
 
     private final String content;
-    private Assembly billAssembly;
-    private Assembly votingAssembly;
+    private Chamber billChamber;
+    private Chamber votingChamber;
     private int billNumber;
     private int expectedNays;
     private int expectedYeas;
@@ -77,20 +77,20 @@ public class BillVotes {
         }
     }
 
-    public Assembly getBillAssembly() {
-        return billAssembly;
+    public Chamber getBillChamber() {
+        return billChamber;
     }
 
-    public void setBillAssembly(Assembly billAssembly) {
-        this.billAssembly = billAssembly;
+    public void setBillChamber(Chamber billChamber) {
+        this.billChamber = billChamber;
     }
 
-    public Assembly getVotingAssembly() {
-        return votingAssembly;
+    public Chamber getVotingChamber() {
+        return votingChamber;
     }
 
-    public void setVotingAssembly(Assembly votingAssembly) {
-        this.votingAssembly = votingAssembly;
+    public void setVotingChamber(Chamber votingChamber) {
+        this.votingChamber = votingChamber;
     }
 
     public int getBillNumber() {

@@ -2,7 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 
@@ -142,18 +142,18 @@ public class BillVotesParser {
                 String assemblyString = billNumberMatcher.group(1);
                 String billNumberString = billNumberMatcher.group(2);
                 int billNumber = Integer.parseInt(billNumberString);
-                Assembly assembly = Assembly.fromString(assemblyString);
+                Chamber chamber = Chamber.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
-                bv.setBillAssembly(assembly);
+                bv.setBillChamber(chamber);
             }
             Matcher alternateBillNumberMatcher = alternateBillAssemblyAndNumberPattern.matcher(line);
             if( alternateBillNumberMatcher.matches() ){
                 String assemblyString = alternateBillNumberMatcher.group(1);
                 String billNumberString = alternateBillNumberMatcher.group(2);
                 int billNumber = Integer.parseInt(billNumberString);
-                Assembly assembly = Assembly.fromString(assemblyString);
+                Chamber chamber = Chamber.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
-                bv.setBillAssembly(assembly);
+                bv.setBillChamber(chamber);
             }
 
             Matcher summaryMatcher = summaryPattern.matcher(line);

@@ -10,7 +10,7 @@ public class Legislator implements Identifiable {
     private String suffix;
     private String middleInitialOrName;
     private String party;
-    private Assembly assembly;
+    private Chamber chamber;
     private long district;
     private long sessionNumber;
 
@@ -19,13 +19,13 @@ public class Legislator implements Identifiable {
     }
 
     public void setAssemblyFromString(String assemblyString){
-        this.assembly = Assembly.fromString(assemblyString);
+        this.chamber = Chamber.fromString(assemblyString);
     }
 
     public String getAssemblyString(){
-        if (assembly == null){
+        if (chamber == null){
             return null;
         }
-        return assembly.toString();
+        return chamber.toString();
     }
 }

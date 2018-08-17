@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.db;
 
-import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class TestLegislatorDao {
         legislator.setDistrict(9L);
         legislator.setSessionNumber(2018L);
         legislator.setParty("Democrat");
-        legislator.setAssembly(Assembly.House);
+        legislator.setChamber(Chamber.House);
 
         LegislatorDao dao = new LegislatorDao(connect());
 
@@ -71,7 +71,7 @@ public class TestLegislatorDao {
         legislator.setDistrict(9L);
         legislator.setSessionNumber(2018L);
         legislator.setParty("Democrat");
-        legislator.setAssembly(Assembly.House);
+        legislator.setChamber(Chamber.House);
 
         LegislatorDao dao = new LegislatorDao(connection);
 
@@ -83,7 +83,7 @@ public class TestLegislatorDao {
         legislator2.setDistrict(1L);
         legislator2.setSessionNumber(2018L);
         legislator2.setParty("Democrat");
-        legislator2.setAssembly(Assembly.House);
+        legislator2.setChamber(Chamber.House);
 
         dao.save(legislator2);
 
@@ -101,7 +101,7 @@ public class TestLegislatorDao {
         legislator.setDistrict(9L);
         legislator.setSessionNumber(100L);
         legislator.setParty("Democrat");
-        legislator.setAssembly(Assembly.House);
+        legislator.setChamber(Chamber.House);
 
         LegislatorDao dao = new LegislatorDao(connect());
 
@@ -111,14 +111,14 @@ public class TestLegislatorDao {
 
         Assert.assertNotNull(fromDB);
         Assert.assertEquals(100L, (long) fromDB.getSessionNumber());
-        Assert.assertEquals(Assembly.House, fromDB.getAssembly());
+        Assert.assertEquals(Chamber.House, fromDB.getChamber());
         Assert.assertEquals("Democrat", fromDB.getParty());
         Assert.assertEquals("Herbietta", fromDB.getFirstName());
 
         legislator.setId(id);
         legislator.setSessionNumber(101L);
         legislator.setDistrict(5L);
-        legislator.setAssembly(Assembly.Senate);
+        legislator.setChamber(Chamber.Senate);
 
         dao.save(legislator);
 
@@ -126,7 +126,7 @@ public class TestLegislatorDao {
 
         Assert.assertNotNull(fromDB);
         Assert.assertEquals(101L, (long) secondFromDB.getSessionNumber());
-        Assert.assertEquals(Assembly.Senate, secondFromDB.getAssembly());
+        Assert.assertEquals(Chamber.Senate, secondFromDB.getChamber());
         Assert.assertEquals("Democrat", secondFromDB.getParty());
         Assert.assertEquals("Herbietta", secondFromDB.getFirstName());
 

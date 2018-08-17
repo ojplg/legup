@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.junit.Test;
@@ -26,13 +26,13 @@ public class TestBillVotesParser {
     @Test
     public void testGetAssembly_House(){
         BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName);
-        Assert.assertEquals(Assembly.House, billVotes.getBillAssembly());;
+        Assert.assertEquals(Chamber.House, billVotes.getBillChamber());;
     }
 
     @Test
     public void testGetAssembly_Senate(){
         BillVotes billVotes = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(Assembly.Senate, billVotes.getBillAssembly());
+        Assert.assertEquals(Chamber.Senate, billVotes.getBillChamber());
     }
 
 
@@ -215,6 +215,11 @@ public class TestBillVotesParser {
     public void houseBillCanBeParsed(){
         BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
         bv.checkVoteCounts();
+    }
+
+    @Test
+    public void testReportsCorrectVotingChamber(){
+
     }
 
     @Test

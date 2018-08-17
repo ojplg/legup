@@ -21,7 +21,12 @@ Technical Betterments
 Features to work on
 
 * Match different names between PDFs and HTML (started)
+** Parse out which chamber is voting
+** Add chamber to matching logic of vote collation
+** Display all results
+** Display unmatched/uncollated votes
 * Save results from parsing vote results
+* Add overrides to DB and make CRUD screens
 
 
 See: [https://openstates.org/](https://openstates.org/)

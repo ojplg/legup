@@ -1,23 +1,23 @@
 package org.center4racialjustice.legup.domain;
 
-public class Assembly {
+public class Chamber {
 
-    public static final Assembly House = new Assembly("House");
-    public static final Assembly Senate = new Assembly("Senate");
+    public static final Chamber House = new Chamber("House");
+    public static final Chamber Senate = new Chamber("Senate");
 
     private final String name;
 
-    private Assembly(String name){
+    private Chamber(String name){
         this.name = name;
     }
 
-    public static Assembly fromString(String name){
+    public static Chamber fromString(String name){
         switch(name){
             case "House" : return House;
             case "Senate" : return Senate;
             case "HOUSE" : return House;
             case "SENATE" : return Senate;
-            default : throw new RuntimeException("Cannot recognize assembly named " + name);
+            default : throw new RuntimeException("Cannot recognize chamber named " + name);
         }
     }
 

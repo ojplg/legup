@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
@@ -41,14 +41,14 @@ public class MemberHtmlParser {
 
     }
 
-    public Assembly getAssembly(){
+    public Chamber getAssembly(){
         Elements spans = document.select("span");
         for(Element span : spans){
             String content = span.text();
             Matcher matcher = assemblyPattern.matcher(content);
             if ( matcher.matches() ){
                 String assemblyString = matcher.group(1);
-                return Assembly.fromString(assemblyString);
+                return Chamber.fromString(assemblyString);
             }
         }
         return null;
@@ -68,7 +68,7 @@ public class MemberHtmlParser {
     }
 
     public List<Legislator> getLegislators(){
-        Assembly assembly = getAssembly();
+        Chamber chamber = getAssembly();
         Long sessionNumber = getSessionNumber();
 
         Elements tables = document.select("table");
@@ -98,7 +98,7 @@ public class MemberHtmlParser {
                     leg.setMiddleInitialOrName(name.getMiddleInitial());
                     leg.setLastName(name.getLastName());
                     leg.setSuffix(name.getSuffix());
-                    leg.setAssembly(assembly);
+                    leg.setChamber(chamber);
                     leg.setDistrict(district);
                     leg.setParty(partyCode);
                     leg.setSessionNumber(sessionNumber);

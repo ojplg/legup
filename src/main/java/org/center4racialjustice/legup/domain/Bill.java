@@ -5,11 +5,11 @@ import java.util.Objects;
 public class Bill {
 
     private final int number;
-    private final Assembly assembly;
+    private final Chamber chamber;
 
-    public Bill(int number, Assembly assembly){
+    public Bill(int number, Chamber chamber){
         this.number = number;
-        this.assembly = assembly;
+        this.chamber = chamber;
     }
 
     @Override
@@ -18,11 +18,11 @@ public class Bill {
         if (o == null || getClass() != o.getClass()) return false;
         Bill bill = (Bill) o;
         return number == bill.number &&
-                Objects.equals(assembly, bill.assembly);
+                Objects.equals(chamber, bill.chamber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, assembly);
+        return Objects.hash(number, chamber);
     }
 }

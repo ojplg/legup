@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.center4racialjustice.legup.domain.Assembly;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,8 +23,8 @@ public class TestMemberHtmlParser {
     public void testGetAssembly(){
         MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/senate/default.asp");
 
-        Assembly assembly = parser.getAssembly();
-        Assert.assertEquals(Assembly.Senate, assembly);
+        Chamber chamber = parser.getAssembly();
+        Assert.assertEquals(Chamber.Senate, chamber);
     }
 
 
