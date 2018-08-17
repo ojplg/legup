@@ -14,7 +14,6 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 
 Technical Betterments
 
-* Rename assembly -> chamber in DB
 * Decide on how to implement joins in DAO framework
 * Improve injection db connection logic/access to web tier, do not use raw Connection object
 * Actually make a real connection pool and automated reclamation
@@ -22,9 +21,8 @@ Technical Betterments
 Features to work on
 
 * Match different names between PDFs and HTML (started)
-** Display all results
-** Display unmatched/uncollated votes
-* Save results from parsing vote results
+ * Display all results
+ * Display unmatched/uncollated votes
 * Add overrides to DB and make CRUD screens
 
 
