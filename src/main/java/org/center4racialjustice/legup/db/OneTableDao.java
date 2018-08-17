@@ -13,7 +13,7 @@ public class OneTableDao<T extends Identifiable> implements Dao<T> {
     private final String table;
     private final List<Column> columnList;
 
-    private final Connection connection;
+    protected final Connection connection;
 
     OneTableDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
         this.supplier = supplier;

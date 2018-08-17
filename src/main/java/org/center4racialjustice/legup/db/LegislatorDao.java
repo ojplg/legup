@@ -18,7 +18,7 @@ public class LegislatorDao implements Dao<Legislator> {
                     new Column<>("MIDDLE_NAME_OR_INITIAL", ColumnType.String, Legislator::getMiddleInitialOrName, Legislator::setMiddleInitialOrName),
                     new Column<>("LAST_NAME", ColumnType.String, Legislator::getLastName, Legislator::setLastName),
                     new Column<>("SUFFIX", ColumnType.String, Legislator::getSuffix, Legislator::setSuffix),
-                    new Column<>("ASSEMBLY", ColumnType.String, Legislator::getAssemblyString, Legislator::setAssemblyFromString),
+                    new Column<>("CHAMBER", ColumnType.String, Legislator::getChamberString, Legislator::setChamberFromString),
                     new Column<>("DISTRICT", ColumnType.Long, Legislator::getDistrict, Legislator::setDistrict),
                     new Column<>("PARTY", ColumnType.String, Legislator::getParty, Legislator::setParty),
                     new Column<>("SESSION_NUMBER", ColumnType.Long, Legislator::getSessionNumber, Legislator::setSessionNumber)

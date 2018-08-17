@@ -18,11 +18,11 @@ public class Legislator implements Identifiable {
         return new Name(firstName, middleInitialOrName, lastName, null, suffix);
     }
 
-    public void setAssemblyFromString(String assemblyString){
+    public void setChamberFromString(String assemblyString){
         this.chamber = Chamber.fromString(assemblyString);
     }
 
-    public String getAssemblyString(){
+    public String getChamberString(){
         if (chamber == null){
             return null;
         }

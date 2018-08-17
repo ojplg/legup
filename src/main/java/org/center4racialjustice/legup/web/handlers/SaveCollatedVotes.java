@@ -1,6 +1,9 @@
 package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
+import org.center4racialjustice.legup.db.BillDao;
+import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
@@ -8,9 +11,16 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class SaveCollatedVotes implements Handler {
+
+    private final ConnectionPool connectionPool;
+
+    public SaveCollatedVotes(ConnectionPool connectionPool){
+        this.connectionPool = connectionPool;
+    }
 
     @Override
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse)
@@ -28,7 +38,19 @@ public class SaveCollatedVotes implements Handler {
             throw new RuntimeException("Mismatched collation keys");
         }
 
-        // save the votes somehow. :)
+        Connection connection = null;
+        try {
+            connection = connectionPool.getConnection();
+
+            BillDao billDao = new BillDao(connection);
+            Bill bill = billDao.findOrCreate(collator.getBillChamber(), collator.getBillNumber());
+
+        } finally {
+            if( connection != null) {
+                connection.close();
+            }
+        }
+
 
         VelocityContext velocityContext = new VelocityContext();
 

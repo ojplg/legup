@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 
@@ -70,4 +71,12 @@ public class VotesLegislatorsCollator {
     }
 
     public List<Name> getUncollated() { return uncollated; }
+
+    public Chamber getBillChamber(){
+        return billVotes.getBillChamber();
+    }
+
+    public long getBillNumber(){
+        return billVotes.getBillNumber();
+    }
 }

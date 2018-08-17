@@ -1,28 +1,23 @@
 package org.center4racialjustice.legup.domain;
 
-import java.util.Objects;
+import lombok.Data;
 
-public class Bill {
+@Data
+public class Bill implements Identifiable {
 
-    private final int number;
-    private final Chamber chamber;
+    private Long id;
+    private long number;
+    private Chamber chamber;
 
-    public Bill(int number, Chamber chamber){
-        this.number = number;
-        this.chamber = chamber;
+    public void setChamberFromString(String assemblyString){
+        this.chamber = Chamber.fromString(assemblyString);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bill bill = (Bill) o;
-        return number == bill.number &&
-                Objects.equals(chamber, bill.chamber);
+    public String getChamberString(){
+        if (chamber == null){
+            return null;
+        }
+        return chamber.toString();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(number, chamber);
-    }
 }

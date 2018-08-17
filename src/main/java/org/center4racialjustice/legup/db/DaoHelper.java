@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.db;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Identifiable;
 
 import java.sql.PreparedStatement;
@@ -15,6 +17,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class DaoHelper {
+
+    private static final Logger log = LogManager.getLogger(DaoHelper.class);
 
     private static String columnsAsString(List<Column> columnList){
         List<String> columnNames = columnList.stream().map(Column::getName).collect(Collectors.toList());
@@ -94,7 +98,7 @@ class DaoHelper {
                     preparedStatement.close();
                 }
             } catch (SQLException se){
-                // TODO: Log here.
+                log.error("Error during close",se);
             }
         }
     }
@@ -137,7 +141,7 @@ class DaoHelper {
                     preparedStatement.close();
                 }
             } catch (SQLException se){
-                // TODO: Log here.
+                log.error("Error during close",se);
             }
         }
     }
@@ -161,9 +165,15 @@ class DaoHelper {
         return item;
     }
 
-    public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids,
-                                   Supplier<T> supplier){
+    public static String selectString(String table, List<Column> columnList){
+        StringBuilder sql =  new StringBuilder("select ");
+        sql.append(DaoHelper.columnsAsString(columnList));
+        sql.append(" from ");
+        sql.append(table);
+        return sql.toString();
+    }
 
+    public static <T> List<T> read(Connection connection, String sql, List<Column> columnList, Supplier<T> supplier){
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -171,20 +181,7 @@ class DaoHelper {
 
             statement = connection.createStatement();
 
-            StringBuilder sql =  new StringBuilder("select ");
-            sql.append(DaoHelper.columnsAsString(columnList));
-            sql.append(" from ");
-            sql.append(table);
-            if( ids.size() == 1 ){
-                sql.append(" where id = ");
-                sql.append(ids.get(0));
-            } else if ( ids.size() > 1 ){
-                sql.append(" where id in (");
-                sql.append(String.join(", ", ids.stream().map(l -> l.toString()).collect(Collectors.toList())));
-                sql.append(" )");
-            }
-
-            resultSet = statement.executeQuery(sql.toString());
+            resultSet = statement.executeQuery(sql);
 
             List<T> items = new ArrayList<>();
 
@@ -205,9 +202,26 @@ class DaoHelper {
                     statement.close();
                 }
             } catch (SQLException se){
-                //TODO : Log here.
+                log.error("Error during close",se);
             }
         }
+
+    }
+
+    public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids,
+                                   Supplier<T> supplier){
+
+        StringBuilder sql =  new StringBuilder(selectString(table, columnList));
+        if( ids.size() == 1 ){
+            sql.append(" where id = ");
+            sql.append(ids.get(0));
+        } else if ( ids.size() > 1 ){
+            sql.append(" where id in (");
+            sql.append(String.join(", ", ids.stream().map(l -> l.toString()).collect(Collectors.toList())));
+            sql.append(" )");
+        }
+
+        return read(connection, sql.toString(), columnList, supplier);
     }
 
     public static <T extends Identifiable> long save(Connection connection, String table, List<Column> columnList, T item) {
