@@ -218,8 +218,27 @@ public class TestBillVotesParser {
     }
 
     @Test
-    public void testReportsCorrectVotingChamber(){
+    public void testReportsCorrectVotingChamber_2771(){
+        BillVotes bv = BillVotesParser.parseFile(houseBill2771FileName);
+        Assert.assertEquals(Chamber.House, bv.getVotingChamber());
+    }
 
+    @Test
+    public void testReportsCorrectVotingChamber_3179(){
+        BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
+        Assert.assertEquals(Chamber.Senate, bv.getVotingChamber());
+    }
+
+    @Test
+    public void testReportsCorrectVotingChamber_8(){
+        BillVotes bv = BillVotesParser.parseFile(bill8FileName);
+        Assert.assertEquals(Chamber.Senate, bv.getVotingChamber());
+    }
+
+    @Test
+    public void testReportsCorrectVotingChamber_2781(){
+        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
+        Assert.assertEquals(Chamber.Senate, bv.getVotingChamber());
     }
 
     @Test

@@ -131,11 +131,34 @@ public class BillVotesParser {
         return parseFileContents(content);
     }
 
+    private static String[] houseVoteStrings = new String[]{ "HOUSE ROLL CALL" };
+    private static String[] senateVoteStrings = new String[]{ "Senate Vote", "Senate Committee Vote" };
+
+    private static Chamber determineVotingChamber(String line){
+        for(String houseVoteString : houseVoteStrings){
+            if(line.contains(houseVoteString)){
+                return Chamber.House;
+            }
+        }
+        for(String senateVoteString : senateVoteStrings){
+            if(line.contains(senateVoteString)){
+                return Chamber.Senate;
+            }
+        }
+        return null;
+    }
+
     public static BillVotes parseFileContents(String content){
         String[] lines = content.split("\n");
         BillVotes bv = new BillVotes(content);
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
+
+            Chamber votingChamber = determineVotingChamber(line);
+            if( votingChamber != null ){
+                bv.setVotingChamber(votingChamber);
+                continue;
+            }
 
             Matcher billNumberMatcher = billAssemblyAndNumberPattern.matcher(line);
             if( billNumberMatcher.matches() ){
@@ -145,6 +168,7 @@ public class BillVotesParser {
                 Chamber chamber = Chamber.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
                 bv.setBillChamber(chamber);
+                continue;
             }
             Matcher alternateBillNumberMatcher = alternateBillAssemblyAndNumberPattern.matcher(line);
             if( alternateBillNumberMatcher.matches() ){
@@ -154,6 +178,7 @@ public class BillVotesParser {
                 Chamber chamber = Chamber.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
                 bv.setBillChamber(chamber);
+                continue;
             }
 
             Matcher summaryMatcher = summaryPattern.matcher(line);
@@ -164,6 +189,7 @@ public class BillVotesParser {
                 bv.setExpectedNays(Integer.parseInt(nays));
                 String presents = summaryMatcher.group(3);
                 bv.setExpectedPresent(Integer.parseInt(presents));
+                continue;
             }
 
             Matcher alternateSummaryMatcher = alternateSummaryPattern.matcher(line);
@@ -176,6 +202,7 @@ public class BillVotesParser {
                 bv.setExpectedPresent(Integer.parseInt(presents));
                 String notVotings = alternateSummaryMatcher.group(4);
                 bv.setExpectedNotVoting(Integer.parseInt(notVotings));
+                continue;
             }
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
