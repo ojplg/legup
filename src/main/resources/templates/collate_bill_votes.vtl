@@ -6,9 +6,15 @@ Legislators found: $legislator_count
 
 Votes found: $vote_count
 
-<br/>
+<h4>Uncollated Votes</h4>
 
-<h5>Yays</h5>
+<ul>
+#foreach( $name in $uncollated )
+    <li>$name.LastName</li>
+#end
+</ul>
+
+<h4>Collated Votes</h4>
 
 <table>
 
@@ -19,6 +25,7 @@ Votes found: $vote_count
         <th>Vote</th>
     </tr>
 
+
 #foreach( $collated_vote in $collated_yeas )
     <tr>
         <td>$collated_vote.Legislator.firstName</td>
@@ -27,5 +34,33 @@ Votes found: $vote_count
         <td>$collated_vote.Vote.Code</td>
     </tr>
 #end
+
+#foreach( $collated_vote in $collated_nays )
+    <tr>
+        <td>$collated_vote.Legislator.firstName</td>
+        <td>$collated_vote.Legislator.LastName</td>
+        <td>$collated_vote.Name.lastName</td>
+        <td>$collated_vote.Vote.Code</td>
+    </tr>
+#end
+
+#foreach( $collated_vote in $collated_not_votings )
+    <tr>
+        <td>$collated_vote.Legislator.firstName</td>
+        <td>$collated_vote.Legislator.LastName</td>
+        <td>$collated_vote.Name.lastName</td>
+        <td>$collated_vote.Vote.Code</td>
+    </tr>
+#end
+
+#foreach( $collated_vote in $collated_presents )
+    <tr>
+        <td>$collated_vote.Legislator.firstName</td>
+        <td>$collated_vote.Legislator.LastName</td>
+        <td>$collated_vote.Name.lastName</td>
+        <td>$collated_vote.Vote.Code</td>
+    </tr>
+#end
+
 
 </table>

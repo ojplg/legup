@@ -51,6 +51,7 @@ public class CollateBillVotes implements Handler {
         velocityContext.put("collated_nays", collator.getNays());
         velocityContext.put("collated_not_votings", collator.getNotVotings());
         velocityContext.put("collated_presents", collator.getPresents());
+        velocityContext.put("uncollated", collator.getUncollated());
 
         return velocityContext;
 

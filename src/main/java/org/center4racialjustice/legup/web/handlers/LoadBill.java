@@ -23,12 +23,12 @@ public class LoadBill implements Handler {
         session.setAttribute("billVotes", votes);
 
         VelocityContext vc = new VelocityContext();
-        vc.put("chamber", votes.getBillChamber());
+        vc.put("bill_chamber", votes.getBillChamber());
         vc.put("bill_number", votes.getBillNumber());
         vc.put("yeas", votes.getYeas());
         vc.put("nays", votes.getNays());
         vc.put("presents", votes.getPresents());
-        vc.put("notVotings", votes.getNotVotings());
+        vc.put("not_votings", votes.getNotVotings());
 
         return vc;
     }
