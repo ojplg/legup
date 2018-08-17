@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.domain;
 
-public class Chamber {
+public class Chamber implements Comparable<Chamber> {
 
     public static final Chamber House = new Chamber("House");
     public static final Chamber Senate = new Chamber("Senate");
@@ -23,5 +23,10 @@ public class Chamber {
 
     public String toString(){
         return name;
+    }
+
+    @Override
+    public int compareTo(Chamber o) {
+        return this.name.compareTo(o.name);
     }
 }

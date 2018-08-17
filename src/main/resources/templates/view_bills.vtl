@@ -1,0 +1,30 @@
+<h4>View Bills</h4>
+
+<h5>House Bills</h5>
+
+<table>
+
+    #foreach ( $bill in $house_bills )
+
+    <tr>
+        <td>$bill.Number</td>
+    </tr>
+
+    #end
+
+</table>
+
+<h5>Senate Bills</h5>
+
+<table>
+
+    #foreach ( $bill in $senate_bills )
+
+    <tr>
+        <td>$bill.Number</td>
+    </tr>
+
+    #end
+
+</table>
+
