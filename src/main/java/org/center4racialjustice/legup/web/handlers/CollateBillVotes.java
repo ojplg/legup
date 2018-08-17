@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 public class CollateBillVotes implements Handler {
 
@@ -33,6 +34,7 @@ public class CollateBillVotes implements Handler {
 
         HttpSession session = request.getSession();
         BillVotes billVotes = (BillVotes) session.getAttribute("billVotes");
+        session.removeAttribute("billVotes");
 
         Connection connection = connectionPool.getConnection();
         LegislatorDao legislatorDao = new LegislatorDao(connection);
@@ -47,15 +49,23 @@ public class CollateBillVotes implements Handler {
         VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
         collator.collate();
 
+        String collatedVotesKey = UUID.randomUUID().toString();
+
+        session.setAttribute("collatedVotes", collator);
+        session.setAttribute("collatedVotesKey", collatedVotesKey);
+
         velocityContext.put("collated_yeas", collator.getYeas());
         velocityContext.put("collated_nays", collator.getNays());
         velocityContext.put("collated_not_votings", collator.getNotVotings());
         velocityContext.put("collated_presents", collator.getPresents());
         velocityContext.put("uncollated", collator.getUncollated());
+        velocityContext.put("collated_votes_key", collatedVotesKey);
 
         return velocityContext;
 
     }
+
+
 
     @Override
     public String getTemplate() {
