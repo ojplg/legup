@@ -26,13 +26,13 @@ public class TestBillVotesParser {
     @Test
     public void testGetAssembly_House(){
         BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName);
-        Assert.assertEquals(Assembly.House, billVotes.getAssembly());;
+        Assert.assertEquals(Assembly.House, billVotes.getBillAssembly());;
     }
 
     @Test
     public void testGetAssembly_Senate(){
         BillVotes billVotes = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(Assembly.Senate, billVotes.getAssembly());
+        Assert.assertEquals(Assembly.Senate, billVotes.getBillAssembly());
     }
 
 

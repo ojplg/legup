@@ -10,7 +10,8 @@ import java.util.List;
 public class BillVotes {
 
     private final String content;
-    private Assembly assembly;
+    private Assembly billAssembly;
+    private Assembly votingAssembly;
     private int billNumber;
     private int expectedNays;
     private int expectedYeas;
@@ -76,12 +77,20 @@ public class BillVotes {
         }
     }
 
-    public Assembly getAssembly() {
-        return assembly;
+    public Assembly getBillAssembly() {
+        return billAssembly;
     }
 
-    public void setAssembly(Assembly assembly) {
-        this.assembly = assembly;
+    public void setBillAssembly(Assembly billAssembly) {
+        this.billAssembly = billAssembly;
+    }
+
+    public Assembly getVotingAssembly() {
+        return votingAssembly;
+    }
+
+    public void setVotingAssembly(Assembly votingAssembly) {
+        this.votingAssembly = votingAssembly;
     }
 
     public int getBillNumber() {

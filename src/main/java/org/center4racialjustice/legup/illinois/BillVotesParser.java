@@ -144,7 +144,7 @@ public class BillVotesParser {
                 int billNumber = Integer.parseInt(billNumberString);
                 Assembly assembly = Assembly.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
-                bv.setAssembly(assembly);
+                bv.setBillAssembly(assembly);
             }
             Matcher alternateBillNumberMatcher = alternateBillAssemblyAndNumberPattern.matcher(line);
             if( alternateBillNumberMatcher.matches() ){
@@ -153,7 +153,7 @@ public class BillVotesParser {
                 int billNumber = Integer.parseInt(billNumberString);
                 Assembly assembly = Assembly.fromString(assemblyString);
                 bv.setBillNumber(billNumber);
-                bv.setAssembly(assembly);
+                bv.setBillAssembly(assembly);
             }
 
             Matcher summaryMatcher = summaryPattern.matcher(line);
