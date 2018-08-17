@@ -5,9 +5,9 @@ import org.center4racialjustice.legup.domain.Name;
 public class VoteRecord {
 
     private final Name name;
-    private final Vote vote;
+    private final VoteSide vote;
 
-    public VoteRecord(Name name, Vote vote){
+    public VoteRecord(Name name, VoteSide vote){
         this.name = name;
         this.vote = vote;
     }
@@ -16,7 +16,7 @@ public class VoteRecord {
         return name;
     }
 
-    public Vote getVote() {
+    public VoteSide getVote() {
         return vote;
     }
 

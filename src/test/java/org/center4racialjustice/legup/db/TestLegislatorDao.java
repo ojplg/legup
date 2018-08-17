@@ -34,6 +34,7 @@ public class TestLegislatorDao {
     private static void clearTables() throws SQLException {
         Connection connection = connect();
         Statement statement = connection.createStatement();
+        statement.execute("delete from votes");
         statement.execute("delete from legislators");
         statement.close();
         connection.close();

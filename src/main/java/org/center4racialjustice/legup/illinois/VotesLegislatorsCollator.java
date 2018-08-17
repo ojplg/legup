@@ -26,14 +26,14 @@ public class VotesLegislatorsCollator {
     }
 
     public void collate(){
-        yeas = collate(Vote.Yea, billVotes.getYeas());
-        nays = collate(Vote.Nay, billVotes.getNays());
-        notVotings = collate(Vote.NotVoting, billVotes.getNotVotings());
-        presents = collate(Vote.Present, billVotes.getPresents());
+        yeas = collate(VoteSide.Yea, billVotes.getYeas());
+        nays = collate(VoteSide.Nay, billVotes.getNays());
+        notVotings = collate(VoteSide.NotVoting, billVotes.getNotVotings());
+        presents = collate(VoteSide.Present, billVotes.getPresents());
 
     }
 
-    private List<CollatedVote> collate(Vote vote, List<Name> voters){
+    private List<CollatedVote> collate(VoteSide vote, List<Name> voters){
         List<CollatedVote> collated = new ArrayList<>();
         for(Name voter : voters){
             boolean found = false;
@@ -68,6 +68,15 @@ public class VotesLegislatorsCollator {
 
     public List<CollatedVote> getPresents() {
         return presents;
+    }
+
+    public List<CollatedVote> getAllCollatedVotes(){
+        List<CollatedVote> allVotes = new ArrayList<>();
+        allVotes.addAll(yeas);
+        allVotes.addAll(nays);
+        allVotes.addAll(notVotings);
+        allVotes.addAll(presents);
+        return allVotes;
     }
 
     public List<Name> getUncollated() { return uncollated; }

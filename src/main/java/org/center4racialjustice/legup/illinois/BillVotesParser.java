@@ -107,7 +107,7 @@ public class BillVotesParser {
         while (remainder.length() > 0){
             int firstSpace = remainder.indexOf(' ');
             String prefix = remainder.substring(0, firstSpace);
-            Vote vote = Vote.fromCode(prefix);
+            VoteSide vote = VoteSide.fromCode(prefix);
             String end = remainder.substring(firstSpace);
             int divider = findNextPossibleRecordIndex(end);
             if( divider == -1 ){

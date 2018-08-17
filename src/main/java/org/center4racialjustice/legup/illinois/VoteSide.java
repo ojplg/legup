@@ -1,18 +1,19 @@
 package org.center4racialjustice.legup.illinois;
 
-public final class Vote {
+// Maybe rename this class
+public final class VoteSide {
 
     public static final String YeaCode = "Y";
     public static final String NayCode = "N";
     public static final String NotVotingCode = "NV";
     public static final String PresentCode = "P";
 
-    public static final Vote Yea = new Vote(YeaCode);
-    public static final Vote Nay = new Vote(NayCode);
-    public static final Vote NotVoting = new Vote(NotVotingCode);
-    public static final Vote Present = new Vote(PresentCode);
+    public static final VoteSide Yea = new VoteSide(YeaCode);
+    public static final VoteSide Nay = new VoteSide(NayCode);
+    public static final VoteSide NotVoting = new VoteSide(NotVotingCode);
+    public static final VoteSide Present = new VoteSide(PresentCode);
 
-    public static final Vote fromCode(String code){
+    public static final VoteSide fromCode(String code){
         switch (code){
             case "Y" : return Yea;
             case "N" : return Nay;
@@ -25,7 +26,7 @@ public final class Vote {
 
     private final String code;
 
-    private Vote(String code){
+    private VoteSide(String code){
         this.code = code;
     }
 
@@ -38,7 +39,7 @@ public final class Vote {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Vote vote = (Vote) o;
+        VoteSide vote = (VoteSide) o;
 
         return code.equals(vote.code);
     }
@@ -50,7 +51,7 @@ public final class Vote {
 
     @Override
     public String toString() {
-        return "Vote{" +
+        return "VoteSide{" +
                 "code='" + code + '\'' +
                 '}';
     }

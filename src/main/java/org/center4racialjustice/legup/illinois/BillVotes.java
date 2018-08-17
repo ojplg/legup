@@ -32,16 +32,16 @@ public class BillVotes {
 
     public void addVoteRecord(VoteRecord voteRecord){
         switch (voteRecord.getVote().getCode()){
-            case Vote.PresentCode :
+            case VoteSide.PresentCode :
                 presents.add(voteRecord.getName());
                 break;
-            case Vote.NayCode :
+            case VoteSide.NayCode :
                 nays.add(voteRecord.getName());
                 break;
-            case Vote.YeaCode :
+            case VoteSide.YeaCode :
                 yeas.add(voteRecord.getName());
                 break;
-            case Vote.NotVotingCode :
+            case VoteSide.NotVotingCode :
                 notVotings.add(voteRecord.getName());
                 break;
             default :

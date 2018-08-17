@@ -13,10 +13,10 @@ create table legislators (
     middle_name_or_initial text,
     last_name text,
     suffix text,
-    district integer,
-    chamber text,
+    district integer not null,
+    chamber text not null,
     party text,
-    session_number integer
+    session_number integer not null
 );
 
 grant all on sequence legislator_seq to legupuser;
@@ -27,7 +27,7 @@ create sequence bill_seq start 1;
 create table bills (
     id integer PRIMARY KEY DEFAULT nextval('bill_seq'),
     bill_number integer not null,
-    chamber text,
+    chamber text not null,
     UNIQUE (bill_number, chamber)
 );
 
@@ -40,7 +40,7 @@ create table votes (
     id integer PRIMARY KEY DEFAULT nextval('vote_seq'),
     bill_id integer REFERENCES bills (id),
     legislator_id integer REFERENCES legislators (id),
-    code text not null
+    vote_side text not null
 );    
 
 grant all on sequence vote_seq to legupuser;

@@ -15,7 +15,7 @@ public class TestVotesLegislatorsCollator {
     public void correctlyMatchesByLastName(){
         BillVotes bv = new BillVotes();
         bv.addVoteRecord(
-                new VoteRecord(new Name(null, null, "McGee","H", null), Vote.Nay)
+                new VoteRecord(new Name(null, null, "McGee","H", null), VoteSide.Nay)
         );
         bv.setVotingChamber(Chamber.Senate);
 
@@ -37,10 +37,10 @@ public class TestVotesLegislatorsCollator {
     public void reportsUncollatedVotes(){
         BillVotes bv = new BillVotes();
         bv.addVoteRecord(
-                new VoteRecord(new Name(null, null, "McGee","H", null), Vote.Nay)
+                new VoteRecord(new Name(null, null, "McGee","H", null), VoteSide.Nay)
         );
         bv.addVoteRecord(
-                new VoteRecord(new Name(null, null, "Henry","B", null), Vote.Nay)
+                new VoteRecord(new Name(null, null, "Henry","B", null), VoteSide.Nay)
         );
         bv.setVotingChamber(Chamber.Senate);
 

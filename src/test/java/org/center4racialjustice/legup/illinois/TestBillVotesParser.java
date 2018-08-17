@@ -171,10 +171,10 @@ public class TestBillVotesParser {
     @Test
     public void parseVoteRecordLine() {
         Name alfred = Name.fromFirstLast("Alfred", "Redblatt");
-        VoteRecord expected1 = new VoteRecord(alfred, Vote.Yea);
+        VoteRecord expected1 = new VoteRecord(alfred, VoteSide.Yea);
         NameParser nameParser = new NameParser(new HashMap<>());
         Name james = nameParser.fromLastNameFirstString("Clayborne Jr., James F");
-        VoteRecord expected2 = new VoteRecord(james, Vote.NotVoting);
+        VoteRecord expected2 = new VoteRecord(james, VoteSide.NotVoting);
         String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
         List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[]{expected1, expected2};
@@ -186,8 +186,8 @@ public class TestBillVotesParser {
         String input = "Y Nybo, Chris Y Oberweis, Jim";
         Name chris = Name.fromFirstLast("Chris", "Nybo");
         Name jim = Name.fromFirstLast("Jim", "Oberweis");
-        VoteRecord v1 = new VoteRecord(chris, Vote.Yea);
-        VoteRecord v2 = new VoteRecord(jim, Vote.Yea);
+        VoteRecord v1 = new VoteRecord(chris, VoteSide.Yea);
+        VoteRecord v2 = new VoteRecord(jim, VoteSide.Yea);
         List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[] { v1, v2 };
         Assert.assertArrayEquals(expectedRecords, records.toArray());
@@ -202,10 +202,10 @@ public class TestBillVotesParser {
         Name oberweis = nameParser.fromLastNameFirstString("Oberweis");
         Name vanpelt = nameParser.fromLastNameFirstString("Van Pelt");
         VoteRecord[] expectedRecords = new VoteRecord[] {
-                new VoteRecord(clayborne, Vote.Yea),
-                new VoteRecord(landek, Vote.Yea),
-                new VoteRecord(oberweis, Vote.Present),
-                new VoteRecord(vanpelt, Vote.Yea)
+                new VoteRecord(clayborne, VoteSide.Yea),
+                new VoteRecord(landek, VoteSide.Yea),
+                new VoteRecord(oberweis, VoteSide.Present),
+                new VoteRecord(vanpelt, VoteSide.Yea)
         };
         List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         Assert.assertArrayEquals(expectedRecords, records.toArray());
