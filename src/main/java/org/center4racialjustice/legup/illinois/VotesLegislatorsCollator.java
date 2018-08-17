@@ -32,7 +32,8 @@ public class VotesLegislatorsCollator {
         List<CollatedVote> collated = new ArrayList<>();
         for(Name voter : voters){
             for(Legislator legislator : legislators){
-                if( legislator.getName().matches(voter) ){
+                if( legislator.getName().matches(voter)
+                        && legislator.getChamber().equals(billVotes.getVotingChamber())){
                     CollatedVote collatedVote =
                             new CollatedVote(vote, legislator, voter);
                     collated.add(collatedVote);
