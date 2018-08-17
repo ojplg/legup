@@ -16,9 +16,12 @@ public class VotesLegislatorsCollator {
     private List<CollatedVote> notVotings;
     private List<CollatedVote> presents;
 
+    private final List<Name> uncollated;
+
     public VotesLegislatorsCollator(List<Legislator> legislators, BillVotes billVotes) {
         this.legislators = new ArrayList<>(legislators);
         this.billVotes = billVotes;
+        this.uncollated = new ArrayList<>();
     }
 
     public void collate(){
@@ -26,18 +29,25 @@ public class VotesLegislatorsCollator {
         nays = collate(Vote.Nay, billVotes.getNays());
         notVotings = collate(Vote.NotVoting, billVotes.getNotVotings());
         presents = collate(Vote.Present, billVotes.getPresents());
+
     }
 
     private List<CollatedVote> collate(Vote vote, List<Name> voters){
         List<CollatedVote> collated = new ArrayList<>();
         for(Name voter : voters){
+            boolean found = false;
             for(Legislator legislator : legislators){
                 if( legislator.getName().matches(voter)
                         && legislator.getChamber().equals(billVotes.getVotingChamber())){
                     CollatedVote collatedVote =
                             new CollatedVote(vote, legislator, voter);
                     collated.add(collatedVote);
+                    found = true;
+                    break;
                 }
+            }
+            if ( ! found ) {
+                uncollated.add(voter);
             }
         }
         return collated;
@@ -58,4 +68,6 @@ public class VotesLegislatorsCollator {
     public List<CollatedVote> getPresents() {
         return presents;
     }
+
+    public List<Name> getUncollated() { return uncollated; }
 }

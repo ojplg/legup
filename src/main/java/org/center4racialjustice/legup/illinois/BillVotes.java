@@ -22,6 +22,10 @@ public class BillVotes {
     private List<Name> presents = new ArrayList<>();
     private List<Name> notVotings = new ArrayList<>();
 
+    public BillVotes(){
+        this.content = "";
+    }
+
     public BillVotes(String content){
         this.content = content;
     }
