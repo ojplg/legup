@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Assert;
 import org.junit.Test;
 

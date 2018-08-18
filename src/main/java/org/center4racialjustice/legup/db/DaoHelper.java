@@ -20,9 +20,25 @@ class DaoHelper {
 
     private static final Logger log = LogManager.getLogger(DaoHelper.class);
 
-    private static String columnsAsString(List<Column> columnList){
-        List<String> columnNames = columnList.stream().map(Column::getName).collect(Collectors.toList());
+    public static String columnsAsString(String prefix, List<? extends ColumnDescription> columnList, boolean withAliases){
+        Function<ColumnDescription,String> stringer;
+        if( withAliases && prefix != null ) {
+            stringer = c -> prefix + "." + c.getName() + " as " + prefix + c.getName();
+        } else if (prefix != null ){
+            stringer = c -> prefix + c.getName();
+        } else {
+            stringer = c -> c.getName();
+        }
+        List<String> columnNames = columnList.stream().map(stringer).collect(Collectors.toList());
         return String.join(", ", columnNames);
+    }
+
+    public static String columnsAsString(String prefix, List<? extends ColumnDescription> columnList){
+        return columnsAsString(prefix, columnList, false);
+    }
+
+    public static String columnsAsString(List<? extends ColumnDescription> columnList){
+        return columnsAsString(null, columnList);
     }
 
     private static String insertStatement(String table, List<Column> columnList){
@@ -147,6 +163,10 @@ class DaoHelper {
     }
 
     public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
+        return populate("", resultSet, columnList, supplier);
+    }
+
+    public static <T> T populate(String prefix,ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
         T item = supplier.get();
 
         for (Column column: columnList) {
@@ -155,15 +175,16 @@ class DaoHelper {
             BiConsumer setter = column.getSetter();
             switch (columnType){
                 case Long:
-                    setter.accept(item, resultSet.getLong(name));
+                    setter.accept(item, resultSet.getLong(prefix + name));
                     break;
                 case String:
-                    setter.accept(item, resultSet.getString(name));
+                    setter.accept(item, resultSet.getString(prefix + name));
                     break;
             }
         }
         return item;
     }
+
 
     public static String selectString(String table, List<Column> columnList){
         StringBuilder sql =  new StringBuilder("select ");

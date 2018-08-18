@@ -5,6 +5,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.domain.VoteSide;
 
 import java.io.IOException;
 import java.io.InputStream;

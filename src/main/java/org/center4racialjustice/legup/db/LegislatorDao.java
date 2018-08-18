@@ -6,12 +6,15 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class LegislatorDao implements Dao<Legislator> {
 
-    private static String table = "legislators";
+    public static String table = "legislators";
 
-    private static List<Column> columnList =
+    public static Supplier<Legislator> supplier = () -> new Legislator();
+
+    public static List<Column> columnList =
             Arrays.asList(
                     new Column<>("ID", ColumnType.Long, Legislator::getId, Legislator::setId),
                     new Column<>("FIRST_NAME", ColumnType.String, Legislator::getFirstName, Legislator::setFirstName),
@@ -36,13 +39,13 @@ public class LegislatorDao implements Dao<Legislator> {
 
     public Legislator read(long id){
         List<Legislator> legislators =
-                DaoHelper.read(connection, table, columnList, Collections.singletonList(id), () -> new Legislator());
+                DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier);
         return DaoHelper.fromSingletonList(legislators, "Table " + table + ", ID " + id);
     }
 
     public List<Legislator> readAll(){
         List<Legislator> legislators =
-                DaoHelper.read(connection, table, columnList, Collections.emptyList(), () -> new Legislator());
+                DaoHelper.read(connection, table, columnList, Collections.emptyList(), supplier);
         return legislators;
     }
 }

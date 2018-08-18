@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.db;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-class Column<O, T> {
+class Column<O, T> implements ColumnDescription {
 
     private final String name;
     private final ColumnType columnType;
@@ -17,7 +17,7 @@ class Column<O, T> {
         this.setter = setter;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -29,7 +29,15 @@ class Column<O, T> {
         return setter;
     }
 
-    ColumnType getColumnType(){
+    public ColumnType getColumnType(){
         return columnType;
+    }
+
+    public boolean isReference(){
+        return ColumnType.Reference.equals(getColumnType());
+    }
+
+    public String getPrefix(){
+        throw new RuntimeException("No prefix for regular column");
     }
 }

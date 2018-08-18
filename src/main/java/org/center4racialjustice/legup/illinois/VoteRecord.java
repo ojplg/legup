@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.VoteSide;
 
 public class VoteRecord {
 

@@ -1,4 +1,4 @@
-package org.center4racialjustice.legup.illinois;
+package org.center4racialjustice.legup.domain;
 
 // Maybe rename this class
 public final class VoteSide {

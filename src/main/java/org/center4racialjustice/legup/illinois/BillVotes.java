@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.VoteSide;
 
 import java.util.ArrayList;
 import java.util.List;

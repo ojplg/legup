@@ -4,6 +4,7 @@ import lombok.Data;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.domain.VoteSide;
 
 @Data
 public class CollatedVote {

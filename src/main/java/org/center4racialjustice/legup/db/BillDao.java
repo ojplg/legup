@@ -10,16 +10,16 @@ import java.util.function.Supplier;
 
 public class BillDao extends OneTableDao<Bill> {
 
-    private static String table = "bills";
+    public static String table = "bills";
 
-    private static List<Column> columnList =
+    public static List<Column> columnList =
             Arrays.asList(
                     new Column<>("ID", ColumnType.Long, Bill::getId, Bill::setId),
                     new Column<>("CHAMBER", ColumnType.String, Bill::getChamberString, Bill::setChamberFromString),
                     new Column<>("BILL_NUMBER", ColumnType.Long, Bill::getNumber, Bill::setNumber)
             );
 
-    private static Supplier<Bill> supplier = () -> new Bill();
+    public static Supplier<Bill> supplier = () -> new Bill();
 
     public BillDao(Connection connection) {
         super(connection, supplier, table, columnList);
