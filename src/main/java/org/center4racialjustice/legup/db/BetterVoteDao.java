@@ -34,7 +34,6 @@ public class BetterVoteDao {
                             BillDao.supplier, BillDao.typedColumnList ),
                     new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", BetterVote::getLegislator, BetterVote::setLegislator,
                             LegislatorDao.supplier, LegislatorDao.typedColumnList )
-
             );
 
     private final Connection connection;
@@ -87,7 +86,28 @@ public class BetterVoteDao {
         }
     }
 
-    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
+    public static <T extends Identifiable> String updateStatement(T item, String table, List<TypedColumn<T>> allColumns){
+        StringBuilder buf = new StringBuilder();
+        buf.append("update ");
+        buf.append(table);
+        buf.append(" set ");
+        for(int idx=0; idx< allColumns.size(); idx++ ){
+            TypedColumn column = allColumns.get(idx);
+            buf.append(column.getName());
+            buf.append(" = ? ");
+            if (idx < allColumns.size() - 1){
+                buf.append(", ");
+            }
+        }
+        buf.append(" where id = ");
+        buf.append(item.getId());
+        buf.append(" RETURNING ID");
+
+        return buf.toString();
+    }
+
+
+    public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
         bldr.append(table);
