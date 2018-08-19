@@ -78,7 +78,7 @@ public class TestBetterVoteDao {
 
         BetterVoteDao voteDao = new BetterVoteDao(connection);
 
-        BetterVote vote = voteDao.readOne(voteId);
+        BetterVote vote = voteDao.typedReadOne(voteId);
         Assert.assertEquals("Wilson", vote.getLegislator().getFirstName());
         Assert.assertEquals(123, vote.getBill().getNumber());
         Assert.assertEquals(VoteSide.Nay, vote.getVoteSide());

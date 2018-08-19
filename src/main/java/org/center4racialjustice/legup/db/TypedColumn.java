@@ -11,4 +11,5 @@ public interface TypedColumn<T> {
     void populate(T item, ResultSet resultSet) throws SQLException;
     void setValue(T item, int index, PreparedStatement preparedStatement) throws SQLException;
 
+    TypedColumn<T> withPrefix(String prefix);
 }

@@ -34,13 +34,109 @@ public class BetterVoteDao {
                     new ReferenceColumn<>("LEGISLATOR_ID", "c", LegislatorDao.table, LegislatorDao.columnList, LegislatorDao.supplier, BetterVote::setLegislator )
             );
 
+    private static final List<TypedColumn<BetterVote>> dataColumns =
+            Arrays.asList(
+                    new LongColumn<>("ID", "a", BetterVote::getId, BetterVote::setId),
+                    new CodedEnumColumn<>("VOTE_SIDE", "a", BetterVote::getVoteSide, BetterVote::setVoteSide, new VoteSideConverter())
+            );
+
+    private static final List<JoinColumn<BetterVote, ?>> joinColumns =
+            Arrays.asList(
+                    new JoinColumn<>("BILL_ID", "b", "bills", BetterVote::getBill, BetterVote::setBill,
+                            BillDao.supplier, BillDao.typedColumnList ),
+                    new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", BetterVote::getLegislator, BetterVote::setLegislator,
+                            LegislatorDao.supplier, LegislatorDao.typedColumnList )
+
+            );
+
     private final Connection connection;
 
-    private final Supplier<BetterVote> supplier = () -> new BetterVote();
+    public final Supplier<BetterVote> supplier = () -> new BetterVote();
 
     public BetterVoteDao(Connection connection) {
         this.connection = connection;
     }
+
+
+    public BetterVote typedReadOne(long id){
+
+        StringBuilder buf = new StringBuilder();
+        buf.append("select ");
+        buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
+        for(JoinColumn joinColumn : joinColumns) {
+            buf.append(", ");
+            buf.append(DaoHelper.typedColumnsAsString(
+                    joinColumn.getPrefix(),
+                    joinColumn.getColumnList(),
+                    true
+            ));
+        }
+        buf.append(" from ");
+        buf.append(table);
+        buf.append(" a");
+        for(JoinColumn joinColumn : joinColumns) {
+            buf.append(", ");
+            buf.append(joinColumn.getTable());
+            buf.append(" ");
+            buf.append(joinColumn.getPrefix());
+        }
+        buf.append(" where a.id = ");
+        buf.append(id);
+        for( JoinColumn joinColumn : joinColumns ){
+            buf.append(" and ");
+            buf.append("a.");
+            buf.append(joinColumn.getName());
+            buf.append("=");
+            buf.append(joinColumn.getPrefix());
+            buf.append(".id");
+        }
+
+        String sql = buf.toString();
+
+        System.out.println("SQL ");
+        System.out.println(sql);
+
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        List<BetterVote> votes = new ArrayList<>();
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sql);
+            while(resultSet.next()){
+                BetterVote vote = supplier.get();
+                for(TypedColumn column : dataColumns){
+                    column.populate(vote, resultSet);
+                }
+
+                for(JoinColumn joinColumn : joinColumns ){
+                    joinColumn.populate(vote, resultSet);
+                }
+
+                votes.add(vote);
+            }
+
+            return DaoHelper.fromSingletonList(votes, "Reading vote");
+
+        } catch (SQLException se) {
+            throw new RuntimeException(se);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException se){
+                log.error("Error during close",se);
+            }
+        }
+
+    }
+
 
     public BetterVote readOne(long id){
 

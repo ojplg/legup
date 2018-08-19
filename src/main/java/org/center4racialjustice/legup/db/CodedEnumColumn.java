@@ -25,6 +25,11 @@ public class CodedEnumColumn<T, E> implements TypedColumn<T> {
     }
 
     @Override
+    public TypedColumn<T> withPrefix(String prefix) {
+        return new CodedEnumColumn<>(name, prefix, getter, setter, enumConverter);
+    }
+
+    @Override
     public String getName() {
         return name;
     }

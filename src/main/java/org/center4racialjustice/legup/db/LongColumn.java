@@ -21,6 +21,11 @@ public class LongColumn<T> implements TypedColumn<T> {
     }
 
     @Override
+    public TypedColumn<T> withPrefix(String prefix) {
+        return new LongColumn<>(name, prefix, getter, setter);
+    }
+
+    @Override
     public String getName() {
         return name;
     }

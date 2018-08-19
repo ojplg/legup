@@ -21,6 +21,11 @@ public class StringColumn<T> implements TypedColumn<T> {
     }
 
     @Override
+    public TypedColumn<T> withPrefix(String prefix) {
+        return new StringColumn<>(name, prefix, getter, setter);
+    }
+
+    @Override
     public String getName() {
         return name;
     }
