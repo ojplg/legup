@@ -106,8 +106,7 @@ public class BetterVoteDao {
         return bldr.toString();
     }
 
-    public BetterVote typedReadOne(long id){
-
+    public static <T> String joinSelectSql(List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder buf = new StringBuilder();
         buf.append("select ");
         buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
@@ -128,16 +127,30 @@ public class BetterVoteDao {
             buf.append(" ");
             buf.append(joinColumn.getPrefix());
         }
-        buf.append(" where a.id = ");
-        buf.append(id);
-        for( JoinColumn joinColumn : joinColumns ){
-            buf.append(" and ");
+        buf.append(" where ");
+        for( int idx=0; idx<joinColumns.size(); idx++ ){
+            JoinColumn joinColumn = joinColumns.get(idx);
+            if( idx > 0 ){
+                buf.append(" and ");
+            }
             buf.append("a.");
             buf.append(joinColumn.getName());
             buf.append("=");
             buf.append(joinColumn.getPrefix());
             buf.append(".id");
         }
+
+        return buf.toString();
+    }
+
+    public BetterVote typedReadOne(long id){
+
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(joinSelectSql(dataColumns, joinColumns));
+
+        buf.append(" and a.id = ");
+        buf.append(id);
 
         String sql = buf.toString();
 
