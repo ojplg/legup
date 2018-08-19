@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.db;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Identifiable;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
@@ -13,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -28,13 +31,17 @@ public class VoteDao {
                     new CodedEnumColumn<>("VOTE_SIDE", "a", Vote::getVoteSide, Vote::setVoteSide, new VoteSideConverter())
             );
 
+    private final JoinColumn<Vote,Bill> billColumn =
+            new JoinColumn<>("BILL_ID", "b", "bills", Vote::getBill, Vote::setBill,
+                    BillDao.supplier, BillDao.typedColumnList );
+
+    private final JoinColumn<Vote,Legislator> legislatorColumn =
+            new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", Vote::getLegislator, Vote::setLegislator,
+                    LegislatorDao.supplier, LegislatorDao.typedColumnList );
+
+
     private final List<JoinColumn<Vote, ?>> joinColumns =
-            Arrays.asList(
-                    new JoinColumn<>("BILL_ID", "b", "bills", Vote::getBill, Vote::setBill,
-                            BillDao.supplier, BillDao.typedColumnList ),
-                    new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", Vote::getLegislator, Vote::setLegislator,
-                            LegislatorDao.supplier, LegislatorDao.typedColumnList )
-            );
+            Arrays.asList( billColumn, legislatorColumn );
 
     private final Connection connection;
 
@@ -126,56 +133,7 @@ public class VoteDao {
         return bldr.toString();
     }
 
-    public static <T> String joinSelectSql(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
-        StringBuilder buf = new StringBuilder();
-        buf.append("select ");
-        buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
-        for(JoinColumn joinColumn : joinColumns) {
-            buf.append(", ");
-            buf.append(DaoHelper.typedColumnsAsString(
-                    joinColumn.getPrefix(),
-                    joinColumn.getColumnList(),
-                    true
-            ));
-        }
-        buf.append(" from ");
-        buf.append(table);
-        buf.append(" a");
-        for(JoinColumn joinColumn : joinColumns) {
-            buf.append(", ");
-            buf.append(joinColumn.getTable());
-            buf.append(" ");
-            buf.append(joinColumn.getPrefix());
-        }
-        buf.append(" where ");
-        for( int idx=0; idx<joinColumns.size(); idx++ ){
-            JoinColumn joinColumn = joinColumns.get(idx);
-            if( idx > 0 ){
-                buf.append(" and ");
-            }
-            buf.append("a.");
-            buf.append(joinColumn.getName());
-            buf.append("=");
-            buf.append(joinColumn.getPrefix());
-            buf.append(".id");
-        }
-
-        return buf.toString();
-    }
-
-    public Vote read(long id){
-
-        StringBuilder buf = new StringBuilder();
-
-        buf.append(joinSelectSql(table, dataColumns, joinColumns));
-
-        buf.append(" and a.id = ");
-        buf.append(id);
-
-        String sql = buf.toString();
-
-        System.out.println("SQL ");
-        System.out.println(sql);
+    public List<Vote> doSelect(String sql){
 
         Statement statement = null;
         ResultSet resultSet = null;
@@ -197,8 +155,7 @@ public class VoteDao {
 
                 votes.add(vote);
             }
-
-            return DaoHelper.fromSingletonList(votes, "Reading vote");
+            return votes;
 
         } catch (SQLException se) {
             throw new RuntimeException(se);
@@ -215,6 +172,38 @@ public class VoteDao {
             }
         }
 
+    }
+
+    public List<Vote> readByBill(Bill bill){
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(DaoHelper.joinSelectSql(table, dataColumns, Collections.singletonList(legislatorColumn)));
+
+        buf.append(" and a.bill_id = ");
+        buf.append(bill.getId());
+        String sql = buf.toString();
+
+        List<Vote> votes = doSelect(sql);
+
+        votes.forEach(v -> v.setBill(bill));
+
+        return votes;
+    }
+
+    public Vote read(long id){
+
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(DaoHelper.joinSelectSql(table, dataColumns, joinColumns));
+
+        buf.append(" and a.id = ");
+        buf.append(id);
+
+        String sql = buf.toString();
+
+        List<Vote> votes = doSelect(sql);
+
+        return DaoHelper.fromSingletonList(votes, "Reading vote");
     }
 
 }

@@ -33,6 +33,43 @@ class DaoHelper {
         return String.join(", ", columnNames);
     }
 
+    public static <T> String joinSelectSql(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
+        StringBuilder buf = new StringBuilder();
+        buf.append("select ");
+        buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
+        for(JoinColumn joinColumn : joinColumns) {
+            buf.append(", ");
+            buf.append(DaoHelper.typedColumnsAsString(
+                    joinColumn.getPrefix(),
+                    joinColumn.getColumnList(),
+                    true
+            ));
+        }
+        buf.append(" from ");
+        buf.append(table);
+        buf.append(" a");
+        for(JoinColumn joinColumn : joinColumns) {
+            buf.append(", ");
+            buf.append(joinColumn.getTable());
+            buf.append(" ");
+            buf.append(joinColumn.getPrefix());
+        }
+        buf.append(" where ");
+        for( int idx=0; idx<joinColumns.size(); idx++ ){
+            JoinColumn joinColumn = joinColumns.get(idx);
+            if( idx > 0 ){
+                buf.append(" and ");
+            }
+            buf.append("a.");
+            buf.append(joinColumn.getName());
+            buf.append("=");
+            buf.append(joinColumn.getPrefix());
+            buf.append(".id");
+        }
+
+        return buf.toString();
+    }
+
     private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
