@@ -13,13 +13,6 @@ public class BillDao extends OneTableDao<Bill> {
 
     public static String table = "bills";
 
-    public static List<Column> columnList =
-            Arrays.asList(
-                    new Column<>("ID", ColumnType.Long, Bill::getId, Bill::setId),
-                    new Column<>("CHAMBER", ColumnType.String, Bill::getChamberString, Bill::setChamberFromString),
-                    new Column<>("BILL_NUMBER", ColumnType.Long, Bill::getNumber, Bill::setNumber)
-            );
-
     public static List<TypedColumn<Bill>> typedColumnList =
             Arrays.asList(
                     new LongColumn<>("ID", "", Bill::getId, Bill::setId),
