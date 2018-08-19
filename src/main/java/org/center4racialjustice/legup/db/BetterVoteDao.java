@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.BetterVote;
 import org.center4racialjustice.legup.domain.Identifiable;
-import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 import java.sql.Connection;
@@ -15,8 +14,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BetterVoteDao {
@@ -55,7 +52,7 @@ public class BetterVoteDao {
     private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = insertStatement(table, columnList);
+        String sql = insertStatement(table, columnList, joinColumns);
 
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -65,7 +62,6 @@ public class BetterVoteDao {
                 TypedColumn column = columnList.get(index);
                 column.setValue(item, index, preparedStatement);
             }
-
 
             for( JoinColumn joinColumn : joinColumns ){
                 joinColumn.setValue(item, index, preparedStatement);
@@ -91,7 +87,7 @@ public class BetterVoteDao {
         }
     }
 
-    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList){
+    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
         bldr.append(table);
