@@ -3,8 +3,7 @@ package org.center4racialjustice.legup.db;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.BetterVote;
-import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 import java.sql.Connection;
@@ -14,6 +13,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public class BetterVoteDao {
 
@@ -34,6 +35,8 @@ public class BetterVoteDao {
             );
 
     private final Connection connection;
+
+    private final Supplier<BetterVote> supplier = () -> new BetterVote();
 
     public BetterVoteDao(Connection connection) {
         this.connection = connection;
@@ -83,16 +86,33 @@ public class BetterVoteDao {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             while(resultSet.next()){
-                BetterVote vote = new BetterVote();
-                vote.setId(resultSet.getLong("aid"));
-                vote.setVoteSide(VoteSideConverter.INSTANCE.fromCode(resultSet.getString("avote_side")));
+                BetterVote vote = supplier.get();
+                for(Column column : columnList){
+
+                    String name = column.getName();
+                    ColumnType columnType = column.getColumnType();
+                    BiConsumer setter = column.getSetter();
+                    switch (columnType){
+                        case Long:
+                            setter.accept(vote, resultSet.getLong("a" + name));
+                            break;
+                        case String:
+                            setter.accept(vote, resultSet.getString("a" + name));
+                            break;
+                        case CodedEnum:
+                            String code = resultSet.getString("a" + name);
+                            VoteSide vs = VoteSide.fromCode(code);
+                            setter.accept(vote, vs);
+                            break;
+                    }
+                }
 
                 for(ReferenceColumn referenceColumn : referenceColumnList ){
                     Object item = DaoHelper.populate(
                             referenceColumn.getPrefix(), resultSet, referenceColumn.getColumnList(), referenceColumn.getSupplier() );
                     referenceColumn.getSetter().accept(vote, item);
                 }
-                
+
                 votes.add(vote);
             }
 
@@ -112,8 +132,6 @@ public class BetterVoteDao {
                 log.error("Error during close",se);
             }
         }
-
-
 
     }
 
