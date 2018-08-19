@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BetterVoteDao {
+public class VoteDao {
 
-    private static final Logger log = LogManager.getLogger(BetterVoteDao.class);
+    private static final Logger log = LogManager.getLogger(VoteDao.class);
 
     private final String table = "VOTES";
 
@@ -40,7 +40,7 @@ public class BetterVoteDao {
 
     public final Supplier<Vote> supplier = () -> new Vote();
 
-    public BetterVoteDao(Connection connection) {
+    public VoteDao(Connection connection) {
         this.connection = connection;
     }
 

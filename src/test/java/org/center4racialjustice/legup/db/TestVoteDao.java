@@ -76,7 +76,7 @@ public class TestVoteDao {
         resultSet.next();
         long voteId = resultSet.getLong("id");
 
-        BetterVoteDao voteDao = new BetterVoteDao(connection);
+        VoteDao voteDao = new VoteDao(connection);
 
         Vote vote = voteDao.read(voteId);
         Assert.assertEquals("Wilson", vote.getLegislator().getFirstName());
@@ -113,7 +113,7 @@ public class TestVoteDao {
         vote.setVoteSide(VoteSide.Yea);
 
 
-        BetterVoteDao voteDao = new BetterVoteDao(connection);
+        VoteDao voteDao = new VoteDao(connection);
 
         long voteId = voteDao.insert(vote);
         Assert.assertTrue(voteId > 0);
