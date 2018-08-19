@@ -20,20 +20,20 @@ class DaoHelper {
 
     private static final Logger log = LogManager.getLogger(DaoHelper.class);
 
-    public static String typedColumnsAsString(String prefix, List<? extends TypedColumn> columnList, boolean withAliases){
+    static String typedColumnsAsString(String prefix, List<? extends TypedColumn> columnList, boolean withAliases){
         Function<TypedColumn,String> stringer;
         if( withAliases && prefix != null ) {
             stringer = c -> prefix + "." + c.getName() + " as " + prefix + c.getName();
         } else if (prefix != null ){
             stringer = c -> prefix + c.getName();
         } else {
-            stringer = c -> c.getName();
+            stringer = TypedColumn::getName;
         }
         List<String> columnNames = columnList.stream().map(stringer).collect(Collectors.toList());
         return String.join(", ", columnNames);
     }
 
-    public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
+    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
         bldr.append(table);
@@ -85,7 +85,7 @@ class DaoHelper {
             preparedStatement = connection.prepareStatement(sql);
 
             for (int index = 1; index < columnList.size(); index++) {
-                TypedColumn column = columnList.get(index);
+                TypedColumn<T> column = columnList.get(index);
                 column.setValue(item, index, preparedStatement);
             }
 
