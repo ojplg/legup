@@ -20,15 +20,15 @@ public class BetterVoteDao {
 
     private static final Logger log = LogManager.getLogger(BetterVoteDao.class);
 
-    private static final String table = "VOTES";
+    private final String table = "VOTES";
 
-    private static final List<TypedColumn<BetterVote>> dataColumns =
+    private final List<TypedColumn<BetterVote>> dataColumns =
             Arrays.asList(
                     new LongColumn<>("ID", "a", BetterVote::getId, BetterVote::setId),
                     new CodedEnumColumn<>("VOTE_SIDE", "a", BetterVote::getVoteSide, BetterVote::setVoteSide, new VoteSideConverter())
             );
 
-    private static final List<JoinColumn<BetterVote, ?>> joinColumns =
+    private final List<JoinColumn<BetterVote, ?>> joinColumns =
             Arrays.asList(
                     new JoinColumn<>("BILL_ID", "b", "bills", BetterVote::getBill, BetterVote::setBill,
                             BillDao.supplier, BillDao.typedColumnList ),
@@ -106,7 +106,7 @@ public class BetterVoteDao {
         return bldr.toString();
     }
 
-    public static <T> String joinSelectSql(List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
+    public static <T> String joinSelectSql(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
         StringBuilder buf = new StringBuilder();
         buf.append("select ");
         buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
@@ -143,11 +143,11 @@ public class BetterVoteDao {
         return buf.toString();
     }
 
-    public BetterVote typedReadOne(long id){
+    public BetterVote read(long id){
 
         StringBuilder buf = new StringBuilder();
 
-        buf.append(joinSelectSql(dataColumns, joinColumns));
+        buf.append(joinSelectSql(table, dataColumns, joinColumns));
 
         buf.append(" and a.id = ");
         buf.append(id);
@@ -156,7 +156,6 @@ public class BetterVoteDao {
 
         System.out.println("SQL ");
         System.out.println(sql);
-
 
         Statement statement = null;
         ResultSet resultSet = null;
