@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 @Data
-public class BetterVote {
+public class BetterVote implements Identifiable {
 
     private Long id;
     private Bill bill;

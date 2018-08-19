@@ -84,4 +84,40 @@ public class TestBetterVoteDao {
         Assert.assertEquals(VoteSide.Nay, vote.getVoteSide());
     }
 
+    @Test
+    public void testInsert() throws SQLException {
+
+        Connection connection = connect();
+
+        Legislator wilson = new Legislator();
+        wilson.setFirstName("Wilson");
+        wilson.setChamber(Chamber.House);
+        wilson.setDistrict(1);
+        wilson.setSessionNumber(314);
+
+        LegislatorDao legislatorDao = new LegislatorDao(connection);
+        long wilsonId = legislatorDao.save(wilson);
+        wilson.setId(wilsonId);
+
+        Bill bill = new Bill();
+        bill.setChamber(Chamber.House);
+        bill.setNumber(123);
+
+        BillDao billDao = new BillDao(connection);
+        long billId = billDao.save(bill);
+        bill.setId(billId);
+
+        BetterVote vote = new BetterVote();
+        vote.setBill(bill);
+        vote.setLegislator(wilson);
+        vote.setVoteSide(VoteSide.Yea);
+
+
+        BetterVoteDao voteDao = new BetterVoteDao(connection);
+
+        long voteId = voteDao.insert(vote);
+        Assert.assertTrue(voteId > 0);
+    }
+
+
 }
