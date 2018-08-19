@@ -11,27 +11,27 @@ public class OneTableDao<T extends Identifiable> implements Dao<T> {
 
     private final Supplier<T> supplier;
     private final String table;
-    private final List<Column> columnList;
+    private final List<TypedColumn<T>> dataColumns;
 
     protected final Connection connection;
 
-    OneTableDao(Connection connection, Supplier<T> supplier, String table, List<Column> columnList) {
+    OneTableDao(Connection connection, Supplier<T> supplier, String table, List<TypedColumn<T>> dataColumns) {
         this.supplier = supplier;
         this.table = table;
-        this.columnList = columnList;
+        this.dataColumns = dataColumns;
         this.connection = connection;
     }
 
     public long save(T item){
-        return DaoHelper.save(connection, table, columnList, item);
+        return DaoHelper.save(connection, table, dataColumns, item);
     }
 
     public T read(long id){
-        List<T> found = DaoHelper.read(connection, table, columnList, Collections.singletonList(id), supplier);
+        List<T> found = DaoHelper.read(connection, table, dataColumns, Collections.singletonList(id), supplier);
         return DaoHelper.fromSingletonList(found, "Table: " + table + ", ID: " + id);
     }
 
     public List<T> readAll(){
-        return DaoHelper.read(connection, table, columnList, Collections.emptyList(), supplier);
+        return DaoHelper.read(connection, table, dataColumns, Collections.emptyList(), supplier);
     }
 }

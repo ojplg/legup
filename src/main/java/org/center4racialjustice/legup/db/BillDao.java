@@ -30,19 +30,19 @@ public class BillDao extends OneTableDao<Bill> {
     public static Supplier<Bill> supplier = () -> new Bill();
 
     public BillDao(Connection connection) {
-        super(connection, supplier, table, columnList);
+        super(connection, supplier, table, typedColumnList);
     }
 
     public Bill readByChamberAndNumber(Chamber chamber, long number){
         StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, columnList));
+        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
         sqlBldr.append(" where chamber = '");
         sqlBldr.append(chamber.toString());
         sqlBldr.append("' and bill_number = ");
         sqlBldr.append(number);
         String sql = sqlBldr.toString();
 
-        List<Bill> bills = DaoHelper.read(connection, sql, columnList, supplier);
+        List<Bill> bills = DaoHelper.read(connection, sql, typedColumnList, supplier);
         return DaoHelper.fromSingletonList(bills, "Searching for bill by chamber and number.");
     }
 

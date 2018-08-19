@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -55,14 +56,18 @@ class DaoHelper {
         return columnsAsString(null, columnList);
     }
 
-    private static String insertStatement(String table, List<Column> columnList){
+    public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
         bldr.append(table);
         bldr.append(" ( ");
-        bldr.append(columnsAsString(columnList));
+        bldr.append(DaoHelper.typedColumnsAsString("",columnList, false));
+        if( ! joinColumns.isEmpty() ) {
+            bldr.append(", ");
+            bldr.append(DaoHelper.typedColumnsAsString("", joinColumns, false));
+        }
         bldr.append(" ) values ( DEFAULT, ");
-        for(int idx=0; idx<columnList.size()-2; idx++){
+        for(int idx=0; idx<columnList.size()+joinColumns.size()-2; idx++){
             bldr.append("?, ");
         }
         bldr.append("? ");
@@ -72,12 +77,16 @@ class DaoHelper {
         return bldr.toString();
     }
 
-    private static <T extends Identifiable> String updateStatement(String table, List<Column> columnList, T item){
+    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList) {
+        return insertStatement(table, columnList, Collections.emptyList());
+    }
+
+    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, T item){
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
         sql.append(" set ");
         for(int idx=1; idx<columnList.size(); idx++){
-            Column column = columnList.get(idx);
+            TypedColumn column = columnList.get(idx);
             sql.append(column.getName());
             sql.append(" = ? ");
             if (idx < columnList.size() - 1){
@@ -90,7 +99,7 @@ class DaoHelper {
         return sql.toString();
     }
 
-    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<Column> columnList, T item){
+    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String sql = DaoHelper.insertStatement(table, columnList);
@@ -99,19 +108,8 @@ class DaoHelper {
             preparedStatement = connection.prepareStatement(sql);
 
             for (int index = 1; index < columnList.size(); index++) {
-                Column column = columnList.get(index);
-                ColumnType columnType = column.getColumnType();
-                switch (columnType) {
-                    case String:
-                        Function<T, String> stringGetter = column.getGetter();
-                        preparedStatement.setString(index, stringGetter.apply(item));
-                        break;
-                    case Long:
-                        Function<T, Long> longGetter = column.getGetter();
-                        preparedStatement.setLong(index, longGetter.apply(item));
-                        break;
-                }
-
+                TypedColumn column = columnList.get(index);
+                column.setValue(item, index, preparedStatement);
             }
 
             resultSet = preparedStatement.executeQuery();
@@ -133,7 +131,7 @@ class DaoHelper {
         }
     }
 
-    public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<Column> columnList, T item){
+    public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         String sql = DaoHelper.updateStatement(table, columnList, item);
 
         PreparedStatement preparedStatement = null;
@@ -142,20 +140,8 @@ class DaoHelper {
         try {
             preparedStatement = connection.prepareStatement(sql);
             for(int idx=1; idx<columnList.size(); idx++){
-                Column column = columnList.get(idx);
-                ColumnType columnType = column.getColumnType();
-                switch (columnType){
-                    case String:
-                        Function<T, String> stringGetter = column.getGetter();
-                        String stringValue = stringGetter.apply(item);
-                        preparedStatement.setString(idx, stringValue);
-                        break;
-                    case Long:
-                        Function<T, Long> longGetter = column.getGetter();
-                        Long longValue = longGetter.apply(item);
-                        preparedStatement.setLong(idx, longValue);
-                        break;
-                }
+                TypedColumn<T> column = columnList.get(idx);
+                column.setValue(item, idx, preparedStatement);
             }
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -176,39 +162,29 @@ class DaoHelper {
         }
     }
 
-    public static <T> T populate(ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
+    public static <T> T populate(ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
         return populate("", resultSet, columnList, supplier);
     }
 
-    public static <T> T populate(String prefix,ResultSet resultSet, List<Column> columnList, Supplier<T> supplier) throws SQLException {
+    public static <T> T populate(String prefix,ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
         T item = supplier.get();
 
-        for (Column column: columnList) {
-            String name = column.getName();
-            ColumnType columnType = column.getColumnType();
-            BiConsumer setter = column.getSetter();
-            switch (columnType){
-                case Long:
-                    setter.accept(item, resultSet.getLong(prefix + name));
-                    break;
-                case String:
-                    setter.accept(item, resultSet.getString(prefix + name));
-                    break;
-            }
+        for (TypedColumn<T> column: columnList) {
+            column.populate(item, resultSet);
         }
         return item;
     }
 
 
-    public static String selectString(String table, List<Column> columnList){
+    public static <T> String selectString(String table, List<TypedColumn<T>> columnList){
         StringBuilder sql =  new StringBuilder("select ");
-        sql.append(DaoHelper.columnsAsString(columnList));
+        sql.append(DaoHelper.typedColumnsAsString("",columnList, false));
         sql.append(" from ");
         sql.append(table);
         return sql.toString();
     }
 
-    public static <T> List<T> read(Connection connection, String sql, List<Column> columnList, Supplier<T> supplier){
+    public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> dataColumns, Supplier<T> supplier){
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -221,7 +197,7 @@ class DaoHelper {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = DaoHelper.populate(resultSet, columnList, supplier);
+                T item = DaoHelper.populate(resultSet, dataColumns, supplier);
                 items.add(item);
             }
 
@@ -243,10 +219,10 @@ class DaoHelper {
 
     }
 
-    public static <T> List<T> read(Connection connection, String table, List<Column> columnList, List<Long> ids,
+    public static <T> List<T> read(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<Long> ids,
                                    Supplier<T> supplier){
 
-        StringBuilder sql =  new StringBuilder(selectString(table, columnList));
+        StringBuilder sql =  new StringBuilder(selectString(table, dataColumns));
         if( ids.size() == 1 ){
             sql.append(" where id = ");
             sql.append(ids.get(0));
@@ -256,10 +232,10 @@ class DaoHelper {
             sql.append(" )");
         }
 
-        return read(connection, sql.toString(), columnList, supplier);
+        return read(connection, sql.toString(), dataColumns, supplier);
     }
 
-    public static <T extends Identifiable> long save(Connection connection, String table, List<Column> columnList, T item) {
+    public static <T extends Identifiable> long save(Connection connection, String table, List<TypedColumn<T>> columnList, T item) {
         if( item.getId() == null ){
             return doInsert(connection, table, columnList, item);
         } else {

@@ -48,7 +48,7 @@ public class BetterVoteDao {
         return doInsert(connection, table, dataColumns, joinColumns, vote);
     }
 
-    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+    public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String sql = insertStatement(table, columnList, joinColumns);
