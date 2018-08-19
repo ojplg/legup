@@ -34,28 +34,6 @@ class DaoHelper {
         return String.join(", ", columnNames);
     }
 
-
-    public static String columnsAsString(String prefix, List<? extends ColumnDescription> columnList, boolean withAliases){
-        Function<ColumnDescription,String> stringer;
-        if( withAliases && prefix != null ) {
-            stringer = c -> prefix + "." + c.getName() + " as " + prefix + c.getName();
-        } else if (prefix != null ){
-            stringer = c -> prefix + c.getName();
-        } else {
-            stringer = c -> c.getName();
-        }
-        List<String> columnNames = columnList.stream().map(stringer).collect(Collectors.toList());
-        return String.join(", ", columnNames);
-    }
-
-    public static String columnsAsString(String prefix, List<? extends ColumnDescription> columnList){
-        return columnsAsString(prefix, columnList, false);
-    }
-
-    public static String columnsAsString(List<? extends ColumnDescription> columnList){
-        return columnsAsString(null, columnList);
-    }
-
     public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");

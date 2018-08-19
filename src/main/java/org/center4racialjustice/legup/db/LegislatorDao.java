@@ -14,7 +14,7 @@ public class LegislatorDao implements Dao<Legislator> {
     public static String table = "legislators";
 
     public static Supplier<Legislator> supplier = () -> new Legislator();
-    
+
     public static List<TypedColumn<Legislator>> typedColumnList =
             Arrays.asList(
                     new LongColumn<>("ID", "", Legislator::getId, Legislator::setId),
