@@ -21,8 +21,8 @@ Technical Betterments
 Features to work on
 
 * Match different names between PDFs and HTML (started)
- * Display all results
- * Display unmatched/uncollated votes
+  * Display all results
+  * Display unmatched/uncollated votes
 * Add overrides to DB and make CRUD screens
 
 
