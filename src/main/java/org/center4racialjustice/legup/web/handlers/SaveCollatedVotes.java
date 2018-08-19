@@ -3,7 +3,10 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.VoteDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
@@ -45,18 +48,17 @@ public class SaveCollatedVotes implements Handler {
             BillDao billDao = new BillDao(connection);
             Bill bill = billDao.findOrCreate(collator.getBillChamber(), collator.getBillNumber());
 
-//            VoteDao voteDao = new VoteDao(connection);
-//
-//            int savedCount = 0;
-//            long billId = bill.getId();
-//            for(CollatedVote collatedVote :  collator.getAllCollatedVotes()){
-//                Vote vote = collatedVote.asVote(billId);
-//                voteDao.save(vote);
-//                savedCount++;
-//            }
+            VoteDao voteDao = new VoteDao(connection);
+
+            int savedCount = 0;
+            for(CollatedVote collatedVote :  collator.getAllCollatedVotes()){
+                Vote vote = collatedVote.asVote(bill);
+                voteDao.insert(vote);
+                savedCount++;
+            }
 
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("saved_count", 0);
+            velocityContext.put("saved_count", savedCount);
             velocityContext.put("chamber", bill.getChamber());
             velocityContext.put("bill_number", bill.getNumber());
             return velocityContext;
