@@ -29,8 +29,8 @@ public class BetterVoteDao {
 
     private static final List<ReferenceColumn> referenceColumnList  =
             Arrays.asList(
-                    new ReferenceColumn("BILL_ID",  "b", BillDao.table, BillDao.columnList, BillDao.supplier),
-                    new ReferenceColumn("LEGISLATOR_ID", "c", LegislatorDao.table, LegislatorDao.columnList, LegislatorDao.supplier )
+                    new ReferenceColumn<>("BILL_ID",  "b", BillDao.table, BillDao.columnList, BillDao.supplier, BetterVote::setBill),
+                    new ReferenceColumn<>("LEGISLATOR_ID", "c", LegislatorDao.table, LegislatorDao.columnList, LegislatorDao.supplier, BetterVote::setLegislator )
             );
 
     private final Connection connection;
@@ -74,9 +74,6 @@ public class BetterVoteDao {
 
         String sql = buf.toString();
 
-        System.out.println("Executing");
-        System.out.println(sql);
-
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -90,12 +87,12 @@ public class BetterVoteDao {
                 vote.setId(resultSet.getLong("aid"));
                 vote.setVoteSide(VoteSideConverter.INSTANCE.fromCode(resultSet.getString("avote_side")));
 
-                Legislator legislator = DaoHelper.populate("c", resultSet, LegislatorDao.columnList, LegislatorDao.supplier);
-                Bill bill = DaoHelper.populate("b", resultSet, BillDao.columnList, BillDao.supplier);
-
-                vote.setBill(bill);
-                vote.setLegislator(legislator);
-
+                for(ReferenceColumn referenceColumn : referenceColumnList ){
+                    Object item = DaoHelper.populate(
+                            referenceColumn.getPrefix(), resultSet, referenceColumn.getColumnList(), referenceColumn.getSupplier() );
+                    referenceColumn.getSetter().accept(vote, item);
+                }
+                
                 votes.add(vote);
             }
 
