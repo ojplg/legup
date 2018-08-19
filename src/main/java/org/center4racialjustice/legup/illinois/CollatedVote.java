@@ -1,7 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
-import org.center4racialjustice.legup.domain.BetterVote;
+import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
@@ -13,8 +13,8 @@ public class CollatedVote {
     private final Legislator legislator;
     private final Name name;
 
-    public BetterVote asVote(Bill bill){
-        BetterVote vote = new BetterVote();
+    public Vote asVote(Bill bill){
+        Vote vote = new Vote();
         vote.setBill(bill);
         vote.setLegislator(legislator);
         vote.setVoteSide(voteSide);

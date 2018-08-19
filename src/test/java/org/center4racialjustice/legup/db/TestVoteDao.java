@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.db;
 
-import org.center4racialjustice.legup.domain.BetterVote;
+import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TestBetterVoteDao {
+public class TestVoteDao {
 
     private static Connection connect(){
         try {
@@ -78,7 +78,7 @@ public class TestBetterVoteDao {
 
         BetterVoteDao voteDao = new BetterVoteDao(connection);
 
-        BetterVote vote = voteDao.read(voteId);
+        Vote vote = voteDao.read(voteId);
         Assert.assertEquals("Wilson", vote.getLegislator().getFirstName());
         Assert.assertEquals(123, vote.getBill().getNumber());
         Assert.assertEquals(VoteSide.Nay, vote.getVoteSide());
@@ -107,7 +107,7 @@ public class TestBetterVoteDao {
         long billId = billDao.save(bill);
         bill.setId(billId);
 
-        BetterVote vote = new BetterVote();
+        Vote vote = new Vote();
         vote.setBill(bill);
         vote.setLegislator(wilson);
         vote.setVoteSide(VoteSide.Yea);

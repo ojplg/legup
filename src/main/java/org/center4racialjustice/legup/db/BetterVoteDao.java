@@ -2,7 +2,7 @@ package org.center4racialjustice.legup.db;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.center4racialjustice.legup.domain.BetterVote;
+import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Identifiable;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
@@ -22,29 +22,29 @@ public class BetterVoteDao {
 
     private final String table = "VOTES";
 
-    private final List<TypedColumn<BetterVote>> dataColumns =
+    private final List<TypedColumn<Vote>> dataColumns =
             Arrays.asList(
-                    new LongColumn<>("ID", "a", BetterVote::getId, BetterVote::setId),
-                    new CodedEnumColumn<>("VOTE_SIDE", "a", BetterVote::getVoteSide, BetterVote::setVoteSide, new VoteSideConverter())
+                    new LongColumn<>("ID", "a", Vote::getId, Vote::setId),
+                    new CodedEnumColumn<>("VOTE_SIDE", "a", Vote::getVoteSide, Vote::setVoteSide, new VoteSideConverter())
             );
 
-    private final List<JoinColumn<BetterVote, ?>> joinColumns =
+    private final List<JoinColumn<Vote, ?>> joinColumns =
             Arrays.asList(
-                    new JoinColumn<>("BILL_ID", "b", "bills", BetterVote::getBill, BetterVote::setBill,
+                    new JoinColumn<>("BILL_ID", "b", "bills", Vote::getBill, Vote::setBill,
                             BillDao.supplier, BillDao.typedColumnList ),
-                    new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", BetterVote::getLegislator, BetterVote::setLegislator,
+                    new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", Vote::getLegislator, Vote::setLegislator,
                             LegislatorDao.supplier, LegislatorDao.typedColumnList )
             );
 
     private final Connection connection;
 
-    public final Supplier<BetterVote> supplier = () -> new BetterVote();
+    public final Supplier<Vote> supplier = () -> new Vote();
 
     public BetterVoteDao(Connection connection) {
         this.connection = connection;
     }
 
-    public long insert(BetterVote vote){
+    public long insert(Vote vote){
         return doInsert(connection, table, dataColumns, joinColumns, vote);
     }
 
@@ -163,7 +163,7 @@ public class BetterVoteDao {
         return buf.toString();
     }
 
-    public BetterVote read(long id){
+    public Vote read(long id){
 
         StringBuilder buf = new StringBuilder();
 
@@ -180,13 +180,13 @@ public class BetterVoteDao {
         Statement statement = null;
         ResultSet resultSet = null;
 
-        List<BetterVote> votes = new ArrayList<>();
+        List<Vote> votes = new ArrayList<>();
 
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             while(resultSet.next()){
-                BetterVote vote = supplier.get();
+                Vote vote = supplier.get();
                 for(TypedColumn column : dataColumns){
                     column.populate(vote, resultSet);
                 }
