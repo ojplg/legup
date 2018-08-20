@@ -94,10 +94,7 @@ public class MemberHtmlParser {
                     int district = Integer.parseInt(districtString);
                     String partyCode = partyCell.text();
                     Legislator leg = new Legislator();
-                    leg.setFirstName(name.getFirstName());
-                    leg.setMiddleInitialOrName(name.getMiddleInitial());
-                    leg.setLastName(name.getLastName());
-                    leg.setSuffix(name.getSuffix());
+                    leg.setName(name);
                     leg.setChamber(chamber);
                     leg.setDistrict(district);
                     leg.setParty(partyCode);

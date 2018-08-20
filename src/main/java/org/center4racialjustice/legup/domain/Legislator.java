@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class Legislator implements Identifiable {
     private Long id;
+    private String unparsedName;
     private String lastName;
     private String firstName;
     private String suffix;
@@ -14,18 +15,16 @@ public class Legislator implements Identifiable {
     private long district;
     private long sessionNumber;
 
+    public void setName(Name name){
+        this.unparsedName = name.getUnparsedName();
+        this.lastName = name.getLastName();
+        this.firstName = name.getFirstName();
+        this.suffix = name.getSuffix();
+        this.middleInitialOrName = name.getMiddleInitial();
+    }
+
     public Name getName(){
-        return new Name(firstName, middleInitialOrName, lastName, null, suffix);
+        return new Name(unparsedName, firstName, middleInitialOrName, lastName, null, suffix);
     }
 
-    public void setChamberFromString(String assemblyString){
-        this.chamber = Chamber.fromString(assemblyString);
-    }
-
-    public String getChamberString(){
-        if (chamber == null){
-            return null;
-        }
-        return chamber.toString();
-    }
 }

@@ -9,7 +9,7 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class LoadMembers implements Handler {
+public class ViewParsedLegislators implements Handler {
     @Override
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
         String memberUrl = request.getParameter("url");
@@ -26,6 +26,6 @@ public class LoadMembers implements Handler {
 
     @Override
     public String getTemplate() {
-        return "member_table.vtl";
+        return "view_parsed_legislators.vtl";
     }
 }

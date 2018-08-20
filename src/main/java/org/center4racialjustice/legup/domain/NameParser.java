@@ -37,12 +37,12 @@ public class NameParser {
     public NameParser(Map<String, Name> specialOverides) {
         this.specialOverides = specialOverides;
         // TODO: Move these overrides out of here.
-        specialOverides.put("C.D. Davidsmeyer", new Name("C.D.","","Davidsmeyer", null, null));
-        specialOverides.put("La Shawn K. Ford", new Name ("La Shawn", "K", "Ford", null,null));
-        specialOverides.put("Andr� Thapedi", new Name("André","", "Thapedi", null, null));
-        specialOverides.put("Wm. Sam McCann", new Name("Wm.", "Sam", "McCann",null,null));
-        specialOverides.put("Antonio Mu�oz", new Name("Antonio",null,"Muñoz",null,null));
-        specialOverides.put("Mr. Speaker", new Name("", null, "Speaker", null, null));
+        specialOverides.put("C.D. Davidsmeyer", new Name("C.D. Davidsmeyer","C.D.","","Davidsmeyer", null, null));
+        specialOverides.put("La Shawn K. Ford", new Name ("La Shawn K. Ford","La Shawn", "K", "Ford", null,null));
+        specialOverides.put("Andr� Thapedi", new Name("Andr� Thapedi","André","", "Thapedi", null, null));
+        specialOverides.put("Wm. Sam McCann", new Name("Wm. Sam McCann", "Wm.", "Sam", "McCann",null,null));
+        specialOverides.put("Antonio Mu�oz", new Name("Antonio Mu�oz", "Antonio",null,"Muñoz",null,null));
+        specialOverides.put("Mr. Speaker", new Name("Mr. Speaker", "", null, "Speaker", null, null));
     }
 
     public Name fromRegularOrderString(String input){
@@ -57,7 +57,7 @@ public class NameParser {
         if( firstAndLastNameMatcher.matches()){
             String firstName = firstAndLastNameMatcher.group(1);
             String lastName = firstAndLastNameMatcher.group(2);
-            return new Name(firstName, null, lastName, null, null);
+            return new Name(trimmedInput, firstName, null, lastName, null, null);
         }
 
         Matcher firstAndLastNameWithSuffixMatcher = firstAndLastRegularOrderWithSuffixPattern.matcher(trimmedInput);
@@ -65,7 +65,7 @@ public class NameParser {
             String firstName = firstAndLastNameWithSuffixMatcher.group(1);
             String lastName = firstAndLastNameWithSuffixMatcher.group(2);
             String suffix = firstAndLastNameWithSuffixMatcher.group(3);
-            return new Name(firstName, null, lastName, null, suffix);
+            return new Name(trimmedInput, firstName, null, lastName, null, suffix);
         }
 
         Matcher fullNameRegularOrderMatcher = fullNameRegularOrderPattern.matcher(trimmedInput);
@@ -73,7 +73,7 @@ public class NameParser {
             String firstName = fullNameRegularOrderMatcher.group(1);
             String middleInitial = fullNameRegularOrderMatcher.group(2);
             String lastName = fullNameRegularOrderMatcher.group(3);
-            return new Name(firstName, middleInitial, lastName, null, null);
+            return new Name(trimmedInput, firstName, middleInitial, lastName, null, null);
         }
 
         Matcher fullNameRegularOrderWithSuffixMatcher = fullNameRegularOrderWithSuffixPattern.matcher(trimmedInput);
@@ -82,7 +82,7 @@ public class NameParser {
             String middleInitial = fullNameRegularOrderWithSuffixMatcher.group(2);
             String lastName = fullNameRegularOrderWithSuffixMatcher.group(3);
             String suffix = fullNameRegularOrderWithSuffixMatcher.group(4);
-            return new Name(firstName, middleInitial, lastName, null, suffix);
+            return new Name(trimmedInput, firstName, middleInitial, lastName, null, suffix);
         }
 
         Matcher threePartNameRegularOrderMatcher = threePartNameRegularOrderPattern.matcher(trimmedInput);
@@ -105,24 +105,24 @@ public class NameParser {
         }
 
         if( trimmedInput.equals(president)){
-            return new Name(null, null, president, null, null);
+            return new Name(trimmedInput, null, null, president, null, null);
         }
         Matcher simpleLastNameMatcher = simpleLastNamePattern.matcher(trimmedInput);
         if( simpleLastNameMatcher.matches() ){
-            return new Name(null, null, trimmedInput, null, null);
+            return new Name(trimmedInput, null, null, trimmedInput, null, null);
         }
         Matcher firstInitialMatcher = firstInitialPattern.matcher(trimmedInput);
         if ( firstInitialMatcher.matches() ){
             String lastName = firstInitialMatcher.group(1);
             String firstInitial = firstInitialMatcher.group(2);
-            return new Name(null, null, lastName, firstInitial, null);
+            return new Name(trimmedInput, null, null, lastName, firstInitial, null);
         }
         Matcher fullNameMatcher = fullNamePattern.matcher(trimmedInput);
         if( fullNameMatcher.matches() ){
             String lastName = fullNameMatcher.group(1);
             String firstName = fullNameMatcher.group(2);
             String middleInitial = fullNameMatcher.group(3);
-            return new Name(firstName, middleInitial, lastName, null, null);
+            return new Name(trimmedInput, firstName, middleInitial, lastName, null, null);
         }
         Matcher fullNameWithSuffixMatcher = fullNameWithSuffixPattern.matcher(trimmedInput);
         if( fullNameWithSuffixMatcher.matches() ){

@@ -1,0 +1,40 @@
+
+<h3>Review Parsed Legislators</h3>
+
+<form action="/app/save_members">
+
+<input type="hidden" name="url" value="$url"/>
+
+<input type="submit" value="Save"/>
+
+<table>
+    <tr>
+        <th>Raw Name</th>
+        <th>First Name</th>
+        <th>Middle Name or Initial</th>
+        <th>Last Name</th>
+        <th>Suffix</th>
+        <th>Chamber</th>
+        <th>District</th>
+        <th>Party</th>
+    </tr>
+
+
+#foreach( $legislator in $legislators )
+    <tr>
+        <td>$!legislator.UnparsedName</td>
+        <td>$!legislator.FirstName</td>
+        <td>$!legislator.MiddleInitialOrName</td>
+        <td>$!legislator.LastName</td>
+        <td>$!legislator.Suffix</td>
+        <td>$!legislator.Chamber</td>
+        <td>$!legislator.District</td>
+        <td>$!legislator.Party</td>
+    </tr>
+#end
+
+</table>
+
+<input type="submit" value="Save"/>
+
+</form>
