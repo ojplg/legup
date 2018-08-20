@@ -13,11 +13,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class SaveMembers implements Handler {
+public class SaveLegislators implements Handler {
 
     private ConnectionPool connectionPool;
 
-    public SaveMembers(ConnectionPool connectionPool) {
+    public SaveLegislators(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
@@ -44,6 +44,6 @@ public class SaveMembers implements Handler {
 
     @Override
     public String getTemplate() {
-        return "member_save_results.vtl";
+        return "save_legislators.vtl";
     }
 }
