@@ -45,6 +45,9 @@ public final class Name {
     }
 
     public boolean matches(Name name){
+        if( name == null || this.lastName == null ){
+            return false;
+        }
         return this.lastName.equals(name.lastName);
     }
 

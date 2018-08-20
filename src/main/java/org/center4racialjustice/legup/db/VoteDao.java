@@ -133,29 +133,29 @@ public class VoteDao {
         return bldr.toString();
     }
 
-    public List<Vote> doSelect(String sql){
+    public static <T> List<T> doSelect(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
 
         Statement statement = null;
         ResultSet resultSet = null;
 
-        List<Vote> votes = new ArrayList<>();
+        List<T> items = new ArrayList<>();
 
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             while(resultSet.next()){
-                Vote vote = supplier.get();
+                T item = supplier.get();
                 for(TypedColumn column : dataColumns){
-                    column.populate(vote, resultSet);
+                    column.populate(item, resultSet);
                 }
 
                 for(JoinColumn joinColumn : joinColumns ){
-                    joinColumn.populate(vote, resultSet);
+                    joinColumn.populate(item, resultSet);
                 }
 
-                votes.add(vote);
+                items.add(item);
             }
-            return votes;
+            return items;
 
         } catch (SQLException se) {
             throw new RuntimeException(se);
@@ -183,7 +183,9 @@ public class VoteDao {
         buf.append(bill.getId());
         String sql = buf.toString();
 
-        List<Vote> votes = doSelect(sql);
+        System.out.println(sql);
+
+        List<Vote> votes = doSelect(connection, sql, supplier, dataColumns, Collections.singletonList(legislatorColumn));
 
         votes.forEach(v -> v.setBill(bill));
 
@@ -201,7 +203,7 @@ public class VoteDao {
 
         String sql = buf.toString();
 
-        List<Vote> votes = doSelect(sql);
+        List<Vote> votes = doSelect(connection, sql, supplier, dataColumns, joinColumns);
 
         return DaoHelper.fromSingletonList(votes, "Reading vote");
     }

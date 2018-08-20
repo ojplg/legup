@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.web.handlers.RenderLoadBillFormPage;
 import org.center4racialjustice.legup.web.handlers.RenderLocateMembersPage;
 import org.center4racialjustice.legup.web.handlers.SaveCollatedVotes;
 import org.center4racialjustice.legup.web.handlers.SaveMembers;
+import org.center4racialjustice.legup.web.handlers.ViewBillVotes;
 import org.center4racialjustice.legup.web.handlers.ViewBills;
 import org.center4racialjustice.legup.web.handlers.ViewMembers;
 import org.eclipse.jetty.server.Request;
@@ -37,6 +38,7 @@ public class AppHandler extends AbstractHandler {
         handlers.put("/collate_bill_votes", new RequestHandler(new CollateBillVotes(connectionPool)));
         handlers.put("/save_collated_votes", new RequestHandler(new SaveCollatedVotes(connectionPool)));
         handlers.put("/view_bills", new RequestHandler(new ViewBills(connectionPool)));
+        handlers.put("/view_bill_votes", new RequestHandler(new ViewBillVotes(connectionPool)));
     }
 
     @Override

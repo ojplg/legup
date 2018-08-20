@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class TestVoteDao {
 
@@ -117,6 +118,45 @@ public class TestVoteDao {
 
         long voteId = voteDao.insert(vote);
         Assert.assertTrue(voteId > 0);
+    }
+
+    @Test
+    public void testLoadByBill() {
+
+        Connection connection = connect();
+
+        Legislator wilson = new Legislator();
+        wilson.setFirstName("Wilson");
+        wilson.setChamber(Chamber.House);
+        wilson.setDistrict(1);
+        wilson.setSessionNumber(314);
+
+        LegislatorDao legislatorDao = new LegislatorDao(connection);
+        long wilsonId = legislatorDao.save(wilson);
+        wilson.setId(wilsonId);
+
+        Bill bill = new Bill();
+        bill.setChamber(Chamber.House);
+        bill.setNumber(123);
+
+        BillDao billDao = new BillDao(connection);
+        long billId = billDao.save(bill);
+        bill.setId(billId);
+
+        Vote vote = new Vote();
+        vote.setBill(bill);
+        vote.setLegislator(wilson);
+        vote.setVoteSide(VoteSide.Yea);
+
+        VoteDao voteDao = new VoteDao(connection);
+
+        long voteId = voteDao.insert(vote);
+        Assert.assertTrue(voteId > 0);
+
+
+        List<Vote> readVotes = voteDao.readByBill(bill);
+
+        Assert.assertEquals(1, readVotes.size());
     }
 
 

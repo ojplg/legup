@@ -1,0 +1,18 @@
+<h4>View Bill Votes</h4>
+
+$bill.Chamber bill number $bill.Number
+
+<br/>
+<br/>
+
+<table>
+
+#foreach ($vote in $votes)
+    <tr>
+        <td>$vote.Legislator.FirstName</td>
+        <td>$vote.Legislator.LastName</td>
+        <td>$vote.VoteSide.Code</td>
+    </tr>
+#end
+
+</table>
