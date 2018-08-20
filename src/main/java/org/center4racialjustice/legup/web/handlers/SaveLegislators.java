@@ -38,7 +38,7 @@ public class SaveLegislators implements Handler {
         connection.close();
 
         VelocityContext vc = new VelocityContext();
-        vc.put("saved_member_count", legislators.size());
+        vc.put("saved_legislator_count", legislators.size());
         return vc;
     }
 
