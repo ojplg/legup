@@ -90,7 +90,7 @@ public class NameParser {
             String firstName = threePartNameRegularOrderMatcher.group(1);
             String middleInitial = threePartNameRegularOrderMatcher.group(2);
             String lastName = threePartNameRegularOrderMatcher.group(3);
-            return new Name(firstName, middleInitial, lastName, null, null);
+            return new Name(trimmedInput, firstName, middleInitial, lastName, null, null);
         }
 
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
@@ -130,7 +130,7 @@ public class NameParser {
             String suffix = fullNameWithSuffixMatcher.group(2);
             String firstName = fullNameWithSuffixMatcher.group(3);
             String middleInitial = fullNameWithSuffixMatcher.group(4);
-            return new Name(firstName, middleInitial, lastName, null, suffix);
+            return new Name(trimmedInput, firstName, middleInitial, lastName, null, suffix);
         }
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
     }

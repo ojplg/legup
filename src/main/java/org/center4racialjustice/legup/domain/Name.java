@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.domain;
 
 public final class Name {
 
+    private final String unparsedName;
+
     private final String firstName;
     private final String firstInitial;
     private final String lastName;
@@ -16,7 +18,12 @@ public final class Name {
         return new Name(firstName, null, lastName, null, null);
     }
 
-    public Name(String firstName, String middleInitial, String lastName, String firstInitial, String suffix){
+    public Name(String firstName, String middleInitial, String lastName, String firstInitial, String suffix) {
+        this(null, firstName, middleInitial, lastName, firstInitial, suffix);
+    }
+
+    public Name(String unparsedName, String firstName, String middleInitial, String lastName, String firstInitial, String suffix){
+        this.unparsedName = unparsedName;
         this.lastName = lastName;
         this.firstName = firstName;
         this.middleInitial = middleInitial;

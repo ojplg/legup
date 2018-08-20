@@ -183,8 +183,6 @@ public class VoteDao {
         buf.append(bill.getId());
         String sql = buf.toString();
 
-        System.out.println(sql);
-
         List<Vote> votes = doSelect(connection, sql, supplier, dataColumns, Collections.singletonList(legislatorColumn));
 
         votes.forEach(v -> v.setBill(bill));
