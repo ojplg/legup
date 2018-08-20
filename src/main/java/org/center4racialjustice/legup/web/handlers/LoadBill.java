@@ -35,6 +35,6 @@ public class LoadBill implements Handler {
 
     @Override
     public String getTemplate() {
-        return "bill_votes_page.vtl";
+        return "load_bill.vtl";
     }
 }

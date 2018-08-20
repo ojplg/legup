@@ -29,7 +29,7 @@ public class AppHandler extends AbstractHandler {
     private final Map<String, RequestHandler> handlers = new HashMap<>();
 
     AppHandler(ConnectionPool connectionPool){
-        handlers.put("/load_bill_form", new RequestHandler(new ViewBillForm()));
+        handlers.put("/view_bill_form", new RequestHandler(new ViewBillForm()));
         handlers.put("/view_find_legislators_form", new RequestHandler(new ViewFindLegislatorsForm()));
         handlers.put("/load_bill", new RequestHandler(new LoadBill()));
         handlers.put("/view_parsed_legislators", new RequestHandler(new ViewParsedLegislators()));
