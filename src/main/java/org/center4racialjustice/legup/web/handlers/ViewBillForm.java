@@ -6,14 +6,14 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class RenderLoadBillFormPage implements Handler {
+public class ViewBillForm implements Handler {
 
     public VelocityContext handle(Request request, HttpServletResponse response) {
         return new VelocityContext();
     }
 
     public String getTemplate(){
-        return "load_bill_form.vtl";
+        return "view_bill_form.vtl";
     }
 
 }

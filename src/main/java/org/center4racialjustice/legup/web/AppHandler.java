@@ -5,9 +5,9 @@ import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.web.handlers.CollateBillVotes;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
+import org.center4racialjustice.legup.web.handlers.ViewBillForm;
 import org.center4racialjustice.legup.web.handlers.ViewLegislators;
 import org.center4racialjustice.legup.web.handlers.ViewParsedLegislators;
-import org.center4racialjustice.legup.web.handlers.RenderLoadBillFormPage;
 import org.center4racialjustice.legup.web.handlers.ViewFindLegislatorsForm;
 import org.center4racialjustice.legup.web.handlers.SaveCollatedVotes;
 import org.center4racialjustice.legup.web.handlers.SaveMembers;
@@ -29,7 +29,7 @@ public class AppHandler extends AbstractHandler {
     private final Map<String, RequestHandler> handlers = new HashMap<>();
 
     AppHandler(ConnectionPool connectionPool){
-        handlers.put("/load_bill_form", new RequestHandler(new RenderLoadBillFormPage()));
+        handlers.put("/load_bill_form", new RequestHandler(new ViewBillForm()));
         handlers.put("/view_find_legislators_form", new RequestHandler(new ViewFindLegislatorsForm()));
         handlers.put("/load_bill", new RequestHandler(new LoadBill()));
         handlers.put("/view_parsed_legislators", new RequestHandler(new ViewParsedLegislators()));
