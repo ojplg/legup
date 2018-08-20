@@ -14,16 +14,20 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 
 Technical Betterments
 
-* Decide on how to implement joins in DAO framework
 * Improve injection db connection logic/access to web tier, do not use raw Connection object
 * Actually make a real connection pool and automated reclamation
+* Name class should include a parsedFrom string
+* Consistency of names between routes, handlers, templates. Should be
+  * /some_nice_route
+  * SomeNiceRoute.java
+  * some_nice_route.vtl
+  Names should always be view_xyz, save_xyz, review_xyz, etc
 
 Features to work on
 
-* Match different names between PDFs and HTML (started)
-  * Display all results
-  * Display unmatched/uncollated votes
-* Add overrides to DB and make CRUD screens
+* Legislator import needs work: some names are not parsing correctly
+* Add a way to do name overrides in the DB
+* View all votes of a legislator
 
 
 See: [https://openstates.org/](https://openstates.org/)
