@@ -6,7 +6,7 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class RenderLocateMembersPage implements Handler {
+public class ViewFindLegislatorsForm implements Handler {
 
     @Override
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
@@ -15,6 +15,6 @@ public class RenderLocateMembersPage implements Handler {
 
     @Override
     public String getTemplate() {
-        return "locate_members_form.vtl";
+        return "view_find_legislators_form.vtl";
     }
 }

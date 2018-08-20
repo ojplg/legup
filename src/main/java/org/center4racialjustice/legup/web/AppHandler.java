@@ -7,7 +7,7 @@ import org.center4racialjustice.legup.web.handlers.CollateBillVotes;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
 import org.center4racialjustice.legup.web.handlers.ViewParsedLegislators;
 import org.center4racialjustice.legup.web.handlers.RenderLoadBillFormPage;
-import org.center4racialjustice.legup.web.handlers.RenderLocateMembersPage;
+import org.center4racialjustice.legup.web.handlers.ViewFindLegislatorsForm;
 import org.center4racialjustice.legup.web.handlers.SaveCollatedVotes;
 import org.center4racialjustice.legup.web.handlers.SaveMembers;
 import org.center4racialjustice.legup.web.handlers.ViewBillVotes;
@@ -30,7 +30,7 @@ public class AppHandler extends AbstractHandler {
 
     AppHandler(ConnectionPool connectionPool){
         handlers.put("/load_bill_form", new RequestHandler(new RenderLoadBillFormPage()));
-        handlers.put("/locate_members_form", new RequestHandler(new RenderLocateMembersPage()));
+        handlers.put("/view_find_legislators_form", new RequestHandler(new ViewFindLegislatorsForm()));
         handlers.put("/load_bill", new RequestHandler(new LoadBill()));
         handlers.put("/view_parsed_legislators", new RequestHandler(new ViewParsedLegislators()));
         handlers.put("/save_members", new RequestHandler(new SaveMembers(connectionPool)));

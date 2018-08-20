@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public final class Name {
 
@@ -41,4 +43,21 @@ public final class Name {
         return this.lastName.equals(name.lastName);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Name name = (Name) o;
+        return Objects.equals(firstName, name.firstName) &&
+                Objects.equals(firstInitial, name.firstInitial) &&
+                Objects.equals(lastName, name.lastName) &&
+                Objects.equals(middleInitial, name.middleInitial) &&
+                Objects.equals(suffix, name.suffix);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(firstName, firstInitial, lastName, middleInitial, suffix);
+    }
 }
