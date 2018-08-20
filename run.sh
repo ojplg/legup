@@ -22,4 +22,4 @@ MVNPATH=\
 /home/oliver/.m2/repository/org/apache/logging/log4j/log4j-core/2.7/log4j-core-2.7.jar:\
 /home/oliver/.m2/repository/org/apache/logging/log4j/log4j-api/2.7/log4j-api-2.7.jar
 
-java -classpath $MVNPATH:target/classes org.center4racialjustice.legup.Main
+java -classpath $MVNPATH:target/classes org.center4racialjustice.legup.Main $1

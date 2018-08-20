@@ -9,7 +9,7 @@ Does not do much of anything yet.
 * A pre-requisite to running the application (or the tests), is to install Postgres.
   Under the db directory are some scripts. Run them like this
     ````
-    psql -f db/setup.sql
+    sudo -u postgres psql -f setup.sql
     psql -f db/structures.sql legup
     ````
     to get that working.
