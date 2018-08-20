@@ -10,7 +10,7 @@ Does not do much of anything yet.
   Under the db directory are some scripts. Run them like this
     ````
     psql -f db/setup.sql
-    psql -f db/structures.sql
+    psql -f db/structures.sql legup
     ````
     to get that working.
 * The build is done using maven just
