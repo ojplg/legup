@@ -35,14 +35,6 @@ Technical Betterments
 
 * Improve injection db connection logic/access to web tier, do not use raw Connection object
 * Actually make a real conunection pool and automated reclamation
-* Name class should include a parsedFrom string
-* Consistency of names between routes, handlers, templates. Should be
-  * /some_nice_route
-  * SomeNiceRoute.java
-  * some_nice_route.vtl
-  
-  Names should always be view_xyz, save_xyz, review_xyz, etc
-* Rename Members to Legislators everywhere
 
 Features to work on
 
