@@ -12,11 +12,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ViewMembers implements Handler {
+public class ViewLegislators implements Handler {
 
     private final ConnectionPool connectionPool;
 
-    public ViewMembers(ConnectionPool connectionPool) {
+    public ViewLegislators(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
@@ -38,6 +38,6 @@ public class ViewMembers implements Handler {
 
     @Override
     public String getTemplate() {
-        return "view_members.vtl";
+        return "view_legislators.vtl";
     }
 }

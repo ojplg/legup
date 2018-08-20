@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.web.handlers.CollateBillVotes;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
+import org.center4racialjustice.legup.web.handlers.ViewLegislators;
 import org.center4racialjustice.legup.web.handlers.ViewParsedLegislators;
 import org.center4racialjustice.legup.web.handlers.RenderLoadBillFormPage;
 import org.center4racialjustice.legup.web.handlers.ViewFindLegislatorsForm;
@@ -12,7 +13,6 @@ import org.center4racialjustice.legup.web.handlers.SaveCollatedVotes;
 import org.center4racialjustice.legup.web.handlers.SaveMembers;
 import org.center4racialjustice.legup.web.handlers.ViewBillVotes;
 import org.center4racialjustice.legup.web.handlers.ViewBills;
-import org.center4racialjustice.legup.web.handlers.ViewMembers;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -34,7 +34,7 @@ public class AppHandler extends AbstractHandler {
         handlers.put("/load_bill", new RequestHandler(new LoadBill()));
         handlers.put("/view_parsed_legislators", new RequestHandler(new ViewParsedLegislators()));
         handlers.put("/save_members", new RequestHandler(new SaveMembers(connectionPool)));
-        handlers.put("/view_members", new RequestHandler(new ViewMembers(connectionPool)));
+        handlers.put("/view_members", new RequestHandler(new ViewLegislators(connectionPool)));
         handlers.put("/collate_bill_votes", new RequestHandler(new CollateBillVotes(connectionPool)));
         handlers.put("/save_collated_votes", new RequestHandler(new SaveCollatedVotes(connectionPool)));
         handlers.put("/view_bills", new RequestHandler(new ViewBills(connectionPool)));
