@@ -1,15 +1,17 @@
 
 <h3>Member View</h3>
 
-<table>
+<table style="border: 1px solid black; border-collapse: collapse;">
 
 #foreach( $legislator in $legislators )
     <tr>
-        <td>$legislator.FirstName</td>
-        <td>$legislator.LastName</td>
-        <td>$legislator.District</td>
-        <td>$legislator.Chamber</td>
-        <td>$legislator.Party</td>
+        <td style="border: 1px solid black;">$!legislator.FirstName</td>
+        <td style="border: 1px solid black;">$!legislator.MiddleInitialOrName</td>
+        <td style="border: 1px solid black;">$legislator.LastName</td>
+        <td style="border: 1px solid black;">$!legislator.Suffix</td>
+        <td style="border: 1px solid black;">$legislator.District</td>
+        <td style="border: 1px solid black;">$legislator.Chamber</td>
+        <td style="border: 1px solid black;">$legislator.Party</td>
     </tr>
 #end
 
