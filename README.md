@@ -40,7 +40,6 @@ Features to work on
 
 * Legislator import needs work: some names are not parsing correctly
 * Add a way to do name overrides in the DB
-* View all votes of a legislator
 
 # Better Option
 

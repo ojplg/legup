@@ -174,6 +174,23 @@ public class VoteDao {
 
     }
 
+    public List<Vote> readByLegislator(Legislator legislator){
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(DaoHelper.joinSelectSql(table, dataColumns, Collections.singletonList(billColumn)));
+
+        buf.append(" and a.legislator_id = ");
+        buf.append(legislator.getId());
+        String sql = buf.toString();
+
+        List<Vote> votes = doSelect(connection, sql, supplier, dataColumns, Collections.singletonList(billColumn));
+
+        votes.forEach(v -> v.setLegislator(legislator));
+
+        return votes;
+
+    }
+
     public List<Vote> readByBill(Bill bill){
         StringBuilder buf = new StringBuilder();
 
