@@ -19,26 +19,35 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AppHandler extends AbstractHandler {
 
     private static final Logger log = LogManager.getLogger(AppHandler.class);
 
-    private final Map<String, RequestHandler> handlers = new HashMap<>();
+    private final Map<String, RequestHandler> handlerMap = new HashMap<>();
 
-    AppHandler(ConnectionPool connectionPool){
-        handlers.put("/view_bill_form", new RequestHandler(new ViewBillForm()));
-        handlers.put("/view_find_legislators_form", new RequestHandler(new ViewFindLegislatorsForm()));
-        handlers.put("/load_bill", new RequestHandler(new LoadBill()));
-        handlers.put("/view_parsed_legislators", new RequestHandler(new ViewParsedLegislators()));
-        handlers.put("/save_legislators", new RequestHandler(new SaveLegislators(connectionPool)));
-        handlers.put("/view_legislators", new RequestHandler(new ViewLegislators(connectionPool)));
-        handlers.put("/collate_bill_votes", new RequestHandler(new CollateBillVotes(connectionPool)));
-        handlers.put("/save_collated_votes", new RequestHandler(new SaveCollatedVotes(connectionPool)));
-        handlers.put("/view_bills", new RequestHandler(new ViewBills(connectionPool)));
-        handlers.put("/view_bill_votes", new RequestHandler(new ViewBillVotes(connectionPool)));
+    AppHandler(ConnectionPool connectionPool) {
+        List<Handler> handlers = new ArrayList<>();
+
+        handlers.add(new ViewBillForm());
+        handlers.add(new ViewFindLegislatorsForm());
+        handlers.add(new LoadBill());
+        handlers.add(new ViewParsedLegislators());
+        handlers.add(new SaveLegislators(connectionPool));
+        handlers.add(new ViewLegislators(connectionPool));
+        handlers.add(new CollateBillVotes(connectionPool));
+        handlers.add(new SaveCollatedVotes(connectionPool));
+        handlers.add(new ViewBills(connectionPool));
+        handlers.add(new ViewBillVotes(connectionPool));
+
+        for (Handler handler : handlers) {
+            RequestHandler requestHandler = new RequestHandler(handler);
+            handlerMap.put(requestHandler.getRouteName(), requestHandler);
+        }
     }
 
     @Override
@@ -49,8 +58,8 @@ public class AppHandler extends AbstractHandler {
 
         log.info("Handling request to" + appPath);
 
-        if( handlers.containsKey(appPath) ){
-            RequestHandler requestHandler = handlers.get(appPath);
+        if( handlerMap.containsKey(appPath) ){
+            RequestHandler requestHandler = handlerMap.get(appPath);
             requestHandler.processRequest(request, httpServletResponse);
         } else {
             log.warn("UNKNOWN APPLICATION PATH " + appPath);

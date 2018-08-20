@@ -12,8 +12,4 @@ public class ViewBillForm implements Handler {
         return new VelocityContext();
     }
 
-    public String getTemplate(){
-        return "view_bill_form.vtl";
-    }
-
 }

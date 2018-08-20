@@ -12,9 +12,4 @@ public class ViewFindLegislatorsForm implements Handler {
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
         return new VelocityContext();
     }
-
-    @Override
-    public String getTemplate() {
-        return "view_find_legislators_form.vtl";
-    }
 }

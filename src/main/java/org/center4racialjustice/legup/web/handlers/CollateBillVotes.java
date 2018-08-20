@@ -64,11 +64,4 @@ public class CollateBillVotes implements Handler {
         return velocityContext;
 
     }
-
-
-
-    @Override
-    public String getTemplate() {
-        return "collate_bill_votes.vtl";
-    }
 }

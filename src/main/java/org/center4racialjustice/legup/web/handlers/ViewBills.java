@@ -44,9 +44,4 @@ public class ViewBills implements Handler {
             }
         }
     }
-
-    @Override
-    public String getTemplate() {
-        return "view_bills.vtl";
-    }
 }

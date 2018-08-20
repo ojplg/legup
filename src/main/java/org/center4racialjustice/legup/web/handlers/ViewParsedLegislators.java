@@ -23,9 +23,4 @@ public class ViewParsedLegislators implements Handler {
 
         return vc;
     }
-
-    @Override
-    public String getTemplate() {
-        return "view_parsed_legislators.vtl";
-    }
 }

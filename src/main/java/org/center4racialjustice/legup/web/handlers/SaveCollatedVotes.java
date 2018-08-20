@@ -69,9 +69,4 @@ public class SaveCollatedVotes implements Handler {
             }
         }
     }
-
-    @Override
-    public String getTemplate() {
-        return "save_collated_votes_results.vtl";
-    }
 }

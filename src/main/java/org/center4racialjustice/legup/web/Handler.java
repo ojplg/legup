@@ -10,5 +10,4 @@ import java.sql.SQLException;
 public interface Handler {
     VelocityContext handle(Request request, HttpServletResponse httpServletResponse)
             throws IOException, SQLException;
-    String getTemplate();
 }

@@ -32,9 +32,4 @@ public class LoadBill implements Handler {
 
         return vc;
     }
-
-    @Override
-    public String getTemplate() {
-        return "load_bill.vtl";
-    }
 }

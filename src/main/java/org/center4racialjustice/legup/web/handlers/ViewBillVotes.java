@@ -53,10 +53,4 @@ public class ViewBillVotes implements Handler {
         }
 
     }
-
-    @Override
-    public String getTemplate() {
-        return "view_bill_votes.vtl";
-    }
-
 }

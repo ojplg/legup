@@ -41,9 +41,4 @@ public class SaveLegislators implements Handler {
         vc.put("saved_legislator_count", legislators.size());
         return vc;
     }
-
-    @Override
-    public String getTemplate() {
-        return "save_legislators.vtl";
-    }
 }
