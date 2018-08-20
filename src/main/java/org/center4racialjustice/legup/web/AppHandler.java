@@ -34,7 +34,7 @@ public class AppHandler extends AbstractHandler {
         handlers.put("/load_bill", new RequestHandler(new LoadBill()));
         handlers.put("/view_parsed_legislators", new RequestHandler(new ViewParsedLegislators()));
         handlers.put("/save_legislators", new RequestHandler(new SaveLegislators(connectionPool)));
-        handlers.put("/view_members", new RequestHandler(new ViewLegislators(connectionPool)));
+        handlers.put("/view_legislators", new RequestHandler(new ViewLegislators(connectionPool)));
         handlers.put("/collate_bill_votes", new RequestHandler(new CollateBillVotes(connectionPool)));
         handlers.put("/save_collated_votes", new RequestHandler(new SaveCollatedVotes(connectionPool)));
         handlers.put("/view_bills", new RequestHandler(new ViewBills(connectionPool)));
