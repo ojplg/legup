@@ -23,6 +23,7 @@ Technical Betterments
   * some_nice_route.vtl
   
   Names should always be view_xyz, save_xyz, review_xyz, etc
+* Rename Members to Legislators everywhere
 
 Features to work on
 
@@ -30,6 +31,8 @@ Features to work on
 * Add a way to do name overrides in the DB
 * View all votes of a legislator
 
+# Better Option
 
 See: [https://openstates.org/](https://openstates.org/)
+
 Code: [https://github.com/openstates/](https://github.com/openstates/)
