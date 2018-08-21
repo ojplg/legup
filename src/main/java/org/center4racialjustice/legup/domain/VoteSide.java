@@ -20,6 +20,7 @@ public final class VoteSide {
             case "NV" : return NotVoting;
             case "P" : return Present;
             case "E" : return NotVoting;
+            case "A" : return NotVoting;
             default : throw new RuntimeException("No such code " + code);
         }
     }

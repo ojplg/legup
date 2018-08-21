@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,6 +21,9 @@ import java.util.regex.Pattern;
 public class BillVotesParser {
 
     private static final NameParser nameParser = new NameParser(new HashMap<>());
+
+    private static final List<String> ignoreLines =
+            Arrays.asList("Denotes Excused Absence");
 
     public static String readFileFromUrl(String url)
     throws IOException {
@@ -79,7 +83,7 @@ public class BillVotesParser {
             Pattern.compile("YEAS NAYS PRESENT NOT VOTING(\\d+) (\\d+) (\\d+) (\\d+)");
 
     private static Pattern voteLinePattern =
-            Pattern.compile("(NV|Y|N|P|E) .*");
+            Pattern.compile("(NV|Y|N|P|E|A) .*");
 
     public static boolean isVoteLine(String line){
         Matcher voteLineMatcher = voteLinePattern.matcher(line);
@@ -87,7 +91,7 @@ public class BillVotesParser {
     }
 
     public static int findNextPossibleRecordIndex(String input){
-        String[] markers = { "N ", "Y ", "P ", "NV ", "E "};
+        String[] markers = { "N ", "Y ", "P ", "NV ", "E ", "A "};
         int earliestIndex = input.length();
         for(String marker : markers){
             int idx = input.indexOf(marker);
@@ -154,6 +158,16 @@ public class BillVotesParser {
         BillVotes bv = new BillVotes(content);
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
+
+            boolean ignore = false;
+            for(String ignoreLine : ignoreLines){
+                if(line.contains(ignoreLine)){
+                    ignore = true;
+                }
+            }
+            if ( ignore ) {
+                continue;
+            }
 
             Chamber votingChamber = determineVotingChamber(line);
             if( votingChamber != null ){
