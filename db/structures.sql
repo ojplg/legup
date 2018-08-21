@@ -5,6 +5,7 @@
 
 begin;
 
+-- LEGISLATORS
 create sequence legislator_seq start 1;
 
 create table legislators (
@@ -22,6 +23,8 @@ create table legislators (
 grant all on sequence legislator_seq to legupuser;
 grant all on table legislators to legupuser;
 
+
+-- BILLS
 create sequence bill_seq start 1;
 
 create table bills (
@@ -34,6 +37,8 @@ create table bills (
 grant all on sequence bill_seq to legupuser;
 grant all on table bills to legupuser;
 
+
+-- VOTE LOADS
 create sequence vote_load_seq start 1;
 
 create table vote_loads (
@@ -41,12 +46,14 @@ create table vote_loads (
     load_time timestamp not null,
     bill_id integer REFERENCES bills (id),
     url text not null,
-    checkSum text not null
+    check_sum text not null
 );
 
 grant all on sequence vote_load_seq to legupuser;
 grant all on table vote_loads to legupuser;
 
+
+-- VOTES
 create sequence vote_seq start 1;
 
 create table votes (
@@ -59,6 +66,33 @@ create table votes (
 
 grant all on sequence vote_seq to legupuser;
 grant all on table votes to legupuser;
+
+
+-- REPORT CARDS
+create sequence report_card_seq start 1;
+
+create table report_cards (
+    id integer PRIMARY KEY DEFAULT nextval('report_card_seq'),
+    name text not null,
+    session_number integer not null
+);
+
+grant all on sequence report_card_seq to legupuser;
+grant all on table report_cards to legupuser;
+
+
+-- REPORT FACTORS
+create sequence report_factor_seq start 1;
+
+create table report_factors (
+    id integer PRIMARY KEY DEFAULT nextval('report_factor_seq'),
+    report_card_id integer REFERENCES report_cards(id),
+    bill_id integer REFERENCES bills(id),
+    vote_side text not null
+);
+
+grant all on sequence report_factor_seq to legupuser;
+grant all on table report_factors to legupuser;
 
 end;
 
