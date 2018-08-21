@@ -36,11 +36,39 @@ public final class Name {
         this.suffix = suffix;
     }
 
-    public boolean matches(Name name){
-        if( name == null || this.lastName == null ){
+
+    public boolean hasFirstName(){
+        return firstName != null;
+    }
+
+    public boolean hasFirstInitial(){
+        return firstInitial != null;
+    }
+
+    public boolean matches(Name that){
+        if( that == null || this.lastName == null ){
             return false;
         }
-        return this.lastName.equals(name.lastName);
+        if( this.hasFirstName() && that.hasFirstName()
+                && ! this.firstName.equals(that.firstName)){
+            return false;
+        }
+        if( this.hasFirstInitial() && that.hasFirstInitial()
+                && ! this.firstInitial.equals(that.firstInitial)){
+            return false;
+        }
+        if (this.hasFirstName() && that.hasFirstInitial()){
+            if ( ! this.firstName.startsWith(that.firstInitial)){
+                return false;
+            }
+        }
+        if (that.hasFirstName() && this.hasFirstInitial()){
+            if ( ! that.firstName.startsWith(this.firstInitial)){
+                return false;
+            }
+        }
+
+        return this.lastName.equals(that.lastName);
     }
 
     @Override
