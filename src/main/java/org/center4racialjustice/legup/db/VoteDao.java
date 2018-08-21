@@ -39,7 +39,7 @@ public class VoteDao {
                     VoteLoadDao.supplier, VoteLoadDao.dataColumns );
 
     private final List<JoinColumn<Vote, ?>> joinColumns =
-            Arrays.asList( billColumn, legislatorColumn );
+            Arrays.asList( billColumn, legislatorColumn, voteLoadColumn );
 
     private final Connection connection;
 

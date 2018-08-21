@@ -90,6 +90,10 @@ class DaoHelper {
         return buf.toString();
     }
 
+    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList) {
+        return insertStatement(table, columnList, Collections.emptyList());
+    }
+
     public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
@@ -101,7 +105,11 @@ class DaoHelper {
             bldr.append(DaoHelper.typedColumnsAsString("", joinColumns, false));
         }
         bldr.append(" ) values ( DEFAULT, ");
-        for(int idx=0; idx<columnList.size()+joinColumns.size()-2; idx++){
+        int end = columnList.size() - 2;
+        if (!joinColumns.isEmpty()){
+            end += joinColumns.size();
+        }
+        for(int idx=0; idx<end; idx++){
             bldr.append("?, ");
         }
         bldr.append("? ");
@@ -109,12 +117,6 @@ class DaoHelper {
         bldr.append(" RETURNING ID ");
 
         return bldr.toString();
-    }
-
-
-
-    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList) {
-        return insertStatement(table, columnList, Collections.emptyList());
     }
 
     private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, T item){
@@ -136,35 +138,7 @@ class DaoHelper {
     }
 
     private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        String sql = DaoHelper.insertStatement(table, columnList);
-
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-
-            for (int index = 1; index < columnList.size(); index++) {
-                TypedColumn<T> column = columnList.get(index);
-                column.setValue(item, index, preparedStatement);
-            }
-
-            resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return resultSet.getLong("id");
-        } catch (SQLException se){
-            throw new RuntimeException("Wrapped SQL exception for " + sql, se);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException se){
-                log.error("Error during close",se);
-            }
-        }
+        return doInsert(connection, table, columnList, Collections.emptyList(), item);
     }
 
     public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){

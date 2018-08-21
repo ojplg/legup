@@ -35,6 +35,7 @@ public class TestLegislatorDao {
         Connection connection = connect();
         Statement statement = connection.createStatement();
         statement.execute("delete from votes");
+        statement.execute("delete from vote_loads");
         statement.execute("delete from legislators");
         statement.close();
         connection.close();
