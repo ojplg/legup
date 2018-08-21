@@ -9,7 +9,7 @@ public class VoteLoad implements Identifiable {
 
     private Long id;
     private LocalDateTime loadTime;
-    private long billId;
+    private Bill bill;
     private String url;
     private String checkSum;
 
