@@ -22,7 +22,7 @@ public class VoteLoadDao {
                     new LongColumn<>("ID", "a", VoteLoad::getId, VoteLoad::setId),
                     new LocalDateTimeColumn<>("LOAD_TIME", "a", VoteLoad::getLoadTime, VoteLoad::setLoadTime),
                     new StringColumn<>("URL", "a", VoteLoad::getUrl, VoteLoad::setUrl),
-                    new LongColumn<>("CHECKSUM", "a", VoteLoad::getCheckSum, VoteLoad::setCheckSum)
+                    new LongColumn<>("CHECK_SUM", "a", VoteLoad::getCheckSum, VoteLoad::setCheckSum)
             );
 
     public final JoinColumn<VoteLoad,Bill> billColumn =

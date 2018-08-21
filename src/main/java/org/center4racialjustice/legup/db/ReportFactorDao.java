@@ -34,4 +34,15 @@ public class ReportFactorDao {
     public ReportFactorDao(Connection connection) {
         this.connection = connection;
     }
+
+    public List<ReportFactor> readByReportCardId(long reportCardId){
+        StringBuilder sqlBldr = new StringBuilder();
+        sqlBldr.append(DaoHelper.selectString(table, dataColumns));
+        sqlBldr.append(" where report_card_id = '");
+        sqlBldr.append(reportCardId);
+        String sql = sqlBldr.toString();
+
+        List<ReportFactor> factors = DaoHelper.read(connection, sql, dataColumns, supplier);
+        return factors;
+    }
 }
