@@ -71,8 +71,17 @@ public class MemberHtmlParser {
         Chamber chamber = getAssembly();
         Long sessionNumber = getSessionNumber();
 
+        List<Legislator> legislators = new ArrayList<>();
+        // main list
+        legislators.addAll(readTable(4, chamber, sessionNumber));
+        // former members
+        legislators.addAll(readTable(5, chamber, sessionNumber));
+        return legislators;
+    }
+
+    public List<Legislator> readTable(int number, Chamber chamber, Long sessionNumber){
         Elements tables = document.select("table");
-        Element table = tables.get(4);
+        Element table = tables.get(number);
 
         Elements rows = table.select("tr");
 
@@ -106,6 +115,7 @@ public class MemberHtmlParser {
             }
         }
         return members;
+
     }
 
 }
