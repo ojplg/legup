@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Identifiable;
+import org.center4racialjustice.legup.domain.VoteLoad;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 import java.sql.Connection;
@@ -39,6 +40,9 @@ public class VoteDao {
             new JoinColumn<>("LEGISLATOR_ID", "c", "legislators", Vote::getLegislator, Vote::setLegislator,
                     LegislatorDao.supplier, LegislatorDao.typedColumnList );
 
+    private final JoinColumn<Vote,VoteLoad> voteLoadColumn =
+            new JoinColumn<Vote, VoteLoad>("VOTE_LOAD_ID", "d", VoteLoadDao.table, Vote::getVoteLoad, Vote::setVoteLoad,
+                    VoteLoadDao.supplier, VoteLoadDao.dataColumns );
 
     private final List<JoinColumn<Vote, ?>> joinColumns =
             Arrays.asList( billColumn, legislatorColumn );

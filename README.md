@@ -39,7 +39,7 @@ Technical Betterments
 
 Features to work on
 
-* Add a way to do name overrides in the DB
+* Add persistence of when/how votes were gathered
 * Add a concept of a report card: collection of bills and desired votes
 * Figure out how to parse bill sponsors and introducers
 * Calculate legislator score
@@ -48,6 +48,8 @@ Features to work on
 * Allow configuartion of grading options (grade on a curve?)
 * Figure out URLs for vote PDFs
 * Determine differences between vote types (Third Reading, committee, etc)
+* Add a way to do name overrides in configuration or maybe DB
+
 
 # Better Option
 
