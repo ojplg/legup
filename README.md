@@ -48,6 +48,8 @@ Features to work on
 * Allow configuration for score options
 * Calculate legislator grades from scores
 * Allow configuartion of grading options (grade on a curve?)
+* Figure out URLs for vote PDFs
+* Determine differences between vote types (Third Reading, committee, etc)
 
 # Better Option
 
