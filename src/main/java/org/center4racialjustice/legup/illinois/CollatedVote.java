@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.VoteLoad;
 import org.center4racialjustice.legup.domain.VoteSide;
 
 @Data
@@ -13,9 +14,10 @@ public class CollatedVote {
     private final Legislator legislator;
     private final Name name;
 
-    public Vote asVote(Bill bill){
+    public Vote asVote(Bill bill, VoteLoad voteLoad){
         Vote vote = new Vote();
         vote.setBill(bill);
+        vote.setVoteLoad(voteLoad);
         vote.setLegislator(legislator);
         vote.setVoteSide(voteSide);
         return vote;

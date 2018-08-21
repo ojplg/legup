@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.db;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.VoteLoad;
 
 import java.sql.Connection;
@@ -21,7 +22,7 @@ public class VoteLoadDao {
                     new LongColumn<>("ID", "a", VoteLoad::getId, VoteLoad::setId),
                     new LocalDateTimeColumn<>("LOAD_TIME", "a", VoteLoad::getLoadTime, VoteLoad::setLoadTime),
                     new StringColumn<>("URL", "a", VoteLoad::getUrl, VoteLoad::setUrl),
-                    new StringColumn<>("CHECKSUM", "a", VoteLoad::getCheckSum, VoteLoad::setCheckSum)
+                    new LongColumn<>("CHECKSUM", "a", VoteLoad::getCheckSum, VoteLoad::setCheckSum)
             );
 
     public final JoinColumn<VoteLoad,Bill> billColumn =
@@ -41,6 +42,22 @@ public class VoteLoadDao {
 
     public long insert(VoteLoad voteLoad){
         return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, voteLoad);
+    }
+
+    public List<VoteLoad> readByBill(Bill bill){
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(DaoHelper.selectString(table, dataColumns));
+
+        buf.append(" and a.bill_id = ");
+        buf.append(bill.getId());
+        String sql = buf.toString();
+
+        List<VoteLoad> votes = DaoHelper.doSelect(connection, sql, supplier, dataColumns);
+
+        votes.forEach(v -> v.setBill(bill));
+
+        return votes;
     }
 
 

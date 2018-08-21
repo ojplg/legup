@@ -294,6 +294,10 @@ class DaoHelper {
 
     }
 
+    public static <T> List<T> doSelect(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns) {
+        return doSelect(connection, sql, supplier, dataColumns, Collections.emptyList());
+    }
+
     public static <T> List<T> doSelect(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
 
         Statement statement = null;

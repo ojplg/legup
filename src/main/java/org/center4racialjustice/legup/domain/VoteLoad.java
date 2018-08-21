@@ -11,6 +11,6 @@ public class VoteLoad implements Identifiable {
     private LocalDateTime loadTime;
     private Bill bill;
     private String url;
-    private String checkSum;
+    private long checkSum;
 
 }
