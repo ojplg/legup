@@ -42,7 +42,8 @@ public class NameParser {
         specialOverides.put("Andr� Thapedi", new Name("Andr� Thapedi","André","", "Thapedi", null, null));
         specialOverides.put("Wm. Sam McCann", new Name("Wm. Sam McCann", "Wm.", "Sam", "McCann",null,null));
         specialOverides.put("Antonio Mu�oz", new Name("Antonio Mu�oz", "Antonio",null,"Muñoz",null,null));
-        specialOverides.put("Mr. Speaker", new Name("Mr. Speaker", "", null, "Speaker", null, null));
+        specialOverides.put("Mr. Speaker", new Name("Mr. Speaker", "Michael", "J", "Madigan", null, null));
+        specialOverides.put("Linda Chapa LaVia", new Name("Linda Chapa LaVia", "Linda", null, "Chapa LaVia", null, null));
     }
 
     public Name fromRegularOrderString(String input){

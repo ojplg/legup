@@ -39,9 +39,7 @@ Technical Betterments
 
 Features to work on
 
-* Legislator import needs work: some names are not parsing correctly
 * Add a way to do name overrides in the DB
-* Name matching requires more sophistication
 * Add a concept of a report card: collection of bills and desired votes
 * Figure out how to parse bill sponsors and introducers
 * Calculate legislator score

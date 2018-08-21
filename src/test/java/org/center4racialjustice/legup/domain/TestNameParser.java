@@ -74,15 +74,6 @@ public class TestNameParser {
     }
 
     @Test
-    public void takeMiddleName(){
-        NameParser parser = new NameParser(new HashMap<>());
-        Name name = parser.fromRegularOrderString("Linda Chapa LaVia");
-        Assert.assertEquals("Linda", name.getFirstName());
-        Assert.assertEquals("Chapa", name.getMiddleInitial());
-        Assert.assertEquals("LaVia", name.getLastName());
-    }
-
-    @Test
     public void regularNameWithHyphen(){
         NameParser parser = new NameParser(new HashMap<>());
         Name name = parser.fromRegularOrderString("Melissa Conyears-Ervin");
