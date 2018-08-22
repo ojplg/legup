@@ -52,4 +52,14 @@ public class BillDao extends OneTableDao<Bill> {
         bill.setId(id);
         return bill;
     }
+
+    public List<Bill> readBySession(long session){
+        StringBuilder sqlBldr = new StringBuilder();
+        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
+        sqlBldr.append(" where session_number = '");
+        sqlBldr.append(session);
+        String sql = sqlBldr.toString();
+
+        return DaoHelper.read(connection, sql, typedColumnList, supplier);
+    }
 }
