@@ -25,6 +25,9 @@ public class BillVotesParser {
     private static final List<String> ignoreLines =
             Arrays.asList("Denotes Excused Absence");
 
+    private static final List<String> hundredthLines =
+            Arrays.asList("ONE HUNDREDTH", "100th General Assembly");
+
     public static String readFileFromUrl(String url)
     throws IOException {
         PDDocument doc = new PDDocument();
@@ -153,6 +156,15 @@ public class BillVotesParser {
         return null;
     }
 
+    private static Long extractSession(String line){
+        for(String hundredthLine : hundredthLines){
+            if( line.contains(hundredthLine)){
+                return 100L;
+            }
+        }
+        return null;
+    }
+
     public static BillVotes parseFileContents(String content){
         String[] lines = content.split("\n");
         BillVotes bv = new BillVotes(content);
@@ -166,6 +178,12 @@ public class BillVotesParser {
                 }
             }
             if ( ignore ) {
+                continue;
+            }
+
+            Long session = extractSession(line);
+            if( session != null ){
+                bv.setSession(session);
                 continue;
             }
 

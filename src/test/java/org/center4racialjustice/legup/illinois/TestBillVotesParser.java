@@ -55,7 +55,6 @@ public class TestBillVotesParser {
         Assert.assertEquals( billVotes.getContent(),2771L, billVotes.getBillNumber());;
     }
 
-
     @Test
     public void testFileLoading(){
         String content = BillVotesParser.readFileToString(bill8FileName);
@@ -250,4 +249,17 @@ public class TestBillVotesParser {
 
         Assert.assertNotNull(contents);
     }
+
+    @Test
+    public void testReportsCorrectSession_2771(){
+        BillVotes bv = BillVotesParser.parseFile(houseBill2771FileName);
+        Assert.assertEquals(100L, bv.getSession());
+    }
+
+    @Test
+    public void testReportsCorrectSession_3179(){
+        BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
+        Assert.assertEquals(100L, bv.getSession());
+    }
+
 }

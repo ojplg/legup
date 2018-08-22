@@ -14,6 +14,7 @@ public class BillVotes {
     private Chamber billChamber;
     private Chamber votingChamber;
     private int billNumber;
+    private long session;
     private int expectedNays;
     private int expectedYeas;
     private int expectedPresent;
@@ -140,5 +141,13 @@ public class BillVotes {
 
     public void setExpectedNotVoting(int expectedNotVoting) {
         this.expectedNotVoting = expectedNotVoting;
+    }
+
+    public long getSession() {
+        return session;
+    }
+
+    public void setSession(long session) {
+        this.session = session;
     }
 }
