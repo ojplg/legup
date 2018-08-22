@@ -35,6 +35,7 @@ public class ReportCardDao {
             factor.setReportCardId(reportCardId);
             reportFactorDao.save(factor);
         }
+        // FIXME: Needs to delete old factors!
         return reportCardId;
     }
 

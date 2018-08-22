@@ -48,6 +48,7 @@ public class ReportFactorDao {
     }
 
     public void save(ReportFactor reportFactor){
-        DaoHelper.save(connection,table, dataColumns, reportFactor);
+        // FIXME: Needs to take an update
+        DaoHelper.doInsert(connection, table, dataColumns, joinColumns, reportFactor);
     }
 }

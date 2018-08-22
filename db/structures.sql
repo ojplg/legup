@@ -89,7 +89,8 @@ create table report_factors (
     id integer PRIMARY KEY DEFAULT nextval('report_factor_seq'),
     report_card_id integer REFERENCES report_cards(id) not null,
     bill_id integer REFERENCES bills(id) not null,
-    vote_side text not null
+    vote_side text not null,
+    UNIQUE ( report_card_id, bill_id )
 );
 
 grant all on sequence report_factor_seq to legupuser;
