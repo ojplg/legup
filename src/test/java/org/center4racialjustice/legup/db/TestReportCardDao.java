@@ -38,8 +38,10 @@ public class TestReportCardDao {
     private static void clearTables() throws SQLException {
         Connection connection = connect();
         Statement statement = connection.createStatement();
-        statement.execute("delete from bills");
+        statement.execute("delete from votes");
+        statement.execute("delete from vote_loads");
         statement.execute("delete from report_factors");
+        statement.execute("delete from bills");
         statement.execute("delete from report_cards");
         statement.close();
         connection.close();
