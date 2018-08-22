@@ -45,6 +45,12 @@ class DaoHelper {
                 sql.append(", ");
             }
         }
+        for(int idx=0; idx<joinColumns.size(); idx++){
+            JoinColumn joinColumn = joinColumns.get(idx);
+            sql.append(", ");
+            sql.append(joinColumn.getName());
+            sql.append(" = ? ");
+        }
         sql.append(" where id = ");
         sql.append(item.getId());
         sql.append(" RETURNING ID");
@@ -131,14 +137,9 @@ class DaoHelper {
         return bldr.toString();
     }
 
-    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
-        return doInsert(connection, table, columnList, Collections.emptyList(), item);
-    }
-
-    public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+    public static <T extends Identifiable> Long runInsertOrUpdate(Connection connection, String sql, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String sql = DaoHelper.insertStatement(table, columnList, joinColumns);
 
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -173,8 +174,22 @@ class DaoHelper {
                 log.error("Error during close",se);
             }
         }
+
     }
 
+    public static <T extends Identifiable> Long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item) {
+        String sql = DaoHelper.updateStatement(table, columnList, joinColumns, item);
+        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
+    }
+
+    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
+        return doInsert(connection, table, columnList, Collections.emptyList(), item);
+    }
+
+    public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+        String sql = DaoHelper.insertStatement(table, columnList, joinColumns);
+        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
+    }
 
     public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         String sql = DaoHelper.updateStatement(table, columnList, item);

@@ -47,8 +47,11 @@ public class ReportFactorDao {
         return factors;
     }
 
-    public void save(ReportFactor reportFactor){
-        // FIXME: Needs to take an update
-        DaoHelper.doInsert(connection, table, dataColumns, joinColumns, reportFactor);
+    public Long save(ReportFactor reportFactor){
+        if ( reportFactor.getId() == null) {
+            return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, reportFactor);
+        } else {
+            return DaoHelper.doUpdate(connection, table, dataColumns, joinColumns, reportFactor);
+        }
     }
 }
