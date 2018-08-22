@@ -1,0 +1,19 @@
+
+<h4>View Report Card Scores</h4>
+
+<table>
+    <tr>
+        <th>Legislator</th>
+        <th>Score</th>
+    </tr>
+
+    #foreach ($pair in ${scores.entrySet()})
+        #set ($legislator = $pair.Key )
+        #set ($score = $pair.Value )
+        <tr>
+            <td>$legislator.Name.LastName, $legislator.Name.FirstName</td>
+            <td>$score</td>
+        </tr>
+    #end
+
+</table>

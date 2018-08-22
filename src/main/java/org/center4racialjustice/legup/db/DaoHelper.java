@@ -329,7 +329,9 @@ class DaoHelper {
                                    Supplier<T> supplier){
 
         StringBuilder sql =  new StringBuilder(selectString(table, dataColumns));
-        if( ids.size() == 1 ){
+        if (ids == null || ids.size() == 0){
+           // do nothing
+        } else if ( ids.size() == 1 ){
             sql.append(" where id = ");
             sql.append(ids.get(0));
         } else if ( ids.size() > 1 ){

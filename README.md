@@ -34,7 +34,8 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 Technical Betterments
 
 * Improve injection db connection logic/access to web tier, do not use raw Connection object
-* Actually make a real conunection pool and automated reclamation
+* Actually make a real connection pool and automated reclamation
+* Maybe throw out the whole of the DB access layer and replace with Hibernate/javax.persistence
 * Save link to votes pdf when downloading/parsing
 
 Features to work on
