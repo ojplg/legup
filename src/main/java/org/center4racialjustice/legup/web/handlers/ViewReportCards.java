@@ -33,8 +33,6 @@ public class ViewReportCards implements Handler {
 
             velocityContext.put("report_cards", reportCards);
 
-
-
             return velocityContext;
         } finally {
             connection.close();

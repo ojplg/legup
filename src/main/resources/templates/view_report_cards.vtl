@@ -3,7 +3,7 @@
 
 <ul>
 #foreach ($report_card in $report_cards)
-    <li>$report_card.Name</li>
+    <li><a href="/app/view_report_card_form?report_card_id=$report_card.Id">$report_card.Name</a></li>
 #end
 </ul>
 

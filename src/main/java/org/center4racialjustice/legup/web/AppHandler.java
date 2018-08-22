@@ -50,7 +50,7 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewLegislators(connectionPool));
         handlers.add(new ViewLegislatorVotes(connectionPool));
         handlers.add(new ViewReportCards(connectionPool));
-        handlers.add(new ViewReportCardForm());
+        handlers.add(new ViewReportCardForm(connectionPool));
         handlers.add(new SaveReportCard(connectionPool));
 
         for (Handler handler : handlers) {

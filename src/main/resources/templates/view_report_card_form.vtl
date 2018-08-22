@@ -3,15 +3,15 @@
 
 <form action="/app/save_report_card">
 
-    <input type="hidden" name="id" value=""/>
+    <input type="hidden" name="id" value="$!report_card.Id"/>
 
     <label>Name</label>
-    <input type="text" name="name" />
+    <input type="text" name="name" value="$!report_card.Name"/>
 
     <br/>
 
     <label>Session</label>
-    <input type="text" name="session" />
+    <input type="text" name="session" value="$!report_card.SessionNumber"/>
 
     <br/>
 

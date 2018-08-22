@@ -34,4 +34,9 @@ public class ReportCardDao {
     public List<ReportCard> readAll(){
         return DaoHelper.read(connection, table, dataColumns, Collections.emptyList(), supplier);
     }
+
+    public ReportCard read(long id){
+        List<ReportCard> reportCards = DaoHelper.read(connection, table, dataColumns, Collections.singletonList(id), supplier);
+        return DaoHelper.fromSingletonList(reportCards, "Reading report card for " + id);
+    }
 }
