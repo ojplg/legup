@@ -89,4 +89,6 @@ public class VotesLegislatorsCollator {
     public long getBillNumber(){
         return billVotes.getBillNumber();
     }
+
+    public long getBillSession() { return billVotes.getSession(); }
 }

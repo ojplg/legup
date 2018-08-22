@@ -27,27 +27,30 @@ public class BillDao extends OneTableDao<Bill> {
         super(connection, supplier, table, typedColumnList);
     }
 
-    public Bill readByChamberAndNumber(Chamber chamber, long number){
+    public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
         StringBuilder sqlBldr = new StringBuilder();
         sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
         sqlBldr.append(" where chamber = '");
         sqlBldr.append(chamber.toString());
         sqlBldr.append("' and bill_number = ");
         sqlBldr.append(number);
+        sqlBldr.append(" and session_number = ");
+        sqlBldr.append(session);
         String sql = sqlBldr.toString();
 
         List<Bill> bills = DaoHelper.read(connection, sql, typedColumnList, supplier);
         return DaoHelper.fromSingletonList(bills, "Searching for bill by chamber and number.");
     }
 
-    public Bill findOrCreate(Chamber chamber, long number){
-        Bill found = readByChamberAndNumber(chamber, number);
+    public Bill findOrCreate(long session, Chamber chamber, long number){
+        Bill found = readBySessionChamberAndNumber(session, chamber, number);
         if( found != null ){
             return found;
         }
         Bill bill = new Bill();
         bill.setChamber(chamber);
         bill.setNumber(number);
+        bill.setSession(session);
         Long id = save(bill);
         bill.setId(id);
         return bill;
@@ -56,7 +59,7 @@ public class BillDao extends OneTableDao<Bill> {
     public List<Bill> readBySession(long session){
         StringBuilder sqlBldr = new StringBuilder();
         sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where session_number = '");
+        sqlBldr.append(" where session_number = ");
         sqlBldr.append(session);
         String sql = sqlBldr.toString();
 

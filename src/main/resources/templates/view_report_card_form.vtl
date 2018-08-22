@@ -15,6 +15,36 @@
 
     <br/>
 
+    <h5>Factors</h5>
+    <table>
+        <tr>
+            <th>Bill ID</th>
+            <th>Bill Session</th>
+            <th>Bill Chamber</th>
+            <th>Bill Number</th>
+            <th>Desired Vote</th>
+        </tr>
+
+        #foreach ($pair in ${possible_factors.entrySet()})
+            #set ( $bill = $pair.Key )
+            #set ( $factor = $pair.Value )
+            FOO: $pair
+            <tr>
+                <td>$bill.id</td>
+                <td>$bill.Session</td>
+                <td>$bill.Chamber</td>
+                <td>$bill.Number</td>
+                <td>
+                    <select name="bill_vote_$bill.id">
+                        <option value=""></option>
+                        <option value="Y">Yes</option>
+                        <option value="N">No</option>
+                    </select>
+                </td>
+            </tr>
+        #end
+    </table>
+
     <input type="submit" value="Save"/>
 
 </form>

@@ -15,10 +15,6 @@ public class Bill implements Identifiable, Comparable<Bill> {
     private Chamber chamber;
     private long session;
 
-    public void setChamberFromString(String assemblyString){
-        this.chamber = Chamber.fromString(assemblyString);
-    }
-
     @Override
     public int compareTo(Bill o) {
         int chamberCompare = this.chamber.compareTo(o.chamber);
