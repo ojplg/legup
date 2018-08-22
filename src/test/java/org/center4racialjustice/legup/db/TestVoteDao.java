@@ -42,6 +42,7 @@ public class TestVoteDao {
         Statement statement = connection.createStatement();
         statement.execute("delete from votes");
         statement.execute("delete from vote_loads");
+        statement.execute("delete from report_factors");
         statement.execute("delete from bills");
         statement.execute("delete from legislators");
         statement.close();

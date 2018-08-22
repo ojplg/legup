@@ -90,10 +90,6 @@ class DaoHelper {
         return buf.toString();
     }
 
-    private static <T> String insertStatement(String table, List<TypedColumn<T>> columnList) {
-        return insertStatement(table, columnList, Collections.emptyList());
-    }
-
     public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
         StringBuilder bldr = new StringBuilder();
         bldr.append("insert into ");
