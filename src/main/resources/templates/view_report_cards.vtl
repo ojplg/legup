@@ -1,10 +1,20 @@
 
 <h4>Report Cards</h4>
 
-<ul>
-#foreach ($report_card in $report_cards)
-    <li><a href="/app/view_report_card_form?report_card_id=$report_card.Id">$report_card.Name</a></li>
-#end
-</ul>
+<table>
+    <tr>
+        <th>Report Card</th>
+        <th>Calculate Scores</th>
+        <th>Edit</th>
+    </tr>
+
+    #foreach ($report_card in $report_cards)
+        <tr>
+            <td>$report_card.Name</td>
+            <td> --- </td>
+            <td><a href="/app/view_report_card_form?report_card_id=$report_card.Id">edit</a></td>
+        </tr>
+    #end
+</table>
 
 <a href="/app/view_report_card_form">New</a>
