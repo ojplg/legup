@@ -5,13 +5,14 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class ReportCardDao {
     public static String table = "REPORT_CARDS";
 
-    public static List<TypedColumn<ReportCard>> typedColumnList =
+    public static List<TypedColumn<ReportCard>> dataColumns =
             Arrays.asList(
                     new LongColumn<>("ID", "", ReportCard::getId, ReportCard::setId),
                     new StringColumn<>("NAME", "", ReportCard::getName, ReportCard::setName),
@@ -26,9 +27,11 @@ public class ReportCardDao {
         this.connection = connection;
     }
 
-    public List<ReportCard> readAll(){
-        List<ReportCard> cards = new ArrayList<>();
+    public long save(ReportCard reportCard){
+        return DaoHelper.save(connection, table, dataColumns, reportCard);
+    }
 
-        return cards;
+    public List<ReportCard> readAll(){
+        return DaoHelper.read(connection, table, dataColumns, Collections.emptyList(), supplier);
     }
 }

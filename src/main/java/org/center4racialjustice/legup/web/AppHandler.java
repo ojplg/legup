@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.web.handlers.CollateBillVotes;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
+import org.center4racialjustice.legup.web.handlers.SaveReportCard;
 import org.center4racialjustice.legup.web.handlers.ViewBillForm;
 import org.center4racialjustice.legup.web.handlers.ViewLegislatorVotes;
 import org.center4racialjustice.legup.web.handlers.ViewLegislators;
@@ -14,6 +15,7 @@ import org.center4racialjustice.legup.web.handlers.SaveCollatedVotes;
 import org.center4racialjustice.legup.web.handlers.SaveLegislators;
 import org.center4racialjustice.legup.web.handlers.ViewBillVotes;
 import org.center4racialjustice.legup.web.handlers.ViewBills;
+import org.center4racialjustice.legup.web.handlers.ViewReportCardForm;
 import org.center4racialjustice.legup.web.handlers.ViewReportCards;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -48,6 +50,8 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewLegislators(connectionPool));
         handlers.add(new ViewLegislatorVotes(connectionPool));
         handlers.add(new ViewReportCards(connectionPool));
+        handlers.add(new ViewReportCardForm());
+        handlers.add(new SaveReportCard(connectionPool));
 
         for (Handler handler : handlers) {
             RequestHandler requestHandler = new RequestHandler(handler);

@@ -11,13 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
-public class ViewReportCards implements Handler {
+public class SaveReportCard implements Handler {
 
     private final ConnectionPool connectionPool;
 
-    public ViewReportCards(ConnectionPool connectionPool){
+    public SaveReportCard(ConnectionPool connectionPool){
         this.connectionPool = connectionPool;
     }
 
@@ -26,19 +25,23 @@ public class ViewReportCards implements Handler {
         Connection connection = connectionPool.getConnection();
 
         try {
-            VelocityContext velocityContext = new VelocityContext();
+            String name = request.getParameter("name");
+            String sessionString = request.getParameter("session");
+            long session = Long.parseLong(sessionString);
+
+            ReportCard reportCard = new ReportCard();
+
+            reportCard.setName(name);
+            reportCard.setSessionNumber(session);
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
-            List<ReportCard> reportCards = reportCardDao.readAll();
+            long reportCardId = reportCardDao.save(reportCard);
 
-            velocityContext.put("report_cards", reportCards);
-
-
-
+            VelocityContext velocityContext = new VelocityContext();
+            velocityContext.put("reportCardId", reportCardId);
             return velocityContext;
         } finally {
             connection.close();
         }
-
     }
 }
