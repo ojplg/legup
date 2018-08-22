@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,12 +26,14 @@ public class SaveReportCard implements Handler {
         Connection connection = connectionPool.getConnection();
 
         try {
+            Long id = Util.getLongParameter(request, "id");
             String name = request.getParameter("name");
             String sessionString = request.getParameter("session");
             long session = Long.parseLong(sessionString);
 
             ReportCard reportCard = new ReportCard();
 
+            reportCard.setId(id);
             reportCard.setName(name);
             reportCard.setSessionNumber(session);
 
