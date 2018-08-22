@@ -35,6 +35,14 @@ public final class VoteSide {
         return code;
     }
 
+    public boolean isYes(){
+        return YeaCode.equals(code);
+    }
+
+    public boolean isNo(){
+        return NayCode.equals(code);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

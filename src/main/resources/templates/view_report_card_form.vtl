@@ -1,7 +1,7 @@
 
 <h4>View Report Card Form</h4>
 
-<form action="/app/save_report_card">
+<form action="/app/save_report_card" id="save_report_card_form">
 
     <input type="hidden" name="id" value="$!report_card.Id"/>
 
@@ -35,10 +35,10 @@
                 <td>$bill.Chamber</td>
                 <td>$bill.Number</td>
                 <td>
-                    <select name="bill_vote_$bill.id">
-                        <option value=""></option>
-                        <option value="Y">Yes</option>
-                        <option value="N">No</option>
+                    <select name="bill_vote_side_$bill.id" form="save_report_card_form">
+                        <option value="Unselect"></option>
+                        <option value="Yes" #if (${factor.getVoteSide().isYes()}) selected="selected" #end>Yes</option>
+                        <option value="No" #if (${factor.getVoteSide().isNo()}) selected="selected" #end>No</option>
                     </select>
                 </td>
             </tr>
