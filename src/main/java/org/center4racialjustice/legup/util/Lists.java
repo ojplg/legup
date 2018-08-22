@@ -28,6 +28,9 @@ public class Lists {
             return map;
         }
         for(V item : items){
+            if (item == null ){
+                continue;
+            }
             K key = keyFunction.apply(item);
             map.put(key, item);
         }

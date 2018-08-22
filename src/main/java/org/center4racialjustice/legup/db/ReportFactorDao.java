@@ -16,12 +16,13 @@ public class ReportFactorDao {
 
     public static List<TypedColumn<ReportFactor>> dataColumns =
             Arrays.asList(
-                    new LongColumn<>("ID", "", ReportFactor::getId, ReportFactor::setId),
-                    new CodedEnumColumn<>("VOTE_SIDE", "", ReportFactor::getVoteSide, ReportFactor::setVoteSide, VoteSideConverter.INSTANCE)
+                    new LongColumn<>("ID", "a", ReportFactor::getId, ReportFactor::setId),
+                    new LongColumn<>("REPORT_CARD_ID", "a", ReportFactor::getReportCardId, ReportFactor::setReportCardId),
+                    new CodedEnumColumn<>("VOTE_SIDE", "a", ReportFactor::getVoteSide, ReportFactor::setVoteSide, VoteSideConverter.INSTANCE)
             );
 
     private static final JoinColumn<ReportFactor,Bill> billColumn =
-            new JoinColumn<>("BILL_ID", "b", "bills", ReportFactor::getBill, ReportFactor::setBill,
+            new JoinColumn<>("BILL_ID", "b", BillDao.table, ReportFactor::getBill, ReportFactor::setBill,
                     BillDao.supplier, BillDao.typedColumnList );
 
     public static List<JoinColumn<ReportFactor, ?>> joinColumns =
@@ -37,12 +38,16 @@ public class ReportFactorDao {
 
     public List<ReportFactor> readByReportCardId(long reportCardId){
         StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, dataColumns));
-        sqlBldr.append(" where report_card_id = '");
+        sqlBldr.append(DaoHelper.joinSelectSql(table, dataColumns, joinColumns));
+        sqlBldr.append(" and a.report_card_id = ");
         sqlBldr.append(reportCardId);
         String sql = sqlBldr.toString();
 
-        List<ReportFactor> factors = DaoHelper.read(connection, sql, dataColumns, supplier);
+        List<ReportFactor> factors = DaoHelper.doSelect(connection, sql, supplier, dataColumns, joinColumns);
         return factors;
+    }
+
+    public void save(ReportFactor reportFactor){
+        DaoHelper.save(connection,table, dataColumns, reportFactor);
     }
 }

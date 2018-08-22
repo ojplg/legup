@@ -45,7 +45,7 @@ create sequence vote_load_seq start 1;
 create table vote_loads (
     id integer PRIMARY KEY DEFAULT nextval('vote_load_seq'),
     load_time timestamp not null,
-    bill_id integer REFERENCES bills (id),
+    bill_id integer REFERENCES bills (id) not null,
     url text not null,
     check_sum text not null
 );
@@ -60,8 +60,8 @@ create sequence vote_seq start 1;
 create table votes (
     id integer PRIMARY KEY DEFAULT nextval('vote_seq'),
     bill_id integer REFERENCES bills (id),
-    legislator_id integer REFERENCES legislators (id),
-    vote_load_id integer REFERENCES vote_loads (id),
+    legislator_id integer REFERENCES legislators (id) not null,
+    vote_load_id integer REFERENCES vote_loads (id) not null,
     vote_side text not null
 );    
 
@@ -87,8 +87,8 @@ create sequence report_factor_seq start 1;
 
 create table report_factors (
     id integer PRIMARY KEY DEFAULT nextval('report_factor_seq'),
-    report_card_id integer REFERENCES report_cards(id),
-    bill_id integer REFERENCES bills(id),
+    report_card_id integer REFERENCES report_cards(id) not null,
+    bill_id integer REFERENCES bills(id) not null,
     vote_side text not null
 );
 
