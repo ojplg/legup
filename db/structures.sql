@@ -31,7 +31,8 @@ create table bills (
     id integer PRIMARY KEY DEFAULT nextval('bill_seq'),
     bill_number integer not null,
     chamber text not null,
-    UNIQUE (bill_number, chamber)
+    session_number integer not null,
+    UNIQUE (session_number, bill_number, chamber)
 );
 
 grant all on sequence bill_seq to legupuser;
