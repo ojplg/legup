@@ -49,4 +49,14 @@ public class LegislatorDao implements Dao<Legislator> {
                 DaoHelper.read(connection, table, typedColumnList, Collections.emptyList(), supplier);
         return legislators;
     }
+
+    public List<Legislator> readBySession(long session){
+        StringBuilder sqlBldr = new StringBuilder();
+        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
+        sqlBldr.append(" where session_number = ");
+        sqlBldr.append(session);
+        String sql = sqlBldr.toString();
+
+        return DaoHelper.read(connection, sql, typedColumnList, supplier);
+    }
 }

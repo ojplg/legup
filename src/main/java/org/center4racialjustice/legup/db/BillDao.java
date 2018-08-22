@@ -65,4 +65,8 @@ public class BillDao extends OneTableDao<Bill> {
 
         return DaoHelper.read(connection, sql, typedColumnList, supplier);
     }
+
+    public List<Bill> readByIds(List<Long> ids){
+        return DaoHelper.read(connection, table,  typedColumnList, ids, supplier);
+    }
 }
