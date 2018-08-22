@@ -39,8 +39,6 @@ Technical Betterments
 
 Features to work on
 
-* Add persistence of when/how votes were gathered
-* Add a concept of a report card: collection of bills and desired votes
 * Figure out how to parse bill sponsors and introducers
 * Calculate legislator score
 * Allow configuration for score options
