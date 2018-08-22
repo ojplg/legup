@@ -59,6 +59,7 @@ public class JoinColumn<T, J extends Identifiable> implements TypedColumn<T> {
     public void setValue(T item, int index, PreparedStatement preparedStatement) throws SQLException {
         J value = getter.apply(item);
         Long id = value.getId();
+        System.out.println(" Value " + value  + "  id " + id + " with index " + index);
         preparedStatement.setLong(index, id);
     }
 

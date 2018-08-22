@@ -33,24 +33,40 @@ class DaoHelper {
         return String.join(", ", columnNames);
     }
 
-    public static <T extends Identifiable> String updateStatement(T item, String table, List<TypedColumn<T>> allColumns){
-        StringBuilder buf = new StringBuilder();
-        buf.append("update ");
-        buf.append(table);
-        buf.append(" set ");
-        for(int idx=0; idx< allColumns.size(); idx++ ){
-            TypedColumn column = allColumns.get(idx);
-            buf.append(column.getName());
-            buf.append(" = ? ");
-            if (idx < allColumns.size() - 1){
-                buf.append(", ");
+    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+        StringBuilder sql = new StringBuilder("update ");
+        sql.append(table);
+        sql.append(" set ");
+        for(int idx=1; idx<columnList.size(); idx++){
+            TypedColumn column = columnList.get(idx);
+            sql.append(column.getName());
+            sql.append(" = ? ");
+            if (idx < columnList.size() - 1){
+                sql.append(", ");
             }
         }
-        buf.append(" where id = ");
-        buf.append(item.getId());
-        buf.append(" RETURNING ID");
+        sql.append(" where id = ");
+        sql.append(item.getId());
+        sql.append(" RETURNING ID");
+        return sql.toString();
+    }
 
-        return buf.toString();
+    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, T item){
+        StringBuilder sql = new StringBuilder("update ");
+        sql.append(table);
+        sql.append(" set ");
+        for(int idx=1; idx<columnList.size(); idx++){
+            TypedColumn column = columnList.get(idx);
+            sql.append(column.getName());
+            sql.append(" = ? ");
+            if (idx < columnList.size() - 1){
+                sql.append(", ");
+            }
+        }
+        sql.append(" where id = ");
+        sql.append(item.getId());
+        sql.append(" RETURNING ID");
+        return sql.toString();
     }
 
     public static <T> String joinSelectSql(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
@@ -115,24 +131,6 @@ class DaoHelper {
         return bldr.toString();
     }
 
-    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, T item){
-        StringBuilder sql = new StringBuilder("update ");
-        sql.append(table);
-        sql.append(" set ");
-        for(int idx=1; idx<columnList.size(); idx++){
-            TypedColumn column = columnList.get(idx);
-            sql.append(column.getName());
-            sql.append(" = ? ");
-            if (idx < columnList.size() - 1){
-                sql.append(", ");
-            }
-        }
-        sql.append(" where id = ");
-        sql.append(item.getId());
-        sql.append(" RETURNING ID");
-        return sql.toString();
-    }
-
     private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         return doInsert(connection, table, columnList, Collections.emptyList(), item);
     }
@@ -158,7 +156,9 @@ class DaoHelper {
 
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            return resultSet.getLong("id");
+            long newId = resultSet.getLong("id");
+            item.setId(newId);
+            return newId;
         } catch (SQLException se){
             throw new RuntimeException("Wrapped SQL exception for " + sql, se);
         } finally {

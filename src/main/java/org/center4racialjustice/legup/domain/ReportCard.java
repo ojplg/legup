@@ -11,4 +11,9 @@ public class ReportCard implements Identifiable {
     private String name;
     private long sessionNumber;
     private List<ReportFactor> reportFactors = new ArrayList<>();
+
+    public void setReportFactors(List<ReportFactor> factors){
+        factors.forEach(f -> f.setReportCardId(id));
+        reportFactors = factors;
+    }
 }
