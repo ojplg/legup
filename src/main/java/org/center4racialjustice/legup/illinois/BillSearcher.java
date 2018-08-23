@@ -120,8 +120,7 @@ public class BillSearcher {
     private Tuple<Long, Long> getBounds(long number){
         long lowBound = 100 * (number / 100) + 1;
         long highBound = lowBound + 99;
-        Tuple<Long,Long> bounds = new Tuple<>(lowBound, highBound);
-        return bounds;
+        return new Tuple<>(lowBound, highBound);
     }
 
     /*

@@ -74,7 +74,9 @@ public class BillVotesParser {
         finally
         {
             doc.close();
-            fileStream.close();
+            if( fileStream != null) {
+                fileStream.close();
+            }
         }
     }
 
