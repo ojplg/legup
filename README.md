@@ -18,9 +18,12 @@ Does not do much of anything yet.
    mvn compile
    mvn test
    ````   
-* The run script included assumes my home directory right now. That needs to be fixed.
-* The application will start running on port 8000.
-* Some dependencies, aside from postgres are
+* Assuming the DB is in place, and mvn builds things, then you can do:
+   ````
+   ./run.sh
+   ````
+   And the application will start running on port 8000.
+* Some dependencies, aside from postgres, are
   * Lombok (for good or for ill)
   * Jetty
   * Velocity
