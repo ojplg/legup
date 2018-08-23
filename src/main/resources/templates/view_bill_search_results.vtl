@@ -16,3 +16,13 @@ Number: $number
 <a href="$bill_vote_page_url">Votes</a>
 
 <br/>
+
+<table>
+    #foreach ($pair in ${votes_url_map.entrySet()})
+        <tr>
+            <td>$pair.Key</td>
+            <td>$pair.Value</td>
+        </tr>
+    #end
+
+</table>

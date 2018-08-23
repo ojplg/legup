@@ -11,9 +11,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BillSearcher {
@@ -63,7 +61,6 @@ public class BillSearcher {
             throw new RuntimeException(ex);
         }
     }
-
 
     public String convertToVotesPage(String billHomePage){
         return billHomePage.replace("/BillStatus.asp?","/votehistory.asp?");
