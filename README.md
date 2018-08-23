@@ -41,7 +41,6 @@ Technical Betterments
 Features to work on
 
 * Figure out how to parse bill sponsors and introducers
-* Calculate legislator score
 * Allow configuration for score options
 * Calculate legislator grades from scores
 * Allow configuartion of grading options (grade on a curve?)
