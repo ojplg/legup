@@ -12,7 +12,10 @@ Does not do much of anything yet.
     cd db/
     ./db_setup.sh
     ````
-    to get that working. It should ask for a password several times.
+    to get that working. It should ask for a password several times. (Of course, 
+    if you think running random shell scripts that ask for your password several times
+    is nuts, just do what it says in the script and check the contents of the SQL files
+    referenced to make sure nothing crazy is happening.)
 * The build is done using maven just
    ```` 
    mvn compile
@@ -46,7 +49,6 @@ Features to work on
 * Allow configuration for score options
 * Calculate legislator grades from scores
 * Allow configuartion of grading options (grade on a curve?)
-* Figure out URLs for vote PDFs
 * Determine differences between vote types (Third Reading, committee, etc)
 * Add a way to do name overrides in configuration or maybe DB
 
