@@ -25,10 +25,12 @@ public class TestBillSearcher {
     House 1109
     http://www.ilga.gov/legislation/BillStatus.asp?DocNum=1109&GAID=14&DocTypeID=HB&LegId=101586&SessionID=91&GA=100
 
+   http://www.ilga.gov/legislation/votehistory.asp?DocNum=123&DocTypeID=SB&LegID=100000&GAID=14&SessionID=91&GA=100&SpecSess=
+
      */
 
     @Test
-    public void findBillUrl_Senate_1(){
+    public void findBillUrl_Senate_123(){
         BillSearcher searcher = new BillSearcher();
 
         String url = searcher.searchForBaseUrl(Chamber.Senate, 123L);
@@ -37,7 +39,7 @@ public class TestBillSearcher {
     }
 
     @Test
-    public void findBill(){
+    public void findBillSubIndexPage_Senate_123(){
 
         BillSearcher searcher = new BillSearcher();
 

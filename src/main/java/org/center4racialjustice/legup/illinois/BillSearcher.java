@@ -32,6 +32,10 @@ public class BillSearcher {
 //        }
     }
 
+    public String convertToVotesPage(String billHomePage){
+        return billHomePage.replace("/BillStatus.asp?","/votehistory.asp?");
+    }
+
     public String searchForBaseUrl(Chamber chamber, Long number){
         try {
             String indexUrl = searchForSubIndexPage(chamber, number);
@@ -64,6 +68,7 @@ public class BillSearcher {
 
     public String searchForSubIndexPage(Chamber chamber, Long number){
         try {
+            // FIXME: this will not work for the last group (which does not end at a multiple of 100)
             Tuple<Long, Long> bounds = getBounds(number);
 
             String base = "http://www.ilga.gov/legislation/grplist.asp";
