@@ -19,7 +19,7 @@ public class Lists {
                 unMatched.add(item);
             }
         }
-        return new Tuple(matched, unMatched);
+        return new Tuple<>(matched, unMatched);
     }
 
     public static <K,V> Map<K, V> asMap(List<V> items, Function<V, K> keyFunction){
