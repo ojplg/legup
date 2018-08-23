@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,25 +19,13 @@ import java.util.List;
 
 public class TestVoteDao {
 
-    private static Connection connect(){
-        try {
-            Class.forName("org.postgresql.Driver");
-
-            return DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/legup","legupuser", "legupuserpass");
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     @Before
     public void setUp() throws SQLException {
         clearTables();
     }
 
     private static void clearTables() throws SQLException {
-        Connection connection = connect();
+        Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
         statement.execute("delete from votes");
         statement.execute("delete from vote_loads");
@@ -53,7 +40,7 @@ public class TestVoteDao {
     @Test
     public void testReadOne() throws SQLException {
 
-        Connection connection = connect();
+        Connection connection = DbTestConfigs.connect();
 
         Legislator wilson = new Legislator();
         wilson.setFirstName("Wilson");
@@ -102,7 +89,7 @@ public class TestVoteDao {
     @Test
     public void testInsert() throws SQLException {
 
-        Connection connection = connect();
+        Connection connection = DbTestConfigs.connect();
 
         Legislator wilson = new Legislator();
         wilson.setFirstName("Wilson");
@@ -147,7 +134,7 @@ public class TestVoteDao {
     @Test
     public void testLoadByBill() {
 
-        Connection connection = connect();
+        Connection connection = DbTestConfigs.connect();
 
         Legislator wilson = new Legislator();
         wilson.setFirstName("Wilson");

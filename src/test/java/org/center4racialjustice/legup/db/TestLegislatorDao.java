@@ -7,24 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
 public class TestLegislatorDao {
-
-    private static Connection connect(){
-        try {
-            Class.forName("org.postgresql.Driver");
-
-            return DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/legup","legupuser", "legupuserpass");
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     @Before
     public void setUp() throws SQLException {
@@ -32,7 +19,7 @@ public class TestLegislatorDao {
     }
 
     private static void clearTables() throws SQLException {
-        Connection connection = connect();
+        Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
         statement.execute("delete from votes");
         statement.execute("delete from vote_loads");
@@ -51,7 +38,7 @@ public class TestLegislatorDao {
         legislator.setParty("Democrat");
         legislator.setChamber(Chamber.House);
 
-        LegislatorDao dao = new LegislatorDao(connect());
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
 
         long id = dao.save(legislator);
 
@@ -65,7 +52,7 @@ public class TestLegislatorDao {
 
     @Test
     public void testReadAll() throws SQLException {
-        Connection connection = connect();
+        Connection connection = DbTestConfigs.connect();
 
         Legislator legislator = new Legislator();
         legislator.setFirstName("Herbietta");
@@ -105,7 +92,7 @@ public class TestLegislatorDao {
         legislator.setParty("Democrat");
         legislator.setChamber(Chamber.House);
 
-        LegislatorDao dao = new LegislatorDao(connect());
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
 
         long id = dao.save(legislator);
 
@@ -131,7 +118,6 @@ public class TestLegislatorDao {
         Assert.assertEquals(Chamber.Senate, secondFromDB.getChamber());
         Assert.assertEquals("Democrat", secondFromDB.getParty());
         Assert.assertEquals("Herbietta", secondFromDB.getFirstName());
-
     }
 
 }
