@@ -38,8 +38,6 @@ public class GradeCalculator {
 
     public LookupTable<Legislator, Bill, Integer> calculate(Map<Bill, List<Vote>> voteRecords){
 
-        Map<Legislator, Integer> scores = new HashMap<>();
-
         LookupTable<Legislator, Bill, Integer> scoreTable = new LookupTable<>();
 
         for(ReportFactor factor : reportCard.getReportFactors()){
@@ -49,32 +47,18 @@ public class GradeCalculator {
             List<Vote> votes = voteRecords.get(bill);
 
             for(Legislator legislator : legislators) {
-                final int score;
 
                 Vote vote = extractVoteForLegislator(votes, legislator);
                 if (vote == null) {
-                    score = 0;
                     // ? What to do
                 } else if (sideRequired.equals(vote.getVoteSide())) {
                     scoreTable.put(legislator, bill, 1);
-                    score = 1;
                 } else if (VoteSide.Nay.equals(sideRequired) && VoteSide.Yea.equals(vote.getVoteSide())
                         || (VoteSide.Yea.equals(sideRequired) && VoteSide.Nay.equals(vote.getVoteSide()))) {
                     scoreTable.put(legislator, bill, -1);
-                    score = -1;
                 } else {
                     // what to do?
-                    score = 0;
                 }
-
-                scores.compute(legislator,
-                        (l, s) -> {
-                            if (s == null) {
-                                return score;
-                            } else {
-                                return score + s;
-                            }
-                        });
             }
         }
         return scoreTable;
