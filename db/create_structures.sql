@@ -32,6 +32,7 @@ create table bills (
     bill_number integer not null,
     chamber text not null,
     session_number integer not null,
+    short_description text,
     UNIQUE (session_number, bill_number, chamber)
 );
 

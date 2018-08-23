@@ -18,7 +18,8 @@ public class BillDao extends OneTableDao<Bill> {
                     new LongColumn<>("ID", "", Bill::getId, Bill::setId),
                     new CodedEnumColumn<>("CHAMBER", "", Bill::getChamber, Bill::setChamber, ChamberConverter.INSTANCE),
                     new LongColumn<>("BILL_NUMBER", "", Bill::getNumber, Bill::setNumber),
-                    new LongColumn<>("SESSION_NUMBER", "", Bill::getSession, Bill::setSession)
+                    new LongColumn<>("SESSION_NUMBER", "", Bill::getSession, Bill::setSession),
+                    new StringColumn<>("SHORT_DESCRIPTION", "", Bill::getShortDescription, Bill::setShortDescription)
             );
 
     public static Supplier<Bill> supplier = () -> new Bill();

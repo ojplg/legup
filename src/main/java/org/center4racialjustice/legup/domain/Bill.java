@@ -13,6 +13,7 @@ public class Bill implements Identifiable, Comparable<Bill> {
     private Long id;
     private long number;
     private Chamber chamber;
+    private String shortDescription;
     private long session;
 
     @Override
