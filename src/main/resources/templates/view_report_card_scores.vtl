@@ -1,18 +1,25 @@
 
 <h4>View Report Card Scores</h4>
 
+#set ($bills = $scores.columnHeadings)
+#set ($legislators = $scores.rowHeadings)
+
 <table>
     <tr>
-        <th>Legislator</th>
+        <th></th>
+        #foreach ($bill in $bills)
+            <th>$bill.Chamber - $bill.Number</th>
+        #end
         <th>Score</th>
     </tr>
 
-    #foreach ($pair in ${scores.entrySet()})
-        #set ($legislator = $pair.Key )
-        #set ($score = $pair.Value )
+    #foreach ($legislator in $legislators)
         <tr>
-            <td>$legislator.Name.LastName, $legislator.Name.FirstName</td>
-            <td>$score</td>
+            <td>$legislator.LastName, $legislator.FirstName</td>
+            #foreach ($bill in $bills)
+                <td>$!{scores.get($legislator, $bill)}</td>
+            #end
+            <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
         </tr>
     #end
 

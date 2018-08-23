@@ -13,6 +13,7 @@ import org.center4racialjustice.legup.domain.GradeCalculator;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
@@ -24,6 +25,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 
 public class ViewReportCardScores implements Handler {
     private static final Logger log = LogManager.getLogger(ViewReportCardScores.class);
@@ -63,9 +66,11 @@ public class ViewReportCardScores implements Handler {
                 votesByBill.put(bill, votes);
             }
 
-            Map<Legislator, Integer> scores = calculator.calculate(votesByBill);
+            LookupTable<Legislator, Bill, Integer> scores = calculator.calculate(votesByBill);
 
             velocityContext.put("scores", scores);
+            BinaryOperator<Integer> scoreComputer = (i, j) -> i.intValue() + j.intValue();
+            velocityContext.put("computer", scoreComputer);
 
             return velocityContext;
         } finally {

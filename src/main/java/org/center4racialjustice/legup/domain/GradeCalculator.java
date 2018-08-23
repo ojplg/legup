@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
+import org.center4racialjustice.legup.util.LookupTable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +36,11 @@ public class GradeCalculator {
         return null;
     }
 
-    public Map<Legislator, Integer> calculate(Map<Bill, List<Vote>> voteRecords){
+    public LookupTable<Legislator, Bill, Integer> calculate(Map<Bill, List<Vote>> voteRecords){
 
         Map<Legislator, Integer> scores = new HashMap<>();
+
+        LookupTable<Legislator, Bill, Integer> scoreTable = new LookupTable<>();
 
         for(ReportFactor factor : reportCard.getReportFactors()){
 
@@ -52,9 +56,11 @@ public class GradeCalculator {
                     score = 0;
                     // ? What to do
                 } else if (sideRequired.equals(vote.getVoteSide())) {
+                    scoreTable.put(legislator, bill, 1);
                     score = 1;
                 } else if (VoteSide.Nay.equals(sideRequired) && VoteSide.Yea.equals(vote.getVoteSide())
                         || (VoteSide.Yea.equals(sideRequired) && VoteSide.Nay.equals(vote.getVoteSide()))) {
+                    scoreTable.put(legislator, bill, -1);
                     score = -1;
                 } else {
                     // what to do?
@@ -71,7 +77,7 @@ public class GradeCalculator {
                         });
             }
         }
-        return scores;
+        return scoreTable;
     }
 
 }
