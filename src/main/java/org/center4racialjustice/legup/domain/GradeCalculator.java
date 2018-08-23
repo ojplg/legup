@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.domain;
 
 import org.center4racialjustice.legup.util.LookupTable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,13 +9,6 @@ public class GradeCalculator {
 
     private final ReportCard reportCard;
     private List<Legislator> legislators;
-
-    /*
-
-    need bills
-    need votes
-
-     */
 
     public GradeCalculator(ReportCard reportCard, List<Legislator> legislators){
         this.reportCard = reportCard;
