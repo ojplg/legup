@@ -11,6 +11,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BillSearcher {
 
@@ -31,6 +35,35 @@ public class BillSearcher {
 //            throw new RuntimeException(ex);
 //        }
     }
+
+    public Map<String, String> searchForVotesUrls(String votesPageUrl){
+        try {
+            Connection votesPageConnection = Jsoup.connect(votesPageUrl);
+            Document votesPageDocument = votesPageConnection.get();
+
+            Elements tables = votesPageDocument.select("table");
+            Element voteLinkTable = tables.get(6);
+
+            Elements rows = voteLinkTable.select("tr");
+
+            Map<String, String> urls = new HashMap<>();
+            for( int idx=1; idx<rows.size(); idx++ ){
+                Element row = rows.get(idx);
+                Element td = row.selectFirst("td");
+                Element anchor = td.selectFirst("a");
+
+                String url = IllinoisLegislationHome + anchor.attr("href");
+                String text = anchor.text();
+
+                urls.put(text, url);
+            }
+
+            return urls;
+        } catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
 
     public String convertToVotesPage(String billHomePage){
         return billHomePage.replace("/BillStatus.asp?","/votehistory.asp?");

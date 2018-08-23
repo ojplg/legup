@@ -4,6 +4,9 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.Map;
+
 public class TestBillSearcher {
 
     /*
@@ -48,5 +51,16 @@ public class TestBillSearcher {
         Assert.assertEquals("http://www.ilga.gov/legislation/grplist.asp?num1=101&num2=200&DocTypeID=SB&GA=100&SessionId=91", url);
     }
 
+    @Test
+    public void findBillVotesUrls_House_2771(){
+
+        BillSearcher searcher = new BillSearcher();
+        String votesPageUrl = "http://www.ilga.gov/legislation/votehistory.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
+
+        Map<String, String> votePdfsUrls = searcher.searchForVotesUrls(votesPageUrl);
+
+        Assert.assertEquals(6, votePdfsUrls.size());
+        Assert.assertTrue( votePdfsUrls.containsValue("http://www.ilga.gov/legislation/votehistory/100/house/10000HB2771sam001_05312018_028000C.pdf") );
+    }
 }
 
