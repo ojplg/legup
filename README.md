@@ -7,12 +7,11 @@ Does not do much of anything yet.
 # Technical
 
 * A pre-requisite to running the application (or the tests), is to install Postgres.
-  Under the db directory are some scripts. Run them like this
+  Under the db directory are some scripts. Run the shell script
     ````
-    sudo -u postgres psql -f setup.sql
-    psql -f db/structures.sql legup
+    ./db_setup.sh
     ````
-    to get that working.
+    to get that working. It should ask for a password several times.
 * The build is done using maven just
    ```` 
    mvn compile
