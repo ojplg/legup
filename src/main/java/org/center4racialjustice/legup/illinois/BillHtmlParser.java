@@ -25,7 +25,7 @@ public class BillHtmlParser {
     public List<String> getSponsorNames(Chamber chamber){
         Elements anchors = document.select("a").attr("class", "content notranslate");
 
-        String urlRegex = "unmatching of everything";
+        String urlRegex;
         switch (chamber.toString()) {
             case "House" :
                 urlRegex = ".*house/rep\\.asp.*";
@@ -33,6 +33,8 @@ public class BillHtmlParser {
             case "Senate":
                 urlRegex = ".*senate/Senator\\.asp.*";
                 break;
+            default :
+                throw new RuntimeException("Unknown chamber " + chamber);
         }
 
         List<String> names = new ArrayList<>();
