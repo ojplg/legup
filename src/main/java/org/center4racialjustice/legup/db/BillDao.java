@@ -22,7 +22,7 @@ public class BillDao extends OneTableDao<Bill> {
                     new StringColumn<>("SHORT_DESCRIPTION", "", Bill::getShortDescription, Bill::setShortDescription)
             );
 
-    public static Supplier<Bill> supplier = () -> new Bill();
+    public static Supplier<Bill> supplier = Bill::new;
 
     public BillDao(Connection connection) {
         super(connection, supplier, table, typedColumnList);
