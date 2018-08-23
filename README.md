@@ -9,6 +9,7 @@ Does not do much of anything yet.
 * A pre-requisite to running the application (or the tests), is to install Postgres.
   Under the db directory are some scripts. Run the shell script
     ````
+    cd db/
     ./db_setup.sh
     ````
     to get that working. It should ask for a password several times.
@@ -38,7 +39,6 @@ Technical Betterments
 * Improve injection db connection logic/access to web tier, do not use raw Connection object
 * Actually make a real connection pool and automated reclamation
 * Maybe throw out the whole of the DB access layer and replace with Hibernate/javax.persistence
-* Save link to votes pdf when downloading/parsing
 
 Features to work on
 
