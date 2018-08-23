@@ -32,6 +32,16 @@ public class TestBillHtmlParser {
         Assert.assertTrue(sponsors.contains("Daniel Biss"));
     }
 
+    @Test
+    public void testFindShortDescription(){
+        String url = "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
+
+        BillHtmlParser parser = new BillHtmlParser(url);
+
+        Assert.assertEquals("HEALTHY WORKPLACE ACT", parser.getShortDescription());
+    }
+
+
 }
 /*
 <a name="top">&nbsp;</a>

@@ -22,6 +22,24 @@ public class BillHtmlParser {
         }
     }
 
+    public String getShortDescription(){
+        Elements spans = document.select("span");
+        int idx = 0;
+        boolean set = false;
+        for( ; idx< spans.size(); idx++ ){
+            Element span = spans.get(idx);
+            if( span.text().equals("Short Description:")){
+                set = true;
+                break;
+            }
+        }
+        if( set ){
+            Element span = spans.get(idx+1);
+            return span.text();
+        }
+        return null;
+    }
+
     public List<String> getSponsorNames(Chamber chamber){
         Elements anchors = document.select("a").attr("class", "content notranslate");
 
