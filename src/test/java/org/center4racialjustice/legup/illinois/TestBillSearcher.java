@@ -4,7 +4,6 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Map;
 
 public class TestBillSearcher {
