@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.web.handlers.CollateBillVotes;
 import org.center4racialjustice.legup.web.handlers.LoadBill;
 import org.center4racialjustice.legup.web.handlers.SaveReportCard;
+import org.center4racialjustice.legup.web.handlers.SaveSearchedBill;
 import org.center4racialjustice.legup.web.handlers.ViewBillForm;
 import org.center4racialjustice.legup.web.handlers.ViewBillSearchForm;
 import org.center4racialjustice.legup.web.handlers.ViewBillSearchResults;
@@ -58,6 +59,7 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewReportCardScores(connectionPool));
         handlers.add(new ViewBillSearchForm());
         handlers.add(new ViewBillSearchResults());
+        handlers.add(new SaveSearchedBill(connectionPool));
 
         for (Handler handler : handlers) {
             RequestHandler requestHandler = new RequestHandler(handler);

@@ -3,13 +3,13 @@
 
 begin;
 
-delete from votes;
-drop table votes;
-drop sequence vote_seq;
+delete from bill_actions;
+drop table bill_actions;
+drop sequence bill_action_seq;
 
-delete from vote_loads;
-drop table vote_loads;
-drop sequence vote_load_seq;
+delete from bill_action_loads;
+drop table bill_action_loads;
+drop sequence bill_action_load_seq;
 
 delete from legislators;
 drop table legislators;
