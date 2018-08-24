@@ -89,7 +89,7 @@ public class TestBillActionDao {
     }
 
     @Test
-    public void testInsert() throws SQLException {
+    public void testInsert() {
 
         Connection connection = DbTestConfigs.connect();
 

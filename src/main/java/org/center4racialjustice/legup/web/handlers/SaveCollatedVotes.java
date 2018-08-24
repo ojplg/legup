@@ -16,7 +16,6 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -30,7 +29,7 @@ public class SaveCollatedVotes implements Handler {
 
     @Override
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse)
-            throws IOException, SQLException {
+            throws SQLException {
 
         String key = request.getParameter("collated_votes_key");
 
@@ -45,9 +44,7 @@ public class SaveCollatedVotes implements Handler {
             throw new RuntimeException("Mismatched collation keys");
         }
 
-        Connection connection = null;
-        try {
-            connection = connectionPool.getConnection();
+        try (Connection connection = connectionPool.getConnection()) {
 
             BillDao billDao = new BillDao(connection);
             Bill bill = billDao.findOrCreate(collator.getBillSession(), collator.getBillChamber(), collator.getBillNumber());
@@ -60,7 +57,7 @@ public class SaveCollatedVotes implements Handler {
             BillActionDao billActionDao = new BillActionDao(connection);
 
             int savedCount = 0;
-            for(CollatedVote collatedVote :  collator.getAllCollatedVotes()){
+            for (CollatedVote collatedVote : collator.getAllCollatedVotes()) {
                 Vote vote = collatedVote.asVote(bill, billActionLoad);
                 BillAction billAction = BillAction.fromVote(vote);
                 billActionDao.insert(billAction);
@@ -73,10 +70,6 @@ public class SaveCollatedVotes implements Handler {
             velocityContext.put("bill_number", bill.getNumber());
             return velocityContext;
 
-        } finally {
-            if( connection != null) {
-                connection.close();
-            }
         }
     }
 }

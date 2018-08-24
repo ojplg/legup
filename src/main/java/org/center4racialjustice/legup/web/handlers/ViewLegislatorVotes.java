@@ -11,7 +11,6 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,15 +24,12 @@ public class ViewLegislatorVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
 
         String legislatorIdParameter = request.getParameter("legislator_id");
         long legislatorId = Long.parseLong(legislatorIdParameter);
 
-        Connection connection = null;
-
-        try {
-            connection = connectionPool.getConnection();
+        try (Connection connection = connectionPool.getConnection()) {
             LegislatorDao legislatorDao = new LegislatorDao(connection);
 
             Legislator legislator = legislatorDao.read(legislatorId);
@@ -48,10 +44,6 @@ public class ViewLegislatorVotes implements Handler {
             velocityContext.put("legislator", legislator);
 
             return velocityContext;
-        } finally {
-            if (connection !=null){
-                connection.close();
-            }
         }
 
     }

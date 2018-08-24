@@ -45,7 +45,7 @@ public class BillAction implements Identifiable {
 
     public static List<Vote> filterAndConvertToVotes(List<BillAction> actions){
         return actions.stream()
-                .filter(a -> a.isVote())
+                .filter(BillAction::isVote)
                 .map(BillAction::asVote)
                 .collect(Collectors.toList());
     }

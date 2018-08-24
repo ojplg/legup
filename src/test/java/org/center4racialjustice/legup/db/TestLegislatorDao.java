@@ -45,7 +45,7 @@ public class TestLegislatorDao {
         Legislator fromDB = dao.read(id);
 
         Assert.assertNotNull(fromDB);
-        Assert.assertEquals(2018L, (long) fromDB.getSessionNumber());
+        Assert.assertEquals(2018L, fromDB.getSessionNumber());
         Assert.assertEquals("Democrat", fromDB.getParty());
         Assert.assertEquals("Herbietta", fromDB.getFirstName());
     }
@@ -99,7 +99,7 @@ public class TestLegislatorDao {
         Legislator fromDB = dao.read(id);
 
         Assert.assertNotNull(fromDB);
-        Assert.assertEquals(100L, (long) fromDB.getSessionNumber());
+        Assert.assertEquals(100L, fromDB.getSessionNumber());
         Assert.assertEquals(Chamber.House, fromDB.getChamber());
         Assert.assertEquals("Democrat", fromDB.getParty());
         Assert.assertEquals("Herbietta", fromDB.getFirstName());
@@ -114,7 +114,7 @@ public class TestLegislatorDao {
         Legislator secondFromDB = dao.read(id);
 
         Assert.assertNotNull(fromDB);
-        Assert.assertEquals(101L, (long) secondFromDB.getSessionNumber());
+        Assert.assertEquals(101L, secondFromDB.getSessionNumber());
         Assert.assertEquals(Chamber.Senate, secondFromDB.getChamber());
         Assert.assertEquals("Democrat", secondFromDB.getParty());
         Assert.assertEquals("Herbietta", secondFromDB.getFirstName());

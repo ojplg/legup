@@ -1,7 +1,5 @@
 package org.center4racialjustice.legup.db;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 
@@ -11,8 +9,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class BillActionLoadDao {
-
-    private static final Logger log = LogManager.getLogger(BillActionDao.class);
 
     public static final String table = "BILL_ACTION_LOADS";
 
@@ -33,7 +29,7 @@ public class BillActionLoadDao {
 
     private final Connection connection;
 
-    public static final Supplier<BillActionLoad> supplier = () -> new BillActionLoad();
+    public static final Supplier<BillActionLoad> supplier = BillActionLoad::new;
 
     public BillActionLoadDao(Connection connection) {
         this.connection = connection;
