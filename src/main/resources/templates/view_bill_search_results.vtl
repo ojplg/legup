@@ -1,11 +1,11 @@
 
 <h4>Bill Search Results</h4>
 
-Chamber: $chamber
+Chamber: $bill.Chamber.Name
 
 <br/>
 
-Number: $number
+Number: $bill.Number
 
 <br/>
 
@@ -24,5 +24,18 @@ Number: $number
             <td>$pair.Value</td>
         </tr>
     #end
-
 </table>
+
+<h5>House Sponsors</h5>
+<ul>
+    #foreach ($sponsor in $house_sponsors)
+        <li>$sponsor</li>
+    #end
+</ul>
+
+<h5>Senate Sponsors</h5>
+<ul>
+    #foreach ($sponsor in $senate_sponsors)
+        <li>$sponsor</li>
+    #end
+</ul>
