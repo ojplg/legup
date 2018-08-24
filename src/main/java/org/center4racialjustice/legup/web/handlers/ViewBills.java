@@ -9,7 +9,6 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,12 +22,9 @@ public class ViewBills implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
 
-        Connection connection = null;
-
-        try {
-            connection = connectionPool.getConnection();
+        try (Connection connection = connectionPool.getConnection() ){
             BillDao dao = new BillDao(connection);
 
             List<Bill> bills = dao.readAll();
@@ -38,10 +34,6 @@ public class ViewBills implements Handler {
             velocityContext.put("house_bills", divideBills.getFirst());
             velocityContext.put("senate_bills", divideBills.getSecond());
             return velocityContext;
-        } finally {
-            if (connection !=null){
-                connection.close();
-            }
         }
     }
 }
