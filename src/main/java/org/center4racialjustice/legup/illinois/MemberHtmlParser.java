@@ -31,8 +31,8 @@ public class MemberHtmlParser {
     private String sessionRegex = "(\\d+)\\w\\w General Assembly";
     private Pattern sessionPattern = Pattern.compile(sessionRegex);
 
-    private String memberIdExtractionRegex = ".*MemberID=(\\d+).*";
-    private Pattern memberIdExtractionPattern = Pattern.compile(memberIdExtractionRegex);
+    private static String memberIdExtractionRegex = ".*MemberID=(\\d+).*";
+    public static Pattern memberIdExtractionPattern = Pattern.compile(memberIdExtractionRegex);
 
     public static MemberHtmlParser load(String url) {
         try {

@@ -1,10 +1,12 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.util.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestBillHtmlParser {
 
@@ -12,9 +14,11 @@ public class TestBillHtmlParser {
     public void testFindHouseSponsors(){
         String url = "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
-        BillHtmlParser parser = new BillHtmlParser(url);
+        BillHtmlParser parser = new BillHtmlParser(url, Chamber.House, 2771);
 
-        List<String> sponsors = parser.getSponsorNames(Chamber.House);
+        List<Tuple<String, String>> sponsorTuples = parser.getSponsorNames(Chamber.House);
+
+        List<String> sponsors = sponsorTuples.stream().map(Tuple::getFirst).collect(Collectors.toList());
 
         Assert.assertEquals(46, sponsors.size());
         Assert.assertTrue(sponsors.contains("Barbara Flynn Currie"));
@@ -26,9 +30,11 @@ public class TestBillHtmlParser {
     public void testFindSenateSponsors(){
         String url = "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
-        BillHtmlParser parser = new BillHtmlParser(url);
+        BillHtmlParser parser = new BillHtmlParser(url, Chamber.House, 2771);
 
-        List<String> sponsors = parser.getSponsorNames(Chamber.Senate);
+        List<Tuple<String, String>> sponsorTuples = parser.getSponsorNames(Chamber.Senate);
+
+        List<String> sponsors = sponsorTuples.stream().map(Tuple::getFirst).collect(Collectors.toList());
 
         Assert.assertEquals(20, sponsors.size());
         Assert.assertTrue(sponsors.contains("Daniel Biss"));
@@ -40,7 +46,7 @@ public class TestBillHtmlParser {
     public void testFindShortDescription(){
         String url = "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
-        BillHtmlParser parser = new BillHtmlParser(url);
+        BillHtmlParser parser = new BillHtmlParser(url, Chamber.House, 2771);
 
         Assert.assertEquals("HEALTHY WORKPLACE ACT", parser.getShortDescription());
     }

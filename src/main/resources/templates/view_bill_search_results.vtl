@@ -1,6 +1,10 @@
 
 <h4>Bill Search Results</h4>
 
+<form action="/app/save_searched_bill">
+
+
+
 Chamber: $bill.Chamber.Name
 
 <br/>
@@ -8,6 +12,12 @@ Chamber: $bill.Chamber.Name
 Number: $bill.Number
 
 <br/>
+
+<br/>
+
+<input type="submit" value="Save"/>
+
+<br/><br/>
 
 <a href="$bill_home_page_url">Bill</a>
 
@@ -39,3 +49,5 @@ Number: $bill.Number
         <li>$sponsor</li>
     #end
 </ul>
+
+</form>

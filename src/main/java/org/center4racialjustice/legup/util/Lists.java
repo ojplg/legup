@@ -36,4 +36,13 @@ public class Lists {
         }
         return map;
     }
+
+    public static <T> T findfirst(List<T> list, Predicate<T> predicate){
+        for(T item : list){
+            if( predicate.test(item)){
+                return item;
+            }
+        }
+        return null;
+    }
 }
