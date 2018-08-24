@@ -13,8 +13,8 @@ public class BillActionType {
 
     public static BillActionType fromCode(String code){
         switch (code) {
-            case "Vote" : return VOTE;
-            case "SPONSOR" : return SPONSOR;
+            case "Code" : return VOTE;
+            case "Sponsor" : return SPONSOR;
             default : throw new RuntimeException("Unrecognized code " + code);
         }
     }
