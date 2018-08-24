@@ -31,6 +31,9 @@ public class MemberHtmlParser {
     private String sessionRegex = "(\\d+)\\w\\w General Assembly";
     private Pattern sessionPattern = Pattern.compile(sessionRegex);
 
+    private String memberIdExtractionRegex = ".*MemberID=(\\d+).*";
+    private Pattern memberIdExtractionPattern = Pattern.compile(memberIdExtractionRegex);
+
     public static MemberHtmlParser load(String url) {
         try {
             Document doc = Jsoup.connect(url).get();
@@ -94,7 +97,10 @@ public class MemberHtmlParser {
             Element anchor = firstCell.selectFirst("a");
             if ( anchor != null ){
                 String href = anchor.attr("href");
-                if( href.contains("MemberID=")){
+                Matcher matcher = memberIdExtractionPattern.matcher(href);
+                if( matcher.matches() ){
+                    String memberId = matcher.group(1);
+
                     String nameString = anchor.text();
                     Name name = nameParser.fromRegularOrderString(nameString);
                     Element disctrictCell = cells.get(3);
@@ -108,6 +114,8 @@ public class MemberHtmlParser {
                     leg.setDistrict(district);
                     leg.setParty(partyCode);
                     leg.setSessionNumber(sessionNumber);
+
+                    leg.setMemberId(memberId);
 
                     members.add(leg);
                 }

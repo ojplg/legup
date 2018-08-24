@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestMemberHtmlParser {
 
@@ -34,6 +35,17 @@ public class TestMemberHtmlParser {
 
         long session = parser.getSessionNumber();
         Assert.assertEquals(100L, session);
+    }
+
+    @Test
+    public void testParseOutMemberId(){
+        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
+
+        List<Legislator> legislators = parser.getLegislators();
+
+        List<Legislator> davidsmeyers = legislators.stream().filter(leg -> leg.getLastName().equals("Davidsmeyer")).collect(Collectors.toList());
+        Assert.assertEquals(1, davidsmeyers.size());
+        Assert.assertEquals("2438", davidsmeyers.get(0).getMemberId());
     }
 
 }
