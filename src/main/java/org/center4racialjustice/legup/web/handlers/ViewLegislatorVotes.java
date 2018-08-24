@@ -1,11 +1,10 @@
 package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
-import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
-import org.center4racialjustice.legup.db.VoteDao;
-import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.db.BillActionDao;
+import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.web.Handler;
@@ -39,9 +38,10 @@ public class ViewLegislatorVotes implements Handler {
 
             Legislator legislator = legislatorDao.read(legislatorId);
 
-            VoteDao voteDao = new VoteDao(connection);
+            BillActionDao billActionDao = new BillActionDao(connection);
 
-            List<Vote> votes = voteDao.readByLegislator(legislator);
+            List<BillAction> billActions = billActionDao.readByLegislator(legislator);
+            List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
 
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("votes", votes);

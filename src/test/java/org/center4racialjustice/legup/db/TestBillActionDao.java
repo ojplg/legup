@@ -1,10 +1,11 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.domain.VoteLoad;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +18,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TestVoteDao {
+public class TestBillActionDao {
 
     @Before
     public void setUp() throws SQLException {
@@ -27,8 +28,8 @@ public class TestVoteDao {
     private static void clearTables() throws SQLException {
         Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
-        statement.execute("delete from votes");
-        statement.execute("delete from vote_loads");
+        statement.execute("delete from bill_actions");
+        statement.execute("delete from bill_action_loads");
         statement.execute("delete from report_factors");
         statement.execute("delete from bills");
         statement.execute("delete from legislators");
@@ -60,27 +61,28 @@ public class TestVoteDao {
         long billId = billDao.save(bill);
         bill.setId(billId);
 
-        VoteLoad voteLoad = new VoteLoad();
-        voteLoad.setBill(bill);
-        voteLoad.setUrl("url");
-        voteLoad.setCheckSum(88L);
-        voteLoad.setLoadTime(LocalDateTime.now());
+        BillActionLoad billActionLoad = new BillActionLoad();
+        billActionLoad.setBill(bill);
+        billActionLoad.setUrl("url");
+        billActionLoad.setCheckSum(88L);
+        billActionLoad.setLoadTime(LocalDateTime.now());
 
-        VoteLoadDao voteLoadDao = new VoteLoadDao(connection);
-        long voteLoadId = voteLoadDao.insert(voteLoad);
-        voteLoad.setId(voteLoadId);
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+        long voteLoadId = billActionLoadDao.insert(billActionLoad);
+        billActionLoad.setId(voteLoadId);
 
         Statement statement = connection.createStatement();
         String insertSql =
-                "insert into votes (bill_id, legislator_id, vote_side, vote_load_id) values "
-                + "(" + billId + ", " + wilsonId + ", " + "'N', " + voteLoadId + ") RETURNING ID";
+                "insert into bill_actions (bill_id, legislator_id, bill_action_type, bill_action_detail, bill_action_load_id) values "
+                + "(" + billId + ", " + wilsonId + ", 'Vote', 'N', " + voteLoadId + ") RETURNING ID";
         ResultSet resultSet = statement.executeQuery(insertSql);
         resultSet.next();
         long voteId = resultSet.getLong("id");
 
-        VoteDao voteDao = new VoteDao(connection);
+        BillActionDao billActionDao = new BillActionDao(connection);
 
-        Vote vote = voteDao.read(voteId);
+        BillAction billAction = billActionDao.read(voteId);
+        Vote vote = billAction.asVote();
         Assert.assertEquals("Wilson", vote.getLegislator().getFirstName());
         Assert.assertEquals(123, vote.getBill().getNumber());
         Assert.assertEquals(VoteSide.Nay, vote.getVoteSide());
@@ -109,25 +111,26 @@ public class TestVoteDao {
         long billId = billDao.save(bill);
         bill.setId(billId);
 
-        VoteLoad voteLoad = new VoteLoad();
-        voteLoad.setBill(bill);
-        voteLoad.setUrl("url");
-        voteLoad.setCheckSum(88L);
-        voteLoad.setLoadTime(LocalDateTime.now());
+        BillActionLoad billActionLoad = new BillActionLoad();
+        billActionLoad.setBill(bill);
+        billActionLoad.setUrl("url");
+        billActionLoad.setCheckSum(88L);
+        billActionLoad.setLoadTime(LocalDateTime.now());
 
-        VoteLoadDao voteLoadDao = new VoteLoadDao(connection);
-        long voteLoadId = voteLoadDao.insert(voteLoad);
-        voteLoad.setId(voteLoadId);
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+        long voteLoadId = billActionLoadDao.insert(billActionLoad);
+        billActionLoad.setId(voteLoadId);
 
         Vote vote = new Vote();
         vote.setBill(bill);
         vote.setLegislator(wilson);
         vote.setVoteSide(VoteSide.Yea);
-        vote.setVoteLoad(voteLoad);
+        vote.setBillActionLoad(billActionLoad);
 
-        VoteDao voteDao = new VoteDao(connection);
+        BillActionDao billActionDao = new BillActionDao(connection);
 
-        long voteId = voteDao.insert(vote);
+        BillAction billAction = BillAction.fromVote(vote);
+        long voteId = billActionDao.insert(billAction);
         Assert.assertTrue(voteId > 0);
     }
 
@@ -154,28 +157,29 @@ public class TestVoteDao {
         long billId = billDao.save(bill);
         bill.setId(billId);
 
-        VoteLoad voteLoad = new VoteLoad();
-        voteLoad.setBill(bill);
-        voteLoad.setUrl("url");
-        voteLoad.setCheckSum(88L);
-        voteLoad.setLoadTime(LocalDateTime.now());
+        BillActionLoad billActionLoad = new BillActionLoad();
+        billActionLoad.setBill(bill);
+        billActionLoad.setUrl("url");
+        billActionLoad.setCheckSum(88L);
+        billActionLoad.setLoadTime(LocalDateTime.now());
 
-        VoteLoadDao voteLoadDao = new VoteLoadDao(connection);
-        long voteLoadId = voteLoadDao.insert(voteLoad);
-        voteLoad.setId(voteLoadId);
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+        long voteLoadId = billActionLoadDao.insert(billActionLoad);
+        billActionLoad.setId(voteLoadId);
 
         Vote vote = new Vote();
         vote.setBill(bill);
         vote.setLegislator(wilson);
         vote.setVoteSide(VoteSide.Yea);
-        vote.setVoteLoad(voteLoad);
+        vote.setBillActionLoad(billActionLoad);
 
-        VoteDao voteDao = new VoteDao(connection);
+        BillActionDao billActionDao = new BillActionDao(connection);
+        BillAction billAction = BillAction.fromVote(vote);
 
-        long voteId = voteDao.insert(vote);
+        long voteId = billActionDao.insert(billAction);
         Assert.assertTrue(voteId > 0);
 
-        List<Vote> readVotes = voteDao.readByBill(bill);
+        List<BillAction> readVotes = billActionDao.readByBill(bill);
 
         Assert.assertEquals(1, readVotes.size());
     }

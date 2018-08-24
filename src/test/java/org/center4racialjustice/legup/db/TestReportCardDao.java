@@ -25,8 +25,8 @@ public class TestReportCardDao {
     private static void clearTables() throws SQLException {
         Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
-        statement.execute("delete from votes");
-        statement.execute("delete from vote_loads");
+        statement.execute("delete from bill_actions");
+        statement.execute("delete from bill_action_loads");
         statement.execute("delete from report_factors");
         statement.execute("delete from bills");
         statement.execute("delete from report_cards");

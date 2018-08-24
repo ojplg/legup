@@ -7,8 +7,9 @@ import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.ReportCardDao;
-import org.center4racialjustice.legup.db.VoteDao;
+import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.GradeCalculator;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
@@ -25,7 +26,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 
 public class ViewReportCardScores implements Handler {
@@ -57,12 +57,13 @@ public class ViewReportCardScores implements Handler {
             List<Long> billIds = calculator.extractBillIds();
 
             BillDao billDao = new BillDao(connection);
-            VoteDao voteDao = new VoteDao(connection);
+            BillActionDao billActionDao = new BillActionDao(connection);
 
             List<Bill> bills = billDao.readByIds(billIds);
             Map<Bill, List<Vote>> votesByBill = new HashMap<>();
             for(Bill bill : bills){
-                List<Vote> votes = voteDao.readByBill(bill);
+                List<BillAction> billActions = billActionDao.readByBill(bill);
+                List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
                 votesByBill.put(bill, votes);
             }
 

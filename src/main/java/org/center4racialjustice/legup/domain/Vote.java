@@ -9,6 +9,6 @@ public class Vote implements Identifiable {
     private Bill bill;
     private Legislator legislator;
     private VoteSide voteSide;
-    private VoteLoad voteLoad;
+    private BillActionLoad billActionLoad;
 
 }

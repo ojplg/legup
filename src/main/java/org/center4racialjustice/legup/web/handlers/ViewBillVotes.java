@@ -3,8 +3,9 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.VoteDao;
+import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
@@ -37,9 +38,10 @@ public class ViewBillVotes implements Handler {
 
             Bill bill = billDao.read(billId);
 
-            VoteDao voteDao = new VoteDao(connection);
+            BillActionDao billActionDao = new BillActionDao(connection);
 
-            List<Vote> votes = voteDao.readByBill(bill);
+            List<BillAction> billActions =  billActionDao.readByBill(bill);
+            List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
 
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("votes", votes);

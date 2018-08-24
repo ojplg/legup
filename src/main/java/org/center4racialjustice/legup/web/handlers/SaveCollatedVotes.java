@@ -3,11 +3,12 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.VoteDao;
-import org.center4racialjustice.legup.db.VoteLoadDao;
+import org.center4racialjustice.legup.db.BillActionDao;
+import org.center4racialjustice.legup.db.BillActionLoadDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Vote;
-import org.center4racialjustice.legup.domain.VoteLoad;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.web.Handler;
@@ -36,7 +37,7 @@ public class SaveCollatedVotes implements Handler {
         HttpSession session = request.getSession();
         String sessionKey = (String) session.getAttribute("collatedVotesKey");
         VotesLegislatorsCollator collator = (VotesLegislatorsCollator) session.getAttribute("collatedVotes");
-        VoteLoad voteLoad = (VoteLoad) session.getAttribute("voteLoad");
+        BillActionLoad billActionLoad = (BillActionLoad) session.getAttribute("billActionLoad");
 
         if ( ! key.equals(sessionKey) ){
             // this is an error condition
@@ -51,17 +52,18 @@ public class SaveCollatedVotes implements Handler {
             BillDao billDao = new BillDao(connection);
             Bill bill = billDao.findOrCreate(collator.getBillSession(), collator.getBillChamber(), collator.getBillNumber());
 
-            voteLoad.setBill(bill);
-            VoteLoadDao voteLoadDao = new VoteLoadDao(connection);
-            long voteLoadId = voteLoadDao.insert(voteLoad);
-            voteLoad.setId(voteLoadId);
+            billActionLoad.setBill(bill);
+            BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+            long voteLoadId = billActionLoadDao.insert(billActionLoad);
+            billActionLoad.setId(voteLoadId);
 
-            VoteDao voteDao = new VoteDao(connection);
+            BillActionDao billActionDao = new BillActionDao(connection);
 
             int savedCount = 0;
             for(CollatedVote collatedVote :  collator.getAllCollatedVotes()){
-                Vote vote = collatedVote.asVote(bill, voteLoad);
-                voteDao.insert(vote);
+                Vote vote = collatedVote.asVote(bill, billActionLoad);
+                BillAction billAction = BillAction.fromVote(vote);
+                billActionDao.insert(billAction);
                 savedCount++;
             }
 

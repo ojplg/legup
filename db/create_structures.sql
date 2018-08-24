@@ -42,33 +42,34 @@ grant all on table bills to legupuser;
 
 
 -- VOTE LOADS
-create sequence vote_load_seq start 1;
+create sequence bill_action_load_seq start 1;
 
-create table vote_loads (
-    id integer PRIMARY KEY DEFAULT nextval('vote_load_seq'),
+create table bill_action_loads (
+    id integer PRIMARY KEY DEFAULT nextval('bill_action_load_seq'),
     load_time timestamp not null,
     bill_id integer REFERENCES bills (id) not null,
     url text not null,
     check_sum text not null
 );
 
-grant all on sequence vote_load_seq to legupuser;
-grant all on table vote_loads to legupuser;
+grant all on sequence bill_action_load_seq to legupuser;
+grant all on table bill_action_loads to legupuser;
 
 
 -- VOTES
-create sequence vote_seq start 1;
+create sequence bill_action_seq start 1;
 
-create table votes (
-    id integer PRIMARY KEY DEFAULT nextval('vote_seq'),
+create table bill_actions (
+    id integer PRIMARY KEY DEFAULT nextval('bill_action_seq'),
     bill_id integer REFERENCES bills (id),
     legislator_id integer REFERENCES legislators (id) not null,
-    vote_load_id integer REFERENCES vote_loads (id) not null,
-    vote_side text not null
+    bill_action_load_id integer REFERENCES bill_action_loads (id) not null,
+    bill_action_type text not null,
+    bill_action_detail text
 );    
 
-grant all on sequence vote_seq to legupuser;
-grant all on table votes to legupuser;
+grant all on sequence bill_action_seq to legupuser;
+grant all on table bill_actions to legupuser;
 
 
 -- REPORT CARDS
