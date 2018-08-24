@@ -25,7 +25,8 @@ public class LegislatorDao implements Dao<Legislator> {
                     new CodedEnumColumn<>("CHAMBER", "", Legislator::getChamber, Legislator::setChamber, ChamberConverter.INSTANCE),
                     new LongColumn<>("DISTRICT", "", Legislator::getDistrict, Legislator::setDistrict),
                     new StringColumn<>("PARTY", "", Legislator::getParty, Legislator::setParty),
-                    new LongColumn<>("SESSION_NUMBER", "", Legislator::getSessionNumber, Legislator::setSessionNumber)
+                    new LongColumn<>("SESSION_NUMBER", "", Legislator::getSessionNumber, Legislator::setSessionNumber),
+                    new StringColumn<>("MEMBER_ID", "" , Legislator::getMemberId, Legislator::setMemberId)
             );
 
     private final Connection connection;

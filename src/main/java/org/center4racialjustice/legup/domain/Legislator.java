@@ -14,6 +14,7 @@ public class Legislator implements Identifiable {
     private Chamber chamber;
     private long district;
     private long sessionNumber;
+    private String memberId;
 
     public void setName(Name name){
         this.unparsedName = name.getUnparsedName();

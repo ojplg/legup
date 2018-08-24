@@ -23,6 +23,8 @@ public class Chamber implements Comparable<Chamber> {
         }
     }
 
+    public String getName() { return name; }
+
     public String toString(){
         return name;
     }

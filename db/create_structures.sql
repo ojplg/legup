@@ -17,7 +17,8 @@ create table legislators (
     district integer not null,
     chamber text not null,
     party text,
-    session_number integer not null
+    session_number integer not null,
+    member_id text
 );
 
 grant all on sequence legislator_seq to legupuser;
