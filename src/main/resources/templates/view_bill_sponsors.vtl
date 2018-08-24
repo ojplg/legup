@@ -1,0 +1,26 @@
+<h4>View Bill Sponsors</h4>
+
+$bill.Chamber bill number $bill.Number
+
+<br/>
+<br/>
+
+<h5>House Sponsors</h5>
+<table>
+#foreach ($legislator in $house_sponsors)
+    <tr>
+        <td>$legislator.FirstName</td>
+        <td>$legislator.LastName</td>
+    </tr>
+#end
+</table>
+
+<h5>Senate Sponsors</h5>
+<table>
+#foreach ($legislator in $senate_sponsors)
+    <tr>
+        <td>$legislator.FirstName</td>
+        <td>$legislator.LastName</td>
+    </tr>
+#end
+</table>
