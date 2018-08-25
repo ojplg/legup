@@ -47,7 +47,8 @@ Technical Betterments
 
 Features to work on
 
-* Work on Bill Votes PDF that use "A" code
+* Bug when editing lists of bills in report cards
+* Work on Bill Votes PDF that use "A" code (House bill 4324)
 * Automatically go from bill search to vote load
 * Figure out how to determine introducers
 * Allow configuration for score options

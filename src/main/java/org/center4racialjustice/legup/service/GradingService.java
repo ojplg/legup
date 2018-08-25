@@ -26,7 +26,7 @@ public class GradingService {
         this.connectionPool = connectionPool;
     }
 
-    public LookupTable<Legislator, Bill, Integer> doGrading(long reportCardId) throws SQLException {
+    public LookupTable<Legislator, Bill, Integer> calculate(long reportCardId) throws SQLException {
         try (Connection connection = connectionPool.getConnection()) {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
