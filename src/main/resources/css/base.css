@@ -18,3 +18,9 @@ td {
     padding-top: 2px;
     padding-bottom: 2px;
 }
+
+div.footer {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}
