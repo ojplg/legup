@@ -58,6 +58,9 @@ public class JoinColumn<T, J extends Identifiable> implements TypedColumn<T> {
     @Override
     public void setValue(T item, int index, PreparedStatement preparedStatement) throws SQLException {
         J value = getter.apply(item);
+        if( value == null){
+            throw new RuntimeException("Cannot find join column value for " + item + " using " + getter);
+        }
         Long id = value.getId();
         preparedStatement.setLong(index, id);
     }

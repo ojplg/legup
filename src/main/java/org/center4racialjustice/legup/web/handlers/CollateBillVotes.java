@@ -1,7 +1,5 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
@@ -13,15 +11,12 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
 public class CollateBillVotes implements Handler {
-
-    private static final Logger log = LogManager.getLogger(CollateBillVotes.class);
 
     private final ConnectionPool connectionPool;
 
@@ -30,7 +25,7 @@ public class CollateBillVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
 
         HttpSession session = request.getSession();
         BillVotes billVotes = (BillVotes) session.getAttribute("billVotes");

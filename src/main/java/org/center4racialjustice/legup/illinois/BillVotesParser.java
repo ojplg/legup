@@ -28,6 +28,11 @@ public class BillVotesParser {
     private static final List<String> hundredthLines =
             Arrays.asList("ONE HUNDREDTH", "100th General Assembly");
 
+    public static BillVotes readFromUrlAndParse(String url) throws IOException {
+        String contents = BillVotesParser.readFileFromUrl(url);
+        return  BillVotesParser.parseFileContents(contents);
+    }
+
     public static String readFileFromUrl(String url)
     throws IOException {
         PDDocument doc = new PDDocument();

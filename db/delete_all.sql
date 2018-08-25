@@ -3,9 +3,9 @@
 
 begin;
 
-delete from votes;
+delete from bill_actions;
 
-delete from vote_loads;
+delete from bill_action_loads;
 
 delete from legislators;
 

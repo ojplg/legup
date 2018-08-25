@@ -27,11 +27,11 @@ public class ViewBillSearchResults implements Handler {
         String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
 
         BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl, chamber, number);
+        Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
         HttpSession session = request.getSession();
         session.setAttribute("billHtmlParser", billHtmlParser);
-
-        Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
+        session.setAttribute("votesUrlsMap", votesUrlsMap);
 
         VelocityContext velocityContext = new VelocityContext();
 
