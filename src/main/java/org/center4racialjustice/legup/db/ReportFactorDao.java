@@ -5,6 +5,9 @@ import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
@@ -45,11 +48,21 @@ public class ReportFactorDao {
         return factors;
     }
 
-    public Long save(ReportFactor reportFactor){
-        if ( reportFactor.getId() == null) {
-            return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, reportFactor);
-        } else {
-            return DaoHelper.doUpdate(connection, table, dataColumns, joinColumns, reportFactor);
+    public void deleteByReportCardId(long reportCardId){
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute("delete from report_factors where report_card_id = " + reportCardId);
+            statement.close();
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
         }
+    }
+
+    public Long save(ReportFactor reportFactor){
+//        if ( reportFactor.getId() == null) {
+            return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, reportFactor);
+//        } else {
+//            return DaoHelper.doUpdate(connection, table, dataColumns, joinColumns, reportFactor);
+//        }
     }
 }

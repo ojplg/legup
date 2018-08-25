@@ -55,15 +55,18 @@ public class ViewReportCardForm implements Handler {
                 List<ReportFactor> factors = reportCard.getReportFactors();
                 Map<Long, ReportFactor> factorsByBillId = Lists.asMap(factors, f -> f.getBill().getId());
 
-                Map<Bill, ReportFactor> possibleFactors = new HashMap<>();
+                Map<Bill, String> factorSettings = new HashMap<>();
 
                 for(Bill bill : bills){
-                    possibleFactors.put(bill, factorsByBillId.get(bill.getId()));
+                    ReportFactor matchingFactor = factorsByBillId.get(bill.getId());
+                    if ( matchingFactor == null ){
+                        factorSettings.put(bill, "Unselected");
+                    } else {
+                        factorSettings.put(bill, matchingFactor.getVoteSide().getCode());
+                    }
+
                 }
-
-                log.info(" put possible factors in " + possibleFactors.size());
-
-                velocityContext.put("possible_factors", possibleFactors);
+               velocityContext.put("factor_settings", factorSettings);
             }
 
             return velocityContext;

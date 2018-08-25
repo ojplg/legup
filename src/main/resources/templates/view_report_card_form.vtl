@@ -25,9 +25,9 @@
             <th>Desired Vote</th>
         </tr>
 
-        #foreach ($pair in ${possible_factors.entrySet()})
+        #foreach ($pair in ${factor_settings.entrySet()})
             #set ( $bill = $pair.Key )
-            #set ( $factor = $pair.Value )
+            #set ( $setting = $pair.Value )
             <tr>
                 <td>$bill.id</td>
                 <td>$bill.Session</td>
@@ -36,8 +36,8 @@
                 <td>
                     <select name="bill_vote_side_$bill.id" form="save_report_card_form">
                         <option value="Unselect"></option>
-                        <option value="Yes" #if (${factor.getVoteSide().isYes()}) selected="selected" #end>Yes</option>
-                        <option value="No" #if (${factor.getVoteSide().isNo()}) selected="selected" #end>No</option>
+                        <option value="Yes" #if (${setting.equals("Y")}) selected="selected" #end>Yes</option>
+                        <option value="No" #if (${setting.equals("N")}) selected="selected" #end>No</option>
                     </select>
                 </td>
             </tr>

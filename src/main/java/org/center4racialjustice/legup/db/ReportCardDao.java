@@ -30,12 +30,15 @@ public class ReportCardDao {
     }
 
     public long save(ReportCard reportCard){
+        // simply delete all old factors for now. it's simple
+        if( reportCard.getId() != null) {
+            reportFactorDao.deleteByReportCardId(reportCard.getId());
+        }
         long reportCardId = DaoHelper.save(connection, table, dataColumns, reportCard);
         for(ReportFactor factor : reportCard.getReportFactors()){
             factor.setReportCardId(reportCardId);
             reportFactorDao.save(factor);
         }
-        // FIXME: Needs to delete old factors!
         return reportCardId;
     }
 

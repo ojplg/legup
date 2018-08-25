@@ -230,7 +230,6 @@ public class BillVotesParser {
 
             Matcher summaryMatcher1 = summaryPattern1.matcher(line);
             if (summaryMatcher1.matches()){
-                System.out.println(" MATCHED  111  !!!!");
                 String yeas = summaryMatcher1.group(1);
                 bv.setExpectedYeas(Integer.parseInt(yeas));
                 String nays = summaryMatcher1.group(2);
@@ -242,7 +241,6 @@ public class BillVotesParser {
 
             Matcher summaryMatcher2 = summaryPattern2.matcher(line);
             if(summaryMatcher2.matches()){
-                System.out.println(" MATCHED  222  !!!!");
                 String yeas = summaryMatcher2.group(1);
                 bv.setExpectedYeas( Integer.parseInt(yeas));
                 String nays = summaryMatcher2.group(2);
@@ -256,7 +254,6 @@ public class BillVotesParser {
 
             Matcher summaryMatcher3 = summaryPattern3.matcher(line);
             if (summaryMatcher3.matches()){
-                System.out.println(" MATCHED  333  !!!!");
                 String yeas = summaryMatcher3.group(1);
                 bv.setExpectedYeas(Integer.parseInt(yeas));
                 String presents = summaryMatcher3.group(2);

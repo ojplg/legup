@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SaveReportCard implements Handler {
@@ -56,16 +58,19 @@ public class SaveReportCard implements Handler {
                 reportCard.setSessionNumber(session);
 
                 Map<Long, VoteSide> voteSideByBillIdMap = parseVoteSidesByBillIdMap(request);
+                List<ReportFactor> factorsToRemove = new ArrayList<>();
+
                 for(ReportFactor reportFactor : reportCard.getReportFactors()){
                     Long billId = reportFactor.getBill().getId();
                     if( voteSideByBillIdMap.containsKey(billId)){
                         reportFactor.setVoteSide(voteSideByBillIdMap.get(billId));
                         voteSideByBillIdMap.remove(billId);
                     } else {
-                        // need to remove!
-                        // IS THIS SAFE?
-                        reportCard.getReportFactors().remove(reportFactor);
+                        factorsToRemove.add(reportFactor);
                     }
+                }
+                for( ReportFactor reportFactor : factorsToRemove ){
+                    reportCard.getReportFactors().remove(reportFactor);
                 }
                 for(Map.Entry<Long, VoteSide> billVotePair : voteSideByBillIdMap.entrySet()){
                     Bill bill = billDao.read(billVotePair.getKey());
