@@ -7,140 +7,127 @@ import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Test;
 import org.junit.Assert;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 public class TestBillVotesParser {
 
     private final String bill8FileName = "/pdfs/10000SB0008_02082017_002000T.pdf";
-    private final String bill2781FileName = "/pdfs/10000SB2781_19952.pdf";
     private final String bill3179FileName = "/pdfs/10000HB3179_05262017_048000T.pdf";
     private final String houseBill2771FileName =  "/pdfs/10000HB2771_04272017_028000T.pdf";
+    private final String houseBill4324FileName =  "/pdfs/10000HB4324_04272018_065000T.pdf";
+    private final String senateBill1781FileName = "/pdfs/10000SB1781_05302017_032000T.pdf";
 
-    @Test
-    public void testSomeHouseBill(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName);
-        Assert.assertNotNull(billVotes);
+    private static BillVotes houseBill4324(){
+        BillVotes billVotes = new BillVotes();
+
+        billVotes.setSession(100);
+        billVotes.setVotingChamber(Chamber.House);
+        billVotes.setBillChamber(Chamber.House);
+        billVotes.setBillNumber(4324);
+        billVotes.setExpectedYeas(88);
+        billVotes.setExpectedNays(3);
+        billVotes.setExpectedPresent(0);
+
+        return billVotes;
+    }
+
+    private BillVotes senateBill8(){
+        BillVotes billVotes = new BillVotes();
+
+        billVotes.setSession(100);
+        billVotes.setVotingChamber(Chamber.Senate);
+        billVotes.setBillChamber(Chamber.Senate);
+        billVotes.setBillNumber(8);
+        billVotes.setExpectedYeas(34);
+        billVotes.setExpectedNays(14);
+        billVotes.setExpectedPresent(11);
+
+        return billVotes;
+    }
+
+    private BillVotes houseBill3179(){
+        BillVotes billVotes = new BillVotes();
+
+        billVotes.setSession(100);
+        billVotes.setVotingChamber(Chamber.Senate);
+        billVotes.setBillChamber(Chamber.House);
+        billVotes.setBillNumber(3179);
+        billVotes.setExpectedYeas(48);
+        billVotes.setExpectedNays(0);
+        billVotes.setExpectedPresent(0);
+
+        return billVotes;
+
+    }
+
+    private BillVotes houseBill2771(){
+        BillVotes billVotes = new BillVotes();
+
+        billVotes.setSession(100);
+        billVotes.setVotingChamber(Chamber.House);
+        billVotes.setBillChamber(Chamber.House);
+        billVotes.setBillNumber(2771);
+        billVotes.setExpectedYeas(66);
+        billVotes.setExpectedNays(51);
+        billVotes.setExpectedPresent(0);
+
+        return billVotes;
+    }
+
+    private BillVotes senateBill1781(){
+        BillVotes billVotes = new BillVotes();
+
+        billVotes.setSession(100);
+        billVotes.setVotingChamber(Chamber.House);
+        billVotes.setBillChamber(Chamber.Senate);
+        billVotes.setBillNumber(1781);
+        billVotes.setExpectedYeas(61);
+        billVotes.setExpectedNays(55);
+        billVotes.setExpectedPresent(0);
+
+        return billVotes;
+    }
+
+    private void checkNonListFields(BillVotes expected, BillVotes tested){
+        Assert.assertEquals("Unmatched session", expected.getSession(), tested.getSession());
+        Assert.assertEquals("Unmatched voting chamber", expected.getVotingChamber(), tested.getVotingChamber());
+        Assert.assertEquals("Unmatched bill number", expected.getBillNumber(), tested.getBillNumber());
+        Assert.assertEquals("Unmatched expected yeas", expected.getExpectedYeas(), tested.getExpectedYeas());
+        Assert.assertEquals("Unmatched expected nays", expected.getExpectedNays(), tested.getExpectedNays());
+        Assert.assertEquals("Unmatched expected present", expected.getExpectedPresent(), tested.getExpectedPresent());
     }
 
     @Test
-    public void testGetAssembly_House(){
+    public void testBill4234(){
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName);
+        checkNonListFields(houseBill4324(), billVotes);
+    }
+
+    @Test
+    public void testBill8(){
+        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName);
+        checkNonListFields(senateBill8(), billVotes);
+    }
+
+    @Test
+    public void testBill3179(){
         BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName);
-        Assert.assertEquals(Chamber.House, billVotes.getBillChamber());;
+        checkNonListFields(houseBill3179(), billVotes);
     }
 
     @Test
-    public void testGetAssembly_Senate(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(Chamber.Senate, billVotes.getBillChamber());
-    }
-
-
-    @Test
-    public void testGetBillNumber_House(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName);
-        Assert.assertEquals(3179L, billVotes.getBillNumber());;
-    }
-
-    @Test
-    public void testGetBillNumber_Senate(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(2781L, billVotes.getBillNumber());
-    }
-
-    @Test
-    public void testGetBillNumber_House_Alternate(){
+    public void testBill2771(){
         BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName);
-        Assert.assertEquals( billVotes.getContent(),2771L, billVotes.getBillNumber());;
+        checkNonListFields(houseBill2771(), billVotes);
     }
 
     @Test
-    public void testFileLoading(){
-        String content = BillVotesParser.readFileToString(bill8FileName);
-        Assert.assertTrue(content.length() > 1);
-        String next = BillVotesParser.readFileToString(bill2781FileName);
-        Assert.assertTrue(next.length() > 1);
+    public void testBill1781(){
+        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName);
+        checkNonListFields(senateBill1781(), billVotes);
     }
 
-    @Test
-    public void testBillNumber8(){
-        BillVotes bv = BillVotesParser.parseFile(bill8FileName);
-        Assert.assertEquals(8, bv.getBillNumber());
-    }
-
-    @Test
-    public void testBillNumber2781(){
-        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(2781, bv.getBillNumber());
-    }
-
-    @Test
-    public void testExpectedCounts8(){
-        BillVotes bv = BillVotesParser.parseFile(bill8FileName);
-        Assert.assertEquals(34, bv.getExpectedYeas());
-        Assert.assertEquals(14, bv.getExpectedNays());
-        Assert.assertEquals(11, bv.getExpectedPresent());
-        Assert.assertEquals(0, bv.getExpectedNotVoting());
-    }
-
-    @Test
-    public void testExpectedCounts2781(){
-        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(9, bv.getExpectedYeas() );
-        Assert.assertEquals(0, bv.getExpectedNays());
-        Assert.assertEquals(0, bv.getExpectedPresent());
-        Assert.assertEquals(8, bv.getExpectedNotVoting());
-    }
-
-    @Test
-    public void testVoteCollections(){
-        /*
-        NV Barickman, Jason A NV Brady, William E
-        Y Clayborne Jr., James F NV Cullerton, John J
-        Y Harmon, Don Y Hunter, Mattie
-        Y Lightford, Kimberly A Y Link, Terry
-        Y Mulroe, John G NV Muñoz, Antonio
-        Y Nybo, Chris Y Oberweis, Jim
-        NV Raoul, Kwame Y Rezin, Sue
-        NV Silverstein, Ira I NV Steans, Heather A
-        NV Syverson, Dave
-        */
-        Name[] expectedNotVoting =
-                {
-                        Name.fromFirstLastMiddleInitial("Jason","Barickman", "A"),
-                        Name.fromFirstLastMiddleInitial("William", "Brady", "E"),
-                        Name.fromFirstLastMiddleInitial("John", "Cullerton", "J"),
-                        Name.fromFirstLast("Antonio","Muñoz"),
-                        Name.fromFirstLast("Kwame", "Raoul"),
-                        Name.fromFirstLastMiddleInitial("Ira", "Silverstein", "I"),
-                        Name.fromFirstLastMiddleInitial("Heather", "Steans", "A"),
-                        Name.fromFirstLast("Dave","Syverson")
-                };
-
-        Name[] expectedYeas =
-                {
-                        new Name("James","F", "Clayborne",null, "Jr"),
-                        Name.fromFirstLast("Don", "Harmon"),
-                        Name.fromFirstLast("Mattie","Hunter"),
-                        Name.fromFirstLastMiddleInitial("Kimberly", "Lightford", "A"),
-                        Name.fromFirstLast("Terry", "Link"),
-                        Name.fromFirstLastMiddleInitial("John", "Mulroe", "G"),
-                        Name.fromFirstLast("Chris", "Nybo"),
-                        Name.fromFirstLast("Jim", "Oberweis"),
-                        Name.fromFirstLast("Sue","Rezin")
-                };
-
-        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertArrayEquals(expectedNotVoting, bv.getNotVotings().toArray(new Name[8]));
-        Assert.assertArrayEquals(expectedYeas, bv.getYeas().toArray(new Name[9]));
-    }
-
-    @Test
-    public void checkVoteCountsWorks(){
-        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        bv.checkVoteCounts();
-    }
 
     @Test
     public void senateBillNumberNotAVoteLine(){
@@ -209,57 +196,6 @@ public class TestBillVotesParser {
         };
         List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
         Assert.assertArrayEquals(expectedRecords, records.toArray());
-    }
-
-    @Test
-    public void houseBillCanBeParsed(){
-        BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
-        bv.checkVoteCounts();
-    }
-
-    @Test
-    public void testReportsCorrectVotingChamber_2771(){
-        BillVotes bv = BillVotesParser.parseFile(houseBill2771FileName);
-        Assert.assertEquals(Chamber.House, bv.getVotingChamber());
-    }
-
-    @Test
-    public void testReportsCorrectVotingChamber_3179(){
-        BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
-        Assert.assertEquals(Chamber.Senate, bv.getVotingChamber());
-    }
-
-    @Test
-    public void testReportsCorrectVotingChamber_8(){
-        BillVotes bv = BillVotesParser.parseFile(bill8FileName);
-        Assert.assertEquals(Chamber.Senate, bv.getVotingChamber());
-    }
-
-    @Test
-    public void testReportsCorrectVotingChamber_2781(){
-        BillVotes bv = BillVotesParser.parseFile(bill2781FileName);
-        Assert.assertEquals(Chamber.Senate, bv.getVotingChamber());
-    }
-
-    @Test
-    public void readOverHttp() throws IOException  {
-        String url = "http://www.ilga.gov/legislation/votehistory/100/senate/10000SB0001_05172017_009000T.pdf";
-
-        String contents = BillVotesParser.readFileFromUrl(url);
-
-        Assert.assertNotNull(contents);
-    }
-
-    @Test
-    public void testReportsCorrectSession_2771(){
-        BillVotes bv = BillVotesParser.parseFile(houseBill2771FileName);
-        Assert.assertEquals(100L, bv.getSession());
-    }
-
-    @Test
-    public void testReportsCorrectSession_3179(){
-        BillVotes bv = BillVotesParser.parseFile(bill3179FileName);
-        Assert.assertEquals(100L, bv.getSession());
     }
 
 }

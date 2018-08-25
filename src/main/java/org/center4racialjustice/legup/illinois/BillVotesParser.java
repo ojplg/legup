@@ -87,13 +87,15 @@ public class BillVotesParser {
 
     private static Pattern billAssemblyAndNumberPattern = Pattern.compile("(Senate|House) Bill No. (\\d+) *");
     private static Pattern alternateBillAssemblyAndNumberPattern = Pattern.compile("(HOUSE|SENATE) BILL (\\d+) *");
-    private static Pattern summaryPattern =
-            Pattern.compile("(\\d+)\\s+YEAS\\s+(\\d+)\\s+NAYS\\s+(\\d+)\\s+PRESENT");
-    private static Pattern alternateSummaryPattern =
+    private static Pattern summaryPattern1 =
+            Pattern.compile("(\\d+) YEAS (\\d+) NAYS (\\d+) PRESENT *");
+    private static Pattern summaryPattern2 =
             Pattern.compile("YEAS NAYS PRESENT NOT VOTING(\\d+) (\\d+) (\\d+) (\\d+)");
+    private static Pattern summaryPattern3 =
+            Pattern.compile("(\\d+) YEAS (\\d+) PRESENT(\\d+) NAYS");
 
     private static Pattern voteLinePattern =
-            Pattern.compile("(NV|Y|N|P|E) .*");
+            Pattern.compile("(NV|Y|N|P|E|A) .*");
 
     public static boolean isVoteLine(String line){
         Matcher voteLineMatcher = voteLinePattern.matcher(line);
@@ -101,7 +103,7 @@ public class BillVotesParser {
     }
 
     public static int findNextPossibleRecordIndex(String input){
-        String[] markers = { "N ", "Y ", "P ", "NV ", "E "};
+        String[] markers = { "N ", "Y ", "P ", "NV ", "E ", "A "};
         int earliestIndex = input.length();
         for(String marker : markers){
             int idx = input.indexOf(marker);
@@ -117,6 +119,9 @@ public class BillVotesParser {
     }
 
     public static List<VoteRecord> parseVoteRecordLine(String input){
+
+
+
         String remainder = input.trim();
         List<VoteRecord> records = new ArrayList<>();
         while (remainder.length() > 0){
@@ -178,6 +183,8 @@ public class BillVotesParser {
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
 
+//            System.out.println("|" + line + "|");
+
             boolean ignore = false;
             for(String ignoreLine : ignoreLines){
                 if(line.contains(ignoreLine)){
@@ -221,29 +228,44 @@ public class BillVotesParser {
                 continue;
             }
 
-            Matcher summaryMatcher = summaryPattern.matcher(line);
-            while (summaryMatcher.find()){
-                String yeas = summaryMatcher.group(1);
+            Matcher summaryMatcher1 = summaryPattern1.matcher(line);
+            if (summaryMatcher1.matches()){
+                System.out.println(" MATCHED  111  !!!!");
+                String yeas = summaryMatcher1.group(1);
                 bv.setExpectedYeas(Integer.parseInt(yeas));
-                String nays = summaryMatcher.group(2);
+                String nays = summaryMatcher1.group(2);
                 bv.setExpectedNays(Integer.parseInt(nays));
-                String presents = summaryMatcher.group(3);
+                String presents = summaryMatcher1.group(3);
                 bv.setExpectedPresent(Integer.parseInt(presents));
                 continue;
             }
 
-            Matcher alternateSummaryMatcher = alternateSummaryPattern.matcher(line);
-            while(alternateSummaryMatcher.find()){
-                String yeas = alternateSummaryMatcher.group(1);
+            Matcher summaryMatcher2 = summaryPattern2.matcher(line);
+            if(summaryMatcher2.matches()){
+                System.out.println(" MATCHED  222  !!!!");
+                String yeas = summaryMatcher2.group(1);
                 bv.setExpectedYeas( Integer.parseInt(yeas));
-                String nays = alternateSummaryMatcher.group(2);
+                String nays = summaryMatcher2.group(2);
                 bv.setExpectedNays(Integer.parseInt(nays));
-                String presents = alternateSummaryMatcher.group(3);
+                String presents = summaryMatcher2.group(3);
                 bv.setExpectedPresent(Integer.parseInt(presents));
-                String notVotings = alternateSummaryMatcher.group(4);
+                String notVotings = summaryMatcher2.group(4);
                 bv.setExpectedNotVoting(Integer.parseInt(notVotings));
                 continue;
             }
+
+            Matcher summaryMatcher3 = summaryPattern3.matcher(line);
+            if (summaryMatcher3.matches()){
+                System.out.println(" MATCHED  333  !!!!");
+                String yeas = summaryMatcher3.group(1);
+                bv.setExpectedYeas(Integer.parseInt(yeas));
+                String presents = summaryMatcher3.group(2);
+                bv.setExpectedPresent(Integer.parseInt(presents));
+                String nays = summaryMatcher3.group(3);
+                bv.setExpectedNays(Integer.parseInt(nays));
+                continue;
+            }
+
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
             if( voteLineMatcher.matches() ){
