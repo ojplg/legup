@@ -28,4 +28,8 @@ public class Legislator implements Identifiable {
         return new Name(unparsedName, firstName, middleInitialOrName, lastName, null, suffix);
     }
 
+    public String getMemberLink(){
+        return "http://www.ilga.gov/house/Rep.asp?GA=100&MemberID=" + memberId;
+    }
+
 }

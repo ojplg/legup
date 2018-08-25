@@ -1,6 +1,8 @@
 <h4>View Bill Votes</h4>
 
-Votes of $legislator.FirstName $legislator.LastName
+Votes of <a href="$legislator.MemberLink">$legislator.FirstName $legislator.LastName</a>
+<br/>
+$legislator.Chamber district $legislator.District
 
 <br/>
 <br/>
@@ -10,6 +12,7 @@ Votes of $legislator.FirstName $legislator.LastName
 <tr>
     <th>Chamber</th>
     <th>Bill Number</th>
+    <th>Description</th>
     <th>Vote</th>
 </tr>
 
@@ -17,6 +20,7 @@ Votes of $legislator.FirstName $legislator.LastName
     <tr>
         <td>$vote.Bill.Chamber</td>
         <td>$vote.Bill.Number</td>
+        <td>$vote.Bill.ShortDescription</td>
         <td>$vote.VoteSide.Code</td>
     </tr>
 #end
