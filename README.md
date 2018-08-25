@@ -54,6 +54,7 @@ Technical Betterments
 
 Features/bugs to work on
 
+* Nothing is sorted anywhere
 * Error checking for form submissions all over the place
 * Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
 * Bug when editing lists of bills in report cards
