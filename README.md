@@ -1,8 +1,14 @@
-# legup
+# LegUp
 
 Experimental project to read PDFs and extract votes from the Illinois legislature.
 
-Does not do much of anything yet.
+LegUp tries to do the following:
+* Load information about legislators/bills/votes into its database by scraping the legislature's web page.
+* Allow the user to create report cards, which include a collection of bills and whether or not the bill 
+  should be supported or opposed.
+* Score the legislators against the report cards by checking their voting records.
+
+LegUp exposes its functionality via a simple web application.
 
 # Technical
 
@@ -44,17 +50,18 @@ Technical Betterments
 * Maybe throw out the whole of the DB access layer and replace with Hibernate/javax.persistence
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
 * Need a way to handle things that need to be in session and then cleared up
+* CSS
 
-Features to work on
+Features/bugs to work on
 
+* Error checking for form submissions all over the place
+* Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
 * Bug when editing lists of bills in report cards
-* Work on Bill Votes PDF that use "A" code (House bill 4324)
-* Automatically go from bill search to vote load
 * Figure out how to determine introducers
 * Allow configuration for score options
 * Calculate legislator grades from scores
 * Allow configuartion of grading options (grade on a curve?)
-* Determine differences between vote types (Third Reading, committee, etc)
+* Load things other than "Third Reading" PDFs: Committee votes
 * Add a way to do name overrides in configuration or maybe DB
 
 
