@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
 public class LookupTable<R, C, V> {
@@ -30,6 +31,17 @@ public class LookupTable<R, C, V> {
             map.put(row, rowMap);
         }
         rowMap.put(column, value);
+    }
+
+    public V merge(R row, C column, V value, BiFunction<V,V,V> updater){
+        rowHeadings.add(row);
+        columnHeadings.add(column);
+        Map<C,V> rowMap = map.get(row);
+        if (rowMap == null){
+            rowMap = new HashMap<>();
+            map.put(row, rowMap);
+        }
+        return rowMap.merge(column, value, updater);
     }
 
     public Set<R> getRowHeadings(){

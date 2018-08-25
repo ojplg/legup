@@ -123,8 +123,8 @@ public class SaveSearchedBill implements Handler {
         int cnt = 0;
         for(Tuple<String, String> tuple : tuples){
             Legislator legislator = Lists.findfirst(legislators, l -> l.getMemberId().equals(tuple.getSecond()));
-            
-            // FIXME: this looks bogus
+
+            // FIXME: this looks bogus - we should always find the correct legislator
             if( legislator != null) {
                 BillAction billAction = new BillAction();
                 billAction.setBill(bill);

@@ -1,9 +1,7 @@
 package org.center4racialjustice.legup.db;
 
 import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
-import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 import java.sql.Connection;

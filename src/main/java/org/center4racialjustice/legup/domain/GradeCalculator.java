@@ -4,6 +4,8 @@ import org.center4racialjustice.legup.util.LookupTable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GradeCalculator {
 
@@ -28,7 +30,11 @@ public class GradeCalculator {
         return null;
     }
 
-    public LookupTable<Legislator, Bill, Integer> calculate(Map<Bill, List<Vote>> voteRecords){
+    private static int add(int addend1, int addend2){
+        return addend1 + addend2;
+    }
+
+    public LookupTable<Legislator, Bill, Integer> calculate(Map<Bill, List<BillAction>> actionMap){
 
         LookupTable<Legislator, Bill, Integer> scoreTable = new LookupTable<>();
 
@@ -36,20 +42,33 @@ public class GradeCalculator {
 
             Bill bill = factor.getBill();
             VoteSide sideRequired = factor.getVoteSide();
-            List<Vote> votes = voteRecords.get(bill);
+            List<BillAction> actions = actionMap.get(bill);
 
             for(Legislator legislator : legislators) {
+                List<BillAction> legislatorActions = actions.stream()
+                        .filter(a -> legislator.equals(a.getLegislator()))
+                        .collect(Collectors.toList());
 
-                Vote vote = extractVoteForLegislator(votes, legislator);
-                if (vote == null) {
-                    // ? What to do
-                } else if (sideRequired.equals(vote.getVoteSide())) {
-                    scoreTable.put(legislator, bill, 1);
-                } else if (VoteSide.Nay.equals(sideRequired) && VoteSide.Yea.equals(vote.getVoteSide())
-                        || (VoteSide.Yea.equals(sideRequired) && VoteSide.Nay.equals(vote.getVoteSide()))) {
-                    scoreTable.put(legislator, bill, -1);
-                } else {
-                    // what to do?
+                for(BillAction legislatorAction : legislatorActions) {
+                    if( legislatorAction.isVote()) {
+                        Vote vote = legislatorAction.asVote();
+                        if (vote == null) {
+                            // ? What to do
+                        } else if (sideRequired.equals(vote.getVoteSide())) {
+                            scoreTable.merge(legislator, bill, 1, GradeCalculator::add );
+                        } else if (VoteSide.Nay.equals(sideRequired) && VoteSide.Yea.equals(vote.getVoteSide())
+                                || (VoteSide.Yea.equals(sideRequired) && VoteSide.Nay.equals(vote.getVoteSide()))) {
+                            scoreTable.merge(legislator, bill, -1 , GradeCalculator::add );
+                        } else {
+                            // what to do?
+                        }
+                    } else if (legislatorAction.getBillActionType().equals(BillActionType.SPONSOR)){
+                        if( sideRequired.equals(VoteSide.Yea)){
+                            scoreTable.merge(legislator, bill, 2, GradeCalculator::add);
+                        } else {
+                            scoreTable.merge(legislator, bill, -2, GradeCalculator::add);
+                        }
+                    }
                 }
             }
         }
