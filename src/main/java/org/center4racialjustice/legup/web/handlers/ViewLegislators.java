@@ -10,6 +10,7 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 public class ViewLegislators implements Handler {
@@ -28,6 +29,7 @@ public class ViewLegislators implements Handler {
         Connection connection = connectionPool.getConnection();
         LegislatorDao dao = new LegislatorDao(connection);
         List<Legislator> legislators = dao.readAll();
+        Collections.sort(legislators);
         vc.put("legislators", legislators);
 
         connection.close();

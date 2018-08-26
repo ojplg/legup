@@ -1,9 +1,6 @@
 
 <h4>View Report Card Scores</h4>
 
-#set ($bills = $scores.columnHeadings)
-#set ($legislators = $scores.rowHeadings)
-
 <table  class="pure-table">
     <thead>
     <tr>
@@ -16,8 +13,6 @@
     </thead>
 
     #foreach ($legislator in $legislators)
-
-
         <tr #if ($foreach.count % 2 == 0) class="pure-table-odd" #end  >
             <td>$legislator.LastName, $legislator.FirstName</td>
             #foreach ($bill in $bills)

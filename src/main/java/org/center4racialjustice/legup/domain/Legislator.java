@@ -3,7 +3,8 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 @Data
-public class Legislator implements Identifiable {
+public class Legislator implements Identifiable, Comparable<Legislator> {
+
     private Long id;
     private String unparsedName;
     private String lastName;
@@ -32,4 +33,20 @@ public class Legislator implements Identifiable {
         return "http://www.ilga.gov/house/Rep.asp?GA=100&MemberID=" + memberId;
     }
 
+    @Override
+    public int compareTo(Legislator that) {
+        int comparison = this.lastName.compareTo(that.lastName);
+        if ( comparison != 0 ){
+            return comparison;
+        }
+        comparison = this.firstName.compareTo(that.firstName);
+        if ( comparison != 0 ){
+            return comparison;
+        }
+        comparison = this.middleInitialOrName.compareTo(that.middleInitialOrName);
+        if ( comparison != 0 ){
+            return comparison;
+        }
+        return 0;
+    }
 }

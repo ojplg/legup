@@ -33,6 +33,8 @@ public class ViewReportCardScores implements Handler {
         velocityContext.put("scores", scores);
         BinaryOperator<Integer> scoreComputer = (i, j) -> i + j;
         velocityContext.put("computer", scoreComputer);
+        velocityContext.put("legislators", scores.sortedRowHeadings(Legislator::compareTo));
+        velocityContext.put("bills", scores.sortedColumnHeadings(Bill::compareTo));
 
         return velocityContext;
     }

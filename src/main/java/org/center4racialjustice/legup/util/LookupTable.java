@@ -1,8 +1,12 @@
 package org.center4racialjustice.legup.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -50,6 +54,20 @@ public class LookupTable<R, C, V> {
 
     public Set<C> getColumnHeadings(){
         return columnHeadings;
+    }
+
+    public List<R> sortedRowHeadings(Comparator<R> comparator) {
+        List<R> rows = new ArrayList<>();
+        rows.addAll(getRowHeadings());
+        Collections.sort(rows, comparator);
+        return rows;
+    }
+
+    public List<C> sortedColumnHeadings(Comparator<C> comparator) {
+        List<C> columns = new ArrayList<>();
+        columns.addAll(getColumnHeadings());
+        Collections.sort(columns, comparator);
+        return columns;
     }
 
     public V computeRowSummary(R row, V identity, BinaryOperator<V> accumulator){
