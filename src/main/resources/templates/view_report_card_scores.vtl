@@ -5,6 +5,7 @@
 #set ($legislators = $scores.rowHeadings)
 
 <table  class="pure-table">
+    <thead>
     <tr>
         <th></th>
         #foreach ($bill in $bills)
@@ -12,9 +13,12 @@
         #end
         <th>Score</th>
     </tr>
+    </thead>
 
     #foreach ($legislator in $legislators)
-        <tr>
+
+
+        <tr #if ($foreach.count % 2 == 0) class="pure-table-odd" #end  >
             <td>$legislator.LastName, $legislator.FirstName</td>
             #foreach ($bill in $bills)
                 <td>$!{scores.get($legislator, $bill)}</td>
