@@ -50,11 +50,10 @@ Technical Betterments
 * Maybe throw out the whole of the DB access layer and replace with Hibernate/javax.persistence
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
 * Need a way to handle things that need to be in session and then cleared up
-* CSS tags need to be added all over the place
 
 Features/bugs to work on
 
-* Nothing is sorted anywhere
+* CSS tags need to be added all over the place
 * Error checking for form submissions needed all over the place
 * Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
 * Figure out how to determine introducers
