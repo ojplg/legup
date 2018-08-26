@@ -17,7 +17,7 @@
 </thead>
 
 #foreach( $legislator in $legislators )
-    <tr>
+    <tr #if ($foreach.count % 2 == 0) class="pure-table-odd" #end >
         <td>$!legislator.FirstName</td>
         <td>$!legislator.MiddleInitialOrName</td>
         <td><a href="http://www.ilga.gov/house/Rep.asp?GA=100&MemberID=$legislator.MemberId">$legislator.LastName</a></td>
