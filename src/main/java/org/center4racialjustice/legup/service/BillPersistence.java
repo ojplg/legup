@@ -20,8 +20,11 @@ public class BillPersistence {
 
         try (Connection connection=connectionPool.getConnection()){
 
+            // FIXME: This saves things twice.
             BillDao billDao = new BillDao(connection);
             Bill bill = billDao.findOrCreate(billHtmlParser.getSession(), billHtmlParser.getChamber(), billHtmlParser.getNumber());
+            bill.setShortDescription(billHtmlParser.getShortDescription());
+            billDao.save(bill);
 
             return bill;
         }

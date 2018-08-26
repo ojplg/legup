@@ -48,6 +48,10 @@ public class BillHtmlParser {
         return bill;
     }
 
+    public long getChecksum(){
+        return document.hashCode();
+    }
+
     public long getSession(){
         // FIXME!!!
         return 100;

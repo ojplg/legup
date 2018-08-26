@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
 import org.junit.Assert;
@@ -12,6 +13,35 @@ public class TestBillHtmlParser {
 
     private static String houseBill2771BaseUrl =
             "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
+
+    private static Bill houseBill2771(){
+        Bill bill = new Bill();
+        bill.setShortDescription("HEALTHY WORKPLACE ACT");
+        bill.setChamber(Chamber.House);
+        bill.setNumber(2771L);
+        bill.setSession(100L);
+        return bill;
+    }
+
+    private static String senateBill889BaseUrl =
+            "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=889&GAID=14&DocTypeID=SB&LegId=102981&SessionID=91&GA=100";
+
+    private static Bill senateBill889(){
+        Bill bill = new Bill();
+        bill.setShortDescription("JURIES-UNLAWFUL DISCRIMINATION");
+        bill.setChamber(Chamber.Senate);
+        bill.setNumber(889L);
+        bill.setSession(100L);
+        return bill;
+    }
+
+    private void checkBill(Bill expected, String url){
+        BillHtmlParser parser = new BillHtmlParser(url);
+        Assert.assertEquals("Unmatched numbers", expected.getNumber(), parser.getNumber());
+        Assert.assertEquals("Unmatched chambers", expected.getChamber(), parser.getChamber());
+        Assert.assertEquals("Unmatched sessions", expected.getSession(), parser.getSession());
+        Assert.assertEquals("Unmatched short description", expected.getShortDescription(), parser.getShortDescription());
+    }
 
     @Test
     public void testFindHouseSponsors(){
@@ -45,24 +75,13 @@ public class TestBillHtmlParser {
     }
 
     @Test
-    public void testFindShortDescription(){
-        String url = houseBill2771BaseUrl;
-
-        BillHtmlParser parser = new BillHtmlParser(url);
-
-        Assert.assertEquals("HEALTHY WORKPLACE ACT", parser.getShortDescription());
+    public void testHouseBill2771Parsing(){
+        checkBill(houseBill2771(), houseBill2771BaseUrl);
     }
 
     @Test
-    public void testGetChamber(){
-        BillHtmlParser parser = new BillHtmlParser(houseBill2771BaseUrl);
-        Assert.assertEquals(Chamber.House, parser.getChamber());
-    }
-
-    @Test
-    public void testGetNumber(){
-        BillHtmlParser parser = new BillHtmlParser(houseBill2771BaseUrl);
-        Assert.assertEquals(2771L, parser.getNumber());
+    public void testSenateBill889Parsing(){
+        checkBill(senateBill889(), senateBill889BaseUrl);
     }
 
 }
