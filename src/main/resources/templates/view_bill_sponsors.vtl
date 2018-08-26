@@ -14,7 +14,7 @@ Description: $bill.ShortDescription
 <br/>
 
 <h5>House Sponsors</h5>
-<table>
+<table class="pure-table">
 #foreach ($legislator in $house_sponsors)
     <tr>
         <td>$legislator.FirstName</td>
@@ -24,7 +24,7 @@ Description: $bill.ShortDescription
 </table>
 
 <h5>Senate Sponsors</h5>
-<table>
+<table class="pure-table">
 #foreach ($legislator in $senate_sponsors)
     <tr>
         <td>$legislator.FirstName</td>
