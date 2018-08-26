@@ -1,14 +1,38 @@
 package org.center4racialjustice.legup.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.db.BillActionDao;
+import org.center4racialjustice.legup.db.BillActionLoadDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillHtmlParser;
+import org.center4racialjustice.legup.illinois.BillVotes;
+import org.center4racialjustice.legup.illinois.BillVotesParser;
+import org.center4racialjustice.legup.illinois.CollatedVote;
+import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
+import org.center4racialjustice.legup.util.Lists;
+import org.center4racialjustice.legup.util.Tuple;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BillPersistence {
+
+    private final Logger log = LogManager.getLogger(BillPersistence.class);
 
     private final ConnectionPool connectionPool;
 
@@ -16,17 +40,114 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public Bill saveParsedData(BillHtmlParser billHtmlParser) throws SQLException {
+    public Bill saveParsedData(BillHtmlParser billHtmlParser, Map<String, String> votesMapUrl) throws IOException, SQLException {
 
         try (Connection connection=connectionPool.getConnection()){
-
-            // FIXME: This saves things twice.
             BillDao billDao = new BillDao(connection);
-            Bill bill = billDao.findOrCreate(billHtmlParser.getSession(), billHtmlParser.getChamber(), billHtmlParser.getNumber());
-            bill.setShortDescription(billHtmlParser.getShortDescription());
-            billDao.save(bill);
+            BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+
+            Bill parsedBill = billHtmlParser.getBill();
+            Bill dbBill = billDao.readBySessionChamberAndNumber(billHtmlParser.getSession(), billHtmlParser.getChamber(), billHtmlParser.getNumber());
+
+            Bill bill;
+            if ( dbBill != null ) {
+                bill = dbBill;
+                List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
+                List<BillActionLoad> loadsWithMatchingChecksums = priorLoads.stream()
+                            .filter(load -> load.getCheckSum() == billHtmlParser.getChecksum())
+                            .collect(Collectors.toList());
+
+                // if this load has already been done and check-sums match-do nothing more
+                if( loadsWithMatchingChecksums.size() > 0){
+                    return dbBill;
+                } else {
+                    // FIXME
+                    // data must be reloaded, though bill is presumably in good shape
+                    // do deletes here?
+                }
+
+            } else {
+                billDao.save(parsedBill);
+                bill = parsedBill;
+            }
+
+            // insert the bill action load
+            BillActionLoad billActionLoad = new BillActionLoad();
+            billActionLoad.setBill(bill);
+            billActionLoad.setUrl(billHtmlParser.getUrl());
+            billActionLoad.setCheckSum(billHtmlParser.getChecksum());
+            billActionLoad.setLoadTime(LocalDateTime.now());
+            billActionLoadDao.insert(billActionLoad);
+
+            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
+
+            int houseSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser, Chamber.House);
+            log.info("Saved " + houseSponsorsSaved + " house sponsors");
+            int senateSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser, Chamber.Senate);
+            log.info("Saved " + senateSponsorsSaved + " senate sponsors");
+
+            int houseVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.House);
+            log.info("Saved " + houseVotesSaved + " house votes");
+            int senateVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.Senate);
+            log.info("Saved " + senateSponsorsSaved + " senate votes");
 
             return bill;
         }
     }
+
+    private int saveVotes(Connection connection, Bill bill, BillActionLoad billActionLoad, Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
+        String votePdfUrl = null;
+        for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet()){
+            if( urlPair.getKey().contains("Third Reading")
+                    && urlPair.getValue().contains(chamber.getName().toLowerCase())){
+                votePdfUrl = urlPair.getValue();
+                break;
+            }
+        }
+        if( votePdfUrl == null ){
+            return 0;
+        }
+
+        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(votePdfUrl);
+
+        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
+        collator.collate();
+
+        BillActionDao billActionDao = new BillActionDao(connection);
+
+        int savedCount = 0;
+        for (CollatedVote collatedVote : collator.getAllCollatedVotes()) {
+            Vote vote = collatedVote.asVote(bill, billActionLoad);
+            BillAction billAction = BillAction.fromVote(vote);
+            billActionDao.insert(billAction);
+            savedCount++;
+        }
+        return savedCount;
+    }
+
+    private int saveSponsors(Connection connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser, Chamber chamber){
+        BillActionDao billActionDao = new BillActionDao(connection);
+
+        List<Tuple<String, String>> tuples = billHtmlParser.getSponsorNames(chamber);
+
+        int cnt = 0;
+        for(Tuple<String, String> tuple : tuples){
+            Legislator legislator = Lists.findfirst(legislators, l -> l.getMemberId().equals(tuple.getSecond()));
+
+            // FIXME: this looks bogus - we should always find the correct legislator
+            if( legislator != null) {
+                BillAction billAction = new BillAction();
+                billAction.setBill(bill);
+                billAction.setLegislator(legislator);
+                billAction.setBillActionLoad(billActionLoad);
+                billAction.setBillActionType(BillActionType.SPONSOR);
+
+                billActionDao.insert(billAction);
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+
 }

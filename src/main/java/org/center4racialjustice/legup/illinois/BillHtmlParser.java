@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Jsoup;
@@ -47,6 +48,8 @@ public class BillHtmlParser {
 
         return bill;
     }
+
+
 
     public long getChecksum(){
         return document.hashCode();
