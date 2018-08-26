@@ -18,6 +18,7 @@ import org.center4racialjustice.legup.illinois.BillVotes;
 import org.center4racialjustice.legup.illinois.BillVotesParser;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
+import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.Handler;
@@ -43,15 +44,15 @@ public class SaveSearchedBill implements Handler {
     @Override
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
 
+        BillPersistence billPersistence = new BillPersistence(connectionPool);
+
         try (Connection connection = connectionPool.getConnection()) {
 
             HttpSession session = request.getSession();
             BillHtmlParser billHtmlParser = (BillHtmlParser) session.getAttribute("billHtmlParser");
             Map<String, String> votesMapUrl = (Map<String, String>) session.getAttribute("votesUrlsMap");
 
-            BillDao billDao = new BillDao(connection);
-            Bill bill = billHtmlParser.getBill();
-            billDao.save(bill);
+            Bill bill = billPersistence.saveParsedData(billHtmlParser);
 
             BillActionLoad billActionLoad = new BillActionLoad();
             billActionLoad.setBill(bill);

@@ -12,21 +12,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BillHtmlParser {
 
+    private final String url;
     private final Document document;
     private final Chamber chamber;
-    private final long number;
-    private final String url;
+    private final Long number;
 
-    public BillHtmlParser(String url, Chamber chamber, long number){
+    public BillHtmlParser(String url){
         try {
             this.url = url;
             this.document = Jsoup.connect(url).get();
-            // FIXME: these should be parsed from the document
-            this.chamber = chamber;
-            this.number = number;
+            Tuple<Chamber, Long> tuple = parseBillIdentity();
+            chamber = tuple.getFirst();
+            number = tuple.getSecond();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -50,6 +51,44 @@ public class BillHtmlParser {
     public long getSession(){
         // FIXME!!!
         return 100;
+    }
+
+    private Tuple<Chamber, Long> parseBillIdentity(){
+
+        String regex = "Bill Status of ([H|S]B)(\\d+)";
+        Pattern pattern = Pattern.compile(regex);
+
+        Elements spans = document.select("span").attr("class", "heading");
+        for( Element span : spans ){
+            String content = span.text();
+            Matcher matcher = pattern.matcher(content);
+            if( matcher.matches() ){
+                String chamberString = matcher.group(1);
+                String numberString = matcher.group(2);
+                Chamber chamber;
+                switch (chamberString){
+                    case "HB" :
+                        chamber = Chamber.House;
+                        break;
+                    case "SB" :
+                        chamber = Chamber.Senate;
+                        break;
+                    default:
+                        throw new RuntimeException("How did this happen " + chamberString);
+                }
+                Long number = Long.parseLong(numberString);
+                return new Tuple<>(chamber, number);
+            }
+        }
+        throw new RuntimeException("Could not determine chamber and number");
+    }
+
+    public long getNumber(){
+        return number;
+    }
+
+    public Chamber getChamber(){
+        return chamber;
     }
 
     public String getShortDescription(){

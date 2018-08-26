@@ -26,7 +26,7 @@ public class ViewBillSearchResults implements Handler {
         String billHomePageUrl = searcher.searchForBaseUrl(chamber, number);
         String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
 
-        BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl, chamber, number);
+        BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
         Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
         HttpSession session = request.getSession();
