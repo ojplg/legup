@@ -18,6 +18,7 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +53,14 @@ public class ViewBillSponsors implements Handler {
                     Lists.divide(sponsors, leg -> leg.getChamber().equals(Chamber.House));
 
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("house_sponsors", sponsorsTuple.getFirst());
-            velocityContext.put("senate_sponsors", sponsorsTuple.getSecond());
+            List<Legislator> houseSponsors = sponsorsTuple.getFirst();
+            List<Legislator> senateSponsors = sponsorsTuple.getSecond();
+
+            Collections.sort(houseSponsors);
+            Collections.sort(senateSponsors);
+
+            velocityContext.put("house_sponsors", houseSponsors);
+            velocityContext.put("senate_sponsors", senateSponsors);
             velocityContext.put("bill", bill);
 
             return velocityContext;

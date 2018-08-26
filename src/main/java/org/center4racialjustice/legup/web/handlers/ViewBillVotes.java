@@ -13,6 +13,7 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 public class ViewBillVotes implements Handler {
@@ -38,6 +39,7 @@ public class ViewBillVotes implements Handler {
 
             List<BillAction> billActions =  billActionDao.readByBill(bill);
             List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
+            Collections.sort(votes);
 
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("votes", votes);

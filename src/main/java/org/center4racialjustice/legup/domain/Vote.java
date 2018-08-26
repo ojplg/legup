@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 @Data
-public class Vote implements Identifiable {
+public class Vote implements Identifiable, Comparable<Vote> {
 
     private Long id;
     private Bill bill;
@@ -11,4 +11,8 @@ public class Vote implements Identifiable {
     private VoteSide voteSide;
     private BillActionLoad billActionLoad;
 
+    @Override
+    public int compareTo(Vote that) {
+        return this.legislator.compareTo(that.legislator);
+    }
 }

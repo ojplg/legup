@@ -39,14 +39,14 @@ Number: $bill.Number
 <h5>House Sponsors</h5>
 <ul>
     #foreach ($sponsor in $house_sponsors)
-        <li>$sponsor</li>
+        <li>$sponsor.First</li>
     #end
 </ul>
 
 <h5>Senate Sponsors</h5>
 <ul>
     #foreach ($sponsor in $senate_sponsors)
-        <li>$sponsor</li>
+        <li>$sponsor.First</li>
     #end
 </ul>
 

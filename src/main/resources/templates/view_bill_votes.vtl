@@ -17,8 +17,9 @@ Description: $bill.ShortDescription
 
 #foreach ($vote in $votes)
     <tr>
-        <td>$vote.Legislator.FirstName</td>
         <td>$vote.Legislator.LastName</td>
+        <td>$vote.Legislator.FirstName</td>
+        <td>$vote.Legislator.Chamber</td>
         <td>$vote.VoteSide.Code</td>
     </tr>
 #end
