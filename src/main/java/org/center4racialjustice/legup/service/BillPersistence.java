@@ -18,6 +18,7 @@ import org.center4racialjustice.legup.illinois.BillHtmlParser;
 import org.center4racialjustice.legup.illinois.BillVotes;
 import org.center4racialjustice.legup.illinois.BillVotesParser;
 import org.center4racialjustice.legup.illinois.CollatedVote;
+import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
@@ -129,25 +130,36 @@ public class BillPersistence {
     private int saveSponsors(Connection connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser, Chamber chamber){
         BillActionDao billActionDao = new BillActionDao(connection);
 
-        List<Tuple<String, String>> tuples = billHtmlParser.getSponsorNames(chamber);
+        SponsorNames sponsorNames = billHtmlParser.getSponsorNames();
 
         int cnt = 0;
-        for(Tuple<String, String> tuple : tuples){
-            Legislator legislator = Lists.findfirst(legislators, l -> l.getMemberId().equals(tuple.getSecond()));
-
-            // FIXME: this looks bogus - we should always find the correct legislator
-            if( legislator != null) {
-                BillAction billAction = new BillAction();
-                billAction.setBill(bill);
-                billAction.setLegislator(legislator);
-                billAction.setBillActionLoad(billActionLoad);
-                billAction.setBillActionType(BillActionType.SPONSOR);
-
-                billActionDao.insert(billAction);
-                cnt++;
-            }
+        if ( sponsorNames.getHouseChiefSponsor() != null ){
+            saveSponsor(billActionDao, sponsorNames.getHouseChiefSponsor(), legislators, bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
         }
+        if ( sponsorNames.getSenateChiefSponsor() != null ){
+            saveSponsor(billActionDao, sponsorNames.getSenateChiefSponsor(), legislators, bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
+        }
+        for(Tuple<String, String> tuple : sponsorNames.getHouseSponsors()){
+            saveSponsor(billActionDao, tuple, legislators, bill, billActionLoad, BillActionType.SPONSOR);
+        }
+        for(Tuple<String, String> tuple : sponsorNames.getSenateSponsors()){
+            saveSponsor(billActionDao, tuple, legislators, bill, billActionLoad, BillActionType.SPONSOR);
+        }
+
+
         return cnt;
     }
 
+    private void saveSponsor(BillActionDao billActionDao, Tuple<String, String> nameIdTuple, List<Legislator> legislators,
+                             Bill bill, BillActionLoad billActionLoad, BillActionType billActionType){
+        Legislator legislator = Lists.findfirst(legislators, l -> l.getMemberId().equals(nameIdTuple.getSecond()));
+
+        BillAction billAction = new BillAction();
+        billAction.setBill(bill);
+        billAction.setLegislator(legislator);
+        billAction.setBillActionLoad(billActionLoad);
+        billAction.setBillActionType(billActionType);
+
+        billActionDao.insert(billAction);
+    }
 }

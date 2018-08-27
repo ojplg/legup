@@ -48,14 +48,15 @@ public class TestBillHtmlParser {
 
         BillHtmlParser parser = new BillHtmlParser(houseBill2771BaseUrl);
 
-        List<Tuple<String, String>> sponsorTuples = parser.getSponsorNames(Chamber.House);
+        SponsorNames sponsorNames = parser.getSponsorNames();
+        Assert.assertEquals("Christian L. Mitchell", sponsorNames.getHouseChiefSponsor().getFirst());
 
-        List<String> sponsors = sponsorTuples.stream().map(Tuple::getFirst).collect(Collectors.toList());
+        List<String> sponsors = sponsorNames.getHouseSponsors().stream().map(Tuple::getFirst).collect(Collectors.toList());
 
-        Assert.assertEquals(46, sponsors.size());
+        Assert.assertEquals(45, sponsors.size());
+        Assert.assertEquals("Camille Y. Lilly", sponsors.get(0));
         Assert.assertTrue(sponsors.contains("Barbara Flynn Currie"));
-        Assert.assertEquals("Christian L. Mitchell", sponsors.get(0));
-        Assert.assertEquals("Al Riley", sponsors.get(45));
+        Assert.assertEquals("Al Riley", sponsors.get(44));
     }
 
     @Test
@@ -64,14 +65,17 @@ public class TestBillHtmlParser {
 
         BillHtmlParser parser = new BillHtmlParser(url);
 
-        List<Tuple<String, String>> sponsorTuples = parser.getSponsorNames(Chamber.Senate);
+        SponsorNames sponsorNames = parser.getSponsorNames();
 
+        Assert.assertEquals("Toi W. Hutchinson", sponsorNames.getSenateChiefSponsor().getFirst());
+
+        List<Tuple<String, String>> sponsorTuples = sponsorNames.getSenateSponsors();
         List<String> sponsors = sponsorTuples.stream().map(Tuple::getFirst).collect(Collectors.toList());
 
-        Assert.assertEquals(20, sponsors.size());
+        Assert.assertEquals(19, sponsors.size());
+        Assert.assertEquals("Iris Y. Martinez", sponsors.get(0));
         Assert.assertTrue(sponsors.contains("Daniel Biss"));
-        Assert.assertEquals("Toi W. Hutchinson", sponsors.get(0));
-        Assert.assertEquals("Cristina Castro", sponsors.get(19));
+        Assert.assertEquals("Cristina Castro", sponsors.get(18));
     }
 
     @Test

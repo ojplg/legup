@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Jsoup;
@@ -48,8 +47,6 @@ public class BillHtmlParser {
 
         return bill;
     }
-
-
 
     public long getChecksum(){
         return document.hashCode();
@@ -116,20 +113,32 @@ public class BillHtmlParser {
         return null;
     }
 
-    public List<Tuple<String, String>> getSponsorNames(Chamber chamber){
-        List<Tuple<String, String>> tuples = new ArrayList<>();
+    public SponsorNames getSponsorNames(){
 
-        String startSpanText;
-        switch (chamber.toString()) {
-            case "House" :
-                startSpanText = "House Sponsors";
-                break;
-            case "Senate":
-                startSpanText = "Senate Sponsors";
-                break;
-            default :
-                throw new RuntimeException("Unknown chamber " + chamber);
+        List<Tuple<String, String>> houseSponsors = getSponsorNames("House Sponsors");
+        List<Tuple<String, String>> senateSponsors = getSponsorNames("Senate Sponsors");
+
+        SponsorNames sponsorNames = new SponsorNames();
+
+        if( houseSponsors.size() > 0 ) {
+            sponsorNames.setHouseChiefSponsor(houseSponsors.get(0));
         }
+        if (senateSponsors.size() > 0 ){
+            sponsorNames.setSenateChiefSponsor(senateSponsors.get(0));
+        }
+        if( houseSponsors.size() > 1 ){
+            sponsorNames.setHouseSponsors(houseSponsors.subList(1,houseSponsors.size()));
+        }
+        if( senateSponsors.size() > 1 ){
+            sponsorNames.setSenateSponsors(senateSponsors.subList(1,senateSponsors.size()));
+        }
+
+
+        return sponsorNames;
+    }
+
+    private List<Tuple<String, String>> getSponsorNames(String startSpanText){
+        List<Tuple<String, String>> tuples = new ArrayList<>();
 
         boolean started = false;
         boolean found = false;
@@ -160,5 +169,6 @@ public class BillHtmlParser {
         }
 
         return tuples;
+
     }
 }

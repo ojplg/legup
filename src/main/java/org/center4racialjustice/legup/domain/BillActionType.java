@@ -6,6 +6,7 @@ public class BillActionType {
 
     public final static BillActionType VOTE = new BillActionType("Vote");
     public final static BillActionType SPONSOR = new BillActionType("Sponsor");
+    public final static BillActionType CHIEF_SPONSOR = new BillActionType("Chief Sponsor");
 
     public final static BillActionTypeConverter CONVERTER = new BillActionTypeConverter();
 
@@ -15,6 +16,7 @@ public class BillActionType {
         switch (code) {
             case "Vote" : return VOTE;
             case "Sponsor" : return SPONSOR;
+            case "Chief Sponsor" : return CHIEF_SPONSOR;
             default : throw new RuntimeException("Unrecognized code " + code);
         }
     }

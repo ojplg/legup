@@ -4,6 +4,7 @@ import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.illinois.BillHtmlParser;
 import org.center4racialjustice.legup.illinois.BillSearcher;
+import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
@@ -39,8 +40,13 @@ public class ViewBillSearchResults implements Handler {
         velocityContext.put("bill_home_page_url", billHomePageUrl);
         velocityContext.put("bill_vote_page_url", votesUrl);
         velocityContext.put("votes_url_map", votesUrlsMap);
-        velocityContext.put("house_sponsors", billHtmlParser.getSponsorNames(Chamber.House));
-        velocityContext.put("senate_sponsors", billHtmlParser.getSponsorNames(Chamber.Senate));
+
+        SponsorNames sponsorNames =  billHtmlParser.getSponsorNames();
+
+        velocityContext.put("chief_house_sponser", sponsorNames.getHouseChiefSponsor());
+        velocityContext.put("chief_senate_sponser", sponsorNames.getSenateChiefSponsor());
+        velocityContext.put("house_sponsors", sponsorNames.getHouseSponsors());
+        velocityContext.put("senate_sponsors", sponsorNames.getSenateSponsors());
 
         return velocityContext;
     }
