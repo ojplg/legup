@@ -67,6 +67,12 @@ public class GradeCalculator {
                         } else {
                             scoreTable.merge(legislator, bill, -2, GradeCalculator::add);
                         }
+                    } else if (legislatorAction.getBillActionType().equals(BillActionType.CHIEF_SPONSOR)){
+                        if( sideRequired.equals(VoteSide.Yea)){
+                            scoreTable.merge(legislator, bill, 3, GradeCalculator::add);
+                        } else {
+                            scoreTable.merge(legislator, bill, -3, GradeCalculator::add);
+                        }
                     }
                 }
             }
