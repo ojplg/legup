@@ -43,9 +43,11 @@ public class Legislator implements Identifiable, Comparable<Legislator> {
         if ( comparison != 0 ){
             return comparison;
         }
-        comparison = this.middleInitialOrName.compareTo(that.middleInitialOrName);
-        if ( comparison != 0 ){
-            return comparison;
+        if( this.middleInitialOrName != null) {
+            comparison = this.middleInitialOrName.compareTo(that.middleInitialOrName);
+            if (comparison != 0) {
+                return comparison;
+            }
         }
         return 0;
     }

@@ -83,10 +83,7 @@ public class BillPersistence {
             LegislatorDao legislatorDao = new LegislatorDao(connection);
             List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
 
-            int houseSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser, Chamber.House);
-            log.info("Saved " + houseSponsorsSaved + " house sponsors");
-            int senateSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser, Chamber.Senate);
-            log.info("Saved " + senateSponsorsSaved + " senate sponsors");
+            int senateSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser);
 
             int houseVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.House);
             log.info("Saved " + houseVotesSaved + " house votes");
@@ -127,7 +124,7 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private int saveSponsors(Connection connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser, Chamber chamber){
+    private int saveSponsors(Connection connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser){
         BillActionDao billActionDao = new BillActionDao(connection);
 
         SponsorNames sponsorNames = billHtmlParser.getSponsorNames();

@@ -37,6 +37,8 @@ Number: $bill.Number
 </table>
 
 <h5>House Sponsors</h5>
+Chief: $chief_house_sponsor
+<br/>
 <ul>
     #foreach ($sponsor in $house_sponsors)
         <li>$sponsor.First</li>
@@ -44,6 +46,8 @@ Number: $bill.Number
 </ul>
 
 <h5>Senate Sponsors</h5>
+Chief: $chief_senate_sponsor
+<br/>
 <ul>
     #foreach ($sponsor in $senate_sponsors)
         <li>$sponsor.First</li>
