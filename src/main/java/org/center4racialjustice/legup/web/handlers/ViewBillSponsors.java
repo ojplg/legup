@@ -51,13 +51,28 @@ public class ViewBillSponsors implements Handler {
 
             Tuple<List<Legislator>, List<Legislator>> sponsorsTuple =
                     Lists.divide(sponsors, leg -> leg.getChamber().equals(Chamber.House));
-
-            VelocityContext velocityContext = new VelocityContext();
             List<Legislator> houseSponsors = sponsorsTuple.getFirst();
             List<Legislator> senateSponsors = sponsorsTuple.getSecond();
-
             Collections.sort(houseSponsors);
             Collections.sort(senateSponsors);
+
+            List<Legislator> chiefSponsors = billActions.stream()
+                    .filter(act -> act.getBillActionType().equals(BillActionType.CHIEF_SPONSOR))
+                    .map(BillAction::getLegislator)
+                    .collect(Collectors.toList());
+            Tuple<List<Legislator>, List<Legislator>> chiefSponsorsTuple =
+                    Lists.divide(chiefSponsors, leg -> leg.getChamber().equals(Chamber.House));
+            List<Legislator> chiefHouseSponsors = sponsorsTuple.getFirst();
+            List<Legislator> chiefSenateSponsors = sponsorsTuple.getSecond();
+
+            VelocityContext velocityContext = new VelocityContext();
+
+            if( chiefHouseSponsors.size() > 0 ){
+                velocityContext.put("chief_house_sponsor", chiefHouseSponsors.get(0));
+            }
+            if( chiefSenateSponsors.size() > 0 ){
+                velocityContext.put("chief_senate_sponsor", chiefSenateSponsors.get(0));
+            }
 
             velocityContext.put("house_sponsors", houseSponsors);
             velocityContext.put("senate_sponsors", senateSponsors);

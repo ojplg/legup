@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 public class SponsorNames {
-    private Tuple<String, String> houseChiefSponsor;
-    private Tuple<String, String> senateChiefSponsor;
+    private Tuple<String, String> houseChiefSponsor = new Tuple<>("","");
+    private Tuple<String, String> senateChiefSponsor = new Tuple<>("","");
     private List<Tuple<String, String>> houseSponsors = new ArrayList<>();
     private List<Tuple<String, String>> senateSponsors = new ArrayList<>();
 }
