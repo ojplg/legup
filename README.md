@@ -56,7 +56,6 @@ Features/bugs to work on
 * CSS tags need to be added all over the place
 * Error checking for form submissions needed all over the place
 * Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
-* Figure out how to determine introducers
 * Allow configuration for score options
 * Calculate legislator grades from scores
 * Allow configuartion of grading options (grade on a curve?)
