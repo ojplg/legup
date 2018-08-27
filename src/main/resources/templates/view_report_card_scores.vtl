@@ -5,6 +5,7 @@
     <thead>
     <tr>
         <th></th>
+        <th></th>
         #foreach ($bill in $bills)
             <th>$bill.Chamber - $bill.Number</th>
         #end
@@ -15,6 +16,7 @@
     #foreach ($legislator in $legislators)
         <tr #if ($foreach.count % 2 == 0) class="pure-table-odd" #end  >
             <td>$legislator.LastName, $legislator.FirstName</td>
+            <td>$legislator.Party</td>
             #foreach ($bill in $bills)
                 <td>$!{scores.get($legislator, $bill)}</td>
             #end
