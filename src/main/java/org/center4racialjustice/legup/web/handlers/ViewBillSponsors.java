@@ -62,8 +62,8 @@ public class ViewBillSponsors implements Handler {
                     .collect(Collectors.toList());
             Tuple<List<Legislator>, List<Legislator>> chiefSponsorsTuple =
                     Lists.divide(chiefSponsors, leg -> leg.getChamber().equals(Chamber.House));
-            List<Legislator> chiefHouseSponsors = sponsorsTuple.getFirst();
-            List<Legislator> chiefSenateSponsors = sponsorsTuple.getSecond();
+            List<Legislator> chiefHouseSponsors = chiefSponsorsTuple.getFirst();
+            List<Legislator> chiefSenateSponsors = chiefSponsorsTuple.getSecond();
 
             VelocityContext velocityContext = new VelocityContext();
 

@@ -13,7 +13,11 @@ Description: $bill.ShortDescription
 <br/>
 <br/>
 
+<div class="pure-g">
+
+<div class="pure-u-1-2">
 <h5>House Sponsors</h5>
+Chief: $chief_house_sponsor.LastName, $chief_house_sponsor.FirstName
 <table class="pure-table">
 #foreach ($legislator in $house_sponsors)
     <tr>
@@ -22,8 +26,11 @@ Description: $bill.ShortDescription
     </tr>
 #end
 </table>
+</div>
 
+<div class="pure-u-1-2">
 <h5>Senate Sponsors</h5>
+Chief: $chief_senate_sponsor.LastName, $chief_senate_sponsor.FirstName
 <table class="pure-table">
 #foreach ($legislator in $senate_sponsors)
     <tr>
@@ -32,3 +39,6 @@ Description: $bill.ShortDescription
     </tr>
 #end
 </table>
+</div>
+
+</div>
