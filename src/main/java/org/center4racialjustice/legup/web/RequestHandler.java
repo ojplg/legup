@@ -24,8 +24,7 @@ public class RequestHandler {
         this.convertedName = convertToLowercaseWithUnderlines(handler.getClass().getSimpleName());
     }
 
-    public void processRequest(Request request, HttpServletResponse httpServletResponse)
-            throws IOException {
+    public void processRequest(Request request, HttpServletResponse httpServletResponse) {
         try {
             log.info("Processing request with " + handler.getClass().getName());
             String templatePath = "/templates/" + getTemplateName();
@@ -35,7 +34,8 @@ public class RequestHandler {
             Template template = Velocity.getTemplate("/templates/container.vtl");
             template.merge(velocityContext, writer);
             request.setHandled(true);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            log.error("Exception in request processing", ex);
             throw new RuntimeException(ex);
         }
     }
