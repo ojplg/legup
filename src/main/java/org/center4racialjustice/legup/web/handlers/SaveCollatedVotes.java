@@ -46,7 +46,7 @@ public class SaveCollatedVotes implements Handler {
 
         try (Connection connection = connectionPool.getConnection()) {
 
-            BillDao billDao = new BillDao(connection);
+            BillDao billDao = connectionPool.getBillDao();
             Bill bill = billDao.findOrCreate(collator.getBillSession(), collator.getBillChamber(), collator.getBillNumber());
 
             billActionLoad.setBill(bill);

@@ -17,7 +17,9 @@ public class GradeCalculator {
     }
 
     public List<Long> extractBillIds(){
-        return null;
+        return reportCard.getReportFactors().stream()
+                .map(factor -> factor.getBill().getId())
+                .collect(Collectors.toList());
     }
 
     private Vote extractVoteForLegislator(List<Vote> votes, Legislator legislator){

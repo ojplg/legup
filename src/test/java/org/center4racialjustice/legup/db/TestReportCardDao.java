@@ -63,7 +63,7 @@ public class TestReportCardDao {
         bill.setNumber(6);
         bill.setChamber(Chamber.House);
 
-        BillDao billDao = new BillDao(connection);
+        BillDao billDao = new BillDao(DbTestConfigs.session());
 
         billDao.save(bill);
 
@@ -103,7 +103,7 @@ public class TestReportCardDao {
         bill2.setNumber(2);
         bill2.setChamber(Chamber.House);
 
-        BillDao billDao = new BillDao(connection);
+        BillDao billDao = new BillDao(DbTestConfigs.session());
 
         billDao.save(bill1);
         billDao.save(bill2);
@@ -150,7 +150,7 @@ public class TestReportCardDao {
         bill.setNumber(6);
         bill.setChamber(Chamber.House);
 
-        BillDao billDao = new BillDao(connection);
+        BillDao billDao = new BillDao(DbTestConfigs.session());
 
         billDao.save(bill);
 

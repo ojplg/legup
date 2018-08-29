@@ -20,7 +20,7 @@ public interface BillMapper {
             @Result(property = "shortDescription", column = "short_description"),
             @Result(property = "chamber", column = "chamber", typeHandler = ChamberTypeHandler.class ),
     })
-    Bill selectBill(int id);
+    Bill selectBill(long id);
 
     @Select("SELECT * FROM bills")
     @ResultMap("selectBill")
@@ -30,7 +30,16 @@ public interface BillMapper {
     @ResultMap("selectBill")
     Bill selectBillBySessionChamberAndNumber(long session, Chamber chamber, long number);
 
+    @Select("SELECT * FROM bills WHERE session_number = #{arg0}")
+    @ResultMap("selectBill")
+    List<Bill> selectBillsBySession(long session);
+
     @Insert("INSERT INTO BILLS (ID, BILL_NUMBER, SESSION_NUMBER, SHORT_DESCRIPTION, CHAMBER)  " +
-            "VALUES (DEFAULT, #{number}, #{session}, #{shortDescription}, #{chamber, typeHandler = org.center4racialjustice.legup.db.ChamberTypeHandler})")
+            "VALUES (DEFAULT, #{number}, #{session}, #{shortDescription}, #{chamber, typeHandler = org.center4racialjustice.legup.db.ChamberTypeHandler}) " +
+            "RETURNING ID")
     void insert(Bill bill);
+
+    @Select("SELECT * FROM bills WHERE short_description = #{arg0}")
+    @ResultMap("selectBill")
+    List<Bill> selectByIds(String id);
 }

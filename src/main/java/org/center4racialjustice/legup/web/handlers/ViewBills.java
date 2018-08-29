@@ -25,7 +25,7 @@ public class ViewBills implements Handler {
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
 
         try (Connection connection = connectionPool.getConnection() ){
-            BillDao dao = new BillDao(connection);
+            BillDao dao = connectionPool.getBillDao();
 
             List<Bill> bills = dao.readAll();
             Tuple<List<Bill>, List<Bill>> divideBills = Bill.divideAndOrder(bills);

@@ -37,7 +37,7 @@ public class ViewBillSponsors implements Handler {
         long billId = Long.parseLong(billIdParameter);
 
         try (Connection connection = connectionPool.getConnection()){
-            BillDao billDao = new BillDao(connection);
+            BillDao billDao = connectionPool.getBillDao();
 
             Bill bill = billDao.read(billId);
 

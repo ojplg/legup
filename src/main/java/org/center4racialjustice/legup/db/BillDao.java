@@ -1,15 +1,20 @@
 package org.center4racialjustice.legup.db;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ChamberConverter;
 
-import java.sql.Connection;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BillDao extends OneTableDao<Bill> {
+public class BillDao {
+
+    private static Logger log = LogManager.getLogger(BillDao.class);
 
     public static String table = "bills";
 
@@ -24,27 +29,24 @@ public class BillDao extends OneTableDao<Bill> {
 
     public static Supplier<Bill> supplier = Bill::new;
 
-    public BillDao(Connection connection) {
-        super(connection, supplier, table, typedColumnList);
+    private final BillMapper billMapper;
+    private final SqlSession sqlSession;
+
+    public BillDao(SqlSession sqlSession){
+        this.billMapper = sqlSession.getMapper(BillMapper.class);
+        this.sqlSession = sqlSession;
     }
 
-    public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where chamber = '");
-        sqlBldr.append(chamber.toString());
-        sqlBldr.append("' and bill_number = ");
-        sqlBldr.append(number);
-        sqlBldr.append(" and session_number = ");
-        sqlBldr.append(session);
-        String sql = sqlBldr.toString();
+//    public BillDao(BillMapper billMapper) {
+//        this.billMapper = billMapper;
+//    }
 
-        List<Bill> bills = DaoHelper.read(connection, sql, typedColumnList, supplier);
-        return DaoHelper.fromSingletonList(bills, "Searching for bill by chamber and number.");
+    public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
+        return billMapper.selectBillBySessionChamberAndNumber(session, chamber, number);
     }
 
     public Bill findOrCreate(long session, Chamber chamber, long number){
-        Bill found = readBySessionChamberAndNumber(session, chamber, number);
+        Bill found = billMapper.selectBillBySessionChamberAndNumber(session, chamber, number);
         if( found != null ){
             return found;
         }
@@ -52,22 +54,47 @@ public class BillDao extends OneTableDao<Bill> {
         bill.setChamber(chamber);
         bill.setNumber(number);
         bill.setSession(session);
-        Long id = save(bill);
-        bill.setId(id);
-        return bill;
+        billMapper.insert(bill);
+
+        return billMapper.selectBillBySessionChamberAndNumber(session, chamber, number);
     }
 
-    public List<Bill> readBySession(long session){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where session_number = ");
-        sqlBldr.append(session);
-        String sql = sqlBldr.toString();
+    public long save(Bill bill){
+        billMapper.insert(bill);
+        sqlSession.commit();
+        // FIXME: this is lame. Should grab id on insert.
+        Bill inserted = readBySessionChamberAndNumber(bill.getSession(), bill.getChamber(), bill.getNumber());
+        bill.setId( inserted.getId());
+        return bill.getId();
+    }
 
-        return DaoHelper.read(connection, sql, typedColumnList, supplier);
+    public Bill read(long id){
+        return billMapper.selectBill(id);
+    }
+
+    public List<Bill> readAll(){
+        return billMapper.selectBills();
+    }
+
+
+    public List<Bill> readBySession(long session){
+        return billMapper.selectBillsBySession(session);
     }
 
     public List<Bill> readByIds(List<Long> ids){
-        return DaoHelper.read(connection, table,  typedColumnList, ids, supplier);
+        if( ids == null ){
+            return Collections.emptyList();
+        }
+        StringBuilder bldr = new StringBuilder();
+        bldr.append("(");
+        for(int idx=0; idx<ids.size(); idx++){
+            bldr.append(ids.get(idx));
+            if( idx < ids.size() -1 ){
+                bldr.append(", ");
+            }
+        }
+        bldr.append(")");
+        log.info(" SEARCHING BY IDS  " + bldr.toString());
+        return billMapper.selectByIds(bldr.toString());
     }
 }

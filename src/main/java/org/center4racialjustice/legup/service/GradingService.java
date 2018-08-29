@@ -31,7 +31,7 @@ public class GradingService {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             LegislatorDao legislatorDao = new LegislatorDao(connection);
-            BillDao billDao = new BillDao(connection);
+            BillDao billDao = connectionPool.getBillDao();
             BillActionDao billActionDao = new BillActionDao(connection);
 
             ReportCard reportCard = reportCardDao.read(reportCardId);
@@ -42,7 +42,6 @@ public class GradingService {
 
             GradeCalculator calculator = new GradeCalculator(reportCard, legislators);
             List<Long> billIds = calculator.extractBillIds();
-
 
             List<Bill> bills = billDao.readByIds(billIds);
             Map<Bill, List<BillAction>> votesByBill = new HashMap<>();

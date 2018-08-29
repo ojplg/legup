@@ -47,7 +47,7 @@ public class ViewReportCardForm implements Handler {
 
                 Long sessionId = reportCard.getSessionNumber();
 
-                BillDao billDao = new BillDao(connection);
+                BillDao billDao = connectionPool.getBillDao();
                 List<Bill> bills = billDao.readBySession(sessionId);
 
                 log.info("Found " + bills.size() + " in session " + sessionId);

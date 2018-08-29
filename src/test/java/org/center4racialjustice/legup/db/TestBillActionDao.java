@@ -37,6 +37,23 @@ public class TestBillActionDao {
         connection.close();
     }
 
+    @Test
+    public void testInsertBill(){
+
+        Bill bill = new Bill();
+        bill.setChamber(Chamber.House);
+        bill.setNumber(123);
+        bill.setSession(8);
+        bill.setShortDescription("Silly billy");
+
+        BillDao billDao = new BillDao(DbTestConfigs.session());
+        long billId = billDao.save(bill);
+
+        Assert.assertTrue(billId > 0 );
+    }
+
+
+
 
     @Test
     public void testReadOne() throws SQLException {
@@ -57,7 +74,7 @@ public class TestBillActionDao {
         bill.setChamber(Chamber.House);
         bill.setNumber(123);
 
-        BillDao billDao = new BillDao(connection);
+        BillDao billDao = new BillDao(DbTestConfigs.session());
         long billId = billDao.save(bill);
         bill.setId(billId);
 
@@ -107,7 +124,7 @@ public class TestBillActionDao {
         bill.setChamber(Chamber.House);
         bill.setNumber(123);
 
-        BillDao billDao = new BillDao(connection);
+        BillDao billDao = new BillDao(DbTestConfigs.session());
         long billId = billDao.save(bill);
         bill.setId(billId);
 
@@ -153,8 +170,9 @@ public class TestBillActionDao {
         bill.setChamber(Chamber.House);
         bill.setNumber(123);
 
-        BillDao billDao = new BillDao(connection);
+        BillDao billDao = new BillDao(DbTestConfigs.session());
         long billId = billDao.save(bill);
+        System.out.println(" BILL ID " + billId);
         bill.setId(billId);
 
         BillActionLoad billActionLoad = new BillActionLoad();

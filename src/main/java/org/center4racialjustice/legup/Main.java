@@ -16,9 +16,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.web.ServerStarter;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.postgresql.xa.PGXADataSource;
 
-import javax.sql.DataSource;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.List;
@@ -58,6 +56,8 @@ public class Main {
             SqlSessionFactory sqlSessionFactory = configureIbatis();
             testIbatis(sqlSessionFactory);
 
+            pool.setSqlSessionFactory(sqlSessionFactory);
+
             Properties velocityProperties = new Properties();
             velocityProperties.put("resource.loader", "class");
             velocityProperties.put("class.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
@@ -80,13 +80,13 @@ public class Main {
 
             log.info("Found bill 26 !! " + bill);
 
-            Bill newBill = new Bill();
-            newBill.setShortDescription("Puff");
-            newBill.setSession(99);
-            newBill.setNumber(System.currentTimeMillis() % 1000000);
-            newBill.setChamber(Chamber.House);
-
-            mapper.insert(newBill);
+//            Bill newBill = new Bill();
+//            newBill.setShortDescription("Puff");
+//            newBill.setSession(99);
+//            newBill.setNumber(System.currentTimeMillis() % 1000000);
+//            newBill.setChamber(Chamber.House);
+//
+//            mapper.insert(newBill);
 
             List<Bill> allBills = mapper.selectBills();
             for(Bill b : allBills){

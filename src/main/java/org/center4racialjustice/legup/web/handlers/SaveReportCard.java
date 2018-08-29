@@ -41,7 +41,7 @@ public class SaveReportCard implements Handler {
             long session = Long.parseLong(sessionString);
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
-            BillDao billDao = new BillDao(connection);
+            BillDao billDao = connectionPool.getBillDao();
 
             ReportCard reportCard;
             if( id == null ){

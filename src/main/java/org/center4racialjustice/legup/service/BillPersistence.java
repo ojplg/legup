@@ -44,7 +44,7 @@ public class BillPersistence {
     public Bill saveParsedData(BillHtmlParser billHtmlParser, Map<String, String> votesMapUrl) throws IOException, SQLException {
 
         try (Connection connection=connectionPool.getConnection()){
-            BillDao billDao = new BillDao(connection);
+            BillDao billDao = connectionPool.getBillDao();
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
             Bill parsedBill = billHtmlParser.getBill();
