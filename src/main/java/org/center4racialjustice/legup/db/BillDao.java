@@ -62,9 +62,6 @@ public class BillDao {
     public long save(Bill bill){
         billMapper.insert(bill);
         sqlSession.commit();
-        // FIXME: this is lame. Should grab id on insert.
-        Bill inserted = readBySessionChamberAndNumber(bill.getSession(), bill.getChamber(), bill.getNumber());
-        bill.setId( inserted.getId());
         return bill.getId();
     }
 

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectKey;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 
@@ -35,8 +36,8 @@ public interface BillMapper {
     List<Bill> selectBillsBySession(long session);
 
     @Insert("INSERT INTO BILLS (ID, BILL_NUMBER, SESSION_NUMBER, SHORT_DESCRIPTION, CHAMBER)  " +
-            "VALUES (DEFAULT, #{number}, #{session}, #{shortDescription}, #{chamber, typeHandler = org.center4racialjustice.legup.db.ChamberTypeHandler}) " +
-            "RETURNING ID")
+            "VALUES (DEFAULT, #{number}, #{session}, #{shortDescription}, #{chamber, typeHandler = org.center4racialjustice.legup.db.ChamberTypeHandler}) ")
+    @SelectKey(statement="select currval('bill_seq')", keyProperty="id", before=false, resultType=long.class)
     void insert(Bill bill);
 
     @Select("SELECT * FROM bills WHERE short_description = #{arg0}")
