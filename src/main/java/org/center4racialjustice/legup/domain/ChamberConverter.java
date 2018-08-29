@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
+import org.apache.ibatis.type.EnumTypeHandler;
+
 public class ChamberConverter implements CodedEnumConverter<Chamber> {
 
     public static ChamberConverter INSTANCE = new ChamberConverter();
@@ -13,4 +15,6 @@ public class ChamberConverter implements CodedEnumConverter<Chamber> {
     public String toCode(Chamber instance) {
         return instance.toString();
     }
+
+
 }
