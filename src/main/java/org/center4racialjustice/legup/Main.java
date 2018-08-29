@@ -93,6 +93,14 @@ public class Main {
                 log.info("******** " + b);
             }
 
+            log.info("---");
+            log.info("---");
+            log.info("---");
+            log.info("---");
+
+            Bill bill2771 = mapper.selectBillBySessionChamberAndNumber(100,Chamber.House, 2771);
+
+            log.info("#########################" + bill2771);
 
             sqlSession.commit();
         }
