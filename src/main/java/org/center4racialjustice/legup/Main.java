@@ -20,6 +20,7 @@ import org.postgresql.xa.PGXADataSource;
 import javax.sql.DataSource;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.List;
 import java.util.Properties;
 
 public class Main {
@@ -77,6 +78,11 @@ public class Main {
             Bill bill = mapper.selectBill(26);
 
             log.info("Found bill 26 !! " + bill);
+
+            List<Bill> allBills = mapper.selectBills();
+            for(Bill b : allBills){
+                log.info("******** " + b);
+            }
 
         }
 

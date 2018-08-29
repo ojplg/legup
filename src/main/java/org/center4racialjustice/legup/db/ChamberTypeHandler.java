@@ -14,7 +14,7 @@ public class ChamberTypeHandler extends BaseTypeHandler<Chamber> {
 
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Chamber chamber, JdbcType jdbcType) throws SQLException {
-
+        preparedStatement.setString(i, ChamberConverter.INSTANCE.toCode(chamber));
     }
 
     @Override
