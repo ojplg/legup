@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TestBillActionDao {
@@ -52,7 +53,36 @@ public class TestBillActionDao {
         Assert.assertTrue(billId > 0 );
     }
 
+    @Test
+    public void testSearchByIds(){
 
+        BillDao billDao = new BillDao(DbTestConfigs.session());
+
+        Bill bill = new Bill();
+        bill.setChamber(Chamber.House);
+        bill.setNumber(123);
+        bill.setSession(8);
+        bill.setShortDescription("Silly billy");
+
+        long billId = billDao.save(bill);
+
+        Bill bill2 = new Bill();
+        bill2.setChamber(Chamber.House);
+        bill2.setNumber(1264);
+        bill2.setSession(8);
+        bill2.setShortDescription("Silly billy number 2");
+
+        long bill2Id = billDao.save(bill2);
+
+        List<Long> billIds = new ArrayList<>();
+        billIds.add(billId);
+        billIds.add(bill2Id);
+
+        List<Bill> bills = billDao.readByIds(billIds);
+
+        Assert.assertEquals(2, bills.size());
+
+    }
 
 
     @Test

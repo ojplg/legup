@@ -82,16 +82,6 @@ public class BillDao {
         if( ids == null ){
             return Collections.emptyList();
         }
-        StringBuilder bldr = new StringBuilder();
-        bldr.append("(");
-        for(int idx=0; idx<ids.size(); idx++){
-            bldr.append(ids.get(idx));
-            if( idx < ids.size() -1 ){
-                bldr.append(", ");
-            }
-        }
-        bldr.append(")");
-        log.info(" SEARCHING BY IDS  " + bldr.toString());
-        return billMapper.selectByIds(bldr.toString());
+        return billMapper.selectByIds(ids);
     }
 }

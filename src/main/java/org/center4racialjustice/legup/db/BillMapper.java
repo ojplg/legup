@@ -40,7 +40,11 @@ public interface BillMapper {
     @SelectKey(statement="select currval('bill_seq')", keyProperty="id", before=false, resultType=long.class)
     void insert(Bill bill);
 
-    @Select("SELECT * FROM bills WHERE short_description = #{arg0}")
+    @Select("<script>SELECT * FROM bills WHERE id IN "
+            + " <foreach item='item' index='index' collection='list' open='(' separator=',' close=')'>"
+            + "#{item}"
+            + "</foreach>"
+            + "</script>")
     @ResultMap("selectBill")
-    List<Bill> selectByIds(String id);
+    List<Bill> selectByIds(List<Long> ids);
 }
