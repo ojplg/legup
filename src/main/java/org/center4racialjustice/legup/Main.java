@@ -13,6 +13,7 @@ import org.apache.velocity.app.Velocity;
 import org.center4racialjustice.legup.db.BillMapper;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.web.ServerStarter;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.postgresql.xa.PGXADataSource;
@@ -79,10 +80,20 @@ public class Main {
 
             log.info("Found bill 26 !! " + bill);
 
+            Bill newBill = new Bill();
+            newBill.setShortDescription("Puff");
+            newBill.setSession(99);
+            newBill.setNumber(System.currentTimeMillis() % 1000000);
+            newBill.setChamber(Chamber.House);
+
+            mapper.insert(newBill);
+
             List<Bill> allBills = mapper.selectBills();
             for(Bill b : allBills){
                 log.info("******** " + b);
             }
+
+
 
         }
 

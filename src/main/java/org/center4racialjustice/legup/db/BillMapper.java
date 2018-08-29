@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -28,4 +29,8 @@ public interface BillMapper {
     })
     List<Bill> selectBills();
 
+
+    @Insert("INSERT INTO BILLS (ID, BILL_NUMBER, SESSION_NUMBER, SHORT_DESCRIPTION, CHAMBER)  " +
+            "VALUES (DEFAULT, #{number}, #{session}, #{shortDescription}, #{chamber, typeHandler = org.center4racialjustice.legup.db.ChamberTypeHandler})")
+    void insert(Bill bill);
 }
