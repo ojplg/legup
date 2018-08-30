@@ -30,7 +30,7 @@ public class ViewLegislatorVotes implements Handler {
         long legislatorId = Long.parseLong(legislatorIdParameter);
 
         try (Connection connection = connectionPool.getConnection()) {
-            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            LegislatorDao legislatorDao = new LegislatorDao(connectionPool.session());
 
             Legislator legislator = legislatorDao.read(legislatorId);
 

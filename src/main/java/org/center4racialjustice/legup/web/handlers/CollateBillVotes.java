@@ -32,7 +32,7 @@ public class CollateBillVotes implements Handler {
         session.removeAttribute("billVotes");
 
         Connection connection = connectionPool.getConnection();
-        LegislatorDao legislatorDao = new LegislatorDao(connection);
+        LegislatorDao legislatorDao = new LegislatorDao(connectionPool.session());
         List<Legislator> legislators = legislatorDao.readAll();
         connection.close();
 

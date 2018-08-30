@@ -80,8 +80,8 @@ public class BillSearcher {
             Element item = listItems.get(idx);
 
             Element anchor = item.selectFirst("a");
-            String url = anchor.attr("href");
 
+            String url = anchor.attr("href");
             return IllinoisLegislationHome + url;
         } catch (IOException ex){
             throw new RuntimeException(ex);

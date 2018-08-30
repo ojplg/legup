@@ -37,10 +37,6 @@ public class BillDao {
         this.sqlSession = sqlSession;
     }
 
-//    public BillDao(BillMapper billMapper) {
-//        this.billMapper = billMapper;
-//    }
-
     public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
         return billMapper.selectBillBySessionChamberAndNumber(session, chamber, number);
     }

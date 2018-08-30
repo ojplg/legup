@@ -30,7 +30,7 @@ public class GradingService {
         try (Connection connection = connectionPool.getConnection()) {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
-            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            LegislatorDao legislatorDao = new LegislatorDao(connectionPool.session());
             BillDao billDao = connectionPool.getBillDao();
             BillActionDao billActionDao = new BillActionDao(connection);
 

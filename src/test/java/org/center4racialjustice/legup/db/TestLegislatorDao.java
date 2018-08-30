@@ -38,7 +38,7 @@ public class TestLegislatorDao {
         legislator.setParty("Democrat");
         legislator.setChamber(Chamber.House);
 
-        LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.session());
 
         long id = dao.save(legislator);
 
@@ -62,7 +62,7 @@ public class TestLegislatorDao {
         legislator.setParty("Democrat");
         legislator.setChamber(Chamber.House);
 
-        LegislatorDao dao = new LegislatorDao(connection);
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.session());
 
         dao.save(legislator);
 
@@ -92,7 +92,7 @@ public class TestLegislatorDao {
         legislator.setParty("Democrat");
         legislator.setChamber(Chamber.House);
 
-        LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.session());
 
         long id = dao.save(legislator);
 

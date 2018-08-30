@@ -80,7 +80,7 @@ public class BillPersistence {
             billActionLoad.setLoadTime(LocalDateTime.now());
             billActionLoadDao.insert(billActionLoad);
 
-            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            LegislatorDao legislatorDao = new LegislatorDao(connectionPool.session());
             List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
 
             int senateSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser);

@@ -96,7 +96,7 @@ public class TestBillActionDao {
         wilson.setDistrict(1);
         wilson.setSessionNumber(314);
 
-        LegislatorDao legislatorDao = new LegislatorDao(connection);
+        LegislatorDao legislatorDao = new LegislatorDao(DbTestConfigs.session());
         long wilsonId = legislatorDao.save(wilson);
         wilson.setId(wilsonId);
 
@@ -146,7 +146,7 @@ public class TestBillActionDao {
         wilson.setDistrict(1);
         wilson.setSessionNumber(314);
 
-        LegislatorDao legislatorDao = new LegislatorDao(connection);
+        LegislatorDao legislatorDao = new LegislatorDao(DbTestConfigs.session());
         long wilsonId = legislatorDao.save(wilson);
         wilson.setId(wilsonId);
 
@@ -192,7 +192,7 @@ public class TestBillActionDao {
         wilson.setDistrict(1);
         wilson.setSessionNumber(314);
 
-        LegislatorDao legislatorDao = new LegislatorDao(connection);
+        LegislatorDao legislatorDao = new LegislatorDao(DbTestConfigs.session());
         long wilsonId = legislatorDao.save(wilson);
         wilson.setId(wilsonId);
 

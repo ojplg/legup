@@ -30,7 +30,7 @@ public class SaveLegislators implements Handler {
         List<Legislator> legislators = parser.getLegislators();
 
         Connection connection = connectionPool.getConnection();
-        LegislatorDao dao = new LegislatorDao(connection);
+        LegislatorDao dao = new LegislatorDao(connectionPool.session());
         for (Legislator leg : legislators) {
             dao.save(leg);
         }

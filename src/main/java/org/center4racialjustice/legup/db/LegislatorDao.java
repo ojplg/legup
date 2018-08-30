@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.apache.ibatis.session.SqlSession;
 import org.center4racialjustice.legup.domain.ChamberConverter;
 import org.center4racialjustice.legup.domain.Legislator;
 
@@ -29,35 +30,35 @@ public class LegislatorDao implements Dao<Legislator> {
                     new StringColumn<>("MEMBER_ID", "" , Legislator::getMemberId, Legislator::setMemberId)
             );
 
-    private final Connection connection;
+    private final SqlSession sqlSession;
+    private LegislatorMapper legislatorMapper;
 
-    public LegislatorDao(Connection connection){
-        this.connection = connection;
+    public LegislatorDao(SqlSession sqlSession){
+        this.sqlSession = sqlSession;
+        this.legislatorMapper = sqlSession.getMapper(LegislatorMapper.class);
     }
 
     public long save(Legislator legislator){
-        return DaoHelper.save(connection, table, typedColumnList, legislator);
+        if( legislator.getId() == null ) {
+            legislatorMapper.insert(legislator);
+            sqlSession.commit();
+            return legislator.getId();
+        } else {
+            legislatorMapper.update(legislator);
+            sqlSession.commit();
+            return legislator.getId();
+        }
     }
 
     public Legislator read(long id){
-        List<Legislator> legislators =
-                DaoHelper.read(connection, table, typedColumnList, Collections.singletonList(id), supplier);
-        return DaoHelper.fromSingletonList(legislators, "Table " + table + ", ID " + id);
+        return legislatorMapper.selectLegislator(id);
     }
 
     public List<Legislator> readAll(){
-        List<Legislator> legislators =
-                DaoHelper.read(connection, table, typedColumnList, Collections.emptyList(), supplier);
-        return legislators;
+        return legislatorMapper.selectLegislators();
     }
 
     public List<Legislator> readBySession(long session){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where session_number = ");
-        sqlBldr.append(session);
-        String sql = sqlBldr.toString();
-
-        return DaoHelper.read(connection, sql, typedColumnList, supplier);
+        return legislatorMapper.selectLegislatorsBySession(session);
     }
 }

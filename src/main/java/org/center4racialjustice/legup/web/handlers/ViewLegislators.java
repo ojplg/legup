@@ -27,7 +27,7 @@ public class ViewLegislators implements Handler {
         VelocityContext vc = new VelocityContext();
 
         Connection connection = connectionPool.getConnection();
-        LegislatorDao dao = new LegislatorDao(connection);
+        LegislatorDao dao = new LegislatorDao(connectionPool.session());
         List<Legislator> legislators = dao.readAll();
         Collections.sort(legislators);
         vc.put("legislators", legislators);

@@ -34,11 +34,17 @@ public class ConnectionPool {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    public SqlSession session(){
+        return sqlSessionFactory.openSession();
+    }
+
     public BillDao getBillDao() {
         // FIXME: the sql session needs to be closed
         SqlSession sqlSession = sqlSessionFactory.openSession();
         BillDao billDao = new BillDao(sqlSession);
         return billDao;
     }
+
+
 
 }
