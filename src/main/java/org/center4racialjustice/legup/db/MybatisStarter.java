@@ -37,6 +37,7 @@ public class MybatisStarter {
                 new Environment("development", transactionFactory, dataSource);
         Configuration configuration = new Configuration(environment);
         configuration.addMapper(BillMapper.class);
+        configuration.addMapper(LegislatorMapper.class);
 
         SqlSessionFactory sqlSessionFactory =
                 new SqlSessionFactoryBuilder().build(configuration);
