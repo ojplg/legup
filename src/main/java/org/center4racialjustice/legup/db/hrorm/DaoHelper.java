@@ -32,7 +32,7 @@ class DaoHelper {
         return String.join(", ", columnNames);
     }
 
-    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+    public static <T> String updateStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item, PrimaryKey<T> primaryKey){
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
         sql.append(" set ");
@@ -51,8 +51,7 @@ class DaoHelper {
             sql.append(" = ? ");
         }
         sql.append(" where id = ");
-        sql.append(item.getId());
-        sql.append(" RETURNING ID");
+        sql.append(primaryKey.getKey(item));
         return sql.toString();
     }
 
@@ -174,10 +173,10 @@ class DaoHelper {
 
     }
 
-    public static <T extends Identifiable> Long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item) {
-        String sql = DaoHelper.updateStatement(table, columnList, joinColumns, item);
-        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
-    }
+//    public static <T> Long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item) {
+//        String sql = DaoHelper.updateStatement(table, columnList, joinColumns, item);
+//        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
+//    }
 
     private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         return doInsert(connection, table, columnList, Collections.emptyList(), item);
@@ -186,6 +185,14 @@ class DaoHelper {
     public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
         String sql = DaoHelper.insertStatement(table, columnList, joinColumns);
         return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
+    }
+
+    public static void runDelete(Connection connection, String sql) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql) ){
+            preparedStatement.execute();
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, T item){

@@ -33,7 +33,7 @@ class DaoHelper {
         return String.join(", ", columnNames);
     }
 
-    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+    public static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
         sql.append(" set ");
