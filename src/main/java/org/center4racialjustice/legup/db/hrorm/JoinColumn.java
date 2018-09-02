@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class JoinColumn<T, J extends Identifiable> implements TypedColumn<T> {
+public class JoinColumn<T, J> implements TypedColumn<T> {
 
     private final String name;
     private final String prefix;
@@ -18,14 +18,16 @@ public class JoinColumn<T, J extends Identifiable> implements TypedColumn<T> {
     private final Function<T, J> getter;
     private final Supplier<J> supplier;
     private final List<TypedColumn<J>> columnList;
+    private final PrimaryKey<J> primaryKey;
 
-    public JoinColumn(String name, String prefix, String table, Function<T, J> getter, BiConsumer<T, J> setter, Supplier<J> supplier, List<TypedColumn<J>> columnList) {
+    public JoinColumn(String name, String prefix, String table, Function<T, J> getter, BiConsumer<T, J> setter, Supplier<J> supplier, PrimaryKey<J> primaryKey, List<TypedColumn<J>> columnList) {
         this.name = name;
         this.table = table;
         this.prefix = prefix;
         this.getter = getter;
         this.setter = setter;
         this.supplier = supplier;
+        this.primaryKey = primaryKey;
         this.columnList = columnList.stream().map( c -> c.withPrefix(prefix) ).collect(Collectors.toList());
     }
 
@@ -59,13 +61,13 @@ public class JoinColumn<T, J extends Identifiable> implements TypedColumn<T> {
         if( value == null){
             throw new RuntimeException("Cannot find join column value for " + item + " using " + getter);
         }
-        Long id = value.getId();
+        Long id = primaryKey.getKey(value);
         preparedStatement.setLong(index, id);
     }
 
     @Override
     public TypedColumn<T> withPrefix(String prefix) {
-        return new JoinColumn<>(name, prefix, table, getter, setter, supplier, columnList);
+        return new JoinColumn<>(name, prefix, table, getter, setter, supplier, primaryKey, columnList);
     }
 
     public List<TypedColumn<J>> getColumnList(){

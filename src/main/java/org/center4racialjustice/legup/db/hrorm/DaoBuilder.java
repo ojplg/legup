@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class DaoBuilder<T> {
 
     private final Table table;
     private final List<TypedColumn<T>> columns = new ArrayList<>();
+    private final List<JoinColumn<T,?>> joinColumns = new ArrayList<>();
     private PrimaryKey<T> primaryKey;
 
     public DaoBuilder(Table table){
@@ -35,6 +37,12 @@ public class DaoBuilder<T> {
     public <E> DaoBuilder withConvertingStringColumn(String columnName, Function<T, E> getter, BiConsumer<T, E> setter, Converter<String, E> converter){
         TypedColumn<T> column = new StringConverterColumn<>(columnName, "", getter, setter, converter);
         columns.add(column);
+        return this;
+    }
+
+    public <U> DaoBuilder withJoinColumn(String columnName, String tableName, Supplier<U> supplier, Function<T,U> getter, BiConsumer<T,U> setter, PrimaryKey<U> primaryKey, List<TypedColumn<U>> joinedColumns){
+        JoinColumn<T,U> joinColumn = new JoinColumn<T, U>(columnName, "", tableName, getter, setter, supplier, primaryKey, joinedColumns);
+        joinColumns.add(joinColumn);
         return this;
     }
 
