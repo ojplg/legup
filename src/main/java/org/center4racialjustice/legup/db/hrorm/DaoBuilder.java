@@ -20,14 +20,20 @@ public class DaoBuilder<T> {
         return new DaoImpl<>(connection, table, columns, primaryKey);
     }
 
-    public DaoBuilder withStringMapping(String columnName, Function<T, String> getter, BiConsumer<T, String> setter){
+    public DaoBuilder withStringColumn(String columnName, Function<T, String> getter, BiConsumer<T, String> setter){
         TypedColumn<T> column = new StringColumn<>(columnName, "", getter, setter);
         columns.add(column);
         return this;
     }
 
-    public DaoBuilder withIntegerMapping(String columnName, Function<T, Long> getter, BiConsumer<T, Long> setter){
+    public DaoBuilder withIntegerColumn(String columnName, Function<T, Long> getter, BiConsumer<T, Long> setter){
         TypedColumn<T> column = new LongColumn<>(columnName, "", getter, setter);
+        columns.add(column);
+        return this;
+    }
+
+    public <E> DaoBuilder withConvertingStringColumn(String columnName, Function<T, E> getter, BiConsumer<T, E> setter, Converter<String, E> converter){
+        TypedColumn<T> column = new StringConverterColumn<>(columnName, "", getter, setter, converter);
         columns.add(column);
         return this;
     }
