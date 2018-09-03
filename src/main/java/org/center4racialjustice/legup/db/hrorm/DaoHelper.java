@@ -240,7 +240,7 @@ class DaoHelper {
     }
 
 
-    public static <T> String selectString(String table, List<TypedColumn<T>> columnList){
+    public static <T> String baseSelectSql(String table, List<TypedColumn<T>> columnList){
         StringBuilder sql =  new StringBuilder("select ");
         sql.append(DaoHelper.typedColumnsAsString("",columnList, false));
         sql.append(" from ");
@@ -332,7 +332,7 @@ class DaoHelper {
     public static <T> List<T> read(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<Long> ids,
                                    Supplier<T> supplier){
 
-        StringBuilder sql =  new StringBuilder(selectString(table, dataColumns));
+        StringBuilder sql =  new StringBuilder(baseSelectSql(table, dataColumns));
         if (ids == null || ids.size() == 0){
            // do nothing
         } else if ( ids.size() == 1 ){

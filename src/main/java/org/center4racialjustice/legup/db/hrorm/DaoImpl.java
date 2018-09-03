@@ -38,8 +38,7 @@ public class DaoImpl<T> implements Dao<T> {
     }
 
     public String deleteSql(T item){
-        // should not have to use "id"
-        return "delete from " + table.getName()+ " where id = " + primaryKey.getKey(item);
+        return "delete from " + table.getName()+ " where " + primaryKey.keyName() + " = " + primaryKey.getKey(item);
     }
 
     @Override
@@ -62,7 +61,8 @@ public class DaoImpl<T> implements Dao<T> {
 
     @Override
     public T select(long id) {
-        String sql = DaoHelper.selectString(table.getName(), columns);
+        String sql = DaoHelper.baseSelectSql(table.getName(), columns);
+        sql = sql + " where " + primaryKey.keyName() + " = " + id;
         List<T> items = DaoHelper.read(connection, sql, columns, supplier);
         return DaoHelper.fromSingletonList(items, "");
     }
