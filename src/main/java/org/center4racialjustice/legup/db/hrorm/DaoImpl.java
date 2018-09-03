@@ -69,6 +69,8 @@ public class DaoImpl<T> implements Dao<T> {
 
     @Override
     public List<T> selectAll() {
-        return null;
+        String sql = DaoHelper.baseSelectSql(table.getName(), columns);
+        List<T> items = DaoHelper.read(connection, sql, columns, supplier);
+        return items;
     }
 }
