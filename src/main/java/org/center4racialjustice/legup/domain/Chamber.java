@@ -1,11 +1,25 @@
 package org.center4racialjustice.legup.domain;
 
+import org.center4racialjustice.legup.db.hrorm.Converter;
+
 import java.util.Objects;
 
 public class Chamber implements Comparable<Chamber> {
 
     public static final Chamber House = new Chamber("House");
     public static final Chamber Senate = new Chamber("Senate");
+
+    public static final Converter<String, Chamber> Converter = new Converter<String, Chamber>() {
+        @Override
+        public Chamber from(String s) {
+            return Chamber.fromString(s);
+        }
+
+        @Override
+        public String to(Chamber chamber) {
+            return chamber.toString();
+        }
+    };
 
     private final String name;
 

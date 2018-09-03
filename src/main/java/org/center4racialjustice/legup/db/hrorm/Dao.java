@@ -10,5 +10,6 @@ Dao<T> {
     void delete(T item);
     T select(long id);
     List<T> selectAll();
+    T selectByColumns(T item, List<String> columnName);
     
 }
