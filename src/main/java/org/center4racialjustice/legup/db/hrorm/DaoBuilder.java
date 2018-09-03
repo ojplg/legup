@@ -13,13 +13,20 @@ public class DaoBuilder<T> {
     private final List<TypedColumn<T>> columns = new ArrayList<>();
     private final List<JoinColumn<T,?>> joinColumns = new ArrayList<>();
     private PrimaryKey<T> primaryKey;
+    private Supplier<T> supplier;
 
     public DaoBuilder(Table table){
         this.table = table;
     }
 
     public Dao<T> buildDao(Connection connection){
-        return new DaoImpl<>(connection, table, columns, primaryKey);
+
+        return new DaoImpl<>(connection, table, columns, primaryKey, supplier);
+    }
+
+    public DaoBuilder<T> withSupplier(Supplier<T> supplier){
+        this.supplier = supplier;
+        return this;
     }
 
     public DaoBuilder withStringColumn(String columnName, Function<T, String> getter, BiConsumer<T, String> setter){
@@ -58,6 +65,9 @@ public class DaoBuilder<T> {
             public void setKey(T item, Long id) {
                 setter.accept(item, id);
             }
+
+            @Override
+            public String keyName() { return columnName; }
         };
         TypedColumn<T> column = new LongColumn<>(columnName, "", getter, setter);
         columns.add(column);

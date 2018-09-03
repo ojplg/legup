@@ -4,5 +4,6 @@ public interface PrimaryKey<T> {
 
     Long getKey(T item);
     void setKey(T item, Long id);
+    String keyName();
 
 }

@@ -2,7 +2,8 @@ package org.center4racialjustice.legup.db.hrorm;
 
 import java.util.List;
 
-public interface Dao<T> {
+public interface
+Dao<T> {
 
     void insert(T item);
     void update(T item);
