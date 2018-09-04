@@ -9,18 +9,19 @@ import java.util.function.Supplier;
 
 public class DaoBuilder<T> {
 
-    private final Table table;
+    private final String tableName;
     private final List<TypedColumn<T>> columns = new ArrayList<>();
     private final List<JoinColumn<T,?>> joinColumns = new ArrayList<>();
     private PrimaryKey<T> primaryKey;
     private Supplier<T> supplier;
 
-    public DaoBuilder(Table table){
-        this.table = table;
+    public DaoBuilder(String tableName, Supplier<T> supplier){
+        this.tableName = tableName;
+        this.supplier = supplier;
     }
 
     public Dao<T> buildDao(Connection connection){
-        return new DaoImpl<>(connection, table, columns, primaryKey, supplier);
+        return new DaoImpl<>(connection, tableName, columns, primaryKey, supplier);
     }
 
     public DaoBuilder<T> withSupplier(Supplier<T> supplier){

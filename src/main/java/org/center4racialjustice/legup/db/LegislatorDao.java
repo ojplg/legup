@@ -1,11 +1,12 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.db.hrorm.DaoBuilder;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ChamberConverter;
 import org.center4racialjustice.legup.domain.Legislator;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -29,35 +30,51 @@ public class LegislatorDao implements Dao<Legislator> {
                     new StringColumn<>("MEMBER_ID", "" , Legislator::getMemberId, Legislator::setMemberId)
             );
 
+    private static DaoBuilder<Legislator> daoBuilder(){
+        DaoBuilder<Legislator> bldr = new DaoBuilder<>("LEGISLATORS", Legislator::new);
+        bldr.withPrimaryKey("ID", Legislator::getId, Legislator::setId)
+                .withStringColumn("FIRST_NAME", Legislator::getFirstName, Legislator::setFirstName)
+                .withStringColumn("MIDDLE_NAME_OR_INITIAL", Legislator::getMiddleInitialOrName, Legislator::setMiddleInitialOrName)
+                .withStringColumn("LAST_NAME", Legislator::getLastName, Legislator::setLastName)
+                .withStringColumn("SUFFIX", Legislator::getSuffix, Legislator::setSuffix)
+                .withConvertingStringColumn("CHAMBER", Legislator::getChamber, Legislator::setChamber, Chamber.Converter)
+                .withIntegerColumn("DISTRICT", Legislator::getDistrict, Legislator::setDistrict)
+                .withStringColumn("PARTY", Legislator::getParty, Legislator::setParty)
+                .withIntegerColumn("SESSION_NUMBER", Legislator::getSessionNumber, Legislator::setSessionNumber)
+                .withStringColumn("MEMBER_ID", Legislator::getMemberId, Legislator::setMemberId);
+        return bldr;
+    }
+
+    private static final DaoBuilder<Legislator> daoBuilder = daoBuilder();
+
     private final Connection connection;
+    private final org.center4racialjustice.legup.db.hrorm.Dao<Legislator> innerDao;
 
     public LegislatorDao(Connection connection){
         this.connection = connection;
+        this.innerDao = daoBuilder().buildDao(connection);
     }
 
     public long save(Legislator legislator){
-        return DaoHelper.save(connection, table, typedColumnList, legislator);
+        if( legislator.getId() == null ){
+            return innerDao.insert(legislator);
+        } else {
+            innerDao.update(legislator);
+            return legislator.getId();
+        }
     }
 
     public Legislator read(long id){
-        List<Legislator> legislators =
-                DaoHelper.read(connection, table, typedColumnList, Collections.singletonList(id), supplier);
-        return DaoHelper.fromSingletonList(legislators, "Table " + table + ", ID " + id);
+        return innerDao.select(id);
     }
 
     public List<Legislator> readAll(){
-        List<Legislator> legislators =
-                DaoHelper.read(connection, table, typedColumnList, Collections.emptyList(), supplier);
-        return legislators;
+        return innerDao.selectAll();
     }
 
     public List<Legislator> readBySession(long session){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where session_number = ");
-        sqlBldr.append(session);
-        String sql = sqlBldr.toString();
-
-        return DaoHelper.read(connection, sql, typedColumnList, supplier);
+        Legislator legislator = new Legislator();
+        legislator.setSessionNumber(session);
+        return innerDao.selectManyByColumns(legislator, Arrays.asList("SESSION_NUMBER"));
     }
 }

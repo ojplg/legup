@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.db;
 
 import org.center4racialjustice.legup.db.hrorm.DaoBuilder;
-import org.center4racialjustice.legup.db.hrorm.Table;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ChamberConverter;
@@ -26,10 +25,8 @@ public class BillDao implements Dao<Bill> {
             );
 
     private static DaoBuilder<Bill> daoBuilder(){
-        Table billTable = new Table("BILLS", Collections.emptyList());
-        DaoBuilder<Bill> bldr = new DaoBuilder<>(billTable);
+        DaoBuilder<Bill> bldr = new DaoBuilder<>("BILLS", Bill::new);
         bldr.withPrimaryKey("ID", Bill::getId, Bill::setId)
-            .withSupplier(Bill::new)
             .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter)
             .withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
             .withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)

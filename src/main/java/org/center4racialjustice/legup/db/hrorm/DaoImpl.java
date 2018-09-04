@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 public class DaoImpl<T> implements Dao<T> {
 
     private final Connection connection;
-    private final Table table;
+    private final String tableName;
     private final List<TypedColumn<T>> columns;
     private final PrimaryKey<T> primaryKey;
     private final Supplier<T> supplier;
     private final Map<String, TypedColumn<T>> columnMap = new HashMap<>();
 
-    public DaoImpl(Connection connection, Table table, List<TypedColumn<T>> columns, PrimaryKey<T> primaryKey, Supplier<T> supplier){
+    public DaoImpl(Connection connection, String tableName, List<TypedColumn<T>> columns, PrimaryKey<T> primaryKey, Supplier<T> supplier){
         this.connection = connection;
-        this.table = table;
+        this.tableName = tableName;
         this.columns = Collections.unmodifiableList(columns);
         this.primaryKey = primaryKey;
         this.supplier = supplier;
@@ -34,7 +34,7 @@ public class DaoImpl<T> implements Dao<T> {
     }
 
     public String tableName(){
-        return table.getName();
+        return tableName;
     }
 
     public List<TypedColumn<T>> getColumns(){
@@ -42,15 +42,15 @@ public class DaoImpl<T> implements Dao<T> {
     }
 
     public String insertSql(){
-        return DaoHelper.insertStatement(table.getName(), columns, Collections.emptyList());
+        return DaoHelper.insertStatement(tableName, columns, Collections.emptyList());
     }
 
     public String updateSql(T item){
-        return DaoHelper.updateStatement(table.getName(), columns, Collections.emptyList(), item, primaryKey);
+        return DaoHelper.updateStatement(tableName, columns, Collections.emptyList(), item, primaryKey);
     }
 
     public String deleteSql(T item){
-        return "delete from " + table.getName()+ " where " + primaryKey.keyName() + " = " + primaryKey.getKey(item);
+        return "delete from " + tableName + " where " + primaryKey.keyName() + " = " + primaryKey.getKey(item);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class DaoImpl<T> implements Dao<T> {
 
     @Override
     public T select(long id) {
-        String sql = DaoHelper.baseSelectSql(table.getName(), columns);
+        String sql = DaoHelper.baseSelectSql(tableName, columns);
         sql = sql + " where " + primaryKey.keyName() + " = " + id;
         List<T> items = DaoHelper.read(connection, sql, columns, supplier);
         return DaoHelper.fromSingletonList(items, "");
@@ -83,7 +83,7 @@ public class DaoImpl<T> implements Dao<T> {
 
     @Override
     public List<T> selectMany(List<Long> ids) {
-        String sql = DaoHelper.baseSelectSql(table.getName(), columns);
+        String sql = DaoHelper.baseSelectSql(tableName, columns);
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " where " + primaryKey.keyName() + " in (" + idsString + ")";
@@ -93,7 +93,7 @@ public class DaoImpl<T> implements Dao<T> {
 
     @Override
     public List<T> selectAll() {
-        String sql = DaoHelper.baseSelectSql(table.getName(), columns);
+        String sql = DaoHelper.baseSelectSql(tableName, columns);
         List<T> items = DaoHelper.read(connection, sql, columns, supplier);
         return items;
     }
@@ -107,7 +107,7 @@ public class DaoImpl<T> implements Dao<T> {
     @Override
     public List<T> selectManyByColumns(T item, List<String> columnNames) {
         StringBuilder buf = new StringBuilder();
-        buf.append(DaoHelper.baseSelectSql(table.getName(), columns));
+        buf.append(DaoHelper.baseSelectSql(tableName, columns));
         buf.append(" where ");
         for(int idx=0 ; idx < columnNames.size() ; idx++ ){
             String columnName = columnNames.get(idx);

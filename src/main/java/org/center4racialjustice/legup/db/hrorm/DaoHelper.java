@@ -52,6 +52,7 @@ class DaoHelper {
         }
         sql.append(" where id = ");
         sql.append(primaryKey.getKey(item));
+        sql.append(" RETURNING ID");
         return sql.toString();
     }
 
