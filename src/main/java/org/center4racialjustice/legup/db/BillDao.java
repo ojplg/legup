@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BillDao extends OneTableDao<Bill> {
+public class BillDao implements Dao<Bill> {
 
     public static String table = "bills";
 
@@ -44,23 +44,21 @@ public class BillDao extends OneTableDao<Bill> {
 
     public static Supplier<Bill> supplier = Bill::new;
 
+    private Connection connection;
+
     public BillDao(Connection connection) {
-        super(connection, supplier, table, typedColumnList);
+        this.connection = connection;
     }
 
     public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where chamber = '");
-        sqlBldr.append(chamber.toString());
-        sqlBldr.append("' and bill_number = ");
-        sqlBldr.append(number);
-        sqlBldr.append(" and session_number = ");
-        sqlBldr.append(session);
-        String sql = sqlBldr.toString();
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
 
-        List<Bill> bills = DaoHelper.read(connection, sql, typedColumnList, supplier);
-        return DaoHelper.fromSingletonList(bills, "Searching for bill by chamber and number.");
+        Bill bill = new Bill();
+        bill.setSession(session);
+        bill.setChamber(chamber);
+        bill.setNumber(number);
+
+        return innerDao.selectByColumns(bill, Arrays.asList("SESSION_NUMBER", "CHAMBER", "BILL_NUMBER"));
     }
 
     public Bill findOrCreate(long session, Chamber chamber, long number){
@@ -72,22 +70,42 @@ public class BillDao extends OneTableDao<Bill> {
         bill.setChamber(chamber);
         bill.setNumber(number);
         bill.setSession(session);
-        Long id = save(bill);
-        bill.setId(id);
+
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
+
+        innerDao.insert(bill);
         return bill;
     }
 
     public List<Bill> readBySession(long session){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.selectString(table, typedColumnList));
-        sqlBldr.append(" where session_number = ");
-        sqlBldr.append(session);
-        String sql = sqlBldr.toString();
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
 
-        return DaoHelper.read(connection, sql, typedColumnList, supplier);
+        Bill bill = new Bill();
+        bill.setSession(session);
+
+        return innerDao.selectManyByColumns(bill, Arrays.asList("SESSION_NUMBER"));
     }
 
     public List<Bill> readByIds(List<Long> ids){
-        return DaoHelper.read(connection, table,  typedColumnList, ids, supplier);
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
+        return innerDao.selectMany(ids);
+    }
+
+    @Override
+    public long save(Bill item) {
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
+        return innerDao.insert(item);
+    }
+
+    @Override
+    public Bill read(long id) {
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
+        return innerDao.select(id);
+    }
+
+    @Override
+    public List<Bill> readAll() {
+        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
+        return innerDao.selectAll();
     }
 }

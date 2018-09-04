@@ -130,6 +130,8 @@ class DaoHelper {
         }
         bldr.append("? ");
         bldr.append(" ) ");
+        bldr.append(" RETURNING ID");
+
 
         return bldr.toString();
     }
@@ -154,8 +156,8 @@ class DaoHelper {
 
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            long newId = resultSet.getLong("id");
-            return newId;
+            return resultSet.getLong("ID");
+
         } catch (SQLException se){
             throw new RuntimeException("Wrapped SQL exception for " + sql, se);
         } finally {

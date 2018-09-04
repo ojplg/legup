@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class DaoImpl<T> implements Dao<T> {
 
@@ -19,7 +20,6 @@ public class DaoImpl<T> implements Dao<T> {
     private final PrimaryKey<T> primaryKey;
     private final Supplier<T> supplier;
     private final Map<String, TypedColumn<T>> columnMap = new HashMap<>();
-
 
     public DaoImpl(Connection connection, Table table, List<TypedColumn<T>> columns, PrimaryKey<T> primaryKey, Supplier<T> supplier){
         this.connection = connection;
@@ -54,9 +54,11 @@ public class DaoImpl<T> implements Dao<T> {
     }
 
     @Override
-    public void insert(T item) {
+    public long insert(T item) {
         String sql = insertSql();
-        DaoHelper.runInsertOrUpdate(connection, sql, columns, Collections.emptyList(), item);
+        long id = DaoHelper.runInsertOrUpdate(connection, sql, columns, Collections.emptyList(), item);
+        primaryKey.setKey(item, id);
+        return id;
     }
 
     @Override
@@ -80,6 +82,16 @@ public class DaoImpl<T> implements Dao<T> {
     }
 
     @Override
+    public List<T> selectMany(List<Long> ids) {
+        String sql = DaoHelper.baseSelectSql(table.getName(), columns);
+        List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
+        String idsString = String.join(",", idStrings);
+        sql = sql + " where " + primaryKey.keyName() + " in (" + idsString + ")";
+        return DaoHelper.read(connection, sql, columns, supplier);
+    }
+
+
+    @Override
     public List<T> selectAll() {
         String sql = DaoHelper.baseSelectSql(table.getName(), columns);
         List<T> items = DaoHelper.read(connection, sql, columns, supplier);
@@ -88,6 +100,12 @@ public class DaoImpl<T> implements Dao<T> {
 
     @Override
     public T selectByColumns(T item, List<String> columnNames){
+        List<T> items = selectManyByColumns(item, columnNames);
+        return DaoHelper.fromSingletonList(items, "");
+    }
+
+    @Override
+    public List<T> selectManyByColumns(T item, List<String> columnNames) {
         StringBuilder buf = new StringBuilder();
         buf.append(DaoHelper.baseSelectSql(table.getName(), columns));
         buf.append(" where ");
@@ -116,8 +134,7 @@ public class DaoImpl<T> implements Dao<T> {
                 items.add(t);
             }
 
-            return DaoHelper.fromSingletonList(items, "");
-
+            return items;
         } catch (SQLException ex){
             throw new RuntimeException(ex);
         }
