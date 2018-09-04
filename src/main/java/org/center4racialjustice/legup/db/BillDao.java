@@ -28,12 +28,12 @@ public class BillDao implements Dao<Bill> {
     private static DaoBuilder<Bill> daoBuilder(){
         Table billTable = new Table("BILLS", Collections.emptyList());
         DaoBuilder<Bill> bldr = new DaoBuilder<>(billTable);
-        bldr.withPrimaryKey("ID", Bill::getId, Bill::setId);
-        bldr.withSupplier(Bill::new)
-            .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter);
-        bldr.withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber);
-        bldr.withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession);
-        bldr.withStringColumn("SHORT_DESCRIPTION", Bill::getShortDescription, Bill::setShortDescription);
+        bldr.withPrimaryKey("ID", Bill::getId, Bill::setId)
+            .withSupplier(Bill::new)
+            .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter)
+            .withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
+            .withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)
+            .withStringColumn("SHORT_DESCRIPTION", Bill::getShortDescription, Bill::setShortDescription);
         return bldr;
     }
 
