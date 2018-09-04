@@ -245,9 +245,11 @@ class DaoHelper {
 
     public static <T> String baseSelectSql(String table, List<TypedColumn<T>> columnList){
         StringBuilder sql =  new StringBuilder("select ");
-        sql.append(DaoHelper.typedColumnsAsString("",columnList, false));
+        sql.append(DaoHelper.typedColumnsAsString("a",columnList, true));
         sql.append(" from ");
         sql.append(table);
+        sql.append(" ");
+        sql.append("a");
         return sql.toString();
     }
 

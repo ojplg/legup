@@ -37,7 +37,7 @@ public class LongColumn<T> implements TypedColumn<T> {
 
     @Override
     public void populate(T item, ResultSet resultSet) throws SQLException {
-        Long value = resultSet.getLong(prefix + name);
+        Long value = resultSet.getLong(prefix  + name);
         setter.accept(item, value);
     }
 
