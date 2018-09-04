@@ -31,8 +31,8 @@ public class LegislatorDao implements Dao<Legislator> {
             );
 
     private static DaoBuilder<Legislator> daoBuilder(){
-        DaoBuilder<Legislator> bldr = new DaoBuilder<>("LEGISLATORS", Legislator::new);
-        bldr.withPrimaryKey("ID", Legislator::getId, Legislator::setId)
+        DaoBuilder<Legislator> bldr = new DaoBuilder<>("LEGISLATORS", Legislator::new)
+                .withPrimaryKey("ID", Legislator::getId, Legislator::setId)
                 .withStringColumn("FIRST_NAME", Legislator::getFirstName, Legislator::setFirstName)
                 .withStringColumn("MIDDLE_NAME_OR_INITIAL", Legislator::getMiddleInitialOrName, Legislator::setMiddleInitialOrName)
                 .withStringColumn("LAST_NAME", Legislator::getLastName, Legislator::setLastName)

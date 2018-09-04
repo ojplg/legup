@@ -7,7 +7,6 @@ import org.center4racialjustice.legup.domain.ChamberConverter;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -25,8 +24,8 @@ public class BillDao implements Dao<Bill> {
             );
 
     private static DaoBuilder<Bill> daoBuilder(){
-        DaoBuilder<Bill> bldr = new DaoBuilder<>("BILLS", Bill::new);
-        bldr.withPrimaryKey("ID", Bill::getId, Bill::setId)
+        DaoBuilder<Bill> bldr = new DaoBuilder<>("BILLS", Bill::new)
+            .withPrimaryKey("ID", Bill::getId, Bill::setId)
             .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter)
             .withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
             .withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)
@@ -42,14 +41,14 @@ public class BillDao implements Dao<Bill> {
     public static Supplier<Bill> supplier = Bill::new;
 
     private Connection connection;
+    private final org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao;
 
     public BillDao(Connection connection) {
         this.connection = connection;
+        this.innerDao = daoBuilder().buildDao(connection);
     }
 
     public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
-
         Bill bill = new Bill();
         bill.setSession(session);
         bill.setChamber(chamber);
@@ -68,15 +67,11 @@ public class BillDao implements Dao<Bill> {
         bill.setNumber(number);
         bill.setSession(session);
 
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
-
         innerDao.insert(bill);
         return bill;
     }
 
     public List<Bill> readBySession(long session){
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
-
         Bill bill = new Bill();
         bill.setSession(session);
 
@@ -90,19 +85,16 @@ public class BillDao implements Dao<Bill> {
 
     @Override
     public long save(Bill item) {
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
         return innerDao.insert(item);
     }
 
     @Override
     public Bill read(long id) {
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
         return innerDao.select(id);
     }
 
     @Override
     public List<Bill> readAll() {
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
         return innerDao.selectAll();
     }
 }
