@@ -1,9 +1,7 @@
 package org.center4racialjustice.legup.db;
 
-import org.center4racialjustice.legup.db.hrorm.DaoBuilder;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
-import org.center4racialjustice.legup.domain.ChamberConverter;
 
 import java.sql.Connection;
 import java.util.Arrays;
@@ -11,18 +9,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class BillDao implements Dao<Bill> {
-
-    public static String table = "bills";
-
-    public static List<TypedColumn<Bill>> typedColumnList =
-            Arrays.asList(
-                    new LongColumn<>("ID", "", Bill::getId, Bill::setId),
-                    new CodedEnumColumn<>("CHAMBER", "", Bill::getChamber, Bill::setChamber, ChamberConverter.INSTANCE),
-                    new LongColumn<>("BILL_NUMBER", "", Bill::getNumber, Bill::setNumber),
-                    new LongColumn<>("SESSION_NUMBER", "", Bill::getSession, Bill::setSession),
-                    new StringColumn<>("SHORT_DESCRIPTION", "", Bill::getShortDescription, Bill::setShortDescription)
-            );
-
 
     public org.center4racialjustice.legup.db.hrorm.Dao<Bill> dao(Connection connection){
         return DaoBuilders.BILLS.buildDao(connection);

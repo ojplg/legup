@@ -4,29 +4,14 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 
 import java.sql.Connection;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ReportCardDao {
-    public static String table = "REPORT_CARDS";
-
-    public static List<TypedColumn<ReportCard>> dataColumns =
-            Arrays.asList(
-                    new LongColumn<>("ID", "", ReportCard::getId, ReportCard::setId),
-                    new StringColumn<>("NAME", "", ReportCard::getName, ReportCard::setName),
-                    new LongColumn<>("SESSION_NUMBER", "", ReportCard::getSessionNumber, ReportCard::setSessionNumber)
-            );
-
-    public static Supplier<ReportCard> supplier = () -> new ReportCard();
-
-    private final Connection connection;
     private final ReportFactorDao reportFactorDao;
     private final org.center4racialjustice.legup.db.hrorm.Dao<ReportCard> innerDao;
 
     public ReportCardDao(Connection connection) {
-        this.connection = connection;
         this.innerDao = DaoBuilders.REPORT_CARDS.buildDao(connection);
         this.reportFactorDao = new ReportFactorDao(connection);
     }
