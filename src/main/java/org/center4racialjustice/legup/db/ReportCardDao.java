@@ -66,5 +66,4 @@ public class ReportCardDao {
         return reportCards;
     }
 
-
 }

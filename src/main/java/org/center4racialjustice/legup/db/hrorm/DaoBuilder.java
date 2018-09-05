@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.db.hrorm;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -61,6 +62,11 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
     public <E> DaoBuilder<T> withConvertingStringColumn(String columnName, Function<T, E> getter, BiConsumer<T, E> setter, Converter<String, E> converter){
         TypedColumn<T> column = new StringConverterColumn<>(columnName, "a", getter, setter, converter);
         columns.add(column);
+        return this;
+    }
+
+    public DaoBuilder<T> withLocalDateTimeColumn(String columnName, Function<T, LocalDateTime> getter, BiConsumer<T, LocalDateTime> setter){
+        columns.add(new LocalDateTimeColumn<T>(columnName, "a", getter, setter));
         return this;
     }
 

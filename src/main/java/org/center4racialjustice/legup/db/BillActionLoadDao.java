@@ -28,31 +28,23 @@ public class BillActionLoadDao {
             Arrays.asList( billColumn );
 
     private final Connection connection;
+    private final org.center4racialjustice.legup.db.hrorm.Dao<BillActionLoad> innerDao;
 
     public static final Supplier<BillActionLoad> supplier = BillActionLoad::new;
 
     public BillActionLoadDao(Connection connection) {
         this.connection = connection;
+        this.innerDao = DaoBuilders.BILL_ACTION_LOADS.buildDao(connection);
     }
 
     public long insert(BillActionLoad billActionLoad){
-        return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, billActionLoad);
+        return innerDao.insert(billActionLoad);
     }
 
     public List<BillActionLoad> readByBill(Bill bill){
-        StringBuilder buf = new StringBuilder();
-
-        buf.append(DaoHelper.selectString(table, dataColumns));
-
-        buf.append(" and a.bill_id = ");
-        buf.append(bill.getId());
-        String sql = buf.toString();
-
-        List<BillActionLoad> votes = DaoHelper.doSelect(connection, sql, supplier, dataColumns);
-
-        votes.forEach(v -> v.setBill(bill));
-
-        return votes;
+        BillActionLoad billActionLoad = new BillActionLoad();
+        billActionLoad.setBill(bill);
+        return innerDao.selectManyByColumns(billActionLoad, Arrays.asList( "BILL_ID" ));
     }
 
 }

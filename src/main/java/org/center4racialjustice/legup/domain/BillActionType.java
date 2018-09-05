@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
+import org.center4racialjustice.legup.db.hrorm.Converter;
+
 import java.util.Objects;
 
 public class BillActionType {
@@ -49,7 +51,7 @@ public class BillActionType {
         return code;
     }
 
-    static class BillActionTypeConverter implements CodedEnumConverter<BillActionType> {
+    static class BillActionTypeConverter implements CodedEnumConverter<BillActionType>, Converter<String, BillActionType> {
         @Override
         public BillActionType fromCode(String code) {
             return BillActionType.fromCode(code);
@@ -58,6 +60,16 @@ public class BillActionType {
         @Override
         public String toCode(BillActionType instance) {
             return instance.getCode();
+        }
+
+        @Override
+        public String to(BillActionType billActionType) {
+            return billActionType.getCode();
+        }
+
+        @Override
+        public BillActionType from(String s) {
+            return BillActionType.fromCode(s);
         }
     }
 }
