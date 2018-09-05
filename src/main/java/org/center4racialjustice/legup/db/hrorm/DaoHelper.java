@@ -95,12 +95,10 @@ class DaoHelper {
             buf.append(" ");
             buf.append(joinColumn.getPrefix());
         }
-        buf.append(" where ");
+        buf.append(" where 1=1 ");
         for( int idx=0; idx<joinColumns.size(); idx++ ){
             JoinColumn joinColumn = joinColumns.get(idx);
-            if( idx > 0 ){
-                buf.append(" and ");
-            }
+            buf.append(" and ");
             buf.append("a.");
             buf.append(joinColumn.getName());
             buf.append("=");
@@ -259,7 +257,7 @@ class DaoHelper {
         return sql.toString();
     }
 
-    public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> dataColumns, Supplier<T> supplier){
+    public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> allColumns, Supplier<T> supplier){
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -267,12 +265,14 @@ class DaoHelper {
 
             statement = connection.createStatement();
 
+            System.out.println("SQL  " + sql);
+
             resultSet = statement.executeQuery(sql);
 
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = DaoHelper.populate(resultSet, dataColumns, supplier);
+                T item = DaoHelper.populate(resultSet, allColumns, supplier);
                 items.add(item);
             }
 

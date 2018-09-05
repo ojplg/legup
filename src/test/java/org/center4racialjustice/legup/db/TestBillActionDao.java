@@ -83,6 +83,9 @@ public class TestBillActionDao {
 
         BillAction billAction = billActionDao.read(voteId);
         Vote vote = billAction.asVote();
+
+        System.out.println("VOTE " + vote);
+
         Assert.assertEquals("Wilson", vote.getLegislator().getFirstName());
         Assert.assertEquals(123, vote.getBill().getNumber());
         Assert.assertEquals(VoteSide.Nay, vote.getVoteSide());

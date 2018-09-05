@@ -16,23 +16,31 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     private final Connection connection;
     private final String tableName;
-    private final List<TypedColumn<T>> columns;
+    private final List<TypedColumn<T>> dataColumns;
     private final PrimaryKey<T> primaryKey;
     private final Supplier<T> supplier;
     private final Map<String, TypedColumn<T>> columnMap = new HashMap<>();
     private final List<JoinColumn<T,?>> joinColumns;
+    private final List<TypedColumn<T>> allColumns;
 
-    public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey, List<TypedColumn<T>> columns, List<JoinColumn<T,?>> joinColumns){
+    public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
         this.connection = connection;
         this.tableName = tableName;
-        this.columns = Collections.unmodifiableList(columns);
+        this.dataColumns = Collections.unmodifiableList(dataColumns);
         this.primaryKey = primaryKey;
         this.supplier = supplier;
         this.joinColumns = Collections.unmodifiableList(joinColumns);
 
-        for(TypedColumn<T> column : columns){
+        for(TypedColumn<T> column : dataColumns){
             columnMap.put(column.getName(), column);
         }
+        for(TypedColumn<T> column : joinColumns){
+            columnMap.put(column.getName(), column);
+        }
+        List<TypedColumn<T>> tmp = new ArrayList<>();
+        tmp.addAll(dataColumns);
+        tmp.addAll(joinColumns);
+        this.allColumns = Collections.unmodifiableList(tmp);
     }
 
     public String tableName(){
@@ -40,7 +48,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     }
 
     public List<TypedColumn<T>> dataColumns(){
-        return columns;
+        return dataColumns;
     }
 
     public Supplier<T> supplier() { return supplier; }
@@ -48,11 +56,11 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     public PrimaryKey<T> primaryKey() { return primaryKey; }
 
     public String insertSql(){
-        return DaoHelper.insertStatement(tableName, columns, joinColumns);
+        return DaoHelper.insertStatement(tableName, dataColumns, joinColumns);
     }
 
     public String updateSql(T item){
-        return DaoHelper.updateStatement(tableName, columns, joinColumns, item, primaryKey);
+        return DaoHelper.updateStatement(tableName, dataColumns, joinColumns, item, primaryKey);
     }
 
     public String deleteSql(T item){
@@ -62,7 +70,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public long insert(T item) {
         String sql = insertSql();
-        long id = DaoHelper.runInsertOrUpdate(connection, sql, columns, joinColumns, item);
+        long id = DaoHelper.runInsertOrUpdate(connection, sql, dataColumns, joinColumns, item);
         primaryKey.setKey(item, id);
         return id;
     }
@@ -70,7 +78,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public void update(T item) {
         String sql = updateSql(item);
-        DaoHelper.runInsertOrUpdate(connection, sql, columns, joinColumns, item);
+        DaoHelper.runInsertOrUpdate(connection, sql, dataColumns, joinColumns, item);
     }
 
     @Override
@@ -81,26 +89,26 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public T select(long id) {
-        String sql = DaoHelper.baseSelectSql(tableName, columns);
-        sql = sql + " where " + primaryKey.keyName() + " = " + id;
-        List<T> items = DaoHelper.read(connection, sql, columns, supplier);
+        String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
+        sql = sql + " and a." + primaryKey.keyName() + " = " + id;
+        List<T> items = DaoHelper.read(connection, sql, allColumns, supplier);
         return DaoHelper.fromSingletonList(items, "");
     }
 
     @Override
     public List<T> selectMany(List<Long> ids) {
-        String sql = DaoHelper.baseSelectSql(tableName, columns);
+        String sql = DaoHelper.baseSelectSql(tableName, dataColumns);
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " where " + primaryKey.keyName() + " in (" + idsString + ")";
-        return DaoHelper.read(connection, sql, columns, supplier);
+        return DaoHelper.read(connection, sql, dataColumns, supplier);
     }
 
 
     @Override
     public List<T> selectAll() {
-        String sql = DaoHelper.baseSelectSql(tableName, columns);
-        List<T> items = DaoHelper.read(connection, sql, columns, supplier);
+        String sql = DaoHelper.baseSelectSql(tableName, dataColumns);
+        List<T> items = DaoHelper.read(connection, sql, dataColumns, supplier);
         return items;
     }
 
@@ -113,12 +121,12 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectManyByColumns(T item, List<String> columnNames) {
         StringBuilder buf = new StringBuilder();
-        buf.append(DaoHelper.joinSelectSql(tableName, columns, joinColumns));
+        buf.append(DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns));
         buf.append(" and ");
         for(int idx=0 ; idx < columnNames.size() ; idx++ ){
             String columnName = columnNames.get(idx);
             TypedColumn<T> column = columnMap.get(columnName);
-            buf.append(columnName);
+            buf.append("a" + "." + column.getName());
             buf.append(" = ?");
             if( idx < columnNames.size() - 1 ) {
                 buf.append(" and ");
@@ -139,7 +147,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T t = DaoHelper.populate("", resultSet, supplier, columns, joinColumns);
+                T t = DaoHelper.populate("", resultSet, supplier, dataColumns, joinColumns);
                 items.add(t);
             }
 

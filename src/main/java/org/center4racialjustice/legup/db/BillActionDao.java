@@ -39,64 +39,36 @@ public class BillActionDao {
             Arrays.asList( billColumn, legislatorColumn, voteLoadColumn );
 
     private final Connection connection;
+    private final org.center4racialjustice.legup.db.hrorm.Dao<BillAction> innerDao;
 
     public final Supplier<BillAction> supplier = BillAction::new;
 
     public BillActionDao(Connection connection) {
         this.connection = connection;
+        this.innerDao = DaoBuilders.BILL_ACTIONS.buildDao(connection);
     }
 
     public long insert(BillAction billAction){
-        return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, billAction);
+        return innerDao.insert(billAction);
     }
 
     public List<BillAction> readByLegislator(Legislator legislator){
-        StringBuilder buf = new StringBuilder();
 
-        buf.append(DaoHelper.joinSelectSql(table, dataColumns, Collections.singletonList(billColumn)));
+        BillAction billAction = new BillAction();
+        billAction.setLegislator(legislator);
 
-        buf.append(" and a.legislator_id = ");
-        buf.append(legislator.getId());
-        String sql = buf.toString();
-
-        List<BillAction> actions = DaoHelper.doSelect(connection, sql, supplier, dataColumns, Collections.singletonList(billColumn));
-
-        actions.forEach(a -> a.setLegislator(legislator));
-
-        return actions;
-
+        return innerDao.selectManyByColumns(billAction, Arrays.asList("LEGISLATOR_ID"));
     }
 
     public List<BillAction> readByBill(Bill bill){
-        StringBuilder buf = new StringBuilder();
+        BillAction billAction = new BillAction();
+        billAction.setBill(bill);
 
-        buf.append(DaoHelper.joinSelectSql(table, dataColumns, Collections.singletonList(legislatorColumn)));
-
-        buf.append(" and a.bill_id = ");
-        buf.append(bill.getId());
-        String sql = buf.toString();
-
-        List<BillAction> actions = DaoHelper.doSelect(connection, sql, supplier, dataColumns, Collections.singletonList(legislatorColumn));
-
-        actions.forEach(a -> a.setBill(bill));
-
-        return actions;
+        return innerDao.selectManyByColumns(billAction, Arrays.asList("BILL_ID"));
     }
 
     public BillAction read(long id){
-
-        StringBuilder buf = new StringBuilder();
-
-        buf.append(DaoHelper.joinSelectSql(table, dataColumns, joinColumns));
-
-        buf.append(" and a.id = ");
-        buf.append(id);
-
-        String sql = buf.toString();
-
-        List<BillAction> actions = DaoHelper.doSelect(connection, sql, supplier, dataColumns, joinColumns);
-
-        return DaoHelper.fromSingletonList(actions, "Reading bill action");
+        return innerDao.select(id);
     }
 
 }
