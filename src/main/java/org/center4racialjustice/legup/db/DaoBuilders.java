@@ -4,11 +4,14 @@ import org.center4racialjustice.legup.db.hrorm.DaoBuilder;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.ReportFactor;
+import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 public class DaoBuilders {
 
     public static final DaoBuilder<Bill> BILLS = billDaoBuilder();
     public static final DaoBuilder<Legislator> LEGISLATORS = legislatorDaoBuilder();
+    public static final DaoBuilder<ReportFactor> REPORT_FACTORS = reportFactorDaoBuilder();
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
@@ -33,4 +36,11 @@ public class DaoBuilders {
                 .withStringColumn("MEMBER_ID", Legislator::getMemberId, Legislator::setMemberId);
     }
 
+    private static DaoBuilder<ReportFactor> reportFactorDaoBuilder(){
+        return new DaoBuilder<>("REPORT_FACTORS", ReportFactor::new)
+                .withPrimaryKey("ID", ReportFactor::getId, ReportFactor::setId)
+                .withIntegerColumn("REPORT_CARD_ID", ReportFactor::getReportCardId, ReportFactor::setReportCardId)
+                .withConvertingStringColumn("VOTE_SIDE", ReportFactor::getVoteSide, ReportFactor::setVoteSide, VoteSideConverter.INSTANCE)
+                .withJoinColumn("BILL_ID", ReportFactor::getBill, ReportFactor::setBill, BILLS);
+    }
 }
