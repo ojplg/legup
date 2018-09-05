@@ -20,6 +20,17 @@ public class JoinColumn<T, J> implements TypedColumn<T> {
     private final List<TypedColumn<J>> columnList;
     private final PrimaryKey<J> primaryKey;
 
+    public JoinColumn(String name, String prefix, Function<T, J> getter, BiConsumer<T,J> setter, DaoDescriptor<J> daoDescriptor){
+        this.name = name;
+        this.prefix = prefix;
+        this.getter = getter;
+        this.setter = setter;
+        this.table = daoDescriptor.tableName();
+        this.supplier = daoDescriptor.supplier();
+        this.columnList = daoDescriptor.dataColumns();
+        this.primaryKey = daoDescriptor.primaryKey();
+    }
+
     public JoinColumn(String name, String prefix, String table, Function<T, J> getter, BiConsumer<T, J> setter, Supplier<J> supplier, PrimaryKey<J> primaryKey, List<TypedColumn<J>> columnList) {
         this.name = name;
         this.table = table;

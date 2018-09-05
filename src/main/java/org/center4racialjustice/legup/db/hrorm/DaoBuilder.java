@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class DaoBuilder<T> {
+public class DaoBuilder<T> implements DaoDescriptor<T> {
 
     private final String tableName;
     private final List<TypedColumn<T>> columns = new ArrayList<>();
@@ -22,8 +22,28 @@ public class DaoBuilder<T> {
         this.supplier = supplier;
     }
 
+    @Override
+    public String tableName() {
+        return tableName;
+    }
+
+    @Override
+    public Supplier<T> supplier() {
+        return supplier;
+    }
+
+    @Override
+    public List<TypedColumn<T>> dataColumns() {
+        return columns;
+    }
+
+    @Override
+    public PrimaryKey<T> primaryKey() {
+        return primaryKey;
+    }
+
     public Dao<T> buildDao(Connection connection){
-        return new DaoImpl<>(connection, tableName, columns, primaryKey, supplier);
+        return new DaoImpl<>(connection, tableName, supplier, primaryKey, columns, joinColumns);
     }
 
     public DaoBuilder<T> withStringColumn(String columnName, Function<T, String> getter, BiConsumer<T, String> setter){
@@ -47,6 +67,13 @@ public class DaoBuilder<T> {
     public <U> DaoBuilder<T> withJoinColumn(String columnName, String tableName, Supplier<U> supplier, Function<T,U> getter, BiConsumer<T,U> setter, PrimaryKey<U> primaryKey, List<TypedColumn<U>> joinedColumns){
         prefixIndex += 1;
         JoinColumn<T,U> joinColumn = new JoinColumn<>(columnName, prefixes[prefixIndex], tableName, getter, setter, supplier, primaryKey, joinedColumns);
+        joinColumns.add(joinColumn);
+        return this;
+    }
+
+    public <U> DaoBuilder<T> withJoinColumn(String columnName, Function<T, U> getter, BiConsumer<T,U> setter, DaoDescriptor<U> daoDescriptor){
+        prefixIndex += 1;
+        JoinColumn<T,U> joinColumn = new JoinColumn<>(columnName, prefixes[prefixIndex], getter, setter, daoDescriptor);
         joinColumns.add(joinColumn);
         return this;
     }

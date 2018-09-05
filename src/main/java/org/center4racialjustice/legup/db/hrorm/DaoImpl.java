@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class DaoImpl<T> implements Dao<T> {
+public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     private final Connection connection;
     private final String tableName;
@@ -20,13 +20,15 @@ public class DaoImpl<T> implements Dao<T> {
     private final PrimaryKey<T> primaryKey;
     private final Supplier<T> supplier;
     private final Map<String, TypedColumn<T>> columnMap = new HashMap<>();
+    private final List<JoinColumn<T,?>> joinColumns;
 
-    public DaoImpl(Connection connection, String tableName, List<TypedColumn<T>> columns, PrimaryKey<T> primaryKey, Supplier<T> supplier){
+    public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey, List<TypedColumn<T>> columns, List<JoinColumn<T,?>> joinColumns){
         this.connection = connection;
         this.tableName = tableName;
         this.columns = Collections.unmodifiableList(columns);
         this.primaryKey = primaryKey;
         this.supplier = supplier;
+        this.joinColumns = Collections.unmodifiableList(joinColumns);
 
         for(TypedColumn<T> column : columns){
             columnMap.put(column.getName(), column);
@@ -37,16 +39,20 @@ public class DaoImpl<T> implements Dao<T> {
         return tableName;
     }
 
-    public List<TypedColumn<T>> getColumns(){
+    public List<TypedColumn<T>> dataColumns(){
         return columns;
     }
 
+    public Supplier<T> supplier() { return supplier; }
+
+    public PrimaryKey<T> primaryKey() { return primaryKey; }
+
     public String insertSql(){
-        return DaoHelper.insertStatement(tableName, columns, Collections.emptyList());
+        return DaoHelper.insertStatement(tableName, columns, joinColumns);
     }
 
     public String updateSql(T item){
-        return DaoHelper.updateStatement(tableName, columns, Collections.emptyList(), item, primaryKey);
+        return DaoHelper.updateStatement(tableName, columns, joinColumns, item, primaryKey);
     }
 
     public String deleteSql(T item){
@@ -56,7 +62,7 @@ public class DaoImpl<T> implements Dao<T> {
     @Override
     public long insert(T item) {
         String sql = insertSql();
-        long id = DaoHelper.runInsertOrUpdate(connection, sql, columns, Collections.emptyList(), item);
+        long id = DaoHelper.runInsertOrUpdate(connection, sql, columns, joinColumns, item);
         primaryKey.setKey(item, id);
         return id;
     }
@@ -64,7 +70,7 @@ public class DaoImpl<T> implements Dao<T> {
     @Override
     public void update(T item) {
         String sql = updateSql(item);
-        DaoHelper.runInsertOrUpdate(connection, sql, columns, Collections.emptyList(), item);
+        DaoHelper.runInsertOrUpdate(connection, sql, columns, joinColumns, item);
     }
 
     @Override
