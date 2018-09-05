@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BillDao implements Dao<Bill> {
+public class BillDao {
 
     public org.center4racialjustice.legup.db.hrorm.Dao<Bill> dao(Connection connection){
         return DaoBuilders.BILLS.buildDao(connection);
@@ -59,17 +59,14 @@ public class BillDao implements Dao<Bill> {
         return innerDao.selectMany(ids);
     }
 
-    @Override
     public long save(Bill item) {
         return innerDao.insert(item);
     }
 
-    @Override
     public Bill read(long id) {
         return innerDao.select(id);
     }
 
-    @Override
     public List<Bill> readAll() {
         return innerDao.selectAll();
     }

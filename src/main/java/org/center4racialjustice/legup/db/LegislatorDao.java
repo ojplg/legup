@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
-public class LegislatorDao implements Dao<Legislator> {
+public class LegislatorDao {
 
     private final org.center4racialjustice.legup.db.hrorm.Dao<Legislator> innerDao;
 
