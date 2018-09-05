@@ -69,14 +69,7 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         columns.add(new LocalDateTimeColumn<T>(columnName, "a", getter, setter));
         return this;
     }
-
-    public <U> DaoBuilder<T> withJoinColumn(String columnName, String tableName, Supplier<U> supplier, Function<T,U> getter, BiConsumer<T,U> setter, PrimaryKey<U> primaryKey, List<TypedColumn<U>> joinedColumns){
-        prefixIndex += 1;
-        JoinColumn<T,U> joinColumn = new JoinColumn<>(columnName, prefixes[prefixIndex], tableName, getter, setter, supplier, primaryKey, joinedColumns);
-        joinColumns.add(joinColumn);
-        return this;
-    }
-
+    
     public <U> DaoBuilder<T> withJoinColumn(String columnName, Function<T, U> getter, BiConsumer<T,U> setter, DaoDescriptor<U> daoDescriptor){
         prefixIndex += 1;
         JoinColumn<T,U> joinColumn = new JoinColumn<>(columnName, prefixes[prefixIndex], getter, setter, daoDescriptor);
