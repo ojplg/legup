@@ -30,29 +30,12 @@ public class LegislatorDao implements Dao<Legislator> {
                     new StringColumn<>("MEMBER_ID", "" , Legislator::getMemberId, Legislator::setMemberId)
             );
 
-    private static DaoBuilder<Legislator> daoBuilder(){
-        DaoBuilder<Legislator> bldr = new DaoBuilder<>("LEGISLATORS", Legislator::new)
-                .withPrimaryKey("ID", Legislator::getId, Legislator::setId)
-                .withStringColumn("FIRST_NAME", Legislator::getFirstName, Legislator::setFirstName)
-                .withStringColumn("MIDDLE_NAME_OR_INITIAL", Legislator::getMiddleInitialOrName, Legislator::setMiddleInitialOrName)
-                .withStringColumn("LAST_NAME", Legislator::getLastName, Legislator::setLastName)
-                .withStringColumn("SUFFIX", Legislator::getSuffix, Legislator::setSuffix)
-                .withConvertingStringColumn("CHAMBER", Legislator::getChamber, Legislator::setChamber, Chamber.Converter)
-                .withIntegerColumn("DISTRICT", Legislator::getDistrict, Legislator::setDistrict)
-                .withStringColumn("PARTY", Legislator::getParty, Legislator::setParty)
-                .withIntegerColumn("SESSION_NUMBER", Legislator::getSessionNumber, Legislator::setSessionNumber)
-                .withStringColumn("MEMBER_ID", Legislator::getMemberId, Legislator::setMemberId);
-        return bldr;
-    }
-
-    private static final DaoBuilder<Legislator> daoBuilder = daoBuilder();
-
     private final Connection connection;
     private final org.center4racialjustice.legup.db.hrorm.Dao<Legislator> innerDao;
 
     public LegislatorDao(Connection connection){
         this.connection = connection;
-        this.innerDao = daoBuilder().buildDao(connection);
+        this.innerDao = DaoBuilders.LEGISLATORS.buildDao(connection);
     }
 
     public long save(Legislator legislator){

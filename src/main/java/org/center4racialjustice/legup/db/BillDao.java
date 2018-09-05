@@ -23,19 +23,9 @@ public class BillDao implements Dao<Bill> {
                     new StringColumn<>("SHORT_DESCRIPTION", "", Bill::getShortDescription, Bill::setShortDescription)
             );
 
-    private static DaoBuilder<Bill> daoBuilder(){
-        DaoBuilder<Bill> bldr = new DaoBuilder<>("BILLS", Bill::new)
-            .withPrimaryKey("ID", Bill::getId, Bill::setId)
-            .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter)
-            .withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
-            .withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)
-            .withStringColumn("SHORT_DESCRIPTION", Bill::getShortDescription, Bill::setShortDescription);
-        return bldr;
-    }
 
     public org.center4racialjustice.legup.db.hrorm.Dao<Bill> dao(Connection connection){
-        DaoBuilder<Bill> bldr = daoBuilder();
-        return bldr.buildDao(connection);
+        return DaoBuilders.BILLS.buildDao(connection);
     }
 
     public static Supplier<Bill> supplier = Bill::new;
@@ -45,7 +35,7 @@ public class BillDao implements Dao<Bill> {
 
     public BillDao(Connection connection) {
         this.connection = connection;
-        this.innerDao = daoBuilder().buildDao(connection);
+        this.innerDao = DaoBuilders.BILLS.buildDao(connection);
     }
 
     public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
