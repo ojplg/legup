@@ -54,7 +54,7 @@ public class ReportCardDao {
 
     public ReportCard read(long id){
         List<ReportCard> reportCards = readCards( Collections.singletonList(id));
-        return DaoHelper.fromSingletonList(reportCards, "Reading report card for " + id);
+        return org.center4racialjustice.legup.db.hrorm.DaoHelper.fromSingletonList(reportCards, "Reading report card for " + id);
     }
 
     private List<ReportCard> readCards(List<Long> ids){

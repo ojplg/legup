@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class DaoHelper {
+public class DaoHelper {
 
     private static final Logger log = LogManager.getLogger(DaoHelper.class);
 
@@ -366,7 +366,7 @@ class DaoHelper {
         }
     }
 
-    static <T> T fromSingletonList(List<T> items, String errorMsg) {
+    public static <T> T fromSingletonList(List<T> items, String errorMsg) {
         if (items.isEmpty()) {
             return null;
         }
