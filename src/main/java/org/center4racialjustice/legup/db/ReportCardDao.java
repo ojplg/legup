@@ -23,9 +23,11 @@ public class ReportCardDao {
 
     private final Connection connection;
     private final ReportFactorDao reportFactorDao;
+    private final org.center4racialjustice.legup.db.hrorm.Dao<ReportCard> innerDao;
 
     public ReportCardDao(Connection connection) {
         this.connection = connection;
+        this.innerDao = DaoBuilders.REPORT_CARDS.buildDao(connection);
         this.reportFactorDao = new ReportFactorDao(connection);
     }
 
@@ -34,16 +36,20 @@ public class ReportCardDao {
         if( reportCard.getId() != null) {
             reportFactorDao.deleteByReportCardId(reportCard.getId());
         }
-        long reportCardId = DaoHelper.save(connection, table, dataColumns, reportCard);
+        if( reportCard.getId() == null ) {
+            innerDao.insert(reportCard);
+        } else {
+            innerDao.update(reportCard);
+        }
         for(ReportFactor factor : reportCard.getReportFactors()){
-            factor.setReportCardId(reportCardId);
+            factor.setReportCardId(reportCard.getId());
             reportFactorDao.save(factor);
         }
-        return reportCardId;
+        return reportCard.getId();
     }
 
     public List<ReportCard> readAll(){
-        return readCards( Collections.emptyList() );
+        return innerDao.selectAll();
     }
 
     public ReportCard read(long id){
@@ -52,7 +58,7 @@ public class ReportCardDao {
     }
 
     private List<ReportCard> readCards(List<Long> ids){
-        List<ReportCard> reportCards = DaoHelper.read(connection, table, dataColumns, ids, supplier);
+        List<ReportCard> reportCards = innerDao.selectMany(ids);
         for(ReportCard reportCard : reportCards){
             List<ReportFactor> factors = reportFactorDao.readByReportCardId(reportCard.getId());
             reportCard.setReportFactors(factors);
