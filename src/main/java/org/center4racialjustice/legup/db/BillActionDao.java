@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.db.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Legislator;
@@ -7,12 +8,9 @@ import org.center4racialjustice.legup.domain.Legislator;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class BillActionDao {
-    private final org.center4racialjustice.legup.db.hrorm.Dao<BillAction> innerDao;
-
-    public final Supplier<BillAction> supplier = BillAction::new;
+    private final Dao<BillAction> innerDao;
 
     public BillActionDao(Connection connection) {
         this.innerDao = DaoBuilders.BILL_ACTIONS.buildDao(connection);

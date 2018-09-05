@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.db.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Legislator;
 
 import java.sql.Connection;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class LegislatorDao {
 
-    private final org.center4racialjustice.legup.db.hrorm.Dao<Legislator> innerDao;
+    private final Dao<Legislator> innerDao;
 
     public LegislatorDao(Connection connection){
         this.innerDao = DaoBuilders.LEGISLATORS.buildDao(connection);

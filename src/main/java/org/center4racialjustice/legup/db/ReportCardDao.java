@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.db.hrorm.Dao;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class ReportCardDao {
     private final ReportFactorDao reportFactorDao;
-    private final org.center4racialjustice.legup.db.hrorm.Dao<ReportCard> innerDao;
+    private final Dao<ReportCard> innerDao;
 
     public ReportCardDao(Connection connection) {
         this.innerDao = DaoBuilders.REPORT_CARDS.buildDao(connection);

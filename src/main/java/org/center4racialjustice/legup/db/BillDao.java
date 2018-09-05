@@ -1,23 +1,17 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.db.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class BillDao {
 
-    public org.center4racialjustice.legup.db.hrorm.Dao<Bill> dao(Connection connection){
-        return DaoBuilders.BILLS.buildDao(connection);
-    }
-
-    public static Supplier<Bill> supplier = Bill::new;
-
     private Connection connection;
-    private final org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao;
+    private final Dao<Bill> innerDao;
 
     public BillDao(Connection connection) {
         this.connection = connection;
@@ -55,7 +49,6 @@ public class BillDao {
     }
 
     public List<Bill> readByIds(List<Long> ids){
-        org.center4racialjustice.legup.db.hrorm.Dao<Bill> innerDao = dao(connection);
         return innerDao.selectMany(ids);
     }
 
