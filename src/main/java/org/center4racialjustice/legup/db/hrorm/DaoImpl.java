@@ -113,30 +113,33 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectManyByColumns(T item, List<String> columnNames) {
         StringBuilder buf = new StringBuilder();
-        buf.append(DaoHelper.baseSelectSql(tableName, columns));
-        buf.append(" where ");
+        buf.append(DaoHelper.joinSelectSql(tableName, columns, joinColumns));
+        buf.append(" and ");
         for(int idx=0 ; idx < columnNames.size() ; idx++ ){
             String columnName = columnNames.get(idx);
             TypedColumn<T> column = columnMap.get(columnName);
             buf.append(columnName);
             buf.append(" = ?");
-            if( idx < columnNames.size()) {
+            if( idx < columnNames.size() - 1 ) {
                 buf.append(" and ");
             }
         }
         String sql = buf.toString();
+
+        System.out.println("SQL " + sql);
+
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             for(int idx=0 ; idx < columnNames.size() ; idx++ ){
                 String columnName = columnNames.get(idx);
                 TypedColumn<T> column = columnMap.get(columnName);
-                column.setValue(item, idx, statement);
+                column.setValue(item, idx + 1, statement);
             }
             ResultSet resultSet = statement.executeQuery();
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T t = DaoHelper.populate(resultSet, columns, supplier);
+                T t = DaoHelper.populate("", resultSet, supplier, columns, joinColumns);
                 items.add(t);
             }
 

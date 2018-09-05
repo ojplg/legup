@@ -27,7 +27,7 @@ public class JoinColumn<T, J> implements TypedColumn<T> {
         this.setter = setter;
         this.table = daoDescriptor.tableName();
         this.supplier = daoDescriptor.supplier();
-        this.columnList = daoDescriptor.dataColumns();
+        this.columnList = daoDescriptor.dataColumns().stream().map(c -> c.withPrefix(prefix)).collect(Collectors.toList());
         this.primaryKey = daoDescriptor.primaryKey();
     }
 

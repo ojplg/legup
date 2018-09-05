@@ -230,15 +230,21 @@ class DaoHelper {
     }
 
     public static <T> T populate(ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
-        return populate("", resultSet, columnList, supplier);
+        return populate("", resultSet, supplier, columnList, Collections.emptyList());
     }
 
-    public static <T> T populate(String prefix,ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
+    public static <T> T populate(String prefix, ResultSet resultSet, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns)
+            throws SQLException {
         T item = supplier.get();
 
-        for (TypedColumn<T> column: columnList) {
+        for (TypedColumn<T> column: dataColumns) {
             column.populate(item, resultSet);
         }
+
+        for (JoinColumn<T,?> column : joinColumns){
+            column.populate(item, resultSet);
+        }
+
         return item;
     }
 

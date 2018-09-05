@@ -5,7 +5,6 @@ import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSideConverter;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
@@ -32,20 +31,17 @@ public class ReportFactorDao {
     public static Supplier<ReportFactor> supplier = () -> new ReportFactor();
 
     private final Connection connection;
+    private final org.center4racialjustice.legup.db.hrorm.Dao<ReportFactor> innerDao;
 
     public ReportFactorDao(Connection connection) {
         this.connection = connection;
+        this.innerDao = DaoBuilders.REPORT_FACTORS.buildDao(connection);
     }
 
     public List<ReportFactor> readByReportCardId(long reportCardId){
-        StringBuilder sqlBldr = new StringBuilder();
-        sqlBldr.append(DaoHelper.joinSelectSql(table, dataColumns, joinColumns));
-        sqlBldr.append(" and a.report_card_id = ");
-        sqlBldr.append(reportCardId);
-        String sql = sqlBldr.toString();
-
-        List<ReportFactor> factors = DaoHelper.doSelect(connection, sql, supplier, dataColumns, joinColumns);
-        return factors;
+        ReportFactor reportFactor = new ReportFactor();
+        reportFactor.setReportCardId(reportCardId);
+        return innerDao.selectManyByColumns(reportFactor, Arrays.asList("REPORT_CARD_ID"));
     }
 
     public void deleteByReportCardId(long reportCardId){
@@ -59,10 +55,6 @@ public class ReportFactorDao {
     }
 
     public Long save(ReportFactor reportFactor){
-//        if ( reportFactor.getId() == null) {
-            return DaoHelper.doInsert(connection, table, dataColumns, joinColumns, reportFactor);
-//        } else {
-//            return DaoHelper.doUpdate(connection, table, dataColumns, joinColumns, reportFactor);
-//        }
+        return innerDao.insert(reportFactor);
     }
 }

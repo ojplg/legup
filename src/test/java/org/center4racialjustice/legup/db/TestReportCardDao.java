@@ -35,6 +35,46 @@ public class TestReportCardDao {
     }
 
     @Test
+    public void testReadAndWriteReportFactor(){
+        Connection connection = DbTestConfigs.connect();
+
+        Bill bill = new Bill();
+        bill.setSession(123);
+        bill.setNumber(6);
+        bill.setChamber(Chamber.House);
+        bill.setShortDescription("BILLBILL");
+
+        BillDao billDao = new BillDao(connection);
+        billDao.save(bill);
+
+        ReportCard reportCard = new ReportCard();
+        reportCard.setName("Foo");
+        reportCard.setSessionNumber(12);
+
+        ReportCardDao reportCardDao = new ReportCardDao(connection);
+        reportCardDao.save(reportCard);
+
+        Assert.assertNotNull(reportCard.getId());
+
+        ReportFactor reportFactor = new ReportFactor();
+        reportFactor.setBill(bill);
+        reportFactor.setVoteSide(VoteSide.Nay);
+        reportFactor.setReportCardId(reportCard.getId());
+
+        ReportFactorDao reportFactorDao = new ReportFactorDao(connection);
+
+        reportFactorDao.save(reportFactor);
+
+        Assert.assertNotNull(reportFactor.getId());
+
+        ReportFactor readFactor = reportFactorDao.readByReportCardId(reportCard.getId()).get(0);
+
+        Assert.assertEquals("BILLBILL", readFactor.getBill().getShortDescription());
+
+    }
+
+
+    @Test
     public void testSaveAndReadAll(){
 
         ReportCard reportCard = new ReportCard();
@@ -131,6 +171,11 @@ public class TestReportCardDao {
 
         readCard.addReportFactor(factor2);
         readCard.setName("Card With Factor Updated");
+
+        System.out.println("FACTOR " + reportFactor);
+        System.out.println("FACTOR 2" + factor2);
+
+        System.out.println("READ CARD " + readCard);
 
         reportCardDao.save(readCard);
 
