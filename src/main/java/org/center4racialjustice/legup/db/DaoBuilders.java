@@ -55,7 +55,9 @@ public class DaoBuilders {
         return new DaoBuilder<>("REPORT_CARDS", ReportCard::new)
                 .withPrimaryKey("ID", ReportCard::getId, ReportCard::setId)
                 .withStringColumn("NAME", ReportCard::getName, ReportCard::setName)
-                .withIntegerColumn("SESSION_NUMBER", ReportCard::getSessionNumber, ReportCard::setSessionNumber);
+                .withIntegerColumn("SESSION_NUMBER", ReportCard::getSessionNumber, ReportCard::setSessionNumber)
+                .withChildren("REPORT_CARD_ID", ReportFactor::setReportCardId,
+                        ReportCard::getReportFactors, ReportCard::setReportFactors, REPORT_FACTORS);
     }
 
     private static DaoBuilder<BillActionLoad> billActionLoadDaoBuilder(){

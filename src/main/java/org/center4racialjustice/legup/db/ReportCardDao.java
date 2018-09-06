@@ -45,10 +45,10 @@ public class ReportCardDao {
 
     private List<ReportCard> readCards(List<Long> ids){
         List<ReportCard> reportCards = innerDao.selectMany(ids);
-        for(ReportCard reportCard : reportCards){
-            List<ReportFactor> factors = reportFactorDao.readByReportCardId(reportCard.getId());
-            reportCard.setReportFactors(factors);
-        }
+//        for(ReportCard reportCard : reportCards){
+//            List<ReportFactor> factors = reportFactorDao.readByReportCardId(reportCard.getId());
+//            reportCard.setReportFactors(factors);
+//        }
         return reportCards;
     }
 

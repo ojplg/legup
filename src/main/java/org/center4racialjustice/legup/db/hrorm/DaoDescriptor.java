@@ -8,6 +8,7 @@ public interface DaoDescriptor<T> {
     String tableName();
     Supplier<T> supplier();
     List<TypedColumn<T>> dataColumns();
+    List<JoinColumn<T,?>> joinColumns();
     PrimaryKey<T> primaryKey();
 
 }

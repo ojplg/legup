@@ -13,6 +13,7 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
     private final String tableName;
     private final List<TypedColumn<T>> columns = new ArrayList<>();
     private final List<JoinColumn<T,?>> joinColumns = new ArrayList<>();
+    private final List<ChildrenDescriptor<T,?>> childrenDescriptors = new ArrayList<>();
     private PrimaryKey<T> primaryKey;
     private final Supplier<T> supplier;
     private int prefixIndex = 0;
@@ -43,8 +44,10 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         return primaryKey;
     }
 
+    public List<JoinColumn<T,?>> joinColumns() { return joinColumns; }
+
     public Dao<T> buildDao(Connection connection){
-        return new DaoImpl<>(connection, tableName, supplier, primaryKey, columns, joinColumns);
+        return new DaoImpl<>(connection, tableName, supplier, primaryKey, columns, joinColumns, childrenDescriptors);
     }
 
     public DaoBuilder<T> withStringColumn(String columnName, Function<T, String> getter, BiConsumer<T, String> setter){
@@ -74,6 +77,14 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         prefixIndex += 1;
         JoinColumn<T,U> joinColumn = new JoinColumn<>(columnName, prefixes[prefixIndex], getter, setter, daoDescriptor);
         joinColumns.add(joinColumn);
+        return this;
+    }
+
+    public <U> DaoBuilder<T> withChildren(String parentChildColumnName, BiConsumer<U,Long> parentSetter,
+                                          Function<T, List<U>> getter, BiConsumer<T, List<U>> setter, DaoDescriptor<U> daoDescriptor){
+        childrenDescriptors.add(
+                new ChildrenDescriptor<>(parentChildColumnName, parentSetter, getter, setter, daoDescriptor, primaryKey)
+        );
         return this;
     }
 

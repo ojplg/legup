@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -257,7 +259,7 @@ public class DaoHelper {
         return sql.toString();
     }
 
-    public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> allColumns, Supplier<T> supplier){
+    public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> allColumns, Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -265,14 +267,15 @@ public class DaoHelper {
 
             statement = connection.createStatement();
 
-            System.out.println("SQL  " + sql);
-
             resultSet = statement.executeQuery(sql);
 
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
                 T item = DaoHelper.populate(resultSet, allColumns, supplier);
+                for(ChildrenDescriptor<T,?> descriptor : childrenDescriptors){
+                    descriptor.populateChildren(connection, item);
+                }
                 items.add(item);
             }
 
@@ -294,8 +297,63 @@ public class DaoHelper {
 
     }
 
-    public static <T> List<T> doSelect(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns) {
-        return doSelect(connection, sql, supplier, dataColumns, Collections.emptyList());
+    public static <T> Map<String, TypedColumn<T>> buildColumnMap(List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
+        Map<String, TypedColumn<T>> map = new HashMap<>();
+        for(TypedColumn<T> column : dataColumns){
+            map.put(column.getName(), column);
+        }
+        for(TypedColumn<T> column : joinColumns){
+            map.put(column.getName(), column);
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+
+    public static <T> String selectByColumns(String tableName, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, List<String> columnNames){
+        Map<String, TypedColumn<T>> columnMap = buildColumnMap(dataColumns, joinColumns);
+
+        StringBuilder buf = new StringBuilder();
+        buf.append(DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns));
+        buf.append(" and ");
+        for(int idx=0 ; idx < columnNames.size() ; idx++ ){
+            String columnName = columnNames.get(idx);
+            TypedColumn<T> column = columnMap.get(columnName);
+            buf.append("a" + "." + column.getName());
+            buf.append(" = ?");
+            if( idx < columnNames.size() - 1 ) {
+                buf.append(" and ");
+            }
+        }
+        String sql = buf.toString();
+
+        System.out.println("SQL " + sql);
+
+        return sql;
+    }
+
+    public static <T> List<T> runSelectByColumns(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns,
+                                                 List<String> columnNames, T item){
+        Map<String, TypedColumn<T>> columnMap = buildColumnMap(dataColumns, joinColumns);
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            for(int idx=0 ; idx < columnNames.size() ; idx++ ){
+                String columnName = columnNames.get(idx);
+                TypedColumn<T> column = columnMap.get(columnName);
+                column.setValue(item, idx + 1, statement);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            List<T> items = new ArrayList<>();
+
+            while (resultSet.next()) {
+                T t = DaoHelper.populate("", resultSet, supplier, dataColumns, joinColumns);
+                items.add(t);
+            }
+
+            return items;
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
+
     }
 
     public static <T> List<T> doSelect(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
@@ -341,7 +399,7 @@ public class DaoHelper {
 
 
     public static <T> List<T> read(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<Long> ids,
-                                   Supplier<T> supplier){
+                                   Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
 
         StringBuilder sql =  new StringBuilder(baseSelectSql(table, dataColumns));
         if (ids == null || ids.size() == 0){
@@ -355,7 +413,7 @@ public class DaoHelper {
             sql.append(" )");
         }
 
-        return read(connection, sql.toString(), dataColumns, supplier);
+        return read(connection, sql.toString(), dataColumns, supplier, childrenDescriptors);
     }
 
     public static <T extends Identifiable> long save(Connection connection, String table, List<TypedColumn<T>> columnList, T item) {
