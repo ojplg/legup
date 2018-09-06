@@ -244,7 +244,6 @@ public class DaoHelper {
         return Collections.unmodifiableMap(map);
     }
 
-
     public static <T> String selectByColumns(String tableName, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, List<String> columnNames){
         Map<String, TypedColumn<T>> columnMap = buildColumnMap(dataColumns, joinColumns);
 
@@ -286,47 +285,6 @@ public class DaoHelper {
             return items;
         } catch (SQLException ex){
             throw new RuntimeException(ex);
-        }
-
-    }
-
-    public static <T> List<T> doSelect(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
-
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        List<T> items = new ArrayList<>();
-
-        try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(sql);
-            while(resultSet.next()){
-                T item = supplier.get();
-                for(TypedColumn column : dataColumns){
-                    column.populate(item, resultSet);
-                }
-
-                for(JoinColumn joinColumn : joinColumns ){
-                    joinColumn.populate(item, resultSet);
-                }
-
-                items.add(item);
-            }
-            return items;
-
-        } catch (SQLException se) {
-            throw new RuntimeException(se);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-            } catch (SQLException se){
-                log.error("Error during close",se);
-            }
         }
 
     }
