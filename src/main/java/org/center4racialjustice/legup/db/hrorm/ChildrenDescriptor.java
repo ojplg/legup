@@ -35,7 +35,6 @@ public class ChildrenDescriptor<T,U> {
         parentSetter.accept(key, id);
         List<U> children = DaoHelper.runSelectByColumns(connection, sql, daoDescriptor.supplier(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(),
                 Collections.singletonList(parentChildColumnName), key);
-        System.out.println("Children " + children.size());
         setter.accept(item, children);
     }
 

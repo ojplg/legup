@@ -172,11 +172,6 @@ public class TestReportCardDao {
         readCard.addReportFactor(factor2);
         readCard.setName("Card With Factor Updated");
 
-        System.out.println("FACTOR " + reportFactor);
-        System.out.println("FACTOR 2" + factor2);
-
-        System.out.println("READ CARD " + readCard);
-
         reportCardDao.save(readCard);
 
         ReportCard secondCardRead = reportCardDao.read(reportCardId);

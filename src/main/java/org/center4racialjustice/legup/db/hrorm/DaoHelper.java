@@ -323,8 +323,6 @@ public class DaoHelper {
         }
         String sql = buf.toString();
 
-        System.out.println("SQL " + sql);
-
         return sql;
     }
 
