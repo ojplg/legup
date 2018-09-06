@@ -73,6 +73,9 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         String sql = insertSql();
         long id = DaoHelper.runInsertOrUpdate(connection, sql, dataColumns, joinColumns, item);
         primaryKey.setKey(item, id);
+        for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
+            childrenDescriptor.saveChildren(connection, item);
+        }
         return id;
     }
 
@@ -80,6 +83,9 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     public void update(T item) {
         String sql = updateSql(item);
         DaoHelper.runInsertOrUpdate(connection, sql, dataColumns, joinColumns, item);
+        for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
+            childrenDescriptor.saveChildren(connection, item);
+        }
     }
 
     @Override
@@ -98,10 +104,6 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public List<T> selectMany(List<Long> ids) {
-//        if( ids == null ){
-//            System.out.println("WHY NULL??");
-//            return Collections.emptyList();
-//        }
         String sql = DaoHelper.baseSelectSql(tableName, dataColumns);
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);

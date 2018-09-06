@@ -1,10 +1,12 @@
 package org.center4racialjustice.legup.db.hrorm;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ChildrenDescriptor<T,U> {
 
@@ -39,14 +41,45 @@ public class ChildrenDescriptor<T,U> {
 
     public void saveChildren(Connection connection, T item){
         List<U> children = getter.apply(item);
+        List<Long> goodChildrenIds = new ArrayList<>();
+        Long parentId = primaryKey.getKey(item);
         for(U child : children){
+            parentSetter.accept(child, parentId);
             if( daoDescriptor.primaryKey().getKey(child) == null ) {
-                DaoHelper.doInsert(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), child);
+                Long id = DaoHelper.doInsert(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), child);
+                goodChildrenIds.add(id);
             } else {
                 DaoHelper.doUpdate(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.primaryKey(), child);
+                goodChildrenIds.add(daoDescriptor.primaryKey().getKey(child));
             }
         }
-        // need to delete existing children that are no longer part of the parent!
-
+        deleteOrphans(connection, item, goodChildrenIds);
     }
+
+    private void deleteOrphans(Connection connection, T item, List<Long> goodChildrenIds) {
+
+        StringBuilder buf = new StringBuilder();
+        buf.append("delete from ");
+        buf.append(daoDescriptor.tableName());
+        buf.append(" where ");
+        buf.append(parentChildColumnName);
+        buf.append(" = ");
+        buf.append(primaryKey.getKey(item));
+
+        if( goodChildrenIds.size() > 0 ) {
+            List<String> goodChildrenIdStrings = goodChildrenIds.stream().map(l -> l.toString()).collect(Collectors.toList());
+
+            buf.append(" and ");
+            buf.append(daoDescriptor.primaryKey().keyName());
+            buf.append(" not in ");
+            buf.append("(");
+            buf.append(String.join(", ", goodChildrenIdStrings));
+            buf.append(")");
+        }
+
+        String sql = buf.toString();
+
+        DaoHelper.runDelete(connection, sql);
+    }
+
 }

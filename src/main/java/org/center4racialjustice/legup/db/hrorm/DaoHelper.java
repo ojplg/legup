@@ -394,7 +394,6 @@ public class DaoHelper {
 
     }
 
-
     public static <T> List<T> read(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<Long> ids,
                                    Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
 
