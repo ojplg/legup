@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.db.hrorm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -115,7 +117,6 @@ public class DaoHelper {
         bldr.append(" ) ");
         bldr.append(" RETURNING ID");
 
-
         return bldr.toString();
     }
 
@@ -208,7 +209,7 @@ public class DaoHelper {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = DaoHelper.populate(resultSet, allColumns, supplier);
+                T item = populate(resultSet, allColumns, supplier);
                 for(ChildrenDescriptor<T,?> descriptor : childrenDescriptors){
                     descriptor.populateChildren(connection, item);
                 }
@@ -233,46 +234,27 @@ public class DaoHelper {
 
     }
 
-    public static <T> Map<String, TypedColumn<T>> buildColumnMap(List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
-        Map<String, TypedColumn<T>> map = new HashMap<>();
-        for(TypedColumn<T> column : dataColumns){
-            map.put(column.getName(), column);
-        }
-        for(TypedColumn<T> column : joinColumns){
-            map.put(column.getName(), column);
-        }
-        return Collections.unmodifiableMap(map);
-    }
-
-    public static <T> String selectByColumns(String tableName, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, List<String> columnNames){
-        Map<String, TypedColumn<T>> columnMap = buildColumnMap(dataColumns, joinColumns);
+    public static <T> String selectByColumns(String tableName, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, Map<String, TypedColumn<T>> columnNameMap){
 
         StringBuilder buf = new StringBuilder();
         buf.append(DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns));
-        buf.append(" and ");
-        for(int idx=0 ; idx < columnNames.size() ; idx++ ){
-            String columnName = columnNames.get(idx);
-            TypedColumn<T> column = columnMap.get(columnName);
-            buf.append("a" + "." + column.getName());
-            buf.append(" = ?");
-            if( idx < columnNames.size() - 1 ) {
-                buf.append(" and ");
-            }
+        for(String columnName : columnNameMap.keySet()){
+            buf.append(" and ");
+            buf.append(columnName);
+            buf.append(" = ? ");
         }
-        String sql = buf.toString();
 
-        return sql;
+        return buf.toString();
     }
 
     public static <T> List<T> runSelectByColumns(Connection connection, String sql, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns,
-                                                 List<String> columnNames, T item){
-        Map<String, TypedColumn<T>> columnMap = buildColumnMap(dataColumns, joinColumns);
+                                                 SortedMap<String, TypedColumn<T>> columnNameMap, T item){
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            for(int idx=0 ; idx < columnNames.size() ; idx++ ){
-                String columnName = columnNames.get(idx);
-                TypedColumn<T> column = columnMap.get(columnName);
-                column.setValue(item, idx + 1, statement);
+            int idx = 1;
+            for(Map.Entry<String, TypedColumn<T>> entry : columnNameMap.entrySet()){
+                entry.getValue().setValue(item, idx, statement);
+                idx++;
             }
             ResultSet resultSet = statement.executeQuery();
             List<T> items = new ArrayList<>();

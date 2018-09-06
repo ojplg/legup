@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -18,9 +17,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     private final List<TypedColumn<T>> dataColumns;
     private final PrimaryKey<T> primaryKey;
     private final Supplier<T> supplier;
-    private final Map<String, TypedColumn<T>> columnMap;
     private final List<JoinColumn<T,?>> joinColumns;
-    private final List<TypedColumn<T>> allColumns;
     private final List<ChildrenDescriptor<T,?>> childrenDescriptors;
 
     public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey,
@@ -32,11 +29,6 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         this.primaryKey = primaryKey;
         this.supplier = supplier;
         this.joinColumns = Collections.unmodifiableList(joinColumns);
-        this.columnMap = DaoHelper.buildColumnMap(dataColumns, joinColumns);
-        List<TypedColumn<T>> tmp = new ArrayList<>();
-        tmp.addAll(dataColumns);
-        tmp.addAll(joinColumns);
-        this.allColumns = Collections.unmodifiableList(tmp);
         this.childrenDescriptors = childrenDescriptors;
     }
 
@@ -98,7 +90,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     public T select(long id) {
         String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
         sql = sql + " and a." + primaryKey.keyName() + " = " + id;
-        List<T> items = DaoHelper.read(connection, sql, allColumns, supplier, childrenDescriptors);
+        List<T> items = DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
         return DaoHelper.fromSingletonList(items, "");
     }
 
@@ -108,13 +100,13 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " and a." + primaryKey.keyName() + " in (" + idsString + ")";
-        return DaoHelper.read(connection, sql, allColumns, supplier, childrenDescriptors);
+        return DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
     }
 
     @Override
     public List<T> selectAll() {
         String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
-        List<T> items = DaoHelper.read(connection, sql, allColumns, supplier, childrenDescriptors);
+        List<T> items = DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
         return items;
     }
 
@@ -131,7 +123,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         buf.append(" and ");
         for(int idx=0 ; idx < columnNames.size() ; idx++ ){
             String columnName = columnNames.get(idx);
-            TypedColumn<T> column = columnMap.get(columnName);
+            TypedColumn<T> column = columnMap(columnNames).get(columnName);
             buf.append("a" + "." + column.getName());
             buf.append(" = ?");
             if( idx < columnNames.size() - 1 ) {
@@ -144,7 +136,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
             PreparedStatement statement = connection.prepareStatement(sql);
             for(int idx=0 ; idx < columnNames.size() ; idx++ ){
                 String columnName = columnNames.get(idx);
-                TypedColumn<T> column = columnMap.get(columnName);
+                TypedColumn<T> column = columnMap(columnNames).get(columnName);
                 column.setValue(item, idx + 1, statement);
             }
             ResultSet resultSet = statement.executeQuery();

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,12 +30,14 @@ public class ChildrenDescriptor<T,U> {
     }
 
     public void populateChildren(Connection connection, T item){
-        String sql = DaoHelper.selectByColumns(daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), Collections.singletonList(parentChildColumnName));
+        SortedMap<String, TypedColumn<U>> columnNameMap = daoDescriptor.columnMap(Collections.singletonList(parentChildColumnName));
+        String sql = DaoHelper.selectByColumns(daoDescriptor.tableName(), daoDescriptor.dataColumns(),
+                daoDescriptor.joinColumns(), columnNameMap);
         U key = daoDescriptor.supplier().get();
         Long id = primaryKey.getKey(item);
         parentSetter.accept(key, id);
         List<U> children = DaoHelper.runSelectByColumns(connection, sql, daoDescriptor.supplier(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(),
-                Collections.singletonList(parentChildColumnName), key);
+                columnNameMap, key);
         setter.accept(item, children);
     }
 
