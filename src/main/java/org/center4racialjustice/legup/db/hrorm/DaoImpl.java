@@ -107,7 +107,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
-        sql = sql + " where " + primaryKey.keyName() + " in (" + idsString + ")";
+        sql = sql + " and a." + primaryKey.keyName() + " in (" + idsString + ")";
         return DaoHelper.read(connection, sql, allColumns, supplier, childrenDescriptors);
     }
 
