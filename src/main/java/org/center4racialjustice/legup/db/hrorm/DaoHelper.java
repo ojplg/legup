@@ -178,10 +178,6 @@ public class DaoHelper {
 
     }
 
-    private static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
-        return doInsert(connection, table, columnList, Collections.emptyList(), item);
-    }
-
     public static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
         String sql = DaoHelper.insertStatement(table, columnList, joinColumns);
         return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
@@ -419,5 +415,5 @@ public class DaoHelper {
         }
         throw new RuntimeException("Found " + items.size() + " items. Message: " + errorMsg);
     }
-    
+
 }
