@@ -419,6 +419,5 @@ public class DaoHelper {
         }
         throw new RuntimeException("Found " + items.size() + " items. Message: " + errorMsg);
     }
-
-
+    
 }
