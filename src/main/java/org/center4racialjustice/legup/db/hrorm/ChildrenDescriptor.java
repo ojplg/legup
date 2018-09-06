@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ChildrenDescriptor<T,U> {
+
     private final String parentChildColumnName;
     private final Function<T, List<U>> getter;
     private final BiConsumer<T, List<U>> setter;
@@ -26,11 +27,7 @@ public class ChildrenDescriptor<T,U> {
     }
 
     public void populateChildren(Connection connection, T item){
-
-        System.out.println("YES!");
-
         String sql = DaoHelper.selectByColumns(daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), Collections.singletonList(parentChildColumnName));
-        System.out.println("SQL! " + sql);
         U key = daoDescriptor.supplier().get();
         Long id = primaryKey.getKey(item);
         parentSetter.accept(key, id);
@@ -38,5 +35,18 @@ public class ChildrenDescriptor<T,U> {
                 Collections.singletonList(parentChildColumnName), key);
         System.out.println("Children " + children.size());
         setter.accept(item, children);
+    }
+
+    public void saveChildren(Connection connection, T item){
+        List<U> children = getter.apply(item);
+        for(U child : children){
+            if( daoDescriptor.primaryKey().getKey(child) == null ) {
+                DaoHelper.doInsert(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), child);
+            } else {
+                DaoHelper.doUpdate(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.primaryKey(), child);
+            }
+        }
+        // need to delete existing children that are no longer part of the parent!
+
     }
 }

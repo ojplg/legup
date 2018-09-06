@@ -58,7 +58,7 @@ public class DaoHelper {
         return sql.toString();
     }
 
-    private static <T extends Identifiable> String updateStatement(String table, List<TypedColumn<T>> columnList, T item){
+    private static <T> String updateStatement(String table, List<TypedColumn<T>> columnList, PrimaryKey<T> primaryKey, T item){
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
         sql.append(" set ");
@@ -70,8 +70,10 @@ public class DaoHelper {
                 sql.append(", ");
             }
         }
-        sql.append(" where id = ");
-        sql.append(item.getId());
+        sql.append(" where " );
+        sql.append(primaryKey.keyName());
+        sql.append(" = ");
+        sql.append(primaryKey.getKey(item));
         sql.append(" RETURNING ID");
         return sql.toString();
     }
@@ -176,11 +178,11 @@ public class DaoHelper {
 
     }
 
-    private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
+    private static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         return doInsert(connection, table, columnList, Collections.emptyList(), item);
     }
 
-    public static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
+    public static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
         String sql = DaoHelper.insertStatement(table, columnList, joinColumns);
         return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
     }
@@ -193,8 +195,8 @@ public class DaoHelper {
         }
     }
 
-    public static <T extends Identifiable> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
-        String sql = DaoHelper.updateStatement(table, columnList, item);
+    public static <T> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, PrimaryKey<T> primaryKey, T item){
+        String sql = DaoHelper.updateStatement(table, columnList, primaryKey, item);
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -409,14 +411,6 @@ public class DaoHelper {
         }
 
         return read(connection, sql.toString(), dataColumns, supplier, childrenDescriptors);
-    }
-
-    public static <T extends Identifiable> long save(Connection connection, String table, List<TypedColumn<T>> columnList, T item) {
-        if( item.getId() == null ){
-            return doInsert(connection, table, columnList, item);
-        } else {
-            return doUpdate(connection, table, columnList, item);
-        }
     }
 
     public static <T> T fromSingletonList(List<T> items, String errorMsg) {
