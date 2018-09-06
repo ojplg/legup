@@ -5,7 +5,6 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 
 import java.sql.Connection;
-import java.util.Collections;
 import java.util.List;
 
 public class ReportCardDao {
@@ -39,17 +38,6 @@ public class ReportCardDao {
     }
 
     public ReportCard read(long id){
-        List<ReportCard> reportCards = readCards( Collections.singletonList(id));
-        return org.center4racialjustice.legup.db.hrorm.DaoHelper.fromSingletonList(reportCards, "Reading report card for " + id);
+        return innerDao.select(id);
     }
-
-    private List<ReportCard> readCards(List<Long> ids){
-        List<ReportCard> reportCards = innerDao.selectMany(ids);
-//        for(ReportCard reportCard : reportCards){
-//            List<ReportFactor> factors = reportFactorDao.readByReportCardId(reportCard.getId());
-//            reportCard.setReportFactors(factors);
-//        }
-        return reportCards;
-    }
-
 }
