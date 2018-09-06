@@ -70,7 +70,7 @@ public class JoinColumn<T, J> implements TypedColumn<T> {
     public void setValue(T item, int index, PreparedStatement preparedStatement) throws SQLException {
         J value = getter.apply(item);
         if( value == null){
-            throw new RuntimeException("Cannot find join column value for " + item + " using " + getter);
+            throw new RuntimeException("Cannot find join column value for " + item + " for " + name);
         }
         Long id = primaryKey.getKey(value);
         preparedStatement.setLong(index, id);

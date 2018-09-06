@@ -151,6 +151,11 @@ public class BillPersistence {
                              Bill bill, BillActionLoad billActionLoad, BillActionType billActionType){
         Legislator legislator = Lists.findfirst(legislators, l -> l.getMemberId().equals(nameIdTuple.getSecond()));
 
+        if (legislator == null ){
+            log.warn("Cannot find legislator for member id: " + nameIdTuple.getFirst() + "," + nameIdTuple.getSecond());
+            return;
+        }
+
         BillAction billAction = new BillAction();
         billAction.setBill(bill);
         billAction.setLegislator(legislator);

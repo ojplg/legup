@@ -15,11 +15,7 @@ public class GradeCalculator {
         this.reportCard = reportCard;
         this.legislators = legislators;
     }
-
-    public List<Long> extractBillIds(){
-        return null;
-    }
-
+    
     private Vote extractVoteForLegislator(List<Vote> votes, Legislator legislator){
         for( Vote vote : votes ){
             if ( vote.getLegislator().equals(legislator)){

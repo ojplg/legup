@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GradingService {
 
@@ -41,8 +42,8 @@ public class GradingService {
             List<Legislator> legislators = legislatorDao.readBySession(session);
 
             GradeCalculator calculator = new GradeCalculator(reportCard, legislators);
-            List<Long> billIds = calculator.extractBillIds();
-
+            List<Long> billIds = reportCard.getReportFactors().stream()
+                    .map(rf -> rf.getBill().getId()).collect(Collectors.toList());
 
             List<Bill> bills = billDao.readByIds(billIds);
             Map<Bill, List<BillAction>> votesByBill = new HashMap<>();

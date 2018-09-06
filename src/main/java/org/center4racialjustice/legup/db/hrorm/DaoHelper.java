@@ -176,11 +176,6 @@ public class DaoHelper {
 
     }
 
-//    public static <T> Long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item) {
-//        String sql = DaoHelper.updateStatement(table, columnList, joinColumns, item);
-//        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
-//    }
-
     private static <T extends Identifiable> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, T item){
         return doInsert(connection, table, columnList, Collections.emptyList(), item);
     }

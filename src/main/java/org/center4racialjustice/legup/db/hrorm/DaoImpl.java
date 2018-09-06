@@ -98,6 +98,10 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public List<T> selectMany(List<Long> ids) {
+//        if( ids == null ){
+//            System.out.println("WHY NULL??");
+//            return Collections.emptyList();
+//        }
         String sql = DaoHelper.baseSelectSql(tableName, dataColumns);
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
