@@ -3,7 +3,6 @@ package org.center4racialjustice.legup.db.hrorm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -64,7 +62,7 @@ public class DaoHelper {
         StringBuilder buf = new StringBuilder();
         buf.append("select ");
         buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
-        for(JoinColumn joinColumn : joinColumns) {
+        for(JoinColumn<T,?> joinColumn : joinColumns) {
             buf.append(", ");
             buf.append(DaoHelper.typedColumnsAsString(
                     joinColumn.getPrefix(),
@@ -120,22 +118,18 @@ public class DaoHelper {
         return bldr.toString();
     }
 
-    public static <T> Long runInsertOrUpdate(Connection connection, String sql, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item) {
+    public static <T> Long runInsertOrUpdate(Connection connection, String sql, List<TypedColumn<T>> allColumns, T item) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             preparedStatement = connection.prepareStatement(sql);
 
-            int index = 1;
-            for ( ; index < columnList.size(); index++) {
-                TypedColumn column = columnList.get(index);
-                column.setValue(item, index, preparedStatement);
-            }
-
-            for( JoinColumn joinColumn : joinColumns ){
-                joinColumn.setValue(item, index, preparedStatement);
-                index++;
+            // TODO: This is bogus. It artificially skips the ID column
+            // Should know to skip via primary key.
+            for(int idx = 1; idx<allColumns.size(); idx++){
+                TypedColumn<T> column = allColumns.get(idx);
+                column.setValue(item, idx, preparedStatement);
             }
 
             resultSet = preparedStatement.executeQuery();
@@ -159,9 +153,9 @@ public class DaoHelper {
 
     }
 
-    public static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item){
-        String sql = DaoHelper.insertStatement(table, columnList, joinColumns);
-        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
+    public static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, T item){
+        String sql = DaoHelper.insertStatement(table, dataColumns, joinColumns);
+        return runInsertOrUpdate(connection, sql, concatenate(dataColumns, joinColumns), item);
     }
 
     public static void runDelete(Connection connection, String sql) {
@@ -172,9 +166,9 @@ public class DaoHelper {
         }
     }
 
-    public static <T> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, PrimaryKey<T> primaryKey, T item){
-        String sql = DaoHelper.updateStatement(table, columnList, joinColumns, item , primaryKey);
-        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
+    public static <T> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> dataColumns, PrimaryKey<T> primaryKey, T item){
+        String sql = DaoHelper.updateStatement(table, columnList, dataColumns, item , primaryKey);
+        return runInsertOrUpdate(connection, sql, concatenate(columnList, dataColumns), item);
     }
 
     public static <T> T populate(ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
@@ -269,6 +263,12 @@ public class DaoHelper {
             throw new RuntimeException(ex);
         }
 
+    }
+
+    public static <T> List<T> concatenate(List<? extends T> as, List<? extends T> bs){
+        List<T> list = new ArrayList<>(as);
+        list.addAll(bs);
+        return list;
     }
 
     public static <T> T fromSingletonList(List<T> items, String errorMsg) {
