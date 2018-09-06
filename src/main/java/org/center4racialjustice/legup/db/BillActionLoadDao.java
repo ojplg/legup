@@ -16,14 +16,26 @@ public class BillActionLoadDao {
         this.innerDao = DaoBuilders.BILL_ACTION_LOADS.buildDao(connection);
     }
 
-    public long insert(BillActionLoad billActionLoad){
+    public long insert(BillActionLoad billActionLoad) {
         return innerDao.insert(billActionLoad);
     }
 
-    public List<BillActionLoad> readByBill(Bill bill){
+    public List<BillActionLoad> readByBill(Bill bill) {
         BillActionLoad billActionLoad = new BillActionLoad();
         billActionLoad.setBill(bill);
-        return innerDao.selectManyByColumns(billActionLoad, Arrays.asList( "BILL_ID" ));
+        return innerDao.selectManyByColumns(billActionLoad, Arrays.asList("BILL_ID"));
     }
 
+    public BillActionLoad select(Long id){
+        return innerDao.select(id);
+    }
+
+    public List<BillActionLoad> selectMany(List<Long> ids) {
+        return innerDao.selectMany(ids);
+    }
+
+    public List<BillActionLoad> selectAll() {
+        return innerDao.selectAll();
+    }
 }
+

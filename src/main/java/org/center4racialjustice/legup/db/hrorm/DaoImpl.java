@@ -104,18 +104,17 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public List<T> selectMany(List<Long> ids) {
-        String sql = DaoHelper.baseSelectSql(tableName, dataColumns);
+        String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
         List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " where " + primaryKey.keyName() + " in (" + idsString + ")";
-        return DaoHelper.read(connection, sql, dataColumns, supplier, childrenDescriptors);
+        return DaoHelper.read(connection, sql, allColumns, supplier, childrenDescriptors);
     }
-
 
     @Override
     public List<T> selectAll() {
-        String sql = DaoHelper.baseSelectSql(tableName, dataColumns);
-        List<T> items = DaoHelper.read(connection, sql, dataColumns, supplier, childrenDescriptors);
+        String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
+        List<T> items = DaoHelper.read(connection, sql, allColumns, supplier, childrenDescriptors);
         return items;
     }
 

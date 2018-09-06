@@ -195,17 +195,6 @@ public class DaoHelper {
         return item;
     }
 
-
-    public static <T> String baseSelectSql(String table, List<TypedColumn<T>> columnList){
-        StringBuilder sql =  new StringBuilder("select ");
-        sql.append(DaoHelper.typedColumnsAsString("a",columnList, true));
-        sql.append(" from ");
-        sql.append(table);
-        sql.append(" ");
-        sql.append("a");
-        return sql.toString();
-    }
-
     public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> allColumns, Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
         Statement statement = null;
         ResultSet resultSet = null;
@@ -340,24 +329,6 @@ public class DaoHelper {
             }
         }
 
-    }
-
-    public static <T> List<T> read(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<Long> ids,
-                                   Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
-
-        StringBuilder sql =  new StringBuilder(baseSelectSql(table, dataColumns));
-        if (ids == null || ids.size() == 0){
-           // do nothing
-        } else if ( ids.size() == 1 ){
-            sql.append(" where id = ");
-            sql.append(ids.get(0));
-        } else if ( ids.size() > 1 ){
-            sql.append(" where id in (");
-            sql.append(String.join(", ", ids.stream().map(l -> l.toString()).collect(Collectors.toList())));
-            sql.append(" )");
-        }
-
-        return read(connection, sql.toString(), dataColumns, supplier, childrenDescriptors);
     }
 
     public static <T> T fromSingletonList(List<T> items, String errorMsg) {
