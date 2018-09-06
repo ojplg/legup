@@ -58,26 +58,6 @@ public class DaoHelper {
         return sql.toString();
     }
 
-    private static <T> String updateStatement(String table, List<TypedColumn<T>> columnList, PrimaryKey<T> primaryKey, T item){
-        StringBuilder sql = new StringBuilder("update ");
-        sql.append(table);
-        sql.append(" set ");
-        for(int idx=1; idx<columnList.size(); idx++){
-            TypedColumn column = columnList.get(idx);
-            sql.append(column.getName());
-            sql.append(" = ? ");
-            if (idx < columnList.size() - 1){
-                sql.append(", ");
-            }
-        }
-        sql.append(" where " );
-        sql.append(primaryKey.keyName());
-        sql.append(" = ");
-        sql.append(primaryKey.getKey(item));
-        sql.append(" RETURNING ID");
-        return sql.toString();
-    }
-
     public static <T> String joinSelectSql(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
         StringBuilder buf = new StringBuilder();
         buf.append("select ");
@@ -191,35 +171,9 @@ public class DaoHelper {
         }
     }
 
-    public static <T> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, PrimaryKey<T> primaryKey, T item){
-        String sql = DaoHelper.updateStatement(table, columnList, primaryKey, item);
-
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            for(int idx=1; idx<columnList.size(); idx++){
-                TypedColumn<T> column = columnList.get(idx);
-                column.setValue(item, idx, preparedStatement);
-            }
-            resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return resultSet.getLong("id");
-        } catch (SQLException se) {
-            throw new RuntimeException(se);
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException se){
-                log.error("Error during close",se);
-            }
-        }
+    public static <T> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, PrimaryKey<T> primaryKey, T item){
+        String sql = DaoHelper.updateStatement(table, columnList, joinColumns, item , primaryKey);
+        return runInsertOrUpdate(connection, sql, columnList, joinColumns, item);
     }
 
     public static <T> T populate(ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
