@@ -69,7 +69,7 @@ public class ChildrenDescriptor<T,U> {
         buf.append(primaryKey.getKey(item));
 
         if( goodChildrenIds.size() > 0 ) {
-            List<String> goodChildrenIdStrings = goodChildrenIds.stream().map(l -> l.toString()).collect(Collectors.toList());
+            List<String> goodChildrenIdStrings = goodChildrenIds.stream().map(Object::toString).collect(Collectors.toList());
 
             buf.append(" and ");
             buf.append(daoDescriptor.primaryKey().keyName());

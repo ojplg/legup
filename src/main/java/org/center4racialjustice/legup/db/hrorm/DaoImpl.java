@@ -97,7 +97,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectMany(List<Long> ids) {
         String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
-        List<String> idStrings = ids.stream().map(l -> l.toString()).collect(Collectors.toList());
+        List<String> idStrings = ids.stream().map(Object::toString).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " and a." + primaryKey.keyName() + " in (" + idsString + ")";
         return DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
@@ -106,8 +106,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectAll() {
         String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
-        List<T> items = DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
-        return items;
+        return DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
     }
 
     @Override
@@ -123,8 +122,9 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         buf.append(" and ");
         for(int idx=0 ; idx < columnNames.size() ; idx++ ){
             String columnName = columnNames.get(idx);
-            TypedColumn<T> column = columnMap(columnNames).get(columnName);
-            buf.append("a" + "." + column.getName());
+            buf.append("a");
+            buf.append(".");
+            buf.append(columnName);
             buf.append(" = ?");
             if( idx < columnNames.size() - 1 ) {
                 buf.append(" and ");
@@ -143,7 +143,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T t = DaoHelper.populate("", resultSet, supplier, dataColumns, joinColumns);
+                T t = DaoHelper.populate( resultSet, supplier, allColumns());
                 items.add(t);
             }
 

@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -166,24 +165,16 @@ public class DaoHelper {
         }
     }
 
-    public static <T> long doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> dataColumns, PrimaryKey<T> primaryKey, T item){
+    public static <T> void doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> dataColumns, PrimaryKey<T> primaryKey, T item){
         String sql = DaoHelper.updateStatement(table, columnList, dataColumns, item , primaryKey);
-        return runInsertOrUpdate(connection, sql, concatenate(columnList, dataColumns), item);
+        runInsertOrUpdate(connection, sql, concatenate(columnList, dataColumns), item);
     }
 
-    public static <T> T populate(ResultSet resultSet, List<TypedColumn<T>> columnList, Supplier<T> supplier) throws SQLException {
-        return populate("", resultSet, supplier, columnList, Collections.emptyList());
-    }
-
-    public static <T> T populate(String prefix, ResultSet resultSet, Supplier<T> supplier, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns)
+    public static <T> T populate(ResultSet resultSet, Supplier<T> supplier, List<TypedColumn<T>> allColumns)
             throws SQLException {
         T item = supplier.get();
 
-        for (TypedColumn<T> column: dataColumns) {
-            column.populate(item, resultSet);
-        }
-
-        for (JoinColumn<T,?> column : joinColumns){
+        for (TypedColumn<T> column: allColumns) {
             column.populate(item, resultSet);
         }
 
@@ -203,7 +194,7 @@ public class DaoHelper {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = populate(resultSet, allColumns, supplier);
+                T item = populate(resultSet, supplier, allColumns);
                 for(ChildrenDescriptor<T,?> descriptor : childrenDescriptors){
                     descriptor.populateChildren(connection, item);
                 }
@@ -254,7 +245,7 @@ public class DaoHelper {
             List<T> items = new ArrayList<>();
 
             while (resultSet.next()) {
-                T t = DaoHelper.populate("", resultSet, supplier, dataColumns, joinColumns);
+                T t = DaoHelper.populate(resultSet, supplier, concatenate(dataColumns, joinColumns));
                 items.add(t);
             }
 
