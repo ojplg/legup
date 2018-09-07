@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 @Data
-public class Vote implements Identifiable, Comparable<Vote> {
+public class Vote implements Comparable<Vote> {
 
     private Long id;
     private Bill bill;

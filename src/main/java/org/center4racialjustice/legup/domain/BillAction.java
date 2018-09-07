@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class BillAction implements Identifiable {
+public class BillAction {
 
     private Long id;
     private Bill bill;

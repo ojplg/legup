@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class ReportCard implements Identifiable {
+public class ReportCard {
+
     private Long id;
     private String name;
     private long sessionNumber;

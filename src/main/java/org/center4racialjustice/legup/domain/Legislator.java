@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 @Data
-public class Legislator implements Identifiable, Comparable<Legislator> {
+public class Legislator implements Comparable<Legislator> {
 
     private Long id;
     private String unparsedName;

@@ -51,17 +51,7 @@ public class BillActionType {
         return code;
     }
 
-    static class BillActionTypeConverter implements CodedEnumConverter<BillActionType>, Converter<String, BillActionType> {
-        @Override
-        public BillActionType fromCode(String code) {
-            return BillActionType.fromCode(code);
-        }
-
-        @Override
-        public String toCode(BillActionType instance) {
-            return instance.getCode();
-        }
-
+    static class BillActionTypeConverter implements Converter<String, BillActionType> {
         @Override
         public String to(BillActionType billActionType) {
             return billActionType.getCode();

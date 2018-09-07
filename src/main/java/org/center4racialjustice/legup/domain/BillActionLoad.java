@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class BillActionLoad implements Identifiable {
+public class BillActionLoad {
 
     private Long id;
     private LocalDateTime loadTime;

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
-public class Bill implements Identifiable, Comparable<Bill> {
+public class Bill implements Comparable<Bill> {
 
     private Long id;
     private long number;
