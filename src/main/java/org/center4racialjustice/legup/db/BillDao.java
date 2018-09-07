@@ -10,11 +10,9 @@ import java.util.List;
 
 public class BillDao {
 
-    private Connection connection;
     private final Dao<Bill> innerDao;
 
     public BillDao(Connection connection) {
-        this.connection = connection;
         this.innerDao = DaoBuilders.BILLS.buildDao(connection);
     }
 

@@ -15,10 +15,6 @@ public final class Name {
     private final String middleInitial;
     private final String suffix;
 
-    public static Name fromFirstLastMiddleInitial(String firstName, String lastName, String middleInitial){
-        return new Name(firstName, middleInitial, lastName, null, null);
-    }
-
     public static Name fromFirstLast(String firstName, String lastName){
         return new Name(firstName, null, lastName, null, null);
     }
@@ -35,7 +31,6 @@ public final class Name {
         this.firstInitial = firstInitial;
         this.suffix = suffix;
     }
-
 
     public boolean hasFirstName(){
         return firstName != null;

@@ -16,15 +16,6 @@ public class GradeCalculator {
         this.legislators = legislators;
     }
 
-    private Vote extractVoteForLegislator(List<Vote> votes, Legislator legislator){
-        for( Vote vote : votes ){
-            if ( vote.getLegislator().equals(legislator)){
-                return vote;
-            }
-        }
-        return null;
-    }
-
     private static int add(int addend1, int addend2){
         return addend1 + addend2;
     }
