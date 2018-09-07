@@ -18,21 +18,8 @@ public class BillSearcher {
 
     public static String IllinoisLegislationHome = "http://www.ilga.gov";
 
-    public static String LegislationIndexPageUrl = "http://www.ilga.gov/legislation/default.asp";
-
     public String gaParameterValue = "100";
     public String sessionIdParameterValue = "91";
-
-//    private Document legislationIndexPageContents;
-
-    public BillSearcher() {
-//        try {
-//            Connection connection = Jsoup.connect(LegislationIndexPageUrl);
-//            legislationIndexPageContents = connection.get();
-//        } catch (IOException ex){
-//            throw new RuntimeException(ex);
-//        }
-    }
 
     public Map<String, String> searchForVotesUrls(String votesPageUrl){
         try {
