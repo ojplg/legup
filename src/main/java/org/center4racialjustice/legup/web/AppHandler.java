@@ -27,7 +27,6 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +70,7 @@ public class AppHandler extends AbstractHandler {
 
     @Override
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
-                   HttpServletResponse httpServletResponse) throws IOException {
+                   HttpServletResponse httpServletResponse) {
 
         String appPath = request.getPathInfo();
 

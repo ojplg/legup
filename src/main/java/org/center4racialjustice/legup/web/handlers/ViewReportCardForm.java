@@ -32,7 +32,7 @@ public class ViewReportCardForm implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
         Connection connection = connectionPool.getConnection();
         try {
             VelocityContext velocityContext = new VelocityContext();

@@ -8,9 +8,7 @@ import org.apache.velocity.app.Velocity;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.Writer;
-import java.sql.SQLException;
 
 public class RequestHandler {
 

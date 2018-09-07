@@ -9,7 +9,6 @@ import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.Handler;

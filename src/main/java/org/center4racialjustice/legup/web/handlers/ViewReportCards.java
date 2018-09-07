@@ -8,7 +8,6 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,7 +21,7 @@ public class ViewReportCards implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
         Connection connection = connectionPool.getConnection();
 
         try {

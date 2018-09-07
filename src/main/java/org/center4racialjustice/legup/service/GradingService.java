@@ -52,9 +52,7 @@ public class GradingService {
                 votesByBill.put(bill, billActions);
             }
 
-            LookupTable<Legislator, Bill, Integer> scores = calculator.calculate(votesByBill);
-
-            return scores;
+            return calculator.calculate(votesByBill);
         }
 
     }

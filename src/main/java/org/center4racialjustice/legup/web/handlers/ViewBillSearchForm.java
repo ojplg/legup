@@ -5,15 +5,11 @@ import org.center4racialjustice.legup.web.Handler;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
 
 public class ViewBillSearchForm implements Handler {
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
-        VelocityContext velocityContext = new VelocityContext();
-
-        return velocityContext;
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
+        return new VelocityContext();
     }
 }
