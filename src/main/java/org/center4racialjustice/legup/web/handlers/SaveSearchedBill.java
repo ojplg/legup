@@ -11,7 +11,6 @@ import org.eclipse.jetty.server.Request;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Map;
 
 public class SaveSearchedBill implements Handler {
