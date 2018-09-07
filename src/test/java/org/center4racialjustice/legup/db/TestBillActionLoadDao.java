@@ -1,23 +1,17 @@
 package org.center4racialjustice.legup.db;
 
 import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
-import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.domain.Vote;
-import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,9 +35,8 @@ public class TestBillActionLoadDao {
         connection.close();
     }
 
-
     @Test
-    public void testSelect() throws SQLException {
+    public void testSelect() {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -71,7 +64,7 @@ public class TestBillActionLoadDao {
 
 
     @Test
-    public void testSelectAll() throws SQLException {
+    public void testSelectAll() {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -106,7 +99,7 @@ public class TestBillActionLoadDao {
         List<BillActionLoad> loads = billActionLoadDao.selectAll();
 
         Assert.assertEquals(2, loads.size());
-        Set<Bill> foundBills = loads.stream().map(b -> b.getBill()).collect(Collectors.toSet());
+        Set<Bill> foundBills = loads.stream().map(BillActionLoad::getBill).collect(Collectors.toSet());
 
         Assert.assertTrue(foundBills.contains(bill1));
         Assert.assertTrue(foundBills.contains(bill2));
@@ -115,7 +108,7 @@ public class TestBillActionLoadDao {
 
 
     @Test
-    public void testSelectMany() throws SQLException {
+    public void testSelectMany() {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -150,7 +143,7 @@ public class TestBillActionLoadDao {
         List<BillActionLoad> loads = billActionLoadDao.selectMany(Arrays.asList(billActionLoad1.getId(), billActionLoad2.getId()));
 
         Assert.assertEquals(2, loads.size());
-        Set<Bill> foundBills = loads.stream().map(b -> b.getBill()).collect(Collectors.toSet());
+        Set<Bill> foundBills = loads.stream().map(BillActionLoad::getBill).collect(Collectors.toSet());
 
         Assert.assertTrue(foundBills.contains(bill1));
         Assert.assertTrue(foundBills.contains(bill2));
