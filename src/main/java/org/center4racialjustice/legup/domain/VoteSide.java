@@ -1,6 +1,5 @@
 package org.center4racialjustice.legup.domain;
 
-// Maybe rename this class
 public final class VoteSide {
 
     public static final String YeaCode = "Y";
