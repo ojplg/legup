@@ -12,6 +12,10 @@ public class BillActionLoadDao {
 
     private final Dao<BillActionLoad> innerDao;
 
+    public BillActionLoadDao(ConnectionWrapper wrapper){
+        this(wrapper.getConnection());
+    }
+
     public BillActionLoadDao(Connection connection) {
         this.innerDao = DaoBuilders.BILL_ACTION_LOADS.buildDao(connection);
     }

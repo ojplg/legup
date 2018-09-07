@@ -24,4 +24,8 @@ public class ConnectionPool {
         }
     }
 
+    public ConnectionWrapper getWrappedConnection(){
+        return new ConnectionWrapper(getConnection());
+    }
+
 }

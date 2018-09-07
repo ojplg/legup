@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.service;
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
@@ -12,8 +13,6 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.util.LookupTable;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ public class GradingService {
         this.connectionPool = connectionPool;
     }
 
-    public LookupTable<Legislator, Bill, Integer> calculate(long reportCardId) throws SQLException {
-        try (Connection connection = connectionPool.getConnection()) {
+    public LookupTable<Legislator, Bill, Integer> calculate(long reportCardId) {
+        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             LegislatorDao legislatorDao = new LegislatorDao(connection);
@@ -54,6 +53,5 @@ public class GradingService {
 
             return calculator.calculate(votesByBill);
         }
-
     }
 }

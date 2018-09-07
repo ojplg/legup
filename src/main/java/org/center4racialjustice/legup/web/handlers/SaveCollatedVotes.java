@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillActionLoadDao;
+import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
@@ -16,8 +17,6 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class SaveCollatedVotes implements Handler {
 
@@ -28,23 +27,22 @@ public class SaveCollatedVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse)
-            throws SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
 
-        String key = request.getParameter("collated_votes_key");
+        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
 
-        HttpSession session = request.getSession();
-        String sessionKey = (String) session.getAttribute("collatedVotesKey");
-        VotesLegislatorsCollator collator = (VotesLegislatorsCollator) session.getAttribute("collatedVotes");
-        BillActionLoad billActionLoad = (BillActionLoad) session.getAttribute("billActionLoad");
+            String key = request.getParameter("collated_votes_key");
 
-        if ( ! key.equals(sessionKey) ){
-            // this is an error condition
-            // it should be reported to the user somehow
-            throw new RuntimeException("Mismatched collation keys");
-        }
+            HttpSession session = request.getSession();
+            String sessionKey = (String) session.getAttribute("collatedVotesKey");
+            VotesLegislatorsCollator collator = (VotesLegislatorsCollator) session.getAttribute("collatedVotes");
+            BillActionLoad billActionLoad = (BillActionLoad) session.getAttribute("billActionLoad");
 
-        try (Connection connection = connectionPool.getConnection()) {
+            if (!key.equals(sessionKey)) {
+                // this is an error condition
+                // it should be reported to the user somehow
+                throw new RuntimeException("Mismatched collation keys");
+            }
 
             BillDao billDao = new BillDao(connection);
             Bill bill = billDao.findOrCreate(collator.getBillSession(), collator.getBillChamber(), collator.getBillNumber());
@@ -69,7 +67,6 @@ public class SaveCollatedVotes implements Handler {
             velocityContext.put("chamber", bill.getChamber());
             velocityContext.put("bill_number", bill.getNumber());
             return velocityContext;
-
         }
     }
 }

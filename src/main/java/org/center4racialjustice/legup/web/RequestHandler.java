@@ -8,6 +8,7 @@ import org.apache.velocity.app.Velocity;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Writer;
 
 public class RequestHandler {
@@ -32,7 +33,7 @@ public class RequestHandler {
             Template template = Velocity.getTemplate("/templates/container.vtl");
             template.merge(velocityContext, writer);
             request.setHandled(true);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.error("Exception in request processing", ex);
             throw new RuntimeException(ex);
         }

@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.illinois.BillVotes;
@@ -11,8 +12,6 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,38 +24,40 @@ public class CollateBillVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
 
-        HttpSession session = request.getSession();
-        BillVotes billVotes = (BillVotes) session.getAttribute("billVotes");
-        session.removeAttribute("billVotes");
+        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
 
-        Connection connection = connectionPool.getConnection();
-        LegislatorDao legislatorDao = new LegislatorDao(connection);
-        List<Legislator> legislators = legislatorDao.readAll();
-        connection.close();
+            HttpSession session = request.getSession();
+            BillVotes billVotes = (BillVotes) session.getAttribute("billVotes");
+            session.removeAttribute("billVotes");
 
-        VelocityContext velocityContext = new VelocityContext();
+            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            List<Legislator> legislators = legislatorDao.readAll();
+            connection.close();
 
-        velocityContext.put("legislator_count" , legislators.size());
-        velocityContext.put("vote_count", billVotes.totalVotes());
+            VelocityContext velocityContext = new VelocityContext();
 
-        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
-        collator.collate();
+            velocityContext.put("legislator_count", legislators.size());
+            velocityContext.put("vote_count", billVotes.totalVotes());
 
-        String collatedVotesKey = UUID.randomUUID().toString();
+            VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
+            collator.collate();
 
-        session.setAttribute("collatedVotes", collator);
-        session.setAttribute("collatedVotesKey", collatedVotesKey);
+            String collatedVotesKey = UUID.randomUUID().toString();
 
-        velocityContext.put("collated_yeas", collator.getYeas());
-        velocityContext.put("collated_nays", collator.getNays());
-        velocityContext.put("collated_not_votings", collator.getNotVotings());
-        velocityContext.put("collated_presents", collator.getPresents());
-        velocityContext.put("uncollated", collator.getUncollated());
-        velocityContext.put("collated_votes_key", collatedVotesKey);
+            session.setAttribute("collatedVotes", collator);
+            session.setAttribute("collatedVotesKey", collatedVotesKey);
 
-        return velocityContext;
+            velocityContext.put("collated_yeas", collator.getYeas());
+            velocityContext.put("collated_nays", collator.getNays());
+            velocityContext.put("collated_not_votings", collator.getNotVotings());
+            velocityContext.put("collated_presents", collator.getPresents());
+            velocityContext.put("uncollated", collator.getUncollated());
+            velocityContext.put("collated_votes_key", collatedVotesKey);
+
+            return velocityContext;
+        }
 
     }
 }

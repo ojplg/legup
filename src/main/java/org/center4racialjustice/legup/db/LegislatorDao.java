@@ -11,6 +11,10 @@ public class LegislatorDao {
 
     private final Dao<Legislator> innerDao;
 
+    public LegislatorDao(ConnectionWrapper wrapper){
+        this(wrapper.getConnection());
+    }
+
     public LegislatorDao(Connection connection){
         this.innerDao = DaoBuilders.LEGISLATORS.buildDao(connection);
     }

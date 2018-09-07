@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillActionLoadDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
@@ -24,8 +25,6 @@ import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +40,9 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public Bill saveParsedData(BillHtmlParser billHtmlParser, Map<String, String> votesMapUrl) throws IOException, SQLException {
+    public Bill saveParsedData(BillHtmlParser billHtmlParser, Map<String, String> votesMapUrl) throws IOException {
 
-        try (Connection connection=connectionPool.getConnection()){
+        try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
@@ -83,18 +82,19 @@ public class BillPersistence {
             LegislatorDao legislatorDao = new LegislatorDao(connection);
             List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
 
-            int senateSponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser);
+            int sponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser);
+            log.info("Saved sponsors: " + sponsorsSaved);
 
             int houseVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.House);
             log.info("Saved " + houseVotesSaved + " house votes");
             int senateVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.Senate);
-            log.info("Saved " + senateSponsorsSaved + " senate votes");
+            log.info("Saved " + senateVotesSaved + " senate votes");
 
             return bill;
         }
     }
 
-    private int saveVotes(Connection connection, Bill bill, BillActionLoad billActionLoad, Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
+    private int saveVotes(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
         String votePdfUrl = null;
         for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet()){
             if( urlPair.getKey().contains("Third Reading")
@@ -124,7 +124,7 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private int saveSponsors(Connection connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser){
+    private int saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser){
         BillActionDao billActionDao = new BillActionDao(connection);
 
         SponsorNames sponsorNames = billHtmlParser.getSponsorNames();

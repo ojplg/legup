@@ -23,7 +23,7 @@ public class ViewReportCardScores implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
         VelocityContext velocityContext = new VelocityContext();
 
         Long reportCardId = Util.getLongParameter(request, "report_card_id");

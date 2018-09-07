@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.ReportCard;
@@ -13,9 +14,6 @@ import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -31,10 +29,9 @@ public class SaveReportCard implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
-        Connection connection = connectionPool.getConnection();
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
 
-        try {
+        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
             Long id = Util.getLongParameter(request, "id");
             String name = request.getParameter("name");
             String sessionString = request.getParameter("session");
@@ -86,8 +83,6 @@ public class SaveReportCard implements Handler {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("reportCardId", reportCard.getId());
             return velocityContext;
-        } finally {
-            connection.close();
         }
     }
 

@@ -23,7 +23,7 @@ public class SaveSearchedBill implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException, SQLException {
+    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException {
 
         BillPersistence billPersistence = new BillPersistence(connectionPool);
 

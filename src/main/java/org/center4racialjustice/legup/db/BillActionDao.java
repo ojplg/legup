@@ -12,6 +12,10 @@ import java.util.List;
 public class BillActionDao {
     private final Dao<BillAction> innerDao;
 
+    public BillActionDao(ConnectionWrapper wrapper){
+        this(wrapper.getConnection());
+    }
+
     public BillActionDao(Connection connection) {
         this.innerDao = DaoBuilders.BILL_ACTIONS.buildDao(connection);
     }
