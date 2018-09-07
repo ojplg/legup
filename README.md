@@ -47,7 +47,8 @@ Technical Betterments
 
 * Improve injection db connection logic/access to web tier, do not use raw Connection object
 * Actually make a real connection pool and automated reclamation
-* Maybe throw out the whole of the DB access layer and replace with Hibernate/javax.persistence
+* Maybe throw out the whole of the DB access layer (hrorm) and replace with Hibernate/javax.persistence 
+  or Mybatis (there's a branch for this) or JDBI (proyal's favorite)
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
 * Need a way to handle things that need to be in session and then cleared up
 
