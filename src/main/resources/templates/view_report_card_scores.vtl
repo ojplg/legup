@@ -1,11 +1,19 @@
 
 <h4>View Report Card Scores</h4>
 
-<table  class="pure-table">
+<script>
+$(document).ready(function()
+    {
+        $("#scoreTable").tablesorter();
+    }
+);
+</script>
+
+<table id="scoreTable" class="tablesorter">
     <thead>
     <tr>
-        <th></th>
-        <th></th>
+        <th>Name</th>
+        <th>Party</th>
         #foreach ($bill in $bills)
             <th>$bill.Chamber - $bill.Number</th>
         #end
@@ -13,8 +21,9 @@
     </tr>
     </thead>
 
+    <tbody>
     #foreach ($legislator in $legislators)
-        <tr #if ($foreach.count % 2 == 0) class="pure-table-odd" #end  >
+        <tr>
             <td>$legislator.LastName, $legislator.FirstName</td>
             <td>$legislator.Party</td>
             #foreach ($bill in $bills)
@@ -23,5 +32,6 @@
             <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
         </tr>
     #end
+    </tbody>
 
 </table>
