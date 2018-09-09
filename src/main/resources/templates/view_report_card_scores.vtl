@@ -18,6 +18,7 @@ $(document).ready(function()
             <th>$bill.Chamber - $bill.Number</th>
         #end
         <th>Score</th>
+        <th>Grade</th>
     </tr>
     </thead>
 
@@ -30,6 +31,7 @@ $(document).ready(function()
                 <td>$!{scores.get($legislator, $bill)}</td>
             #end
             <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
+            <td> ${grades.get($legislator)} </td>
         </tr>
     #end
     </tbody>

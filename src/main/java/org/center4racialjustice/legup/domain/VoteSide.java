@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
+import org.center4racialjustice.legup.db.hrorm.Converter;
+
 public final class VoteSide {
 
     public static final String YeaCode = "Y";

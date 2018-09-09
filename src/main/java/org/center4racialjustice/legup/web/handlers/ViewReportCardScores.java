@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.GradeCalculator;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.service.GradingService;
 import org.center4racialjustice.legup.util.LookupTable;
@@ -12,6 +13,7 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 public class ViewReportCardScores implements Handler {
@@ -29,8 +31,10 @@ public class ViewReportCardScores implements Handler {
         Long reportCardId = Util.getLongParameter(request, "report_card_id");
 
         LookupTable<Legislator, Bill, Integer> scores = gradingService.calculate(reportCardId);
+        Map<Legislator, String> grades = GradeCalculator.assignGrades(scores);
 
         velocityContext.put("scores", scores);
+        velocityContext.put("grades", grades);
         BinaryOperator<Integer> scoreComputer = (i, j) -> i + j;
         velocityContext.put("computer", scoreComputer);
         velocityContext.put("legislators", scores.sortedRowHeadings(Legislator::compareTo));
