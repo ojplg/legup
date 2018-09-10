@@ -29,22 +29,14 @@ public class LookupTable<R, C, V> {
     public void put(R row, C column, V value){
         rowHeadings.add(row);
         columnHeadings.add(column);
-        Map<C,V> rowMap = map.get(row);
-        if (rowMap == null){
-            rowMap = new HashMap<>();
-            map.put(row, rowMap);
-        }
+        Map<C, V> rowMap = map.computeIfAbsent(row, k -> new HashMap<>());
         rowMap.put(column, value);
     }
 
     public V merge(R row, C column, V value, BiFunction<V,V,V> updater){
         rowHeadings.add(row);
         columnHeadings.add(column);
-        Map<C,V> rowMap = map.get(row);
-        if (rowMap == null){
-            rowMap = new HashMap<>();
-            map.put(row, rowMap);
-        }
+        Map<C, V> rowMap = map.computeIfAbsent(row, k -> new HashMap<>());
         return rowMap.merge(column, value, updater);
     }
 
@@ -57,15 +49,13 @@ public class LookupTable<R, C, V> {
     }
 
     public List<R> sortedRowHeadings(Comparator<R> comparator) {
-        List<R> rows = new ArrayList<>();
-        rows.addAll(getRowHeadings());
+        List<R> rows = new ArrayList<>(getRowHeadings());
         Collections.sort(rows, comparator);
         return rows;
     }
 
     public List<C> sortedColumnHeadings(Comparator<C> comparator) {
-        List<C> columns = new ArrayList<>();
-        columns.addAll(getColumnHeadings());
+        List<C> columns = new ArrayList<>(getColumnHeadings());
         Collections.sort(columns, comparator);
         return columns;
     }

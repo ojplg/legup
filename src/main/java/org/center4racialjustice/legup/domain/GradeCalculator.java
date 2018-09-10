@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class GradeCalculator {
 
+    public static BinaryOperator<Integer> ScoreComputer = (i, j) -> i + j;
+
     private final ReportCard reportCard;
     private List<Legislator> legislators;
 
@@ -99,8 +101,7 @@ public class GradeCalculator {
         Map<Legislator, Integer> sums = new HashMap<>();
 
         for(Legislator legislator : scores.getRowHeadings()){
-            BinaryOperator<Integer> scoreComputer = (i, j) -> i + j;
-            Integer sum = scores.computeRowSummary(legislator, 0, scoreComputer);
+            Integer sum = scores.computeRowSummary(legislator, 0, ScoreComputer);
             sums.put(legislator, sum);
         }
 
@@ -128,5 +129,3 @@ public class GradeCalculator {
     }
 
 }
-
-
