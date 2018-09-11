@@ -25,7 +25,7 @@ $(document).ready(function()
     <tbody>
     #foreach ($legislator in $legislators)
         <tr>
-            <td>$legislator.LastName, $legislator.FirstName</td>
+            <td><a href="/app/view_legislator_votes?legislator_id=$legislator.Id">$legislator.LastName, $legislator.FirstName</a></td>
             <td>$legislator.Party</td>
             #foreach ($bill in $bills)
                 <td>$!{scores.get($legislator, $bill)}</td>
