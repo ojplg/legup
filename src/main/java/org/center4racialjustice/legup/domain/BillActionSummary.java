@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
+import org.center4racialjustice.legup.util.Lists;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,22 @@ public class BillActionSummary {
         List<Vote> filtered = votes.stream().filter(v -> v.matches(chamber, voteSide)).collect(Collectors.toList());
         filtered.sort(Vote::compareTo);
         return filtered;
+    }
+
+    public List<Legislator> getSponsors(Chamber chamber){
+        return billActions.stream()
+            .filter(action -> action.getBillActionType().equals(BillActionType.SPONSOR))
+            .map(action -> action.getLegislator())
+            .filter(legislator -> legislator.getChamber().equals(chamber))
+            .collect(Collectors.toList());
+    }
+
+    public Legislator getChiefSponsor(Chamber chamber){
+        List<Legislator> chiefs = billActions.stream()
+                .filter(action -> action.getBillActionType().equals(BillActionType.CHIEF_SPONSOR))
+                .map(action -> action.getLegislator())
+                .collect(Collectors.toList());
+        return Lists.findfirst(chiefs, legislator -> legislator.getChamber().equals(chamber));
     }
 
     public int yeaCount(Chamber chamber){
