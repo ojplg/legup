@@ -19,8 +19,8 @@ $legislator.Chamber district $legislator.District
 #foreach ($vote in $votes)
     <tr>
         <td>$vote.Bill.Chamber</td>
-        <td>$vote.Bill.Number</td>
-        <td>$vote.Bill.ShortDescription</td>
+        <td><a href="/app/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.Number</a></td>
+        <td><a href="/app/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.ShortDescription</a></td>
         <td>$vote.VoteSide.Code</td>
     </tr>
 #end
