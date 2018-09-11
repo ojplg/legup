@@ -27,8 +27,13 @@ public class ServerStarter {
 
         SessionHandler sessionHandler = new SessionHandler();
 
+        // NOTE: The resource handler is added to the handler mix
+        // twice. Once under the /legup, and once at the root.
+        // This allows static content to be served and paths
+        // to be correct when running either standalone on the servlet
+        // port, or when redirecting from host:80/legup via a
+        // web server.
         ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setDirectoriesListed(true);
         resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
         resourceHandler.setResourceBase("target/classes");
 
@@ -36,11 +41,11 @@ public class ServerStarter {
         appHandler.setContextPath("/legup");
         HandlerList appHandlers = new HandlerList();
         AppHandler legUpHandler = new AppHandler(connectionPool);
-        appHandlers.setHandlers(new Handler[]{ sessionHandler, legUpHandler });
+        appHandlers.setHandlers(new Handler[]{ sessionHandler, legUpHandler, resourceHandler });
         appHandler.setHandler(appHandlers);
 
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{appHandler, resourceHandler});
+        handlers.setHandlers(new Handler[]{appHandler, resourceHandler });
 
         server.setHandler(handlers);
 

@@ -74,15 +74,12 @@ public class AppHandler extends AbstractHandler {
 
         String appPath = request.getPathInfo();
 
-        log.info("Handling request to" + appPath);
+        log.info("Handling request to " + appPath);
 
         if( handlerMap.containsKey(appPath) ){
             RequestHandler requestHandler = handlerMap.get(appPath);
             requestHandler.processRequest(request, httpServletResponse);
-        } else {
-            log.warn("UNKNOWN APPLICATION PATH " + appPath);
         }
-
     }
 
 }
