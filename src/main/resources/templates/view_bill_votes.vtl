@@ -14,14 +14,62 @@ Description: $bill.ShortDescription
 <br/>
 
 <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Chamber</th><th>Yea</th><th>Nay</th><th>Present</th><th>Not Voting</th><th>Yea Percentage</th>
+        </tr>
+    </thead>
 
-#foreach ($vote in $votes)
-    <tr>
-        <td>$vote.Legislator.LastName</td>
-        <td>$vote.Legislator.FirstName</td>
-        <td>$vote.Legislator.Chamber</td>
-        <td>$vote.VoteSide.Code</td>
-    </tr>
-#end
-
+    <tbody>
+        <tr>
+            <td>House</td>
+            <td>${billActionSummary.yeaCount($house)}</td>
+            <td>${billActionSummary.nayCount($house)}</td>
+            <td>${billActionSummary.presentCount($house)}</td>
+            <td>${billActionSummary.notVotingCount($house)}</td>
+            <td>${billActionSummary.yeaPercentage($house)}</td>
+         </tr>
+        <tr>
+            <td>Senate</td>
+            <td>${billActionSummary.yeaCount($senate)}</td>
+            <td>${billActionSummary.nayCount($senate)}</td>
+            <td>${billActionSummary.presentCount($senate)}</td>
+            <td>${billActionSummary.notVotingCount($senate)}</td>
+            <td>${billActionSummary.yeaPercentage($senate)}</td>
+        </tr>
+    </tbody>
 </table>
+
+<br/>
+
+<h5>House</h5>
+
+<div class="pure-g">
+
+    #foreach ($side in $sides)
+    <div class="pure-u-1-4">
+        <b>$side.DisplayString</b><br/>
+        #foreach ($vote in ${billActionSummary.getVotes($house, $side)})
+            $vote.Legislator.LastName, $vote.Legislator.FirstName
+            <br/>
+        #end
+    </div>
+    #end
+
+</div>
+
+<h5>Senate</h5>
+
+<div class="pure-g">
+
+    #foreach ($side in $sides)
+    <div class="pure-u-1-4">
+        <b>$side.DisplayString</b><br/>
+        #foreach ($vote in ${billActionSummary.getVotes($senate, $side)})
+            $vote.Legislator.LastName, $vote.Legislator.FirstName
+            <br/>
+        #end
+    </div>
+    #end
+
+</div>

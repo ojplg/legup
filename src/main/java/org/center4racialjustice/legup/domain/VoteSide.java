@@ -2,6 +2,9 @@ package org.center4racialjustice.legup.domain;
 
 import org.center4racialjustice.legup.db.hrorm.Converter;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class VoteSide {
 
     public static final String YeaCode = "Y";
@@ -13,6 +16,9 @@ public final class VoteSide {
     public static final VoteSide Nay = new VoteSide(NayCode);
     public static final VoteSide NotVoting = new VoteSide(NotVotingCode);
     public static final VoteSide Present = new VoteSide(PresentCode);
+
+    public static final List<VoteSide> AllSides =
+            Arrays.asList(Yea, Nay, Present, NotVoting);
 
     public static final VoteSide fromCode(String code){
         switch (code){
@@ -42,6 +48,16 @@ public final class VoteSide {
 
     public boolean isNo(){
         return NayCode.equals(code);
+    }
+
+    public String getDisplayString(){
+        switch( code ){
+            case "Y" : return "Yea";
+            case "N" : return "Nay";
+            case "NV" : return "Not Voting";
+            case "P" : return "Present";
+            default : throw new RuntimeException("No such code " + code);
+        }
     }
 
     @Override

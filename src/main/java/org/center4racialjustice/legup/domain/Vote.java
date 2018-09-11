@@ -15,4 +15,8 @@ public class Vote implements Comparable<Vote> {
     public int compareTo(Vote that) {
         return this.legislator.compareTo(that.legislator);
     }
+
+    public boolean matches(Chamber chamber, VoteSide voteSide){
+        return voteSide.equals(this.voteSide) && chamber.equals(legislator.getChamber());
+    }
 }
