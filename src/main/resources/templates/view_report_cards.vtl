@@ -11,12 +11,12 @@
     #foreach ($report_card in $report_cards)
         <tr>
             <td>$report_card.Name</td>
-            <td><a href="/app/view_report_card_scores?report_card_id=$report_card.Id">calculate</a></td>
-            <td><a href="/app/view_report_card_form?report_card_id=$report_card.Id">edit</a></td>
+            <td><a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a></td>
+            <td><a href="/legup/view_report_card_form?report_card_id=$report_card.Id">edit</a></td>
         </tr>
     #end
 </table>
 
 <br/>
 
-<a href="/app/view_report_card_form">New</a>
+<a href="/legup/view_report_card_form">New</a>

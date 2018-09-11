@@ -33,7 +33,7 @@ public class ServerStarter {
         resourceHandler.setResourceBase("target/classes");
 
         ContextHandler appHandler = new ContextHandler();
-        appHandler.setContextPath("/app");
+        appHandler.setContextPath("/legup");
         HandlerList appHandlers = new HandlerList();
         AppHandler legUpHandler = new AppHandler(connectionPool);
         appHandlers.setHandlers(new Handler[]{ sessionHandler, legUpHandler });

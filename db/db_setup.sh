@@ -1,4 +1,3 @@
-sudo -u postgres psql -f setup.sql
 sudo -u postgres psql -f create_dev_db.sql
 sudo -u postgres psql -f create_test_db.sql
 sudo -u postgres psql -f create_db.sql
