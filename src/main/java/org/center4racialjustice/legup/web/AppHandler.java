@@ -79,6 +79,8 @@ public class AppHandler extends AbstractHandler {
         if( handlerMap.containsKey(appPath) ){
             RequestHandler requestHandler = handlerMap.get(appPath);
             requestHandler.processRequest(request, httpServletResponse);
+        } else {
+            log.info("Request for resource handler: " + appPath);
         }
     }
 
