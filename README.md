@@ -51,10 +51,11 @@ Technical Betterments
   or Mybatis (there's a branch for this) or JDBI (proyal's favorite)
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
 * Need a way to handle things that need to be in session and then cleared up
+* Deal with problems of file/text encodings (some legislator names contain non-ascii 
+  characters that are not always handler correctly)
 
 Features/bugs to work on
 
-* SB1722 will not load
 * CSS tags need to be added all over the place
 * Error checking for form submissions needed all over the place
 * Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
