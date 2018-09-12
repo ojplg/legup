@@ -18,21 +18,21 @@ import java.util.regex.Pattern;
 
 public class MemberHtmlParser {
 
+    private static final String AssemblyRegex = "Current (House|Senate) Members";
+    private static final Pattern AssemblyPattern = Pattern.compile(AssemblyRegex);
+
+    private static final String SessionRegex = "(\\d+)\\w\\w General Assembly";
+    private static final Pattern SessionPattern = Pattern.compile(SessionRegex);
+
+    private static final String MemberIdExtractionRegex = ".*MemberID=(\\d+).*";
+    public static final Pattern MemberIdExtractionPattern = Pattern.compile(MemberIdExtractionRegex);
+
     private final Document document;
     private final NameParser nameParser = new NameParser(new HashMap<>());
 
     private MemberHtmlParser(Document document){
         this.document = document;
     }
-
-    private String assemblyRegex = "Current (House|Senate) Members";
-    private Pattern assemblyPattern = Pattern.compile(assemblyRegex);
-
-    private String sessionRegex = "(\\d+)\\w\\w General Assembly";
-    private Pattern sessionPattern = Pattern.compile(sessionRegex);
-
-    private static String memberIdExtractionRegex = ".*MemberID=(\\d+).*";
-    public static Pattern memberIdExtractionPattern = Pattern.compile(memberIdExtractionRegex);
 
     public static MemberHtmlParser load(String url) {
         try {
@@ -48,7 +48,7 @@ public class MemberHtmlParser {
         Elements spans = document.select("span");
         for(Element span : spans){
             String content = span.text();
-            Matcher matcher = assemblyPattern.matcher(content);
+            Matcher matcher = AssemblyPattern.matcher(content);
             if ( matcher.matches() ){
                 String assemblyString = matcher.group(1);
                 return Chamber.fromString(assemblyString);
@@ -61,7 +61,7 @@ public class MemberHtmlParser {
         Elements spans = document.select("span");
         for(Element span : spans){
             String content = span.text();
-            Matcher matcher = sessionPattern.matcher(content);
+            Matcher matcher = SessionPattern.matcher(content);
             if ( matcher.matches() ){
                 String sessionString = matcher.group(1);
                 return Long.parseLong(sessionString);
@@ -90,22 +90,21 @@ public class MemberHtmlParser {
 
         List<Legislator> members = new ArrayList<>();
 
-
         for(Element row : rows){
             Elements cells = row.select("td");
             Element firstCell = cells.first();
             Element anchor = firstCell.selectFirst("a");
             if ( anchor != null ){
                 String href = anchor.attr("href");
-                Matcher matcher = memberIdExtractionPattern.matcher(href);
+                Matcher matcher = MemberIdExtractionPattern.matcher(href);
                 if( matcher.matches() ){
                     String memberId = matcher.group(1);
 
                     String nameString = anchor.text();
                     Name name = nameParser.fromRegularOrderString(nameString);
-                    Element disctrictCell = cells.get(3);
+                    Element districtCell = cells.get(3);
                     Element partyCell = cells.get(4);
-                    String districtString = disctrictCell.text();
+                    String districtString = districtCell.text();
                     int district = Integer.parseInt(districtString);
                     String partyCode = partyCell.text();
                     Legislator leg = new Legislator();
@@ -123,7 +122,5 @@ public class MemberHtmlParser {
             }
         }
         return members;
-
     }
-
 }

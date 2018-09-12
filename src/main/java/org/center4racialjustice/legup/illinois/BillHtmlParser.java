@@ -154,7 +154,7 @@ public class BillHtmlParser {
                 found = true;
                 String text = element.text();
                 String href = element.attr("href");
-                Matcher matcher = MemberHtmlParser.memberIdExtractionPattern.matcher(href);
+                Matcher matcher = MemberHtmlParser.MemberIdExtractionPattern.matcher(href);
                 if( matcher.matches()) {
                     String memberId = matcher.group(1);
                     Tuple<String, String> tuple = new Tuple<>(
