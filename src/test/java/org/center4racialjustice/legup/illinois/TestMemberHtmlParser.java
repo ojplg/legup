@@ -2,9 +2,18 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,12 +21,12 @@ public class TestMemberHtmlParser {
 
     @Test
     public void testParsingHouseMembers() {
-
-        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
+        String url = "http://www.ilga.gov/house/default.asp";
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, url);
 
         List<Legislator> names = parser.getLegislators();
-
-        Assert.assertNotNull(names);
+        Assert.assertEquals(128, names.size());
     }
 
     @Test

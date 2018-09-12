@@ -9,7 +9,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,15 @@ public class MemberHtmlParser {
             throw new RuntimeException(ex);
         }
 
+    }
+
+    public static MemberHtmlParser loadFromInputStream(InputStream inputStream, String url){
+        try {
+            Document doc = Jsoup.parse(inputStream, null, url);
+            return new MemberHtmlParser(doc);
+        } catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     public Chamber getAssembly(){
@@ -90,7 +101,9 @@ public class MemberHtmlParser {
 
         List<Legislator> members = new ArrayList<>();
 
+        int rowCount = 0;
         for(Element row : rows){
+            rowCount++;
             Elements cells = row.select("td");
             Element firstCell = cells.first();
             Element anchor = firstCell.selectFirst("a");
@@ -121,6 +134,7 @@ public class MemberHtmlParser {
 
             }
         }
+        System.out.println("ROW COUNT " + rowCount);
         return members;
     }
 }
