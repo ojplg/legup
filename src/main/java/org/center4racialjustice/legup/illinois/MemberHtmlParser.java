@@ -100,40 +100,42 @@ public class MemberHtmlParser {
 
         List<Legislator> members = new ArrayList<>();
 
-        int rowCount = 0;
         for(Element row : rows){
-            rowCount++;
             Elements cells = row.select("td");
             Element firstCell = cells.first();
+            if( firstCell.html().contains("javascript") ||
+                    firstCell.html().contains("class=\"heading\"")){
+                // we can ignore the javascript sort commands
+                // and the headings
+                continue;
+            }
             Element anchor = firstCell.selectFirst("a");
-            if ( anchor != null ){
-                String href = anchor.attr("href");
-                Matcher matcher = MemberIdExtractionPattern.matcher(href);
-                if( matcher.matches() ){
-                    String memberId = matcher.group(1);
+            String href = anchor.attr("href");
+            Matcher matcher = MemberIdExtractionPattern.matcher(href);
+            if( matcher.matches() ){
+                String memberId = matcher.group(1);
 
-                    String nameString = anchor.text();
-                    Name name = nameParser.fromRegularOrderString(nameString);
-                    Element districtCell = cells.get(3);
-                    Element partyCell = cells.get(4);
-                    String districtString = districtCell.text();
-                    int district = Integer.parseInt(districtString);
-                    String partyCode = partyCell.text();
-                    Legislator leg = new Legislator();
-                    leg.setName(name);
-                    leg.setChamber(chamber);
-                    leg.setDistrict(district);
-                    leg.setParty(partyCode);
-                    leg.setSessionNumber(sessionNumber);
+                String nameString = anchor.text();
+                Name name = nameParser.fromRegularOrderString(nameString);
+                Element districtCell = cells.get(3);
+                Element partyCell = cells.get(4);
+                String districtString = districtCell.text();
+                int district = Integer.parseInt(districtString);
+                String partyCode = partyCell.text();
+                Legislator leg = new Legislator();
+                leg.setName(name);
+                leg.setChamber(chamber);
+                leg.setDistrict(district);
+                leg.setParty(partyCode);
+                leg.setSessionNumber(sessionNumber);
 
-                    leg.setMemberId(memberId);
+                leg.setMemberId(memberId);
 
-                    members.add(leg);
-                }
-
+                members.add(leg);
+            } else {
+               throw new RuntimeException("Could not parse legislator from " + firstCell);
             }
         }
-        System.out.println("ROW COUNT " + rowCount);
         return members;
     }
 }
