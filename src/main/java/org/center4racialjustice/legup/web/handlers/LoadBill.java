@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.illinois.BillVotes;
 import org.center4racialjustice.legup.illinois.BillVotesParser;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 public class LoadBill implements Handler {
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) throws IOException {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) throws IOException {
         String billUrl = request.getParameter("url");
         String contents = BillVotesParser.readFileFromUrl(billUrl);
         BillVotes votes = BillVotesParser.parseFileContents(contents);

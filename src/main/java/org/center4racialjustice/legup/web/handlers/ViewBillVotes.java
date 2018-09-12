@@ -11,6 +11,7 @@ import org.center4racialjustice.legup.domain.BillActionSummary;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
@@ -26,7 +27,7 @@ public class ViewBillVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
         long billId = Util.getLongParameter(request,"bill_id");
 

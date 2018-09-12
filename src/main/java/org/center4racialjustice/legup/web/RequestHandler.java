@@ -23,12 +23,12 @@ public class RequestHandler {
         this.convertedName = convertToLowercaseWithUnderlines(handler.getClass().getSimpleName());
     }
 
-    public void processRequest(Request request, HttpServletResponse httpServletResponse) {
+    public void processRequest(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
         try {
             log.info("Processing request with " + handler.getClass().getName());
             String templatePath = "/templates/" + getTemplateName();
             Writer writer = httpServletResponse.getWriter();
-            VelocityContext velocityContext = handler.handle(request, httpServletResponse);
+            VelocityContext velocityContext = handler.handle(request, legupSession, httpServletResponse);
             velocityContext.put("contents", templatePath);
             Template template = Velocity.getTemplate("/templates/container.vtl");
             template.merge(velocityContext, writer);

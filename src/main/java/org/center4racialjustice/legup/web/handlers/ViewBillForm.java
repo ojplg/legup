@@ -2,13 +2,14 @@ package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 
 public class ViewBillForm implements Handler {
 
-    public VelocityContext handle(Request request, HttpServletResponse response) {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse response) {
         return new VelocityContext();
     }
 

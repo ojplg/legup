@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
@@ -29,7 +30,7 @@ public class SaveReportCard implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
             Long id = Util.getLongParameter(request, "id");

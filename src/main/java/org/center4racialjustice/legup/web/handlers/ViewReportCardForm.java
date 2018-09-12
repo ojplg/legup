@@ -12,6 +12,7 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +31,7 @@ public class ViewReportCardForm implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
             VelocityContext velocityContext = new VelocityContext();
 

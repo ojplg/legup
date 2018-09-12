@@ -13,6 +13,7 @@ import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ public class SaveCollatedVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
 

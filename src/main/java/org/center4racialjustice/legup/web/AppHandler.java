@@ -27,6 +27,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,11 +78,24 @@ public class AppHandler extends AbstractHandler {
         log.info("Handling request to " + appPath);
 
         if( handlerMap.containsKey(appPath) ){
+            HttpSession session = request.getSession();
+            LegupSession legupSession = doSession(session);
+
             RequestHandler requestHandler = handlerMap.get(appPath);
-            requestHandler.processRequest(request, httpServletResponse);
+            requestHandler.processRequest(request, legupSession, httpServletResponse);
         } else {
             log.info("Request for resource handler: " + appPath);
         }
     }
 
+    private LegupSession doSession(HttpSession session){
+        LegupSession legupSession = (LegupSession) session.getAttribute("LegupSession");
+        if (legupSession == null){
+            legupSession = new LegupSession();
+            session.setAttribute("LegupSession", legupSession);
+        }
+        int count = legupSession.increment();
+        log.info("Session count " + count);
+        return legupSession;
+    }
 }

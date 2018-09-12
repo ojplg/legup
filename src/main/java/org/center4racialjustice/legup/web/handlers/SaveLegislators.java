@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.illinois.MemberHtmlParser;
 import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,7 @@ public class SaveLegislators implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
 
