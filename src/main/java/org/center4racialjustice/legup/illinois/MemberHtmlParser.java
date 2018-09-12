@@ -43,7 +43,6 @@ public class MemberHtmlParser {
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
-
     }
 
     public static MemberHtmlParser loadFromInputStream(InputStream inputStream, String url){
