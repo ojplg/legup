@@ -18,8 +18,7 @@ public class ViewBillSearchResults implements Handler {
     @Override
     public VelocityContext handle(Request request, HttpServletResponse httpServletResponse) {
 
-        String chamberString = request.getParameter("chamber");
-        Chamber chamber = Chamber.fromString(chamberString);
+        Chamber chamber = Util.getConvertedParameter(request, "chamber", Chamber.Converter);
         Long number = Util.getLongParameter(request, "number");
 
         BillSearcher searcher = new BillSearcher();
