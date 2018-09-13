@@ -38,9 +38,6 @@ public class ViewBillSearchResults implements Handler {
         VelocityContext velocityContext = new VelocityContext();
 
         velocityContext.put("bill", billHtmlParser.getBill());
-//        velocityContext.put("bill_home_page_url", billHomePageUrl);
-//        velocityContext.put("bill_vote_page_url", votesUrl);
-//        velocityContext.put("votes_url_map", votesUrlsMap);
 
         SponsorNames sponsorNames =  billHtmlParser.getSponsorNames();
 
@@ -48,6 +45,9 @@ public class ViewBillSearchResults implements Handler {
         velocityContext.put("chief_senate_sponsor", sponsorNames.getSenateChiefSponsor().getFirst());
         velocityContext.put("house_sponsors", sponsorNames.getHouseSponsors());
         velocityContext.put("senate_sponsors", sponsorNames.getSenateSponsors());
+
+        velocityContext.put("uncollatedHouseVotes", billSearchResults.getUncollatedHouseVotes());
+        velocityContext.put("uncollatedSenateVotes", billSearchResults.getUncollatedSenateVotes());
 
         velocityContext.put("oneTimeKey", oneTimeKey);
 

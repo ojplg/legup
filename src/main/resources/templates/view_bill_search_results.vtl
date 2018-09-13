@@ -17,15 +17,24 @@ Number: $bill.Number
 
 <input type="submit" value="Save"/>
 
-<br/><br/>
-
-<a href="$bill_home_page_url">Bill</a>
-
 <br/>
 
-<a href="$bill_vote_page_url">Votes</a>
+<h5>Uncollated House Votes</h5>
 
-<br/>
+<ul>
+    #foreach ($name in $uncollatedHouseVotes)
+        <li>$name</li>
+    #end
+</ul>
+
+<h5>Uncollated Senate Votes</h5>
+
+<ul>
+    #foreach ($name in $uncollatedSenateVotes)
+        <li>$name</li>
+    #end
+</ul>
+
 
 <table>
     #foreach ($pair in ${votes_url_map.entrySet()})
