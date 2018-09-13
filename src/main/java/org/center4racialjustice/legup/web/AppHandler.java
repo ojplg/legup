@@ -59,7 +59,7 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new SaveReportCard(connectionPool));
         handlers.add(new ViewReportCardScores(connectionPool));
         handlers.add(new ViewBillSearchForm());
-        handlers.add(new ViewBillSearchResults());
+        handlers.add(new ViewBillSearchResults(connectionPool));
         handlers.add(new SaveSearchedBill(connectionPool));
         handlers.add(new ViewBillSponsors(connectionPool));
 

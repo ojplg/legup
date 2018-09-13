@@ -1,9 +1,11 @@
 package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
+import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.illinois.BillHtmlParser;
-import org.center4racialjustice.legup.illinois.BillSearcher;
+import org.center4racialjustice.legup.illinois.BillSearchResults;
+import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.LegupSession;
@@ -11,10 +13,14 @@ import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 public class ViewBillSearchResults implements Handler {
+
+    private final ConnectionPool connectionPool;
+
+    public ViewBillSearchResults(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
+    }
 
     @Override
     public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
@@ -22,24 +28,19 @@ public class ViewBillSearchResults implements Handler {
         Chamber chamber = Util.getConvertedParameter(request, "chamber", Chamber.Converter);
         Long number = Util.getLongParameter(request, "number");
 
-        BillSearcher searcher = new BillSearcher();
+        BillSearcherParser billSearcherParser = new BillSearcherParser(connectionPool.getWrappedConnection());
+        BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
 
-        String billHomePageUrl = searcher.searchForBaseUrl(chamber, number);
-        String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
+        String oneTimeKey = legupSession.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
-        BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
-        Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
-
-        HttpSession session = request.getSession();
-        session.setAttribute("billHtmlParser", billHtmlParser);
-        session.setAttribute("votesUrlsMap", votesUrlsMap);
+        BillHtmlParser billHtmlParser = billSearchResults.getBillHtmlParser();
 
         VelocityContext velocityContext = new VelocityContext();
 
         velocityContext.put("bill", billHtmlParser.getBill());
-        velocityContext.put("bill_home_page_url", billHomePageUrl);
-        velocityContext.put("bill_vote_page_url", votesUrl);
-        velocityContext.put("votes_url_map", votesUrlsMap);
+//        velocityContext.put("bill_home_page_url", billHomePageUrl);
+//        velocityContext.put("bill_vote_page_url", votesUrl);
+//        velocityContext.put("votes_url_map", votesUrlsMap);
 
         SponsorNames sponsorNames =  billHtmlParser.getSponsorNames();
 
@@ -48,6 +49,10 @@ public class ViewBillSearchResults implements Handler {
         velocityContext.put("house_sponsors", sponsorNames.getHouseSponsors());
         velocityContext.put("senate_sponsors", sponsorNames.getSenateSponsors());
 
+        velocityContext.put("oneTimeKey", oneTimeKey);
+
         return velocityContext;
     }
+
+
 }

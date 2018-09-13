@@ -12,22 +12,18 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
-import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillHtmlParser;
-import org.center4racialjustice.legup.illinois.BillVotes;
-import org.center4racialjustice.legup.illinois.BillVotesParser;
+import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorNames;
-import org.center4racialjustice.legup.illinois.VotesLegislatorsCollator;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BillPersistence {
@@ -40,12 +36,13 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public Bill saveParsedData(BillHtmlParser billHtmlParser, Map<String, String> votesMapUrl) throws IOException {
+    public Bill saveParsedData(BillSearchResults billSearchResults) throws IOException {
 
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
+            BillHtmlParser billHtmlParser = billSearchResults.getBillHtmlParser();
             Bill parsedBill = billHtmlParser.getBill();
             Bill dbBill = billDao.readBySessionChamberAndNumber(billHtmlParser.getSession(), billHtmlParser.getChamber(), billHtmlParser.getNumber());
 
@@ -85,37 +82,21 @@ public class BillPersistence {
             int sponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser);
             log.info("Saved sponsors: " + sponsorsSaved);
 
-            int houseVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.House);
+            int houseVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getHouseVotes());
             log.info("Saved " + houseVotesSaved + " house votes");
-            int senateVotesSaved = saveVotes(connection, bill, billActionLoad, votesMapUrl, legislators, Chamber.Senate);
+            int senateVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getSenateVotes());
             log.info("Saved " + senateVotesSaved + " senate votes");
 
             return bill;
         }
     }
 
-    private int saveVotes(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
-        String votePdfUrl = null;
-        for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet()){
-            if( urlPair.getKey().contains("Third Reading")
-                    && urlPair.getValue().contains(chamber.getName().toLowerCase())){
-                votePdfUrl = urlPair.getValue();
-                break;
-            }
-        }
-        if( votePdfUrl == null ){
-            return 0;
-        }
-
-        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(votePdfUrl);
-
-        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
-        collator.collate();
+    private int saveVotes(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, List<CollatedVote> votes) {
 
         BillActionDao billActionDao = new BillActionDao(connection);
 
         int savedCount = 0;
-        for (CollatedVote collatedVote : collator.getAllCollatedVotes()) {
+        for (CollatedVote collatedVote : votes) {
             Vote vote = collatedVote.asVote(bill, billActionLoad);
             BillAction billAction = BillAction.fromVote(vote);
             billActionDao.insert(billAction);

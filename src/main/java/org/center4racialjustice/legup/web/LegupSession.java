@@ -9,6 +9,7 @@ import java.util.UUID;
 public class LegupSession {
 
     public static String MemberHtmlParserKey = "MemberHtmlParserKey";
+    public static String BillSearchResultsKey = "BillSearchResultsKey";
 
     private int count = 1;
     private final Map<String, Tuple<String, Object>> storage = new HashMap<>();
