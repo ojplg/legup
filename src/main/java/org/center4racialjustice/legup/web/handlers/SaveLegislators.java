@@ -42,6 +42,7 @@ public class SaveLegislators implements Handler {
                 vc.put("saved_legislator_count", legislators.size());
             } else {
                 // FIXME: Actually, this should do something else.
+                // Display an error or something
                 vc.put("saved_legislator_count", 0);
             }
             return vc;

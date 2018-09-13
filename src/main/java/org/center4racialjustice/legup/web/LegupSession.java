@@ -23,6 +23,8 @@ public class LegupSession {
         return oneTimeKey;
     }
 
+    // Perhaps this should return a tuple with a message
+    // describing the error
     public Object getObject(String keyName, String oneTimeKey){
         Tuple<String, Object> tuple = storage.get(keyName);
         if( tuple == null ){
