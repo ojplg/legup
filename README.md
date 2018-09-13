@@ -45,12 +45,10 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 
 Technical Betterments
 
-* Improve injection db connection logic/access to web tier, do not use raw Connection object
 * Actually make a real connection pool and automated reclamation
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with Hibernate/javax.persistence 
   or Mybatis (there's a branch for this) or JDBI (proyal's favorite)
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
-* Need a way to handle things that need to be in session and then cleared up
 * Deal with problems of file/text encodings (some legislator names contain non-ascii 
   characters that are not always handler correctly)
 
@@ -60,11 +58,10 @@ Features/bugs to work on
 * Error checking for form submissions needed all over the place
 * Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
 * Allow configuration for score options
-* Calculate legislator grades from scores
 * Allow configuartion of grading options (grade on a curve?)
 * Load things other than "Third Reading" PDFs: Committee votes
 * Add a way to do name overrides in configuration or maybe DB
-
+* Work on override session stuff
 
 # Better Option
 
