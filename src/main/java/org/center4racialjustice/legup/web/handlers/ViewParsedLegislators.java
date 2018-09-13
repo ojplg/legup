@@ -18,9 +18,11 @@ public class ViewParsedLegislators implements Handler {
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
         List<Legislator> legislators = parser.getLegislators();
 
+        String oneTimeKey = legupSession.setObject(LegupSession.MemberHtmlParserKey, parser);
+
         VelocityContext vc = new VelocityContext();
         vc.put("legislators", legislators);
-        vc.put("url", memberUrl);
+        vc.put("oneTimeKey", oneTimeKey);
 
         return vc;
     }

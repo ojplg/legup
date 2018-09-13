@@ -26,18 +26,24 @@ public class SaveLegislators implements Handler {
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
 
-            String memberUrl = request.getParameter("url");
+            String oneTimeKey = request.getParameter("oneTimeKey");
 
-            MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
-            List<Legislator> legislators = parser.getLegislators();
-
-            LegislatorDao dao = new LegislatorDao(connection);
-            for (Legislator leg : legislators) {
-                dao.save(leg);
-            }
+            MemberHtmlParser parser = (MemberHtmlParser) legupSession.getObject(LegupSession.MemberHtmlParserKey, oneTimeKey);
 
             VelocityContext vc = new VelocityContext();
-            vc.put("saved_legislator_count", legislators.size());
+
+            if( parser != null ) {
+                List<Legislator> legislators = parser.getLegislators();
+
+                LegislatorDao dao = new LegislatorDao(connection);
+                for (Legislator leg : legislators) {
+                    dao.save(leg);
+                }
+                vc.put("saved_legislator_count", legislators.size());
+            } else {
+                // FIXME: Actually, this should do something else.
+                vc.put("saved_legislator_count", 0);
+            }
             return vc;
         }
     }
