@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,6 +34,18 @@ public class BillHtmlParser {
         }
     }
 
+    public BillHtmlParser(InputStream htmlStream, String url){
+        try {
+            this.url = url;
+            this.document = Jsoup.parse(htmlStream, null, url);
+            Tuple<Chamber, Long> tuple = parseBillIdentity();
+            chamber = tuple.getFirst();
+            number = tuple.getSecond();
+        } catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
     public String getUrl(){
         return url;
     }
@@ -53,8 +66,20 @@ public class BillHtmlParser {
     }
 
     public long getSession(){
-        // FIXME!!!
-        return 100;
+
+        String regex = "(\\d\\d\\d)(?:th|st) General Assembly";
+        Pattern pattern = Pattern.compile(regex);
+
+        Elements spans = document.select("span").attr("class", "heading");
+        for( Element span : spans ){
+            String content = span.text();
+            Matcher matcher = pattern.matcher(content);
+            if( matcher.matches() ){
+                String sessionString = matcher.group(1);
+                return Long.parseLong(sessionString);
+            }
+        }
+        throw new RuntimeException("Could not determine session");
     }
 
     private Tuple<Chamber, Long> parseBillIdentity(){
@@ -78,7 +103,7 @@ public class BillHtmlParser {
                         chamber = Chamber.Senate;
                         break;
                     default:
-                        throw new RuntimeException("How did this happen " + chamberString);
+                        throw new RuntimeException("Chamber String Unrecognized " + chamberString);
                 }
                 Long number = Long.parseLong(numberString);
                 return new Tuple<>(chamber, number);
