@@ -14,11 +14,12 @@ $(document).ready(function()
     <tr>
         <th>Name</th>
         <th>Party</th>
+        <th>Score</th>
+        <th>Percentage</th>
+        <th>Grade</th>
         #foreach ($bill in $bills)
             <th>$bill.Chamber - $bill.Number</th>
         #end
-        <th>Score</th>
-        <th>Grade</th>
     </tr>
     </thead>
 
@@ -27,11 +28,12 @@ $(document).ready(function()
         <tr>
             <td><a href="/legup/view_legislator_votes?legislator_id=$legislator.Id">$legislator.LastName, $legislator.FirstName</a></td>
             <td>$legislator.Party</td>
+            <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
+            <td> ${grades.get($legislator).Percentage} </td>
+            <td> ${grades.get($legislator).Letter} </td>
             #foreach ($bill in $bills)
                 <td>$!{scores.get($legislator, $bill)}</td>
             #end
-            <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
-            <td> ${grades.get($legislator)} </td>
         </tr>
     #end
     </tbody>

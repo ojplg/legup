@@ -61,7 +61,6 @@ Features/bugs to work on
 * Allow configuartion of grading options (grade on a curve?)
 * Load things other than "Third Reading" PDFs: Committee votes
 * Add a way to do name overrides in configuration or maybe DB
-* Work on override session stuff
 
 # Better Option
 
