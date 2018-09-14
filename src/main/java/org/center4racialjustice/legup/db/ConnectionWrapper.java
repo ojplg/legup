@@ -22,7 +22,7 @@ public class ConnectionWrapper implements Closeable {
                 connection.close();
             }
         } catch (SQLException ex){
-            throw new RuntimeException();
+            throw new RuntimeException(ex);
         }
     }
 }
