@@ -1,7 +1,5 @@
 package org.center4racialjustice.legup.domain;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.LookupTable;
 
@@ -71,14 +69,6 @@ public class ReportCardGrades {
         ReportFactor reportFactor = Lists.findfirst(reportCard.getReportFactors(), f -> f.getBill().getId().equals(billId));
         List<BillAction> billActions = billActionMap.get(reportFactor.getBill());
         return new ReportCardBillAnalysis(reportFactor, billActions, grades);
-    }
-
-    public Multimap<Grade, Legislator> collectByGrades(){
-        Multimap<Grade, Legislator> collated = MultimapBuilder.hashKeys().arrayListValues().build();
-        for( Map.Entry<Legislator, Grade> entry : grades.entrySet()){
-            collated.put(entry.getValue(), entry.getKey());
-        }
-        return collated;
     }
 
     private Map<Legislator, Integer> sumScores() {
