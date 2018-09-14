@@ -1,34 +1,38 @@
-<h4>House Bills</h4>
+<h4>Bill Index</h4>
 
-<table class="pure-table">
 
-    #foreach ( $bill in $house_bills )
+#foreach ($chamber in [$house, $senate])
 
-    <tr>
-        <td>$bill.Number</td>
-        <td>$bill.ShortDescription</td>
-        <td><a href="/legup/view_bill_votes?bill_id=$bill.Id">Votes</a></td>
-        <td><a href="/legup/view_bill_sponsors?bill_id=$bill.Id">Sponsors</a></td>
-    </tr>
+    <h4>$chamber.Name</h4>
 
+    #if ( $chamber == $house )
+        #set ( $bill_list = $house_bills )
+    #else
+        #set ( $bill_list = $senate_bills )
     #end
 
-</table>
+    <table class="pure-table pure-table-horizontal">
 
-<h4>Senate Bills</h4>
+        <thead>
+        <tr>
+            <th>Number</th>
+            <th>Short Description</th>
+            <th>Votes</th>
+            <th>Sponsors</th>
+        </tr>
+        </thead>
 
-<table class="pure-table">
+        <tbody>
+        #foreach ( $bill in $bill_list )
+        <tr>
+            <td>$bill.Number</td>
+            <td>$bill.ShortDescription</td>
+            <td><a href="/legup/view_bill_votes?bill_id=$bill.Id">Votes</a></td>
+            <td><a href="/legup/view_bill_sponsors?bill_id=$bill.Id">Sponsors</a></td>
+        </tr>
+        #end
+        </tbody>
 
-    #foreach ( $bill in $senate_bills )
+    </table>
 
-    <tr>
-        <td>$bill.Number</td>
-        <td>$bill.ShortDescription</td>
-        <td><a href="/legup/view_bill_votes?bill_id=$bill.Id">Votes</a></td>
-        <td><a href="/legup/view_bill_sponsors?bill_id=$bill.Id">Sponsors</a></td>
-    </tr>
-
-    #end
-
-</table>
-
+#end
