@@ -68,9 +68,9 @@ public class ReportCardGrades {
     }
 
     public ReportCardBillAnalysis getBillAnalysis(long billId){
-        Bill bill = Lists.findfirst(getBills(), b -> b.getId() == billId);
-        List<BillAction> billActions = billActionMap.get(bill);
-        return new ReportCardBillAnalysis(bill, billActions, grades);
+        ReportFactor reportFactor = Lists.findfirst(reportCard.getReportFactors(), f -> f.getBill().getId().equals(billId));
+        List<BillAction> billActions = billActionMap.get(reportFactor.getBill());
+        return new ReportCardBillAnalysis(reportFactor, billActions, grades);
     }
 
     public Multimap<Grade, Legislator> collectByGrades(){
