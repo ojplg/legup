@@ -50,6 +50,18 @@ public final class VoteSide {
         return NayCode.equals(code);
     }
 
+    public boolean committedVote(){
+        return YeaCode.equals(code) || NayCode.equals(code);
+    }
+
+    public VoteSide oppositeSide(){
+        switch (code) {
+            case "Y" : return Nay;
+            case "N" : return Yea;
+            default : throw new RuntimeException("No opposite side to " + getDisplayString());
+        }
+    }
+
     public String getDisplayString(){
         switch( code ){
             case "Y" : return "Yea";

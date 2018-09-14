@@ -32,6 +32,23 @@ public final class Name {
         this.suffix = suffix;
     }
 
+    public String getDisplay(){
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(lastName);
+        if ( suffix != null) {
+            buf.append(suffix);
+        }
+        buf.append(", ");
+        buf.append(firstName);
+        if ( middleInitial != null) {
+            buf.append(" ");
+            buf.append(middleInitial);
+        }
+
+        return buf.toString();
+    }
+
     public boolean hasFirstName(){
         return firstName != null;
     }
