@@ -25,14 +25,12 @@ public class ViewLegislators implements Handler {
     public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse){
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
-
-            VelocityContext vc = new VelocityContext();
-
             LegislatorDao dao = new LegislatorDao(connection);
             List<Legislator> legislators = dao.readAll();
             Collections.sort(legislators);
-            vc.put("legislators", legislators);
 
+            VelocityContext vc = new VelocityContext();
+            vc.put("legislators", legislators);
             return vc;
         }
 
