@@ -7,7 +7,7 @@ import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.service.BillActionCollator;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
@@ -37,10 +37,12 @@ public class ViewLegislatorVotes implements Handler {
             BillActionDao billActionDao = new BillActionDao(connection);
 
             List<BillAction> billActions = billActionDao.readByLegislator(legislator);
-            List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
+            BillActionCollator collator = new BillActionCollator(billActions);
 
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("votes", votes);
+            velocityContext.put("votes", collator.getVotes());
+            velocityContext.put("sponsorships", collator.getSponsorships());
+            velocityContext.put("chiefSponsorships", collator.getChiefSponsorships());
             velocityContext.put("legislator", legislator);
 
             return velocityContext;

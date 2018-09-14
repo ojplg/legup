@@ -37,6 +37,7 @@ public final class Name {
 
         buf.append(lastName);
         if ( suffix != null) {
+            buf.append(" ");
             buf.append(suffix);
         }
         buf.append(", ");

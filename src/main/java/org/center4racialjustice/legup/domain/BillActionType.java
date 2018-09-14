@@ -6,9 +6,13 @@ import java.util.Objects;
 
 public class BillActionType {
 
-    public final static BillActionType VOTE = new BillActionType("Vote");
-    public final static BillActionType SPONSOR = new BillActionType("Sponsor");
-    public final static BillActionType CHIEF_SPONSOR = new BillActionType("Chief Sponsor");
+    public static final String VoteCode = "Vote";
+    public static final String SponsorCode = "Sponsor";
+    public static final String ChiefSponsorCode = "Chief Sponsor";
+
+    public final static BillActionType VOTE = new BillActionType(VoteCode);
+    public final static BillActionType SPONSOR = new BillActionType(SponsorCode);
+    public final static BillActionType CHIEF_SPONSOR = new BillActionType(ChiefSponsorCode);
 
     public final static BillActionTypeConverter CONVERTER = new BillActionTypeConverter();
 
@@ -16,9 +20,9 @@ public class BillActionType {
 
     public static BillActionType fromCode(String code){
         switch (code) {
-            case "Vote" : return VOTE;
-            case "Sponsor" : return SPONSOR;
-            case "Chief Sponsor" : return CHIEF_SPONSOR;
+            case VoteCode : return VOTE;
+            case SponsorCode : return SPONSOR;
+            case ChiefSponsorCode : return CHIEF_SPONSOR;
             default : throw new RuntimeException("Unrecognized code " + code);
         }
     }

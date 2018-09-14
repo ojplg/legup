@@ -1,28 +1,88 @@
-<h4>View Bill Votes</h4>
 
-Votes of <a href="$legislator.MemberLink">$legislator.FirstName $legislator.LastName</a>
+<h6><a href="/legup/view_legislators">Return to Legislators Index</a></h6>
+
+<h4><a href="$legislator.MemberLink">$legislator.Name.Display</a></h4>
+
+<table class="pure-table pure-table-horizontal">
+    <tbody>
+        <tr>
+            <td>Chamber</td>
+            <td>$legislator.Chamber</td>
+        </tr>
+        <tr>
+            <td>District</td>
+            <td>$legislator.District</td>
+        </tr>
+        <tr>
+            <td>Party</td>
+            <td>$legislator.Party</td>
+        </tr>
+    </tbody>
+</table>
+
 <br/>
-$legislator.Chamber district $legislator.District
 
-<br/>
-<br/>
+<h5>Chief Sponsorships</h5>
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Chamber</th>
+            <th>Bill Number</th>
+            <th>Description</th>
+        </tr>
+    </thead>
 
-<table class="pure-table">
+    <tbody>
+        #foreach ($action in $chiefSponsorships)
+            <tr>
+                <td>$action.Bill.Chamber</td>
+                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$vote.Bill.Number</a></td>
+                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$vote.Bill.ShortDescription</a></td>
+            </tr>
+        #end
+    </tbody>
+</table>
 
-<tr>
-    <th>Chamber</th>
-    <th>Bill Number</th>
-    <th>Description</th>
-    <th>Vote</th>
-</tr>
+<h5>Sponsorships</h5>
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Chamber</th>
+            <th>Bill Number</th>
+            <th>Description</th>
+        </tr>
+    </thead>
 
-#foreach ($vote in $votes)
-    <tr>
-        <td>$vote.Bill.Chamber</td>
-        <td><a href="/legup/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.Number</a></td>
-        <td><a href="/legup/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.ShortDescription</a></td>
-        <td>$vote.VoteSide.Code</td>
-    </tr>
-#end
+    <tbody>
+        #foreach ($action in $sponsorships)
+            <tr>
+                <td>$action.Bill.Chamber</td>
+                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$action.Bill.Number</a></td>
+                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$action.Bill.ShortDescription</a></td>
+            </tr>
+        #end
+    </tbody>
+</table>
 
+<h5>Votes</h5>
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Chamber</th>
+            <th>Bill Number</th>
+            <th>Description</th>
+            <th>Vote</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        #foreach ($vote in $votes)
+            <tr>
+                <td>$vote.Bill.Chamber</td>
+                <td><a href="/legup/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.Number</a></td>
+                <td><a href="/legup/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.ShortDescription</a></td>
+                <td>$vote.VoteSide.Code</td>
+            </tr>
+        #end
+    </tbody>
 </table>
