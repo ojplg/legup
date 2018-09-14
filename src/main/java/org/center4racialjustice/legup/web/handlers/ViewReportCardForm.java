@@ -16,6 +16,7 @@ import org.center4racialjustice.legup.web.LegupSession;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class ViewReportCardForm implements Handler {
 
                 BillDao billDao = new BillDao(connection);
                 List<Bill> bills = billDao.readBySession(sessionId);
+                Collections.sort(bills);
 
                 log.info("Found " + bills.size() + " in session " + sessionId);
 
