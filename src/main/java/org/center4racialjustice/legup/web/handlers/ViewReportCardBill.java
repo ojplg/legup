@@ -1,9 +1,11 @@
 package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
+import org.center4racialjustice.legup.domain.ReportCardBillAnalysis;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.LegupSession;
+import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,14 +16,16 @@ public class ViewReportCardBill implements Handler {
     public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
         String oneTimeKey = request.getParameter("one_time_key");
-        String billId = request.getParameter("bill_id");
+        Long billId = Util.getLongParameter(request,"bill_id");
 
         ReportCardGrades reportCardGrades = (ReportCardGrades) legupSession.getObject(LegupSession.ReportCardGradesKey, oneTimeKey);
+        ReportCardBillAnalysis reportCardBillAnalysis = reportCardGrades.getBillAnalysis(billId);
 
         VelocityContext velocityContext = new VelocityContext();
 
         velocityContext.put("oneTimeKey", oneTimeKey);
-        velocityContext.put("billId", billId);
+        velocityContext.put("reportCardGrades", reportCardGrades);
+        velocityContext.put("reportCardBillAnalysis", reportCardBillAnalysis);
 
         return velocityContext;
     }

@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.domain;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.LookupTable;
 
 import java.util.HashMap;
@@ -64,6 +65,12 @@ public class ReportCardGrades {
         }
 
         return grades;
+    }
+
+    public ReportCardBillAnalysis getBillAnalysis(long billId){
+        Bill bill = Lists.findfirst(getBills(), b -> b.getId() == billId);
+        List<BillAction> billActions = billActionMap.get(bill);
+        return new ReportCardBillAnalysis(bill, billActions, grades);
     }
 
     public Multimap<Grade, Legislator> collectByGrades(){
