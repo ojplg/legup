@@ -1,5 +1,5 @@
 
-<h6><a href="/legup/view_legislators">Return to Legislators Index</a></h6>
+<h6><a href="/legup/view_legislators">Legislators Index</a></h6>
 
 <h4><a href="$legislator.MemberLink">$legislator.Name.Display</a></h4>
 
@@ -36,8 +36,8 @@
         #foreach ($action in $chiefSponsorships)
             <tr>
                 <td>$action.Bill.Chamber</td>
-                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$vote.Bill.Number</a></td>
-                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$vote.Bill.ShortDescription</a></td>
+                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$action.Bill.Number</a></td>
+                <td><a href="/legup/view_bill_votes?bill_id=$action.Bill.Id">$action.Bill.ShortDescription</a></td>
             </tr>
         #end
     </tbody>
