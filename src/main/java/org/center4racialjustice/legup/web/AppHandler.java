@@ -19,6 +19,8 @@ import org.center4racialjustice.legup.web.handlers.SaveCollatedVotes;
 import org.center4racialjustice.legup.web.handlers.SaveLegislators;
 import org.center4racialjustice.legup.web.handlers.ViewBillVotes;
 import org.center4racialjustice.legup.web.handlers.ViewBills;
+import org.center4racialjustice.legup.web.handlers.ViewReportCardBill;
+import org.center4racialjustice.legup.web.handlers.ViewReportCardBills;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardForm;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardScores;
 import org.center4racialjustice.legup.web.handlers.ViewReportCards;
@@ -62,6 +64,8 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewBillSearchResults(connectionPool));
         handlers.add(new SaveSearchedBill(connectionPool));
         handlers.add(new ViewBillSponsors(connectionPool));
+        handlers.add(new ViewReportCardBills());
+        handlers.add(new ViewReportCardBill());
 
         for (Handler handler : handlers) {
             RequestHandler requestHandler = new RequestHandler(handler);

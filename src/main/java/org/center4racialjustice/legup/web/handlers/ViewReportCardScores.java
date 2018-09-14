@@ -32,16 +32,19 @@ public class ViewReportCardScores implements Handler {
 
         ReportCardGrades reportCardGrades = gradingService.calculate(reportCardId);
 
+        String oneTimeKey = legupSession.setObject(LegupSession.ReportCardGradesKey, reportCardGrades);
+
         LookupTable<Legislator, Bill, Integer> scores = reportCardGrades.getLookupTable();
         Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
         VelocityContext velocityContext = new VelocityContext();
 
+        velocityContext.put("oneTimeKey", oneTimeKey);
         velocityContext.put("scores", scores);
         velocityContext.put("grades", grades);
         velocityContext.put("computer", GradeCalculator.ScoreComputer);
-        velocityContext.put("legislators", scores.sortedRowHeadings(Legislator::compareTo));
-        velocityContext.put("bills", scores.sortedColumnHeadings(Bill::compareTo));
+        velocityContext.put("legislators", reportCardGrades.getLegislators());
+        velocityContext.put("bills", reportCardGrades.getBills());
 
         return velocityContext;
     }

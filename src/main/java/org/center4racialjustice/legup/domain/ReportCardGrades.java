@@ -24,7 +24,10 @@ public class ReportCardGrades {
 
         this.lookupTable = calculateLookupTable();
         this.grades = assignGrades();
+    }
 
+    public String getReportCardName(){
+        return reportCard.getName();
     }
 
     public LookupTable<Legislator, Bill, Integer> getLookupTable() {
@@ -33,6 +36,14 @@ public class ReportCardGrades {
 
     public Map<Legislator, Grade> getGrades(){
         return grades;
+    }
+
+    public List<Bill> getBills(){
+        return lookupTable.sortedColumnHeadings(Bill::compareTo);
+    }
+
+    public List<Legislator> getLegislators(){
+        return lookupTable.sortedRowHeadings(Legislator::compareTo);
     }
 
     private LookupTable<Legislator, Bill, Integer> calculateLookupTable(){

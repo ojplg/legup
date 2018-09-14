@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.HashMap;
@@ -8,8 +10,11 @@ import java.util.UUID;
 
 public class LegupSession {
 
+    private static final Logger log = LogManager.getLogger(LegupSession.class);
+
     public static String MemberHtmlParserKey = "MemberHtmlParserKey";
     public static String BillSearchResultsKey = "BillSearchResultsKey";
+    public static String ReportCardGradesKey = "ReportCardGradesKey";
 
     private int count = 1;
     private final Map<String, Tuple<String, Object>> storage = new HashMap<>();
@@ -29,13 +34,15 @@ public class LegupSession {
     public Object getObject(String keyName, String oneTimeKey){
         Tuple<String, Object> tuple = storage.get(keyName);
         if( tuple == null ){
+            log.warn("No tuple for key " + keyName + " with one time key " + oneTimeKey);
             return null;
         }
         if( tuple.getFirst().equals(oneTimeKey) ){
-            storage.remove(keyName);
+            //storage.remove(keyName);
             return tuple.getSecond();
         }
-        storage.remove(keyName);
+        //storage.remove(keyName);
+        log.warn("Bad one time key for " + keyName + ". Expected: " + tuple.getFirst() + " but provided " + oneTimeKey);
         return null;
     }
 
