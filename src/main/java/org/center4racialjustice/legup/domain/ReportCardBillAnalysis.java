@@ -23,6 +23,10 @@ public class ReportCardBillAnalysis {
         return reportFactor.getVoteSide();
     }
 
+    public VoteSide getUndesiredOutcome(){
+        return reportFactor.getVoteSide().oppositeSide();
+    }
+
     public Bill getBill(){
         return reportFactor.getBill();
     }
@@ -40,9 +44,19 @@ public class ReportCardBillAnalysis {
             Tuple<Grade, Legislator> tuple = new Tuple<>(grade, legislator);
             gradedLegislators.add(tuple);
         }
-        Comparator<Tuple<Grade,Legislator>> comparator = Comparator.comparing(Tuple::getFirst);
-        gradedLegislators.sort(comparator.reversed());
-        return gradedLegislators;
+        return sortByGrade(gradedLegislators);
     }
 
+    public List<Tuple<Grade, Legislator>> getGradedLegislatorsNoSide(Chamber chamber){
+        List<Tuple<Grade, Legislator>> tuples = new ArrayList<>();
+        tuples.addAll(getGradedLegislators(chamber, VoteSide.NotVoting));
+        tuples.addAll(getGradedLegislators(chamber, VoteSide.Present));
+        return sortByGrade(tuples);
+    }
+
+    private List<Tuple<Grade,Legislator>> sortByGrade(List<Tuple<Grade,Legislator>> tuples){
+        Comparator<Tuple<Grade,Legislator>> comparator = Comparator.comparing(Tuple::getFirst);
+        tuples.sort(comparator.reversed());
+        return tuples;
+    }
 }
