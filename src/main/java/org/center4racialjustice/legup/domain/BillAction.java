@@ -2,11 +2,15 @@ package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class BillAction implements Comparable<BillAction> {
+public class BillAction {
+
+    public static final Comparator<BillAction> ByLegislatorComparator = Comparator.comparing(BillAction::getLegislator);
+    public static final Comparator<BillAction> ByBillComparator = Comparator.comparing(BillAction::getBill);
 
     private Long id;
     private Bill bill;
@@ -48,10 +52,5 @@ public class BillAction implements Comparable<BillAction> {
                 .filter(BillAction::isVote)
                 .map(BillAction::asVote)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public int compareTo(BillAction o) {
-        return bill.compareTo(o.bill);
     }
 }
