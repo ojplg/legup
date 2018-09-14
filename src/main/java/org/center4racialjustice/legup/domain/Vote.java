@@ -2,19 +2,19 @@ package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
 
+import java.util.Comparator;
+
 @Data
-public class Vote implements Comparable<Vote> {
+public class Vote {
+
+    public static final Comparator<Vote> ByLegislatorComparator = Comparator.comparing(Vote::getLegislator);
+    public static final Comparator<Vote> ByBillComparator = Comparator.comparing(Vote::getBill);
 
     private Long id;
     private Bill bill;
     private Legislator legislator;
     private VoteSide voteSide;
     private BillActionLoad billActionLoad;
-
-    @Override
-    public int compareTo(Vote that) {
-        return this.legislator.compareTo(that.legislator);
-    }
 
     public boolean matches(Chamber chamber, VoteSide voteSide){
         return voteSide.equals(this.voteSide) && chamber.equals(legislator.getChamber());

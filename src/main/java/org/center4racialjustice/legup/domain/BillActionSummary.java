@@ -16,7 +16,7 @@ public class BillActionSummary {
     public List<Vote> getVotes(Chamber chamber, VoteSide voteSide){
         List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
         List<Vote> filtered = votes.stream().filter(v -> v.matches(chamber, voteSide)).collect(Collectors.toList());
-        filtered.sort(Vote::compareTo);
+        filtered.sort(Vote.ByLegislatorComparator);
         return filtered;
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class BillAction {
+public class BillAction implements Comparable<BillAction> {
 
     private Long id;
     private Bill bill;
@@ -50,4 +50,8 @@ public class BillAction {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public int compareTo(BillAction o) {
+        return bill.compareTo(o.bill);
+    }
 }
