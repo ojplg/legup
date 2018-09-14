@@ -57,6 +57,7 @@ Technical Betterments
 
 Features/bugs to work on
 
+* Need different grading scales for different chambers
 * Add legislator tracking for veto session, etc (Louisa must define)
 * CSS tags need to be added all over the place
 * Error checking for form submissions needed all over the place

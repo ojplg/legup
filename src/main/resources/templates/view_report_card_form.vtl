@@ -18,10 +18,10 @@
     <h5>Factors</h5>
     <table class="pure-table">
         <tr>
-            <th>Bill ID</th>
-            <th>Bill Session</th>
             <th>Bill Chamber</th>
             <th>Bill Number</th>
+            <th>Short Description</th>
+            <th>Session</th>
             <th>Desired Vote</th>
         </tr>
 
@@ -29,10 +29,10 @@
             #set ( $bill = $pair.Key )
             #set ( $setting = $pair.Value )
             <tr>
-                <td>$bill.id</td>
-                <td>$bill.Session</td>
                 <td>$bill.Chamber</td>
                 <td>$bill.Number</td>
+                <td>$bill.ShortDescription</td>
+                <td>$bill.Session</td>
                 <td>
                     <select name="bill_vote_side_$bill.id" form="save_report_card_form">
                         <option value="Unselect"></option>

@@ -17,9 +17,10 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class ViewReportCardForm implements Handler {
 
@@ -55,7 +56,7 @@ public class ViewReportCardForm implements Handler {
                 List<ReportFactor> factors = reportCard.getReportFactors();
                 Map<Long, ReportFactor> factorsByBillId = Lists.asMap(factors, f -> f.getBill().getId());
 
-                Map<Bill, String> factorSettings = new HashMap<>();
+                SortedMap<Bill, String> factorSettings = new TreeMap<>();
 
                 for(Bill bill : bills){
                     ReportFactor matchingFactor = factorsByBillId.get(bill.getId());

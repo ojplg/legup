@@ -41,8 +41,11 @@ public class ReportCardBillAnalysis {
         for(Vote vote : votes){
             Legislator legislator = vote.getLegislator();
             Grade grade = legislatorScores.get(legislator);
-            Tuple<Grade, Legislator> tuple = new Tuple<>(grade, legislator);
-            gradedLegislators.add(tuple);
+            // small report cards may not have a grade for every legislator
+            if (grade != null) {
+                Tuple<Grade, Legislator> tuple = new Tuple<>(grade, legislator);
+                gradedLegislators.add(tuple);
+            }
         }
         return sortByGrade(gradedLegislators);
     }

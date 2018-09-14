@@ -1,11 +1,11 @@
 
 <h4>View Report Card Bills</h4>
 
-<h5>Bills for $reportCardName</h5>
+<h5>Report Card: $reportCardName</h5>
 
 <br/>
 
 #foreach ($bill in $bills)
-    <a href="/legup/view_report_card_bill?bill_id=$bill.Id&one_time_key=$oneTimeKey">$bill.Number - $bill.shortDescription</a>
+    $bill.Chamber - $bill.Number - <a href="/legup/view_report_card_bill?bill_id=$bill.Id&one_time_key=$oneTimeKey">$bill.shortDescription</a>
     <br/>
 #end
