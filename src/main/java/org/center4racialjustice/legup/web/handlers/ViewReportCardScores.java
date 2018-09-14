@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Grade;
 import org.center4racialjustice.legup.domain.GradeCalculator;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.service.GradingService;
 import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.web.Handler;
@@ -29,8 +30,10 @@ public class ViewReportCardScores implements Handler {
 
         Long reportCardId = Util.getLongParameter(request, "report_card_id");
 
-        LookupTable<Legislator, Bill, Integer> scores = gradingService.calculate(reportCardId);
-        Map<Legislator, Grade> grades = gradingService.assignGrades(scores);
+        ReportCardGrades reportCardGrades = gradingService.calculate(reportCardId);
+
+        LookupTable<Legislator, Bill, Integer> scores = reportCardGrades.getLookupTable();
+        Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
         VelocityContext velocityContext = new VelocityContext();
 
