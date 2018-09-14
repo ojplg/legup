@@ -35,7 +35,6 @@ public class GradingService {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             LegislatorDao legislatorDao = new LegislatorDao(connection);
-            BillDao billDao = new BillDao(connection);
             BillActionDao billActionDao = new BillActionDao(connection);
 
             ReportCard reportCard = reportCardDao.read(reportCardId);
@@ -45,10 +44,9 @@ public class GradingService {
             List<Legislator> legislators = legislatorDao.readBySession(session);
 
             GradeCalculator calculator = new GradeCalculator(reportCard, legislators);
-            List<Long> billIds = reportCard.getReportFactors().stream()
-                    .map(rf -> rf.getBill().getId()).collect(Collectors.toList());
+            List<Bill> bills = reportCard.getReportFactors().stream()
+                    .map(rf -> rf.getBill()).collect(Collectors.toList());
 
-            List<Bill> bills = billDao.readByIds(billIds);
             Map<Bill, List<BillAction>> votesByBill = new HashMap<>();
             for (Bill bill : bills) {
                 List<BillAction> billActions = billActionDao.readByBill(bill);
