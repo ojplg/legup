@@ -30,8 +30,7 @@ public class RequestHandler {
             Writer writer = httpServletResponse.getWriter();
             VelocityContext velocityContext = handler.handle(request, legupSession, httpServletResponse);
             velocityContext.put("contents", templatePath);
-            Template template = Velocity.getTemplate("/templates/container.vtl");
-            template.merge(velocityContext, writer);
+            Velocity.mergeTemplate("/templates/container.vtl","ISO-8859-1",velocityContext, writer);
             request.setHandled(true);
         } catch (IOException ex) {
             log.error("Exception in request processing", ex);

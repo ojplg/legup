@@ -14,6 +14,18 @@ public class TestMemberHtmlParser {
     public static final String HouseMemberUrl = "http://www.ilga.gov/house/default.asp";
 
     @Test
+    public void loadAndreNameWithAccent(){
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        List<Legislator> legislators = parser.getLegislators();
+
+        List<Legislator> filtered = legislators.stream().filter(leg -> leg.getLastName().equals("Thapedi")).collect(Collectors.toList());
+        Legislator andreThapedi = filtered.get(0);
+
+        Assert.assertEquals("André", andreThapedi.getFirstName());
+    }
+
+    @Test
     public void testParsingHouseMembers() {
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
         MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);

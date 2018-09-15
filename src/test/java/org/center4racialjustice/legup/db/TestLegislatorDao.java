@@ -29,6 +29,26 @@ public class TestLegislatorDao {
     }
 
     @Test
+    public void testSavingCuriousCharacters(){
+        Legislator legislator = new Legislator();
+        legislator.setFirstName("André");
+        legislator.setLastName("Thapedi");
+        legislator.setDistrict(9L);
+        legislator.setSessionNumber(2018L);
+        legislator.setParty("Democrat");
+        legislator.setChamber(Chamber.House);
+
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
+
+        long id = dao.save(legislator);
+
+        Legislator fromDB = dao.read(id);
+
+        Assert.assertNotNull(fromDB);
+        Assert.assertEquals("André", fromDB.getFirstName());
+    }
+
+    @Test
     public void testSaveAndFind(){
         Legislator legislator = new Legislator();
         legislator.setFirstName("Herbietta");
