@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Name;
 
 import java.util.List;
@@ -25,14 +26,31 @@ public class BillSearchResults {
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              BillVotesResults houseVoteResults,
-                             BillVotesResults senateVoteResults
-                             ){
+                             BillVotesResults senateVoteResults){
         this.bill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
         this.houseVoteResults = houseVoteResults;
         this.senateVoteResults = senateVoteResults;
+    }
+
+    public BillSearchResults removeAlreadySavedData(List<BillActionLoad> existingDbLoads){
+        BillActionLoads loads = new BillActionLoads(existingDbLoads);
+
+        BillActionLoad mainLoad = loads.getBillHtmlLoad();
+        boolean mainLoadMatches = mainLoad != null && mainLoad.matches(url, checksum);
+
+        BillActionLoad houseVotesLoad = loads.getHouseVotesLoad();
+        boolean houseLoadMatches = houseVotesLoad != null
+                && houseVotesLoad.matches(houseVoteResults.getUrl(), houseVotesLoad.getCheckSum());
+
+        BillActionLoad senateVotesLoad = loads.getSenateVotesLoad();
+        boolean senateLoadMatches = senateVotesLoad != null
+                && senateVotesLoad.matches(senateVotesLoad.getUrl(), senateVotesLoad.getCheckSum());
+
+
+        return this;
     }
 
     public Bill getBill(){

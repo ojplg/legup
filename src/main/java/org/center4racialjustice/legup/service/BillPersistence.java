@@ -14,6 +14,7 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorNames;
@@ -46,6 +47,7 @@ public class BillPersistence {
 
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
             List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
+            billSearchResults.removeAlreadySavedData(priorLoads);
 
         }
         return new BillSearchResults();

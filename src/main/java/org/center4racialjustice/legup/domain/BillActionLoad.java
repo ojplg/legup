@@ -13,4 +13,8 @@ public class BillActionLoad {
     private String url;
     private long checkSum;
 
+    public boolean matches(String url, long checkSum){
+        return this.url.equals(url) && this.checkSum == checkSum;
+    }
+
 }
