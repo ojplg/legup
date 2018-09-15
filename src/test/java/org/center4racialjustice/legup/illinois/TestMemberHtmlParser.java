@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 
 public class TestMemberHtmlParser {
 
+    public static final String HouseMemberUrl = "http://www.ilga.gov/house/default.asp";;
+
+
     @Test
     public void testParsingHouseMembers() {
-        String url = "http://www.ilga.gov/house/default.asp";
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, url);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
 
         List<Legislator> names = parser.getLegislators();
         Assert.assertEquals(128, names.size());
@@ -31,16 +33,18 @@ public class TestMemberHtmlParser {
 
     @Test
     public void testGetAssembly(){
-        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/senate/default.asp");
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
 
         Chamber chamber = parser.getAssembly();
-        Assert.assertEquals(Chamber.Senate, chamber);
+        Assert.assertEquals(Chamber.House, chamber);
     }
 
 
     @Test
     public void testGetSession(){
-        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
 
         long session = parser.getSessionNumber();
         Assert.assertEquals(100L, session);
@@ -48,7 +52,8 @@ public class TestMemberHtmlParser {
 
     @Test
     public void testParseOutMemberId(){
-        MemberHtmlParser parser = MemberHtmlParser.load("http://www.ilga.gov/house/default.asp");
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
 
         List<Legislator> legislators = parser.getLegislators();
 
