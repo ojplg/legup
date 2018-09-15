@@ -50,7 +50,7 @@ public class TestBillActionDao {
         wilson.setSessionNumber(314);
 
         LegislatorDao legislatorDao = new LegislatorDao(connection);
-        long wilsonId = legislatorDao.save(wilson);
+        long wilsonId = legislatorDao.insert(wilson);
         wilson.setId(wilsonId);
 
         Bill bill = new Bill();
@@ -101,7 +101,7 @@ public class TestBillActionDao {
         wilson.setSessionNumber(314);
 
         LegislatorDao legislatorDao = new LegislatorDao(connection);
-        long wilsonId = legislatorDao.save(wilson);
+        long wilsonId = legislatorDao.insert(wilson);
         wilson.setId(wilsonId);
 
         Bill bill = new Bill();
@@ -147,7 +147,7 @@ public class TestBillActionDao {
         wilson.setSessionNumber(314);
 
         LegislatorDao legislatorDao = new LegislatorDao(connection);
-        long wilsonId = legislatorDao.save(wilson);
+        long wilsonId = legislatorDao.insert(wilson);
         wilson.setId(wilsonId);
 
         Bill bill = new Bill();

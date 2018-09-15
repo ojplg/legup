@@ -40,7 +40,7 @@ public class TestLegislatorDao {
 
         LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
 
-        long id = dao.save(legislator);
+        long id = dao.insert(legislator);
 
         Legislator fromDB = dao.read(id);
 
@@ -60,7 +60,7 @@ public class TestLegislatorDao {
 
         LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
 
-        long id = dao.save(legislator);
+        long id = dao.insert(legislator);
 
         Legislator fromDB = dao.read(id);
 
@@ -84,7 +84,7 @@ public class TestLegislatorDao {
 
         LegislatorDao dao = new LegislatorDao(connection);
 
-        dao.save(legislator);
+        dao.insert(legislator);
 
         Legislator legislator2 = new Legislator();
         legislator2.setFirstName("Mister");
@@ -94,7 +94,7 @@ public class TestLegislatorDao {
         legislator2.setParty("Democrat");
         legislator2.setChamber(Chamber.House);
 
-        dao.save(legislator2);
+        dao.insert(legislator2);
 
         List<Legislator> legs = dao.readAll();
         Assert.assertNotNull(legs);
@@ -114,7 +114,7 @@ public class TestLegislatorDao {
 
         LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
 
-        long id = dao.save(legislator);
+        long id = dao.insert(legislator);
 
         Legislator fromDB = dao.read(id);
 
@@ -129,7 +129,7 @@ public class TestLegislatorDao {
         legislator.setDistrict(5L);
         legislator.setChamber(Chamber.Senate);
 
-        dao.save(legislator);
+        dao.update(legislator);
 
         Legislator secondFromDB = dao.read(id);
 

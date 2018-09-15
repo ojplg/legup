@@ -51,4 +51,16 @@ public class Legislator implements Comparable<Legislator> {
         }
         return 0;
     }
+
+    public boolean persistedFieldsWithoutIdEqual(Legislator that){
+        return this.lastName.equals(that.lastName)
+                && this.firstName.equals(that.firstName)
+                && this.suffix.equals(that.suffix)
+                && this.middleInitialOrName.equals(that.middleInitialOrName)
+                && this.party.equals(that.party)
+                && this.chamber.equals(that.chamber)
+                && this.district == that.district
+                && this.sessionNumber == that.sessionNumber
+                && this.memberId.equals(that.memberId);
+    }
 }
