@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.util.Tuple;
 
@@ -12,10 +13,18 @@ public class BillSearchResults {
     private final List<Name> uncollatedHouseVotes;
     private final List<CollatedVote> senateVotes;
     private final List<Name> uncollatedSenateVotes;
+    private final Bill bill;
+    private final SponsorNames sponsorNames;
+    private final long checksum;
+    private final String url;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              Tuple<List<CollatedVote>, List<Name>> houseVotes,
                              Tuple<List<CollatedVote>, List<Name>> senateVotes){
+        this.bill = billHtmlParser.getBill();
+        this.sponsorNames = billHtmlParser.getSponsorNames();
+        this.checksum = billHtmlParser.getChecksum();
+        this.url = billHtmlParser.getUrl();
         this.billHtmlParser = billHtmlParser;
         this.houseVotes = houseVotes.getFirst();
         this.uncollatedHouseVotes = houseVotes.getSecond();
@@ -23,8 +32,20 @@ public class BillSearchResults {
         this.uncollatedSenateVotes = senateVotes.getSecond();
     }
 
-    public BillHtmlParser getBillHtmlParser() {
-        return billHtmlParser;
+    public Bill getBill(){
+        return bill;
+    }
+
+    public SponsorNames getSponsorNames() {
+        return sponsorNames;
+    }
+
+    public long getChecksum() {
+        return checksum;
+    }
+
+    public String getUrl(){
+        return url;
     }
 
     public List<CollatedVote> getHouseVotes() {

@@ -14,14 +14,12 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
-import org.center4racialjustice.legup.illinois.BillHtmlParser;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,22 +34,21 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public Bill saveParsedData(BillSearchResults billSearchResults) throws IOException {
+    public Bill saveParsedData(BillSearchResults billSearchResults) {
 
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
-            BillHtmlParser billHtmlParser = billSearchResults.getBillHtmlParser();
-            Bill parsedBill = billHtmlParser.getBill();
-            Bill dbBill = billDao.readBySessionChamberAndNumber(billHtmlParser.getSession(), billHtmlParser.getChamber(), billHtmlParser.getNumber());
+            Bill parsedBill = billSearchResults.getBill();
+            Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill.getSession(), parsedBill.getChamber(), parsedBill.getNumber());
 
             Bill bill;
             if ( dbBill != null ) {
                 bill = dbBill;
                 List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
                 List<BillActionLoad> loadsWithMatchingChecksums = priorLoads.stream()
-                            .filter(load -> load.getCheckSum() == billHtmlParser.getChecksum())
+                            .filter(load -> load.getCheckSum() == billSearchResults.getChecksum())
                             .collect(Collectors.toList());
 
                 // if this load has already been done and check-sums match-do nothing more
@@ -71,15 +68,15 @@ public class BillPersistence {
             // insert the bill action load
             BillActionLoad billActionLoad = new BillActionLoad();
             billActionLoad.setBill(bill);
-            billActionLoad.setUrl(billHtmlParser.getUrl());
-            billActionLoad.setCheckSum(billHtmlParser.getChecksum());
+            billActionLoad.setUrl(billSearchResults.getUrl());
+            billActionLoad.setCheckSum(billSearchResults.getChecksum());
             billActionLoad.setLoadTime(LocalDateTime.now());
             billActionLoadDao.insert(billActionLoad);
 
             LegislatorDao legislatorDao = new LegislatorDao(connection);
-            List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
+            List<Legislator> legislators = legislatorDao.readBySession(parsedBill.getSession());
 
-            int sponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billHtmlParser);
+            int sponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
             int houseVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getHouseVotes());
@@ -105,10 +102,10 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private int saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillHtmlParser billHtmlParser){
+    private int saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillSearchResults billSearchResults){
         BillActionDao billActionDao = new BillActionDao(connection);
 
-        SponsorNames sponsorNames = billHtmlParser.getSponsorNames();
+        SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
         int cnt = 0;
         if ( sponsorNames.getHouseChiefSponsor() != null ){
