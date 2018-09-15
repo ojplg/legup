@@ -2,34 +2,37 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Name;
-import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.List;
 
 public class BillSearchResults {
 
-    private final BillHtmlParser billHtmlParser;
-    private final List<CollatedVote> houseVotes;
-    private final List<Name> uncollatedHouseVotes;
-    private final List<CollatedVote> senateVotes;
-    private final List<Name> uncollatedSenateVotes;
+    private final BillVotesResults houseVoteResults;
+    private final BillVotesResults senateVoteResults;
     private final Bill bill;
     private final SponsorNames sponsorNames;
     private final long checksum;
     private final String url;
 
+    public BillSearchResults(){
+        this.houseVoteResults = BillVotesResults.NO_RESULTS;
+        this.senateVoteResults = BillVotesResults.NO_RESULTS;
+        this.bill = null;
+        this.sponsorNames = new SponsorNames();
+        this.checksum = 0;
+        this.url = null;
+    }
+
     public BillSearchResults(BillHtmlParser billHtmlParser,
-                             Tuple<List<CollatedVote>, List<Name>> houseVotes,
-                             Tuple<List<CollatedVote>, List<Name>> senateVotes){
+                             BillVotesResults houseVoteResults,
+                             BillVotesResults senateVoteResults
+                             ){
         this.bill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
-        this.billHtmlParser = billHtmlParser;
-        this.houseVotes = houseVotes.getFirst();
-        this.uncollatedHouseVotes = houseVotes.getSecond();
-        this.senateVotes = senateVotes.getFirst();
-        this.uncollatedSenateVotes = senateVotes.getSecond();
+        this.houseVoteResults = houseVoteResults;
+        this.senateVoteResults = senateVoteResults;
     }
 
     public Bill getBill(){
@@ -49,18 +52,18 @@ public class BillSearchResults {
     }
 
     public List<CollatedVote> getHouseVotes() {
-        return houseVotes;
+        return houseVoteResults.getCollatedVotes();
     }
 
     public List<Name> getUncollatedHouseVotes() {
-        return uncollatedHouseVotes;
+        return houseVoteResults.getUncollatedNames();
     }
 
     public List<CollatedVote> getSenateVotes() {
-        return senateVotes;
+        return senateVoteResults.getCollatedVotes();
     }
 
     public List<Name> getUncollatedSenateVotes() {
-        return uncollatedSenateVotes;
+        return senateVoteResults.getUncollatedNames();
     }
 }

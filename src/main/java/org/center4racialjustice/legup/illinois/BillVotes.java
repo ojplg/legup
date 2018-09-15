@@ -11,6 +11,7 @@ import java.util.List;
 public class BillVotes {
 
     private final String content;
+    private final String url;
     private Chamber billChamber;
     private Chamber votingChamber;
     private int billNumber;
@@ -26,10 +27,18 @@ public class BillVotes {
 
     public BillVotes(){
         this.content = "";
+        this.url = "";
     }
 
-    public BillVotes(String content){
+    public BillVotes(String url, String content){
+        this.url = url;
         this.content = content;
+    }
+
+    public String getUrl() { return url; }
+
+    public Long getChecksum(){
+        return (long) content.hashCode();
     }
 
     public void addVoteRecord(VoteRecord voteRecord){

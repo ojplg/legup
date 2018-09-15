@@ -34,6 +34,23 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
+    public BillSearchResults filterOutSavedData(BillSearchResults billSearchResults){
+        try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
+            Bill parsedBill = billSearchResults.getBill();
+            BillDao billDao = new BillDao(connection);
+            Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill.getSession(), parsedBill.getChamber(), parsedBill.getNumber());
+            if (dbBill == null) {
+                // if the DB bill is null, we have to save everything
+                return billSearchResults;
+            }
+
+            BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+            List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
+
+        }
+        return new BillSearchResults();
+    }
+
     public Bill saveParsedData(BillSearchResults billSearchResults) {
 
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){

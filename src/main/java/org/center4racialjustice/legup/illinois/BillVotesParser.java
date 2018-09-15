@@ -30,7 +30,7 @@ public class BillVotesParser {
 
     public static BillVotes readFromUrlAndParse(String url) throws IOException {
         String contents = BillVotesParser.readFileFromUrl(url);
-        return  BillVotesParser.parseFileContents(contents);
+        return  BillVotesParser.parseFileContents(url, contents);
     }
 
     public static String readFileFromUrl(String url)
@@ -119,9 +119,6 @@ public class BillVotesParser {
     }
 
     public static List<VoteRecord> parseVoteRecordLine(String input){
-
-
-
         String remainder = input.trim();
         List<VoteRecord> records = new ArrayList<>();
         while (remainder.length() > 0){
@@ -148,7 +145,7 @@ public class BillVotesParser {
 
     public static BillVotes parseFile(String filename) {
         String content = readFileToString(filename);
-        return parseFileContents(content);
+        return parseFileContents("",content);
     }
 
     private static String[] houseVoteStrings = new String[]{ "HOUSE ROLL CALL" };
@@ -177,9 +174,9 @@ public class BillVotesParser {
         return null;
     }
 
-    public static BillVotes parseFileContents(String content){
+    public static BillVotes parseFileContents(String url, String content){
         String[] lines = content.split("\n");
-        BillVotes bv = new BillVotes(content);
+        BillVotes bv = new BillVotes(url, content);
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
 

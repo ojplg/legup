@@ -5,10 +5,8 @@ import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
-import org.center4racialjustice.legup.util.Tuple;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +32,8 @@ public class BillSearcherParser {
             LegislatorDao legislatorDao = new LegislatorDao(connectionWrapper);
             List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
 
-            Tuple<List<CollatedVote>, List<Name>> houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
-            Tuple<List<CollatedVote>, List<Name>> senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
+            BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
+            BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
 
             return new BillSearchResults(billHtmlParser, houseVoteResults, senateVoteResults);
         } catch(IOException ex){
@@ -43,7 +41,7 @@ public class BillSearcherParser {
         }
     }
 
-    private Tuple<List<CollatedVote>, List<Name>> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
+    private BillVotesResults findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
         String votePdfUrl = null;
         for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet()){
             if( urlPair.getKey().contains("Third Reading")
@@ -53,7 +51,7 @@ public class BillSearcherParser {
             }
         }
         if( votePdfUrl == null ){
-            return new Tuple(Collections.emptyList(), Collections.emptyList());
+            return BillVotesResults.NO_RESULTS;
         }
 
         BillVotes billVotes = BillVotesParser.readFromUrlAndParse(votePdfUrl);
@@ -64,6 +62,6 @@ public class BillSearcherParser {
         List<CollatedVote> collatedVotes = collator.getAllCollatedVotes();
         List<Name> uncollatedVotes = collator.getUncollated();
 
-        return new Tuple(collatedVotes, uncollatedVotes);
+        return new BillVotesResults(collatedVotes, uncollatedVotes, votePdfUrl, billVotes.getChecksum());
     }
 }
