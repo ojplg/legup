@@ -4,7 +4,6 @@ import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.Chamber;
-import org.center4racialjustice.legup.illinois.BillHtmlParser;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.SponsorNames;
