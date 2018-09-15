@@ -52,8 +52,8 @@ public class ViewBillSearchResults implements Handler {
             velocityContext.put("uncollatedHouseVotes", billSearchResults.getUncollatedHouseVotes());
             velocityContext.put("uncollatedSenateVotes", billSearchResults.getUncollatedSenateVotes());
 
-            velocityContext.put("chiefHouseSponsor", sponsorNames.getHouseChiefSponsor());
-            velocityContext.put("chiefSenateSponsor", sponsorNames.getSenateChiefSponsor());
+            velocityContext.put("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
+            velocityContext.put("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
 
             velocityContext.put("houseSponsorCount", sponsorNames.getHouseSponsors().size());
             velocityContext.put("senateSponsorCount", sponsorNames.getSenateSponsors().size());

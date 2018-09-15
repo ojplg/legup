@@ -139,31 +139,14 @@ public class BillHtmlParser {
     }
 
     public SponsorNames getSponsorNames(){
+        List<SponsorName> houseSponsors = getSponsorNames("House Sponsors");
+        List<SponsorName> senateSponsors = getSponsorNames("Senate Sponsors");
 
-        List<Tuple<String, String>> houseSponsors = getSponsorNames("House Sponsors");
-        List<Tuple<String, String>> senateSponsors = getSponsorNames("Senate Sponsors");
-
-        SponsorNames sponsorNames = new SponsorNames();
-
-        if( houseSponsors.size() > 0 ) {
-            sponsorNames.setHouseChiefSponsor(houseSponsors.get(0));
-        }
-        if (senateSponsors.size() > 0 ){
-            sponsorNames.setSenateChiefSponsor(senateSponsors.get(0));
-        }
-        if( houseSponsors.size() > 1 ){
-            sponsorNames.setHouseSponsors(houseSponsors.subList(1,houseSponsors.size()));
-        }
-        if( senateSponsors.size() > 1 ){
-            sponsorNames.setSenateSponsors(senateSponsors.subList(1,senateSponsors.size()));
-        }
-
-
-        return sponsorNames;
+        return new SponsorNames(houseSponsors, senateSponsors);
     }
 
-    private List<Tuple<String, String>> getSponsorNames(String startSpanText){
-        List<Tuple<String, String>> tuples = new ArrayList<>();
+    private List<SponsorName> getSponsorNames(String startSpanText){
+        List<SponsorName> sponsorNames = new ArrayList<>();
 
         boolean started = false;
         boolean found = false;
@@ -182,10 +165,10 @@ public class BillHtmlParser {
                 Matcher matcher = MemberHtmlParser.MemberIdExtractionPattern.matcher(href);
                 if( matcher.matches()) {
                     String memberId = matcher.group(1);
-                    Tuple<String, String> tuple = new Tuple<>(
+                    SponsorName name = new SponsorName(
                             text.replace("Rep. ", ""),
                             memberId);
-                    tuples.add(tuple);
+                    sponsorNames.add(name);
                 }
             }
             if (started && found && "br".equals(nodeName)){
@@ -193,7 +176,7 @@ public class BillHtmlParser {
             }
         }
 
-        return tuples;
+        return sponsorNames;
 
     }
 }

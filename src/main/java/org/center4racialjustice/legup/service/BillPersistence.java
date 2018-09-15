@@ -16,6 +16,7 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
+import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
@@ -57,33 +58,11 @@ public class BillPersistence {
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
             Bill parsedBill = billSearchResults.getBill();
-            Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill.getSession(), parsedBill.getChamber(), parsedBill.getNumber());
-
-            Bill bill;
-            if ( dbBill != null ) {
-                bill = dbBill;
-                List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
-                List<BillActionLoad> loadsWithMatchingChecksums = priorLoads.stream()
-                            .filter(load -> load.getCheckSum() == billSearchResults.getChecksum())
-                            .collect(Collectors.toList());
-
-                // if this load has already been done and check-sums match-do nothing more
-                if( loadsWithMatchingChecksums.size() > 0){
-                    return dbBill;
-                } else {
-                    // FIXME
-                    // data must be reloaded, though bill is presumably in good shape
-                    // do deletes here?
-                }
-
-            } else {
-                billDao.save(parsedBill);
-                bill = parsedBill;
-            }
+            billDao.insert(parsedBill);
 
             // insert the bill action load
             BillActionLoad billActionLoad = new BillActionLoad();
-            billActionLoad.setBill(bill);
+            billActionLoad.setBill(parsedBill);
             billActionLoad.setUrl(billSearchResults.getUrl());
             billActionLoad.setCheckSum(billSearchResults.getChecksum());
             billActionLoad.setLoadTime(LocalDateTime.now());
@@ -92,15 +71,15 @@ public class BillPersistence {
             LegislatorDao legislatorDao = new LegislatorDao(connection);
             List<Legislator> legislators = legislatorDao.readBySession(parsedBill.getSession());
 
-            int sponsorsSaved = saveSponsors(connection, bill, billActionLoad, legislators, billSearchResults);
+            int sponsorsSaved = saveSponsors(connection, parsedBill, billActionLoad, legislators, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
-            int houseVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getHouseVotes());
-            log.info("Saved " + houseVotesSaved + " house votes");
-            int senateVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getSenateVotes());
-            log.info("Saved " + senateVotesSaved + " senate votes");
+//            int houseVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getHouseVotes());
+//            log.info("Saved " + houseVotesSaved + " house votes");
+//            int senateVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getSenateVotes());
+//            log.info("Saved " + senateVotesSaved + " senate votes");
 
-            return bill;
+            return parsedBill;
         }
     }
 
@@ -124,38 +103,33 @@ public class BillPersistence {
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
         int cnt = 0;
-        if ( sponsorNames.getHouseChiefSponsor() != null ){
-            saveSponsor(billActionDao, sponsorNames.getHouseChiefSponsor(), legislators, bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
+        if ( sponsorNames.getChiefHouseSponsor() != null ){
+            saveSponsor(billActionDao, sponsorNames.getChiefHouseSponsor(), bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
         }
-        if ( sponsorNames.getSenateChiefSponsor() != null ){
-            saveSponsor(billActionDao, sponsorNames.getSenateChiefSponsor(), legislators, bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
+        if ( sponsorNames.getChiefSenateSponsor() != null ){
+            saveSponsor(billActionDao, sponsorNames.getChiefSenateSponsor(), bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
         }
-        for(Tuple<String, String> tuple : sponsorNames.getHouseSponsors()){
-            saveSponsor(billActionDao, tuple, legislators, bill, billActionLoad, BillActionType.SPONSOR);
+        for(SponsorName sponsorName : sponsorNames.getHouseSponsors()){
+            saveSponsor(billActionDao, sponsorName, bill, billActionLoad, BillActionType.SPONSOR);
         }
-        for(Tuple<String, String> tuple : sponsorNames.getSenateSponsors()){
-            saveSponsor(billActionDao, tuple, legislators, bill, billActionLoad, BillActionType.SPONSOR);
+        for(SponsorName sponsorName : sponsorNames.getSenateSponsors()){
+            saveSponsor(billActionDao, sponsorName, bill, billActionLoad, BillActionType.SPONSOR);
         }
 
 
         return cnt;
     }
 
-    private void saveSponsor(BillActionDao billActionDao, Tuple<String, String> nameIdTuple, List<Legislator> legislators,
+    private void saveSponsor(BillActionDao billActionDao, SponsorName sponsorName,
                              Bill bill, BillActionLoad billActionLoad, BillActionType billActionType){
-        Legislator legislator = Lists.findfirst(legislators, l -> l.getMemberId().equals(nameIdTuple.getSecond()));
+        if( sponsorName.isComplete()) {
+            BillAction billAction = new BillAction();
+            billAction.setBill(bill);
+            billAction.setLegislator(sponsorName.getLegislator());
+            billAction.setBillActionLoad(billActionLoad);
+            billAction.setBillActionType(billActionType);
 
-        if (legislator == null ){
-            log.warn("Cannot find legislator for member id: " + nameIdTuple.getFirst() + "," + nameIdTuple.getSecond());
-            return;
+            billActionDao.insert(billAction);
         }
-
-        BillAction billAction = new BillAction();
-        billAction.setBill(bill);
-        billAction.setLegislator(legislator);
-        billAction.setBillActionLoad(billActionLoad);
-        billAction.setBillActionType(billActionType);
-
-        billActionDao.insert(billAction);
     }
 }

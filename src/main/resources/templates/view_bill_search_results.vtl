@@ -66,19 +66,17 @@
     <p>No uncollated votes</p>
 #end
 
+<h5>Data to save</h5>
+
 <form action="/legup/save_searched_bill">
 
 <input type="hidden" name="oneTimeKey" value="$oneTimeKey"/>
-
-<input type="submit" value="Save"/>
-
-<br/>
 
 <table class="pure-table pure-table-horizontal">
     <tbody>
         <tr>
             <td>Chief House Sponsor</td>
-            <td>$chiefHouseSponsor.First</td>
+            <td>$!chiefHouseSponsor.Legislator.Name.Display</td>
         </tr>
         <tr>
             <td>Other House Sponsor Count</td>
@@ -86,7 +84,7 @@
         </tr>
         <tr>
             <td>Chief Senate Sponsor</td>
-            <td>$chiefSenateSponsor.First</td>
+            <td>$!chiefSenateSponsor.Legislator.Name.Display</td>
         </tr>
         <tr>
             <td>Other Senate Sponsor Count</td>

@@ -35,7 +35,7 @@ public class BillSearcherParser {
             BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
             BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
 
-            return new BillSearchResults(billHtmlParser, houseVoteResults, senateVoteResults);
+            return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults);
         } catch(IOException ex){
             throw new RuntimeException(ex);
         }

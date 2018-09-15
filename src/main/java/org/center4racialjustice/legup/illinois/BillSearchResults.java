@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 
 import java.util.List;
@@ -22,10 +23,12 @@ public class BillSearchResults {
     private BillActionLoads billActionLoads = null;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
+                             List<Legislator> legislators,
                              BillVotesResults houseVoteResults,
                              BillVotesResults senateVoteResults){
         this.bill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
+        this.sponsorNames.completeAll(legislators);
         this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
         this.houseVoteResults = houseVoteResults;

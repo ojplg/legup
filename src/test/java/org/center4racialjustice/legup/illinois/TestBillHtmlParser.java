@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
-import org.center4racialjustice.legup.util.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,9 +60,9 @@ public class TestBillHtmlParser {
         BillHtmlParser parser = fromFileName(HouseBill2771FileName, HouseBill2771BaseUrl);
 
         SponsorNames sponsorNames = parser.getSponsorNames();
-        Assert.assertEquals("Christian L. Mitchell", sponsorNames.getHouseChiefSponsor().getFirst());
+        Assert.assertEquals("Christian L. Mitchell", sponsorNames.getChiefHouseSponsor().getRawName());
 
-        List<String> sponsors = sponsorNames.getHouseSponsors().stream().map(Tuple::getFirst).collect(Collectors.toList());
+        List<String> sponsors = sponsorNames.getHouseSponsors().stream().map(SponsorName::getRawName).collect(Collectors.toList());
 
         Assert.assertEquals(45, sponsors.size());
         Assert.assertEquals("Camille Y. Lilly", sponsors.get(0));
@@ -78,10 +77,10 @@ public class TestBillHtmlParser {
 
         SponsorNames sponsorNames = parser.getSponsorNames();
 
-        Assert.assertEquals("Toi W. Hutchinson", sponsorNames.getSenateChiefSponsor().getFirst());
+        Assert.assertEquals("Toi W. Hutchinson", sponsorNames.getChiefSenateSponsor().getRawName());
 
-        List<Tuple<String, String>> sponsorTuples = sponsorNames.getSenateSponsors();
-        List<String> sponsors = sponsorTuples.stream().map(Tuple::getFirst).collect(Collectors.toList());
+        List<SponsorName> sponsorTuples = sponsorNames.getSenateSponsors();
+        List<String> sponsors = sponsorTuples.stream().map(SponsorName::getRawName).collect(Collectors.toList());
 
         Assert.assertEquals(19, sponsors.size());
         Assert.assertEquals("Iris Y. Martinez", sponsors.get(0));

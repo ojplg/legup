@@ -29,6 +29,10 @@ public class BillDao {
         return innerDao.selectByColumns(bill, Arrays.asList("SESSION_NUMBER", "CHAMBER", "BILL_NUMBER"));
     }
 
+    public void insert(Bill bill){
+        innerDao.insert(bill);
+    }
+
     public Bill findOrCreate(long session, Chamber chamber, long number){
         Bill found = readBySessionChamberAndNumber(session, chamber, number);
         if( found != null ){
