@@ -55,11 +55,15 @@ Technical Betterments
 
 Features/bugs to work on
 
+* Legislator Persistence
+  * Perhaps check for and perform updates when changes to legislator data are found
+  * The legislator model includes a session id, but many legislators serve in multiple sessions.
+    A way to link or mark people as the same would be helpful.
 * Need different grading scales for different chambers
 * Add legislator tracking for veto session, etc (Louisa must define)
 * CSS tags need to be added all over the place
 * Error checking for form submissions needed all over the place
-* Lots of bugs where things blindly try to insert things without checking if it's been done before and doing updates
+* bugs where bill data can be blindly inserted without checking if it's been done before and doing updates
 * Allow configuration for score options
 * Allow configuartion of grading options (grade on a curve?)
 * Load things other than "Third Reading" PDFs: Committee votes
