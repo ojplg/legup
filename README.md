@@ -52,8 +52,6 @@ Technical Betterments
   or Mybatis (there's a branch for this) or JDBI (proyal's favorite) 
   or at least break hrorm to a stand-alone project
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
-* Deal with problems of file/text encodings (some legislator names contain non-ascii 
-  characters that are not always handler correctly)
 
 Features/bugs to work on
 
