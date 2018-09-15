@@ -14,7 +14,6 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
-import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorNames;
@@ -42,12 +41,12 @@ public class BillPersistence {
             BillDao billDao = new BillDao(connection);
             Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill.getSession(), parsedBill.getChamber(), parsedBill.getNumber());
             if (dbBill == null) {
-                billSearchResults.checkPriorLoads(Collections.emptyList());
+                billSearchResults.setPriorLoads(Collections.emptyList());
+            } else {
+                BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+                List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
+                billSearchResults.setPriorLoads(priorLoads);
             }
-
-            BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
-            List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
-            billSearchResults.checkPriorLoads(priorLoads);
         }
     }
 
