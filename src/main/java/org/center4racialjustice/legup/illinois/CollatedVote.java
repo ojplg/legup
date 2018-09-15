@@ -14,9 +14,9 @@ public class CollatedVote {
     private final Legislator legislator;
     private final Name name;
 
-    public Vote asVote(Bill bill, BillActionLoad billActionLoad){
+    public Vote asVote(BillActionLoad billActionLoad){
         Vote vote = new Vote();
-        vote.setBill(bill);
+        vote.setBill(billActionLoad.getBill());
         vote.setBillActionLoad(billActionLoad);
         vote.setLegislator(legislator);
         vote.setVoteSide(voteSide);

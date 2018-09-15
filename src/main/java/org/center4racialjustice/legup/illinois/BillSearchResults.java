@@ -94,6 +94,14 @@ public class BillSearchResults {
         return url;
     }
 
+    public BillActionLoad createHouseBillActionLoad(Bill bill){
+        return BillActionLoad.create(bill, houseVoteResults.getUrl(), houseVoteResults.getChecksum());
+    }
+
+    public BillActionLoad createSenateBillActionLoad(Bill bill){
+        return BillActionLoad.create(bill, senateVoteResults.getUrl(), senateVoteResults.getChecksum());
+    }
+
     public List<CollatedVote> getHouseVotes() {
         return houseVoteResults.getCollatedVotes();
     }

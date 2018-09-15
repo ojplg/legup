@@ -17,4 +17,13 @@ public class BillActionLoad {
         return this.url.equals(url) && this.checkSum == checkSum;
     }
 
+    public static BillActionLoad create(Bill bill, String url, long checksum){
+        BillActionLoad load = new BillActionLoad();
+        load.loadTime = LocalDateTime.now();
+        load.bill = bill;
+        load.url = url;
+        load.checkSum = checksum;
+        return load;
+    }
+
 }

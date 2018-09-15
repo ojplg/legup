@@ -7,24 +7,18 @@ import org.center4racialjustice.legup.db.BillActionLoadDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
-import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
-import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.SponsorNames;
-import org.center4racialjustice.legup.util.Lists;
-import org.center4racialjustice.legup.util.Tuple;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BillPersistence {
 
@@ -61,35 +55,32 @@ public class BillPersistence {
             billDao.insert(parsedBill);
 
             // insert the bill action load
-            BillActionLoad billActionLoad = new BillActionLoad();
-            billActionLoad.setBill(parsedBill);
-            billActionLoad.setUrl(billSearchResults.getUrl());
-            billActionLoad.setCheckSum(billSearchResults.getChecksum());
-            billActionLoad.setLoadTime(LocalDateTime.now());
+            BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());
             billActionLoadDao.insert(billActionLoad);
 
-            LegislatorDao legislatorDao = new LegislatorDao(connection);
-            List<Legislator> legislators = legislatorDao.readBySession(parsedBill.getSession());
-
-            int sponsorsSaved = saveSponsors(connection, parsedBill, billActionLoad, legislators, billSearchResults);
+            int sponsorsSaved = saveSponsors(connection, parsedBill, billActionLoad, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
-//            int houseVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getHouseVotes());
-//            log.info("Saved " + houseVotesSaved + " house votes");
-//            int senateVotesSaved = saveVotes(connection, bill, billActionLoad, billSearchResults.getSenateVotes());
-//            log.info("Saved " + senateVotesSaved + " senate votes");
+            BillActionLoad houseLoad = billSearchResults.createHouseBillActionLoad(parsedBill);
+            billActionLoadDao.insert(houseLoad);
+            int houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
+            log.info("Saved " + houseVotesSaved + " house votes");
+
+            BillActionLoad senateLoad = billSearchResults.createSenateBillActionLoad(parsedBill);
+            billActionLoadDao.insert(senateLoad);
+            int senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+            log.info("Saved " + senateVotesSaved + " senate votes");
 
             return parsedBill;
         }
     }
 
-    private int saveVotes(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, List<CollatedVote> votes) {
-
+    private int saveVotes(ConnectionWrapper connection, BillActionLoad billActionLoad, List<CollatedVote> votes) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
         int savedCount = 0;
         for (CollatedVote collatedVote : votes) {
-            Vote vote = collatedVote.asVote(bill, billActionLoad);
+            Vote vote = collatedVote.asVote(billActionLoad);
             BillAction billAction = BillAction.fromVote(vote);
             billActionDao.insert(billAction);
             savedCount++;
@@ -97,7 +88,7 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private int saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, List<Legislator> legislators, BillSearchResults billSearchResults){
+    private int saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, BillSearchResults billSearchResults){
         BillActionDao billActionDao = new BillActionDao(connection);
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
