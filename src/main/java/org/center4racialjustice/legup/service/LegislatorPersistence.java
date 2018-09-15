@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Legislator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LegislatorPersistence {
@@ -20,6 +21,7 @@ public class LegislatorPersistence {
             LegislatorDao legislatorDao = new LegislatorDao(connection);
             int insertedCount = 0;
             for(Legislator legislator : legislators) {
+                // NOTE: This should work by member id AND session
                 Legislator inDb = legislatorDao.readByMemberId(legislator.getMemberId());
                 if( inDb == null ){
                     legislatorDao.insert(legislator);
@@ -34,4 +36,19 @@ public class LegislatorPersistence {
         }
     }
 
+    public List<Legislator> filterOutSavedLegislators(List<Legislator> legislators){
+        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
+            List<Legislator> unknownLegislators = new ArrayList<>();
+            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            for(Legislator legislator : legislators) {
+                // NOTE: This should work by member id AND session
+                Legislator inDb = legislatorDao.readByMemberId(legislator.getMemberId());
+                if( inDb == null ){
+                    unknownLegislators.add(legislator);
+                }
+                // we could create a list of updates here .... See comment above
+            }
+            return unknownLegislators;
+        }
+    }
 }

@@ -12,7 +12,7 @@ public class LegupSession {
 
     private static final Logger log = LogManager.getLogger(LegupSession.class);
 
-    public static String MemberHtmlParserKey = "MemberHtmlParserKey";
+    public static String UnknownLegislatorsKey = "UnknownLegislatorsKey";
     public static String BillSearchResultsKey = "BillSearchResultsKey";
     public static String ReportCardGradesKey = "ReportCardGradesKey";
 

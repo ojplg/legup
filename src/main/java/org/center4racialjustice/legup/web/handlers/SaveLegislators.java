@@ -3,7 +3,6 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.illinois.MemberHtmlParser;
 import org.center4racialjustice.legup.service.LegislatorPersistence;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.LegupSession;
@@ -25,13 +24,12 @@ public class SaveLegislators implements Handler {
 
         String oneTimeKey = request.getParameter("oneTimeKey");
 
-        MemberHtmlParser parser = (MemberHtmlParser) legupSession.getObject(LegupSession.MemberHtmlParserKey, oneTimeKey);
+        List<Legislator> unknownLegislators = (List<Legislator>) legupSession.getObject(LegupSession.UnknownLegislatorsKey, oneTimeKey);
 
         VelocityContext vc = new VelocityContext();
 
-        if( parser != null ) {
-            List<Legislator> legislators = parser.getLegislators();
-            int savedCount = legislatorPersistence.insertLegislators(legislators);
+        if( unknownLegislators != null ) {
+            int savedCount = legislatorPersistence.insertLegislators(unknownLegislators);
             vc.put("saved_legislator_count", savedCount);
         } else {
             // FIXME: Actually, this should do something else.

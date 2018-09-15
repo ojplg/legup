@@ -1,40 +1,51 @@
 
-<h3>Review Parsed Legislators</h3>
-
 <form action="/legup/save_legislators">
+
+#if ( ${legislators.size()} == 0 )
+
+<p>Parsed $parsedLegislatorCount legislators. All were found in the existing database. No legislators to save.</p>
+
+#else
+
+<p>Parsed $parsedLegislatorCount legislators. Newly discovered shown below. Click Save to persist.</p>
 
 <input type="hidden" name="oneTimeKey" value="$oneTimeKey"/>
 
 <input type="submit" value="Save"/>
 
 <table class="pure-table">
-    <tr>
-        <th>Raw Name</th>
-        <th>First Name</th>
-        <th>Middle Name or Initial</th>
-        <th>Last Name</th>
-        <th>Suffix</th>
-        <th>Chamber</th>
-        <th>District</th>
-        <th>Party</th>
-    </tr>
+    <thead>
+        <tr>
+            <th>Raw Name</th>
+            <th>First Name</th>
+            <th>Middle Name or Initial</th>
+            <th>Last Name</th>
+            <th>Suffix</th>
+            <th>Chamber</th>
+            <th>District</th>
+            <th>Party</th>
+        </tr>
+    </thead>
 
-
-#foreach( $legislator in $legislators )
-    <tr>
-        <td>$!legislator.UnparsedName</td>
-        <td>$!legislator.FirstName</td>
-        <td>$!legislator.MiddleInitialOrName</td>
-        <td>$!legislator.LastName</td>
-        <td>$!legislator.Suffix</td>
-        <td>$!legislator.Chamber</td>
-        <td>$!legislator.District</td>
-        <td>$!legislator.Party</td>
-    </tr>
-#end
+    <tbody>
+        #foreach( $legislator in $legislators )
+            <tr>
+                <td>$!legislator.UnparsedName</td>
+                <td>$!legislator.FirstName</td>
+                <td>$!legislator.MiddleInitialOrName</td>
+                <td>$!legislator.LastName</td>
+                <td>$!legislator.Suffix</td>
+                <td>$!legislator.Chamber</td>
+                <td>$!legislator.District</td>
+                <td>$!legislator.Party</td>
+            </tr>
+        #end
+    </tbody>
 
 </table>
 
 <input type="submit" value="Save"/>
 
 </form>
+
+#end
