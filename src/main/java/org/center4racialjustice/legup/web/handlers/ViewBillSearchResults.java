@@ -39,19 +39,27 @@ public class ViewBillSearchResults implements Handler {
 
             String oneTimeKey = legupSession.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
-            VelocityContext velocityContext = new VelocityContext();
-
-            velocityContext.put("bill", billSearchResults.getBill());
-
             SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
-            velocityContext.put("chief_house_sponsor", sponsorNames.getHouseChiefSponsor());
-            velocityContext.put("chief_senate_sponsor", sponsorNames.getSenateChiefSponsor());
-            velocityContext.put("house_sponsors", sponsorNames.getHouseSponsors());
-            velocityContext.put("senate_sponsors", sponsorNames.getSenateSponsors());
+            VelocityContext velocityContext = new VelocityContext();
 
+            velocityContext.put("billSearchResults", billSearchResults);
+            velocityContext.put("bill", billSearchResults.getBill());
+
+            boolean hasUncollatedVotes = billSearchResults.getUncollatedHouseVotes().size() > 0
+                    || billSearchResults.getUncollatedSenateVotes().size() > 0;
+            velocityContext.put("hasUncollatedVotes", hasUncollatedVotes);
             velocityContext.put("uncollatedHouseVotes", billSearchResults.getUncollatedHouseVotes());
             velocityContext.put("uncollatedSenateVotes", billSearchResults.getUncollatedSenateVotes());
+
+            velocityContext.put("chiefHouseSponsor", sponsorNames.getHouseChiefSponsor());
+            velocityContext.put("chiefSenateSponsor", sponsorNames.getSenateChiefSponsor());
+
+            velocityContext.put("houseSponsorCount", sponsorNames.getHouseSponsors().size());
+            velocityContext.put("senateSponsorCount", sponsorNames.getSenateSponsors().size());
+
+            velocityContext.put("houseVoteCount", billSearchResults.getHouseVotes().size());
+            velocityContext.put("senateVoteCount", billSearchResults.getSenateVotes().size());
 
             velocityContext.put("oneTimeKey", oneTimeKey);
 

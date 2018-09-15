@@ -1,66 +1,108 @@
 
 <h4>Bill Search Results</h4>
 
+<h5>Bill Identification</h5>
+<table class="pure-table pure-table-horizontal">
+    <tbody>
+        <tr>
+            <td>Chamber</td>
+            <td>$bill.Chamber.Name</td>
+        </tr>
+        <tr>
+            <td>Number</td>
+            <td>$bill.Number</td>
+        </tr>
+        <tr>
+            <td>Session</td>
+            <td>$bill.Session</td>
+        </tr>
+        <tr>
+            <td>Short Description</td>
+            <td>$bill.ShortDescription</td>
+        </tr>
+    </tbody>
+</table>
+
+<h5>Prior Save Data</h5>
+<table class="pure-table pure-table-horizontal">
+    <tbody>
+        <tr>
+            <td>Bill and Sponsors</td>
+            <td>$billSearchResults.MainLoadStatus</td>
+        </tr>
+        <tr>
+            <td>House Votes</td>
+            <td>$billSearchResults.HouseVoteLoadStatus</td>
+        </tr>
+        <tr>
+            <td>Senate Votes</td>
+            <td>$billSearchResults.SenateVoteLoadStatus</td>
+        </tr>
+    </tbody>
+</table>
+
+<h5>Uncollated Votes</h5>
+#if ( $hasUncollatedVotes )
+    <div class="pure-g">
+        <div class="pure-u-1-2">
+            <h5>House</h5>
+            <ul>
+                #foreach ($name in $uncollatedHouseVotes)
+                    <li>$name</li>
+                #end
+            </ul>
+        </div>
+
+        <div class="pure-u-1-2">
+            <h5>Senate</h5>
+            <ul>
+                #foreach ($name in $uncollatedSenateVotes)
+                    <li>$name</li>
+                #end
+            </ul>
+        </div>
+    </div>
+#else
+    <p>No uncollated votes</p>
+#end
+
 <form action="/legup/save_searched_bill">
 
 <input type="hidden" name="oneTimeKey" value="$oneTimeKey"/>
-
-Chamber: $bill.Chamber.Name
-
-<br/>
-
-Number: $bill.Number
-
-<br/>
-
-<br/>
 
 <input type="submit" value="Save"/>
 
 <br/>
 
-<h5>Uncollated House Votes</h5>
-
-<ul>
-    #foreach ($name in $uncollatedHouseVotes)
-        <li>$name</li>
-    #end
-</ul>
-
-<h5>Uncollated Senate Votes</h5>
-
-<ul>
-    #foreach ($name in $uncollatedSenateVotes)
-        <li>$name</li>
-    #end
-</ul>
-
-
-<table>
-    #foreach ($pair in ${votes_url_map.entrySet()})
+<table class="pure-table pure-table-horizontal">
+    <tbody>
         <tr>
-            <td>$pair.Key</td>
-            <td>$pair.Value</td>
+            <td>Chief House Sponsor</td>
+            <td>$chiefHouseSponsor.First</td>
         </tr>
-    #end
+        <tr>
+            <td>Other House Sponsor Count</td>
+            <td>$houseSponsorCount</td>
+        </tr>
+        <tr>
+            <td>Chief Senate Sponsor</td>
+            <td>$chiefSenateSponsor.First</td>
+        </tr>
+        <tr>
+            <td>Other Senate Sponsor Count</td>
+            <td>$senateSponsorCount</td>
+        </tr>
+        <tr>
+            <td>House Vote Count</td>
+            <td>$houseVoteCount</td>
+        </tr>
+        <tr>
+            <td>Senate Vote Count</td>
+            <td>$senateVoteCount</td>
+        </tr>
+    </tbody>
 </table>
 
-<h5>House Sponsors</h5>
-Chief: $chief_house_sponsor.First
-<br/>
-<ul>
-    #foreach ($sponsor in $house_sponsors)
-        <li>$sponsor.First</li>
-    #end
-</ul>
-
-<h5>Senate Sponsors</h5>
-Chief: $chief_senate_sponsor.First
-<br/>
-<ul>
-    #foreach ($sponsor in $senate_sponsors)
-        <li>$sponsor.First</li>
-    #end
-</ul>
+<input type="submit" value="Save"/>
 
 </form>
