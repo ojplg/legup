@@ -8,21 +8,20 @@ import java.util.List;
 
 public class BillSearchResults {
 
-    private final BillVotesResults houseVoteResults;
-    private final BillVotesResults senateVoteResults;
+    enum MatchStatus {
+        Unchecked,NoPriorValues,MatchedValues,UnmatchedValues;
+    }
+
     private final Bill bill;
     private final SponsorNames sponsorNames;
     private final long checksum;
     private final String url;
+    private final BillVotesResults houseVoteResults;
+    private final BillVotesResults senateVoteResults;
 
-    public BillSearchResults(){
-        this.houseVoteResults = BillVotesResults.NO_RESULTS;
-        this.senateVoteResults = BillVotesResults.NO_RESULTS;
-        this.bill = null;
-        this.sponsorNames = new SponsorNames();
-        this.checksum = 0;
-        this.url = null;
-    }
+    private MatchStatus mainLoadStatus = MatchStatus.Unchecked;
+    private MatchStatus houseVoteLoadStatus = MatchStatus.Unchecked;
+    private MatchStatus senateVoteLoadStatus = MatchStatus.Unchecked;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              BillVotesResults houseVoteResults,
@@ -35,22 +34,35 @@ public class BillSearchResults {
         this.senateVoteResults = senateVoteResults;
     }
 
-    public BillSearchResults removeAlreadySavedData(List<BillActionLoad> existingDbLoads){
+    public void checkPriorLoads(List<BillActionLoad> existingDbLoads){
         BillActionLoads loads = new BillActionLoads(existingDbLoads);
 
         BillActionLoad mainLoad = loads.getBillHtmlLoad();
-        boolean mainLoadMatches = mainLoad != null && mainLoad.matches(url, checksum);
+        if ( mainLoad == null ){
+            mainLoadStatus = MatchStatus.NoPriorValues;
+        } else if ( mainLoad.matches(url, checksum) ){
+            mainLoadStatus = MatchStatus.MatchedValues;
+        } else {
+            mainLoadStatus = MatchStatus.UnmatchedValues;
+        }
 
         BillActionLoad houseVotesLoad = loads.getHouseVotesLoad();
-        boolean houseLoadMatches = houseVotesLoad != null
-                && houseVotesLoad.matches(houseVoteResults.getUrl(), houseVotesLoad.getCheckSum());
+        if ( houseVotesLoad == null ){
+            houseVoteLoadStatus = MatchStatus.NoPriorValues;
+        } else if ( houseVotesLoad.matches(houseVoteResults.getUrl(), houseVoteResults.getChecksum()) ){
+            houseVoteLoadStatus = MatchStatus.MatchedValues;
+        } else {
+            houseVoteLoadStatus = MatchStatus.UnmatchedValues;
+        }
 
         BillActionLoad senateVotesLoad = loads.getSenateVotesLoad();
-        boolean senateLoadMatches = senateVotesLoad != null
-                && senateVotesLoad.matches(senateVotesLoad.getUrl(), senateVotesLoad.getCheckSum());
-
-
-        return this;
+        if ( senateVotesLoad == null ){
+            senateVoteLoadStatus = MatchStatus.NoPriorValues;
+        } else if ( senateVotesLoad.matches(senateVoteResults.getUrl(), senateVoteResults.getChecksum()) ){
+            senateVoteLoadStatus = MatchStatus.MatchedValues;
+        } else {
+            senateVoteLoadStatus = MatchStatus.UnmatchedValues;
+        }
     }
 
     public Bill getBill(){
@@ -84,4 +96,5 @@ public class BillSearchResults {
     public List<Name> getUncollatedSenateVotes() {
         return senateVoteResults.getUncollatedNames();
     }
+
 }

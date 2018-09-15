@@ -22,6 +22,7 @@ import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,22 +36,19 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public BillSearchResults filterOutSavedData(BillSearchResults billSearchResults){
+    public void checkPriorLoads(BillSearchResults billSearchResults){
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
             Bill parsedBill = billSearchResults.getBill();
             BillDao billDao = new BillDao(connection);
             Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill.getSession(), parsedBill.getChamber(), parsedBill.getNumber());
             if (dbBill == null) {
-                // if the DB bill is null, we have to save everything
-                return billSearchResults;
+                billSearchResults.checkPriorLoads(Collections.emptyList());
             }
 
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
             List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
-            billSearchResults.removeAlreadySavedData(priorLoads);
-
+            billSearchResults.checkPriorLoads(priorLoads);
         }
-        return new BillSearchResults();
     }
 
     public Bill saveParsedData(BillSearchResults billSearchResults) {

@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.SponsorNames;
+import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.web.Handler;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.Util;
@@ -17,9 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 public class ViewBillSearchResults implements Handler {
 
     private final ConnectionPool connectionPool;
+    private final BillPersistence billPersistence;
 
     public ViewBillSearchResults(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
+        this.billPersistence = new BillPersistence(connectionPool);
     }
 
     @Override
@@ -32,6 +35,8 @@ public class ViewBillSearchResults implements Handler {
             BillSearcherParser billSearcherParser = new BillSearcherParser(connection);
             BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
 
+            billPersistence.checkPriorLoads(billSearchResults);
+
             String oneTimeKey = legupSession.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
             VelocityContext velocityContext = new VelocityContext();
@@ -40,8 +45,8 @@ public class ViewBillSearchResults implements Handler {
 
             SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
-            velocityContext.put("chief_house_sponsor", sponsorNames.getHouseChiefSponsor().getFirst());
-            velocityContext.put("chief_senate_sponsor", sponsorNames.getSenateChiefSponsor().getFirst());
+            velocityContext.put("chief_house_sponsor", sponsorNames.getHouseChiefSponsor());
+            velocityContext.put("chief_senate_sponsor", sponsorNames.getSenateChiefSponsor());
             velocityContext.put("house_sponsors", sponsorNames.getHouseSponsors());
             velocityContext.put("senate_sponsors", sponsorNames.getSenateSponsors());
 
