@@ -59,11 +59,13 @@ Features/bugs to work on
   * Perhaps check for and perform updates when changes to legislator data are found
   * The legislator model includes a session id, but many legislators serve in multiple sessions.
     A way to link or mark people as the same would be helpful.
+* Bill Persistence
+  * Need to use transactions for all the pieces
+  * Need to handle situation where only some parts have changed, use updates and deletes
 * Need different grading scales for different chambers
 * Add legislator tracking for veto session, etc (Louisa must define)
 * CSS tags need to be added all over the place
 * Error checking for form submissions needed all over the place
-* bugs where bill data can be blindly inserted without checking if it's been done before and doing updates
 * Allow configuration for score options
 * Allow configuartion of grading options (grade on a curve?)
 * Load things other than "Third Reading" PDFs: Committee votes
