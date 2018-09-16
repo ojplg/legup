@@ -62,7 +62,7 @@ public class BillHtmlParser {
     }
 
     public long getChecksum(){
-        return document.hashCode();
+        return document.outerHtml().hashCode();
     }
 
     public long getSession(){

@@ -39,7 +39,7 @@ public class BillSearchResults {
         billActionLoads = new BillActionLoads(existingDbLoads);
     }
 
-    public MatchStatus getMainLoadStatus(){
+    public MatchStatus getBillHtmlLoadStatus(){
         BillActionLoad mainLoad = billActionLoads.getBillHtmlLoad();
         if ( mainLoad == null ){
             return MatchStatus.NoPriorValues;
@@ -50,7 +50,7 @@ public class BillSearchResults {
         }
     }
 
-    public MatchStatus getHouseVoteLoadStatus(){
+    public MatchStatus getHouseVotesLoadStatus(){
         if (billActionLoads == null ){
             return MatchStatus.Unchecked;
         }
@@ -64,7 +64,7 @@ public class BillSearchResults {
         }
     }
 
-    public MatchStatus getSenateVoteLoadStatus(){
+    public MatchStatus getSenateVotesLoadStatus(){
         if (billActionLoads == null ){
             return MatchStatus.Unchecked;
         }
@@ -76,6 +76,27 @@ public class BillSearchResults {
         } else {
             return MatchStatus.UnmatchedValues;
         }
+    }
+
+    public BillActionLoad getBillHtmlLoad(){
+        if (billActionLoads == null ){
+            return null;
+        }
+        return billActionLoads.getBillHtmlLoad();
+    }
+
+    public BillActionLoad getHouseVotesLoad(){
+        if (billActionLoads == null ){
+            return null;
+        }
+        return billActionLoads.getHouseVotesLoad();
+    }
+
+    public BillActionLoad getSenateVotesLoad(){
+        if (billActionLoads == null ){
+            return null;
+        }
+        return billActionLoads.getSenateVotesLoad();
     }
 
     public Bill getBill(){

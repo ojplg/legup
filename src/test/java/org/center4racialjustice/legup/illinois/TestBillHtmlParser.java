@@ -14,6 +14,9 @@ public class TestBillHtmlParser {
     private static String HouseBill2771BaseUrl =
             "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
+    String test =
+            "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
+
     private static String HouseBill2771FileName =
             "/html/illinois_house_bill_2771.html";
 
@@ -96,6 +99,24 @@ public class TestBillHtmlParser {
     @Test
     public void testSenateBill889Parsing(){
         checkBill(senateBill889(), SenateBill889BaseFileName, SenateBill889BaseUrl);
+    }
+
+    @Test
+    public void testChecksumStaysStable(){
+
+        BillHtmlParser parser = new BillHtmlParser(HouseBill2771BaseUrl);
+        long checksum = parser.getChecksum();
+
+        System.out.println("CHECK " + checksum);
+
+//        Assert.assertEquals(  1845066581L, checksum);
+
+        parser = new BillHtmlParser(HouseBill2771BaseUrl);
+        checksum = parser.getChecksum();
+
+        System.out.println("CHECK " + checksum);
+
+        Assert.assertEquals(  -1648545048L, checksum);
     }
 
 }

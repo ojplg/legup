@@ -46,7 +46,6 @@ public class BillPersistence {
     }
 
     public Bill saveParsedData(BillSearchResults billSearchResults) {
-
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
@@ -54,7 +53,6 @@ public class BillPersistence {
             Bill parsedBill = billSearchResults.getBill();
             billDao.insert(parsedBill);
 
-            // insert the bill action load
             BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());
             billActionLoadDao.insert(billActionLoad);
 
