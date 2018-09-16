@@ -6,22 +6,21 @@ import org.center4racialjustice.legup.util.LookupTable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ReportCardGrades {
 
     private final ReportCard reportCard;
-    private final List<Legislator> legislators;
-    private final Map<Bill, List<BillAction>> billActionMap;
 
     private final LookupTable<Legislator, Bill, Integer> lookupTable;
     private final Map<Legislator, Grade> grades;
+    private final List<BillAction> actions;
 
-    public ReportCardGrades(ReportCard reportCard, List<Legislator> legislators, Map<Bill, List<BillAction>> billActionMap){
+    public ReportCardGrades(ReportCard reportCard, List<BillAction> actions){
         this.reportCard = reportCard;
-        this.legislators = legislators;
-        this.billActionMap = billActionMap;
+        this.actions = actions;
 
-        this.lookupTable = calculateLookupTable();
+        this.lookupTable = reportCard.calculateScores(actions);
         this.grades = assignGrades();
     }
 
@@ -45,11 +44,6 @@ public class ReportCardGrades {
         return lookupTable.sortedRowHeadings(Legislator::compareTo);
     }
 
-    private LookupTable<Legislator, Bill, Integer> calculateLookupTable(){
-        GradeCalculator calculator = new GradeCalculator(reportCard, legislators);
-        return calculator.calculate(billActionMap);
-    }
-
     private Map<Legislator, Grade> assignGrades(){
         Map<Legislator, Integer> sums = sumScores();
         Integer min = findMin(sums);
@@ -67,7 +61,9 @@ public class ReportCardGrades {
 
     public ReportCardBillAnalysis getBillAnalysis(long billId){
         ReportFactor reportFactor = Lists.findfirst(reportCard.getReportFactors(), f -> f.getBill().getId().equals(billId));
-        List<BillAction> billActions = billActionMap.get(reportFactor.getBill());
+        List<BillAction> billActions = actions.stream()
+                .filter(a -> billId == a.getBill().getId())
+                .collect(Collectors.toList());
         return new ReportCardBillAnalysis(reportFactor, billActions, grades);
     }
 
@@ -75,7 +71,7 @@ public class ReportCardGrades {
         Map<Legislator, Integer> sums = new HashMap<>();
 
         for (Legislator legislator : lookupTable.getRowHeadings()) {
-            Integer sum = lookupTable.computeRowSummary(legislator, 0, GradeCalculator.ScoreComputer);
+            Integer sum = lookupTable.computeRowSummary(legislator, 0, ReportCard.ScoreComputer);
             sums.put(legislator, sum);
         }
 

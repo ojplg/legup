@@ -101,29 +101,4 @@ public class TestBillHtmlParser {
     public void testSenateBill889Parsing(){
         checkBill(senateBill889(), SenateBill889BaseFileName, SenateBill889BaseUrl);
     }
-
-    @Test
-    public void testChecksumStaysStable(){
-
-        BillHtmlParser parser = new BillHtmlParser(HouseBill2771BaseUrl);
-        Tuple<String, Long> checkTuple1 = parser.getCheckTuple();
-
-        System.out.println("CHECK 1 " + checkTuple1.getSecond());
-
-//        Assert.assertEquals(  1845066581L, checksum);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex){
-
-        }
-
-        parser = new BillHtmlParser(HouseBill2771BaseUrl);
-        Tuple<String, Long> checkTuple2 = parser.getCheckTuple();
-
-        System.out.println("CHECK 2 " + checkTuple2.getSecond());
-
-        Assert.assertEquals( checkTuple1, checkTuple2);
-    }
-
 }

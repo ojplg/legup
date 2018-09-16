@@ -4,8 +4,8 @@ import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Grade;
-import org.center4racialjustice.legup.domain.GradeCalculator;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.service.GradingService;
 import org.center4racialjustice.legup.util.LookupTable;
@@ -28,7 +28,7 @@ public class ViewReportCardScores implements Handler {
     @Override
     public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
-        Long reportCardId = Util.getLongParameter(request, "report_card_id");
+        long reportCardId = Util.getLongParameter(request, "report_card_id");
 
         ReportCardGrades reportCardGrades = gradingService.calculate(reportCardId);
 
@@ -42,7 +42,7 @@ public class ViewReportCardScores implements Handler {
         velocityContext.put("oneTimeKey", oneTimeKey);
         velocityContext.put("scores", scores);
         velocityContext.put("grades", grades);
-        velocityContext.put("computer", GradeCalculator.ScoreComputer);
+        velocityContext.put("computer", ReportCard.ScoreComputer);
         velocityContext.put("legislators", reportCardGrades.getLegislators());
         velocityContext.put("bills", reportCardGrades.getBills());
 

@@ -27,6 +27,16 @@ public class BillActionType {
         }
     }
 
+    public static int scoreValue(BillActionType billActionType){
+        // These should maybe be configurable.
+        switch (billActionType.getCode()) {
+            case VoteCode : return 1;
+            case SponsorCode : return 2;
+            case ChiefSponsorCode : return 3;
+            default : throw new RuntimeException("Unrecognized code " + billActionType.getCode());
+        }
+    }
+
     public BillActionType(String code){
         this.code = code;
     }

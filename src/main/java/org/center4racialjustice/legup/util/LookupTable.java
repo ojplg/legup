@@ -18,12 +18,26 @@ public class LookupTable<R, C, V> {
     private final Set<R> rowHeadings = new HashSet<>();
     private final Set<C> columnHeadings = new HashSet<>();
 
+    private final V defaultValue;
+
+    public LookupTable(){
+        this.defaultValue = null;
+    }
+
+    public LookupTable(V defaultValue){
+        this.defaultValue = defaultValue;
+    }
+
     public V get(R row, C column){
         Map<C,V> rowMap = map.get(row);
         if (rowMap == null){
-            return null;
+            return defaultValue;
         }
-        return rowMap.get(column);
+        V value = rowMap.get(column);
+        if( value == null ){
+            return defaultValue;
+        }
+        return value;
     }
 
     public void put(R row, C column, V value){
