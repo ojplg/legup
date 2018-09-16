@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Data
@@ -23,7 +24,7 @@ public class BillActionLoad {
 
     public static BillActionLoad create(Bill bill, String url, long checksum){
         BillActionLoad load = new BillActionLoad();
-        load.loadTime = LocalDateTime.now();
+        load.loadTime = LocalDateTime.now(ZoneId.of("America/Chicago"));
         load.bill = bill;
         load.url = url;
         load.checkSum = checksum;
