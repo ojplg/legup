@@ -3,9 +3,13 @@ package org.center4racialjustice.legup.domain;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class BillActionLoad {
+
+    public static final DateTimeFormatter Formatter =
+            DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss");
 
     private Long id;
     private LocalDateTime loadTime;

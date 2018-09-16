@@ -39,21 +39,21 @@
         <tr>
             <td>Bill and Sponsors</td>
             <td>$billSearchResults.BillHtmlLoadStatus</td>
-            <td>$!billSearchResults.BillHtmlLoad.LoadTime</td>
+            <td>$!{billSearchResults.getBillHtmlLoad().getLoadTime().format($DateTimeFormatter)}</td>
             <td>$!billSearchResults.BillHtmlLoad.Url</td>
             <td>$!billSearchResults.BillHtmlLoad.CheckSum</td>
         </tr>
         <tr>
             <td>House Votes</td>
             <td>$billSearchResults.HouseVotesLoadStatus</td>
-            <td>$!billSearchResults.HouseVotesLoad.LoadTime</td>
+            <td>$!{billSearchResults.getHouseVotesLoad().getLoadTime().format($DateTimeFormatter)}</td>
             <td>$!billSearchResults.HouseVotesLoad.Url</td>
             <td>$!billSearchResults.HouseVotesLoad.CheckSum</td>
         </tr>
         <tr>
             <td>Senate Votes</td>
             <td>$billSearchResults.SenateVotesLoadStatus</td>
-            <td>$!billSearchResults.SenateVotesLoad.LoadTime</td>
+            <td>$!{billSearchResults.getSenateVotesLoad().getLoadTime().format($DateTimeFormatter)}</td>
             <td>$!billSearchResults.SenateVotesLoad.Url</td>
             <td>$!billSearchResults.SenateVotesLoad.CheckSum</td>
         </tr>

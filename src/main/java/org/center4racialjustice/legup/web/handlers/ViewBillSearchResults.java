@@ -73,6 +73,8 @@ public class ViewBillSearchResults implements Handler {
         velocityContext.put("houseVoteCount", billSearchResults.getHouseVotes().size());
         velocityContext.put("senateVoteCount", billSearchResults.getSenateVotes().size());
 
+        velocityContext.put("DateTimeFormatter", BillActionLoad.Formatter);
+
         velocityContext.put("oneTimeKey", oneTimeKey);
 
         return velocityContext;
