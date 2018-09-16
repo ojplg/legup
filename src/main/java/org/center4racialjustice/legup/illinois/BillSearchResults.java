@@ -145,4 +145,9 @@ public class BillSearchResults {
         return senateVoteResults.getUncollatedNames();
     }
 
+    public boolean hasDataToSave(){
+        return ! (MatchStatus.MatchedValues.equals(getBillHtmlLoadStatus())
+                    && MatchStatus.MatchedValues.equals(getHouseVotesLoadStatus())
+                    && MatchStatus.MatchedValues.equals(getSenateVotesLoadStatus()));
+    }
 }

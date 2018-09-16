@@ -84,7 +84,7 @@
                 </div>
             </div>
         #else
-            <p>No uncollated votes.</p>
+            <span>No uncollated votes.</span>
         #end
     </div>
 
@@ -96,47 +96,53 @@
                 #end
             </ul>
         #else
-            <p>No uncollated sponsors.</p>
+            <span>No uncollated sponsors.</span>
         #end
     </div>
 </div>
 
+<h5>Data to Save</h5>
 
-<h5>Data to save</h5>
+#if ( ${billSearchResults.hasDataToSave()} )
 
-<form action="/legup/save_searched_bill">
+    <form action="/legup/save_searched_bill">
 
-<input type="hidden" name="oneTimeKey" value="$oneTimeKey"/>
+    <input type="submit" value="Save"/>
 
-<table class="pure-table pure-table-horizontal">
-    <tbody>
-        <tr>
-            <td>Chief House Sponsor</td>
-            <td>$!chiefHouseSponsor.Legislator.Name.Display</td>
-        </tr>
-        <tr>
-            <td>Other House Sponsor Count</td>
-            <td>$houseSponsorCount</td>
-        </tr>
-        <tr>
-            <td>Chief Senate Sponsor</td>
-            <td>$!chiefSenateSponsor.Legislator.Name.Display</td>
-        </tr>
-        <tr>
-            <td>Other Senate Sponsor Count</td>
-            <td>$senateSponsorCount</td>
-        </tr>
-        <tr>
-            <td>House Vote Count</td>
-            <td>$houseVoteCount</td>
-        </tr>
-        <tr>
-            <td>Senate Vote Count</td>
-            <td>$senateVoteCount</td>
-        </tr>
-    </tbody>
-</table>
+    <input type="hidden" name="oneTimeKey" value="$oneTimeKey"/>
 
-<input type="submit" value="Save"/>
+    <table class="pure-table pure-table-horizontal">
+        <tbody>
+            <tr>
+                <td>Chief House Sponsor</td>
+                <td>$!chiefHouseSponsor.Legislator.Name.Display</td>
+            </tr>
+            <tr>
+                <td>Other House Sponsor Count</td>
+                <td>$houseSponsorCount</td>
+            </tr>
+            <tr>
+                <td>Chief Senate Sponsor</td>
+                <td>$!chiefSenateSponsor.Legislator.Name.Display</td>
+            </tr>
+            <tr>
+                <td>Other Senate Sponsor Count</td>
+                <td>$senateSponsorCount</td>
+            </tr>
+            <tr>
+                <td>House Vote Count</td>
+                <td>$houseVoteCount</td>
+            </tr>
+            <tr>
+                <td>Senate Vote Count</td>
+                <td>$senateVoteCount</td>
+            </tr>
+        </tbody>
+    </table>
 
-</form>
+    <input type="submit" value="Save"/>
+
+    </form>
+#else
+    <span>No new data found. Nothing to save.</span>
+#end
