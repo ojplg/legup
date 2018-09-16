@@ -58,7 +58,7 @@ public class SponsorNames {
         }
     }
 
-    public List<SponsorName> getIncompletes(){
+    public List<SponsorName> getUncollated(){
         List<SponsorName> incompletes = new ArrayList<>();
 
         if( ! chiefHouseSponsor.isComplete() ){

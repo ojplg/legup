@@ -61,6 +61,9 @@ public class ViewBillSearchResults implements Handler {
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
+        velocityContext.put("uncollatedSponsors", sponsorNames.getUncollated());
+        velocityContext.put("hasUncollatedSponsors", sponsorNames.getUncollated().size() > 0);
+
         velocityContext.put("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
         velocityContext.put("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
 

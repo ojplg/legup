@@ -60,30 +60,47 @@
     </tbody>
 </table>
 
-<h5>Uncollated Votes</h5>
-#if ( $hasUncollatedVotes )
-    <div class="pure-g">
-        <div class="pure-u-1-2">
-            <h5>House</h5>
-            <ul>
-                #foreach ($name in $uncollatedHouseVotes)
-                    <li>$name</li>
-                #end
-            </ul>
-        </div>
+<h5>Uncollated Votes and Sponsors</h5>
+<div class="pure-g">
+    <div class="pure-u-1-2">
+        #if ( $hasUncollatedVotes )
+            <div class="pure-g">
+                <div class="pure-u-1-2">
+                    <h5>House</h5>
+                    <ul>
+                        #foreach ($name in $uncollatedHouseVotes)
+                            <li>$name</li>
+                        #end
+                    </ul>
+                </div>
 
-        <div class="pure-u-1-2">
-            <h5>Senate</h5>
+                <div class="pure-u-1-2">
+                    <h5>Senate</h5>
+                    <ul>
+                        #foreach ($name in $uncollatedSenateVotes)
+                            <li>$name</li>
+                        #end
+                    </ul>
+                </div>
+            </div>
+        #else
+            <p>No uncollated votes.</p>
+        #end
+    </div>
+
+    <div class="pure-u-1-2">
+        #if ( $hasUncollatedSponsors )
             <ul>
-                #foreach ($name in $uncollatedSenateVotes)
+                #foreach ($name in $uncollatedSponsors )
                     <li>$name</li>
                 #end
             </ul>
-        </div>
+        #else
+            <p>No uncollated sponsors.</p>
+        #end
     </div>
-#else
-    <p>No uncollated votes</p>
-#end
+</div>
+
 
 <h5>Data to save</h5>
 
