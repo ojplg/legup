@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.domain;
 
 import org.center4racialjustice.legup.util.LookupTable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -52,13 +51,13 @@ public class GradeCalculator {
                         } else {
                             // what to do?
                         }
-                    } else if (legislatorAction.getBillActionType().equals(BillActionType.SPONSOR)){
+                    } else if (legislatorAction.isSponsorship()){
                         if( sideRequired.equals(VoteSide.Yea)){
                             scoreTable.merge(legislator, bill, 2, GradeCalculator::add);
                         } else {
                             scoreTable.merge(legislator, bill, -2, GradeCalculator::add);
                         }
-                    } else if (legislatorAction.getBillActionType().equals(BillActionType.CHIEF_SPONSOR)){
+                    } else if (legislatorAction.isChiefSponsorship()){
                         if( sideRequired.equals(VoteSide.Yea)){
                             scoreTable.merge(legislator, bill, 3, GradeCalculator::add);
                         } else {

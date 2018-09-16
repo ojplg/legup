@@ -23,6 +23,14 @@ public class BillAction {
         return BillActionType.VOTE.equals(billActionType);
     }
 
+    public boolean isSponsorship(){
+        return BillActionType.SPONSOR.equals(billActionType);
+    }
+
+    public boolean isChiefSponsorship(){
+        return BillActionType.CHIEF_SPONSOR.equals(billActionType);
+    }
+
     public static BillAction fromVote(Vote vote){
         BillAction billAction = new BillAction();
         billAction.setId(vote.getId());

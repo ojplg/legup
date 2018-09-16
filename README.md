@@ -52,6 +52,9 @@ Technical Betterments
   or Mybatis (there's a branch for this) or JDBI (proyal's favorite) 
   or at least break hrorm to a stand-alone project
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
+* Framework for form error checking (though there are few forms with much interaction) and error reporting
+* Catch all unhandled exceptions and log
+* Add a way to do name overrides in configuration or maybe DB
 
 Features/bugs to work on
 
@@ -60,16 +63,16 @@ Features/bugs to work on
   * The legislator model includes a session id, but many legislators serve in multiple sessions.
     A way to link or mark people as the same would be helpful.
 * Bill Persistence
+  * Perhaps four (or 5) upload chunks, separating sponsors from bill itself
   * Need to use transactions for all the pieces
   * Need to handle situation where only some parts have changed, use updates and deletes
-* Need different grading scales for different chambers
+* Scoring/Grading
+  * Need different grading scales for different chambers
+  * Allow configuration for score options, either in config files or report cards: something
+  other than 1 point for voting, 2 for sponsoring, and 3 for chief sponsors
+  * Allow configuartion of grading options: absolute grades versus grading on a curve
 * Add legislator tracking for veto session, etc (Louisa must define)
-* CSS tags need to be added all over the place
-* Error checking for form submissions needed all over the place
-* Allow configuration for score options
-* Allow configuartion of grading options (grade on a curve?)
-* Load things other than "Third Reading" PDFs: Committee votes
-* Add a way to do name overrides in configuration or maybe DB
+* Load things other than "Third Reading" Vote PDFs: Committee votes
 
 # Better Option
 
