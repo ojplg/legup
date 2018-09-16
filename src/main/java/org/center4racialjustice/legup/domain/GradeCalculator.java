@@ -11,6 +11,10 @@ public class GradeCalculator {
 
     public static BinaryOperator<Integer> ScoreComputer = (i, j) -> i + j;
 
+    private static final int VOTE_SCORE = 1;
+    private static final int SPONSOR_SCORE = 2;
+    private static final int CHIEF_SPONSOR_SCORE = 3;
+
     private final ReportCard reportCard;
     private List<Legislator> legislators;
 
