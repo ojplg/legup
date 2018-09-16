@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.util.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -105,18 +106,24 @@ public class TestBillHtmlParser {
     public void testChecksumStaysStable(){
 
         BillHtmlParser parser = new BillHtmlParser(HouseBill2771BaseUrl);
-        long checksum = parser.getChecksum();
+        Tuple<String, Long> checkTuple1 = parser.getCheckTuple();
 
-        System.out.println("CHECK " + checksum);
+        System.out.println("CHECK 1 " + checkTuple1.getSecond());
 
 //        Assert.assertEquals(  1845066581L, checksum);
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex){
+
+        }
+
         parser = new BillHtmlParser(HouseBill2771BaseUrl);
-        checksum = parser.getChecksum();
+        Tuple<String, Long> checkTuple2 = parser.getCheckTuple();
 
-        System.out.println("CHECK " + checksum);
+        System.out.println("CHECK 2 " + checkTuple2.getSecond());
 
-        Assert.assertEquals(  -1648545048L, checksum);
+        Assert.assertEquals( checkTuple1, checkTuple2);
     }
 
 }

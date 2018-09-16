@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Legislator;
@@ -8,6 +10,8 @@ import org.center4racialjustice.legup.domain.Name;
 import java.util.List;
 
 public class BillSearchResults {
+
+    private final Logger log = LogManager.getLogger(BillSearchResults.class);
 
     public enum MatchStatus {
         Unchecked,NoPriorValues,MatchedValues,UnmatchedValues;
@@ -46,6 +50,8 @@ public class BillSearchResults {
         } else if ( mainLoad.matches(url, checksum) ){
             return MatchStatus.MatchedValues;
         } else {
+            log.warn("UNMATCHED. \nCurrent URL:\n" + url + "\nCurrent Checksum:\n" + checksum
+                    + "\nOld URL:\n" + mainLoad.getUrl() + "\nOld Checksum:\n" + mainLoad.getCheckSum());
             return MatchStatus.UnmatchedValues;
         }
     }

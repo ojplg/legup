@@ -30,17 +30,16 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public void checkPriorLoads(BillSearchResults billSearchResults){
+    public List<BillActionLoad> checkForPriorLoads(BillSearchResults billSearchResults){
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
             Bill parsedBill = billSearchResults.getBill();
             BillDao billDao = new BillDao(connection);
-            Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill.getSession(), parsedBill.getChamber(), parsedBill.getNumber());
+            Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill);
             if (dbBill == null) {
-                billSearchResults.setPriorLoads(Collections.emptyList());
+                return Collections.emptyList();
             } else {
                 BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
-                List<BillActionLoad> priorLoads = billActionLoadDao.readByBill(dbBill);
-                billSearchResults.setPriorLoads(priorLoads);
+                return billActionLoadDao.readByBill(dbBill);
             }
         }
     }

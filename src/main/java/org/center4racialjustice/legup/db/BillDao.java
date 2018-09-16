@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.db;
 
 import org.center4racialjustice.legup.db.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.Chamber;
 
 import java.sql.Connection;
 import java.util.Arrays;
@@ -20,31 +19,12 @@ public class BillDao {
         this.innerDao = DaoBuilders.BILLS.buildDao(connection);
     }
 
-    public Bill readBySessionChamberAndNumber(long session, Chamber chamber, long number){
-        Bill bill = new Bill();
-        bill.setSession(session);
-        bill.setChamber(chamber);
-        bill.setNumber(number);
-
+    public Bill readBySessionChamberAndNumber(Bill bill){
         return innerDao.selectByColumns(bill, Arrays.asList("SESSION_NUMBER", "CHAMBER", "BILL_NUMBER"));
     }
 
     public void insert(Bill bill){
         innerDao.insert(bill);
-    }
-
-    public Bill findOrCreate(long session, Chamber chamber, long number){
-        Bill found = readBySessionChamberAndNumber(session, chamber, number);
-        if( found != null ){
-            return found;
-        }
-        Bill bill = new Bill();
-        bill.setChamber(chamber);
-        bill.setNumber(number);
-        bill.setSession(session);
-
-        innerDao.insert(bill);
-        return bill;
     }
 
     public List<Bill> readBySession(long session){

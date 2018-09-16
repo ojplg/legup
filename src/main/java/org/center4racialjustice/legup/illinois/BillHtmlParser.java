@@ -65,6 +65,13 @@ public class BillHtmlParser {
         return document.outerHtml().hashCode();
     }
 
+    public Tuple<String, Long> getCheckTuple(){
+        return new Tuple<>(
+                document.outerHtml(),
+                (long) document.outerHtml().hashCode()
+        );
+    }
+
     public long getSession(){
 
         String regex = "(\\d\\d\\d)(?:th|st) General Assembly";
