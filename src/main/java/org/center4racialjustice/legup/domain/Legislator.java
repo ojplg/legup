@@ -1,6 +1,10 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.util.Lists;
+import org.center4racialjustice.legup.util.Tuple;
+
+import java.util.List;
 
 @Data
 public class Legislator implements Comparable<Legislator> {
@@ -62,5 +66,13 @@ public class Legislator implements Comparable<Legislator> {
                 && this.district == that.district
                 && this.sessionNumber == that.sessionNumber
                 && this.memberId.equals(that.memberId);
+    }
+
+    public String getDisplay(){
+        return getName().getDisplay();
+    }
+
+    public static Tuple<List<Legislator>, List<Legislator>> splitByChamber(List<Legislator> legislators){
+        return Lists.divide(legislators, l -> l.chamber.equals(Chamber.House));
     }
 }
