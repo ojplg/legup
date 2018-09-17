@@ -82,7 +82,7 @@ public class SaveReportCard implements Handler {
             }
 
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("reportCardId", reportCard.getId());
+            velocityContext.put("reportCard", reportCard);
             return velocityContext;
         }
     }

@@ -1,49 +1,54 @@
 
-<h4>View Report Card Form</h4>
+<h4>Edit Report Card</h4>
 
-<form action="/legup/save_report_card" id="save_report_card_form">
+<a href="/legup/view_report_cards">Report Card Index</a>
 
-    <input type="hidden" name="id" value="$!report_card.Id"/>
+<form action="/legup/save_report_card" id="save_report_card_form" class="pure-form pure-form-aligned">
 
-    <label>Name</label>
-    <input type="text" name="name" value="$!report_card.Name"/>
+    <fieldset>
+        <input type="hidden" name="id" value="$!report_card.Id"/>
 
-    <br/>
+        <div class="pure-control-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" value="$!report_card.Name"/>
+        </div>
 
-    <label>Session</label>
-    <input type="text" name="session" value="$!report_card.SessionNumber"/>
+        <div class="pure-control-group">
+            <label for="session">Session</label>
+            <input type="text" name="session" value="$!report_card.SessionNumber"/>
+        </div>
 
-    <br/>
-
-    <h5>Factors</h5>
-    <table class="pure-table">
-        <tr>
-            <th>Bill Chamber</th>
-            <th>Bill Number</th>
-            <th>Short Description</th>
-            <th>Session</th>
-            <th>Desired Vote</th>
-        </tr>
-
-        #foreach ($pair in ${factor_settings.entrySet()})
-            #set ( $bill = $pair.Key )
-            #set ( $setting = $pair.Value )
+        <h5>Factors</h5>
+        <table class="pure-table">
             <tr>
-                <td>$bill.Chamber</td>
-                <td>$bill.Number</td>
-                <td>$bill.ShortDescription</td>
-                <td>$bill.Session</td>
-                <td>
-                    <select name="bill_vote_side_$bill.id" form="save_report_card_form">
-                        <option value="Unselect"></option>
-                        <option value="Yes" #if (${setting.equals("Y")}) selected="selected" #end>Yes</option>
-                        <option value="No" #if (${setting.equals("N")}) selected="selected" #end>No</option>
-                    </select>
-                </td>
+                <th>Bill Chamber</th>
+                <th>Bill Number</th>
+                <th>Short Description</th>
+                <th>Session</th>
+                <th>Desired Vote</th>
             </tr>
-        #end
-    </table>
 
-    <input type="submit" value="Save"/>
+            #foreach ($pair in ${factor_settings.entrySet()})
+                #set ( $bill = $pair.Key )
+                #set ( $setting = $pair.Value )
+                <tr>
+                    <td>$bill.Chamber</td>
+                    <td>$bill.Number</td>
+                    <td>$bill.ShortDescription</td>
+                    <td>$bill.Session</td>
+                    <td>
+                        <select name="bill_vote_side_$bill.id" form="save_report_card_form">
+                            <option value="Unselect"></option>
+                            <option value="Yes" #if (${setting.equals("Y")}) selected="selected" #end>Yes</option>
+                            <option value="No" #if (${setting.equals("N")}) selected="selected" #end>No</option>
+                        </select>
+                    </td>
+                </tr>
+            #end
+        </table>
+
+        <input type="submit" value="Save"/>
+
+    <fieldset>
 
 </form>

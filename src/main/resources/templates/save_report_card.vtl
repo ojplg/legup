@@ -1,7 +1,20 @@
-<h4>Save Report Card</h4>
+<h4>Report Card Saved</h4>
 
-Saved: $reportCardId
+<table>
+    <tr>
+        <td>Name</td>
+        <td>$reportCard.Name</td>
+    </tr>
+    <tr>
+        <td>ID</td>
+        <td>$reportCard.Id</td>
+    </tr>
+</table>
 
 <br/>
 
-<a href="/legup/view_report_card_form?report_card_id=$reportCardId">Return to edit screen</a>
+<a href="/legup/view_report_card_form?report_card_id=$reportCard.Id">Edit</a>
+
+<br/>
+
+<a href="/legup/view_report_card_scores?report_card_id=$reportCard.Id">Calculate</a>
