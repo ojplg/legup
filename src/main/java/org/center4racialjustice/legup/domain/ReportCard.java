@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.util.LookupTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 
 @Data
 public class ReportCard {
@@ -42,6 +43,20 @@ public class ReportCard {
         }
 
         return scoreTable;
+    }
+
+    public List<Bill> supportedBills(){
+        return reportFactors.stream()
+                .filter(f -> f.getVoteSide().equals(VoteSide.Yea))
+                .map(f -> f.getBill())
+                .collect(Collectors.toList());
+    }
+
+    public List<Bill> opposedBills(){
+        return reportFactors.stream()
+                .filter(f -> f.getVoteSide().equals(VoteSide.Nay))
+                .map(f -> f.getBill())
+                .collect(Collectors.toList());
     }
 
 }
