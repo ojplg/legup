@@ -1,5 +1,7 @@
 
-<h6><a href="/legup/view_legislators">Legislators Index</a></h6>
+#set ( $links = [ "<a href='/legup/view_legislators'>Legislators Index</a>" ] )
+
+#parse( "/templates/insert_nav_bar.vtl" )
 
 <h4><a href="$legislator.MemberLink">$legislator.Name.Display</a></h4>
 

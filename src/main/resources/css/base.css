@@ -3,6 +3,11 @@ div.topmatter {
     background-color:LightBlue;
 }
 
+div.nav_bar {
+    font-size: 80%;
+    background-color:LightGrey;
+}
+
 div.contents {
     margin-right: 12px;
     margin-left: 12px;
@@ -13,3 +18,4 @@ div.footer {
     bottom: 15px;
     right: 15px;
 }
+
