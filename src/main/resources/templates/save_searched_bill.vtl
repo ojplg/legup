@@ -1,3 +1,32 @@
 <h4>Bill Saved</h4>
 
 #parse( "/templates/insert_bill_identification.vtl" )
+
+<h5>Saved</h5>
+
+<table class="pure-table pure-table-horizontal">
+    <tr>
+        <td>Chief House Sponsor</td>
+        <td>$!sponsorSaveResults.chiefHouseSponsor.Display</td>
+    </tr>
+    <tr>
+        <td>Chief Senate Sponsor</td>
+        <td>$!sponsorSaveResults.chiefSenateSponsor.Display</td>
+    </tr>
+    <tr>
+        <td>House Sponsor Count</td>
+        <td>$sponsorSaveResults.houseSponsorCount</td>
+    </tr>
+    <tr>
+        <td>Senate Sponsor Count</td>
+        <td>$sponsorSaveResults.senateSponsorCount</td>
+    </tr>
+    <tr>
+        <td>House Vote Count</td>
+        <td>$billSaveResults.houseVotes</td>
+    </tr>
+    <tr>
+        <td>Senate Vote Count</td>
+        <td>$billSaveResults.senateVotes</td>
+    </tr>
+</table>

@@ -2,7 +2,7 @@ package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.web.Handler;
@@ -25,16 +25,16 @@ public class SaveSearchedBill implements Handler {
 
         String oneTimeKey = request.getParameter("oneTimeKey");
 
-        BillSearchResults billSearchResults =
-                (BillSearchResults) legupSession.getObject(
-                        LegupSession.BillSearchResultsKey,
-                        oneTimeKey);
+        BillSearchResults billSearchResults = (BillSearchResults) legupSession
+                .getObject(LegupSession.BillSearchResultsKey, oneTimeKey);
 
         BillPersistence billPersistence = new BillPersistence(connectionPool);
-        Bill bill = billPersistence.saveParsedData(billSearchResults);
+        BillSaveResults billSaveResults = billPersistence.saveParsedData(billSearchResults);
 
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("bill", bill);
+        velocityContext.put("bill", billSaveResults.getBill());
+        velocityContext.put("sponsorSaveResults", billSaveResults.getSponsorSaveResults());
+        velocityContext.put("billSaveResults", billSaveResults);
         return velocityContext;
     }
 }

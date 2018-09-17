@@ -11,7 +11,11 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillSaveResults;
+import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.SponsorSaveResults;
 import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorName;
@@ -44,7 +48,7 @@ public class BillPersistence {
         }
     }
 
-    public Bill saveParsedData(BillSearchResults billSearchResults) {
+    public BillSaveResults saveParsedData(BillSearchResults billSearchResults) {
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
@@ -55,7 +59,7 @@ public class BillPersistence {
             BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());
             billActionLoadDao.insert(billActionLoad);
 
-            int sponsorsSaved = saveSponsors(connection, parsedBill, billActionLoad, billSearchResults);
+            SponsorSaveResults sponsorsSaved = saveSponsors(connection, parsedBill, billActionLoad, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
             BillActionLoad houseLoad = billSearchResults.createHouseBillActionLoad(parsedBill);
@@ -68,7 +72,8 @@ public class BillPersistence {
             int senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
             log.info("Saved " + senateVotesSaved + " senate votes");
 
-            return parsedBill;
+            BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
+            return new BillSaveResults(parsedBill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
         }
     }
 
@@ -85,39 +90,47 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private int saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, BillSearchResults billSearchResults){
+    private SponsorSaveResults saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
-        int cnt = 0;
-        if ( sponsorNames.getChiefHouseSponsor() != null ){
-            saveSponsor(billActionDao, sponsorNames.getChiefHouseSponsor(), bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
+        Legislator chiefHouseSponsor = null;
+        Legislator chiefSenateSponsor = null;
+        int houseSponsorCount = 0;
+        int senateSponsorCount = 0;
+        if (sponsorNames.getChiefHouseSponsor() != null && sponsorNames.getChiefHouseSponsor().isComplete()) {
+            chiefHouseSponsor = sponsorNames.getChiefHouseSponsor().getLegislator();
+            saveBillAction(billActionDao, chiefHouseSponsor, billActionLoad, BillActionType.CHIEF_SPONSOR);
         }
-        if ( sponsorNames.getChiefSenateSponsor() != null ){
-            saveSponsor(billActionDao, sponsorNames.getChiefSenateSponsor(), bill, billActionLoad, BillActionType.CHIEF_SPONSOR);
+        if (sponsorNames.getChiefSenateSponsor() != null && sponsorNames.getChiefSenateSponsor().isComplete()) {
+            chiefSenateSponsor = sponsorNames.getChiefSenateSponsor().getLegislator();
+            saveBillAction(billActionDao, chiefSenateSponsor, billActionLoad, BillActionType.CHIEF_SPONSOR);
         }
-        for(SponsorName sponsorName : sponsorNames.getHouseSponsors()){
-            saveSponsor(billActionDao, sponsorName, bill, billActionLoad, BillActionType.SPONSOR);
+        for (SponsorName sponsorName : sponsorNames.getHouseSponsors()) {
+            if (sponsorName.isComplete()) {
+                saveBillAction(billActionDao, sponsorName.getLegislator(), billActionLoad, BillActionType.SPONSOR);
+                houseSponsorCount++;
+            }
         }
-        for(SponsorName sponsorName : sponsorNames.getSenateSponsors()){
-            saveSponsor(billActionDao, sponsorName, bill, billActionLoad, BillActionType.SPONSOR);
+        for (SponsorName sponsorName : sponsorNames.getSenateSponsors()) {
+            if (sponsorName.isComplete()) {
+                saveBillAction(billActionDao, sponsorName.getLegislator(), billActionLoad, BillActionType.SPONSOR);
+                senateSponsorCount++;
+            }
         }
 
-
-        return cnt;
+        return new SponsorSaveResults(chiefHouseSponsor, chiefSenateSponsor, houseSponsorCount, senateSponsorCount);
     }
 
-    private void saveSponsor(BillActionDao billActionDao, SponsorName sponsorName,
-                             Bill bill, BillActionLoad billActionLoad, BillActionType billActionType){
-        if( sponsorName.isComplete()) {
-            BillAction billAction = new BillAction();
-            billAction.setBill(bill);
-            billAction.setLegislator(sponsorName.getLegislator());
-            billAction.setBillActionLoad(billActionLoad);
-            billAction.setBillActionType(billActionType);
+    private void saveBillAction(BillActionDao billActionDao, Legislator legislator,
+                                BillActionLoad billActionLoad, BillActionType billActionType){
+        BillAction billAction = new BillAction();
+        billAction.setBill(billActionLoad.getBill());
+        billAction.setLegislator(legislator);
+        billAction.setBillActionLoad(billActionLoad);
+        billAction.setBillActionType(billActionType);
 
-            billActionDao.insert(billAction);
-        }
+        billActionDao.insert(billAction);
     }
 }

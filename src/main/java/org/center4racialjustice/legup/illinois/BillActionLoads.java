@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -14,6 +15,10 @@ public class BillActionLoads {
 
     public BillActionLoads(List<BillActionLoad> loads){
         this.loads = Collections.unmodifiableList(new ArrayList<>(loads));
+    }
+
+    public BillActionLoads(BillActionLoad ... billActionLoads){
+        this.loads = Collections.unmodifiableList(Arrays.asList(billActionLoads));
     }
 
     public BillActionLoad getBillHtmlLoad(){
