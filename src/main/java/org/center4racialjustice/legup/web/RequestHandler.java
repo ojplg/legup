@@ -31,7 +31,7 @@ public class RequestHandler {
             velocityContext.put("contents", templatePath);
             Velocity.mergeTemplate("/templates/container.vtl","ISO-8859-1",velocityContext, writer);
             request.setHandled(true);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             log.error("Exception in request processing", ex);
             throw new RuntimeException(ex);
         }
