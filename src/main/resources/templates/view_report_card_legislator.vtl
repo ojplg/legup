@@ -5,7 +5,7 @@
 <table class="pure-table pure-table-horizontal">
     <tr>
         <td>Name</td>
-        <td>$reportCardLegislatorAnalysis.Legislator.Display</td>
+        <td><a href="/legup/view_legislator_votes?legislator_id=$reportCardLegislatorAnalysis.Legislator.Id">$reportCardLegislatorAnalysis.Legislator.Display</a></td>
     </tr>
     <tr>
         <td>Party</td>
@@ -42,35 +42,36 @@
     <table class="pure-table pure-table-bordered">
         <thead>
             <tr>
-                <td>Bill Chamber</td>
-                <td>Bill Number</td>
-                <td>Bill Name</td>
-                <td>Chief Sponsor</td>
-                <td>Sponsor</td>
-                <td>Vote</td>
+                <th>Bill Chamber</th>
+                <th>Bill Number</th>
+                <th>Bill Name</th>
+                <th>Chief Sponsor</th>
+                <th>Sponsor</th>
+                <th>Vote</th>
+            </tr>
         </thead>
 
         <tbody>
             #foreach ($bill in ${billDetails.sortedRowHeadings($billComparator)})
                 <tr>
                     <td>$bill.Chamber</td>
-                    <td>$bill.Number</td>
+                    <td><a href="/legup/view_report_card_bill?bill_id=$bill.Id&one_time_key=$oneTimeKey">$bill.Number</a></td>
                     <td>$bill.ShortDescription</td>
-                    <td>
+                    <td align="center">
                         #if ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Good" )
                             <img src="/legup/icons/check.png" height="20" width="20">
                         #elseif ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Bad" )
                             <img src="/legup/icons/x_mark.png"  height="20" width="20">
                         #end
                     </td>
-                    <td>
+                    <td align="center">
                         #if ( $!{billDetails.get($bill, $sponsorKey)} == "Good" )
                             <img src="/legup/icons/check.png" height="20" width="20">
                         #elseif ( $!{billDetails.get($bill, $sponsorKey)} == "Bad" )
                             <img src="/legup/icons/x_mark.png" height="20" width="20">
                         #end
                     </td>
-                    <td>
+                    <td align="center">
                         #if ( $!{billDetails.get($bill, $voteKey)} == "Good" )
                             <img src="/legup/icons/check.png" height="20" width="20">
                         #elseif ( $!{billDetails.get($bill, $voteKey)} == "Bad" )
