@@ -1,21 +1,26 @@
 
 <h4>Bill Search Form</h4>
 
-<form action="/legup/view_bill_search_results" id="bill_search_form">
+<form action="/legup/view_bill_search_results" id="bill_search_form"  class="pure-form pure-form-aligned">
 
-    <label>Chamber</label>
-    <select name="chamber" form_id="bill_search_form">
-        <option>House</option>
-        <option>Senate</option>
-    </select>
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="chamber">Chamber</label>
+            <select name="chamber" form_id="bill_search_form">
+                <option>House</option>
+                <option>Senate</option>
+            </select>
+        </div>
 
-    <br/>
+        <div class="pure-control-group">
+            <label for="number">Number</label>
+            <input name="number"/>
+        </div>
 
-    <label>Number</label>
-    <input name="number"/>
+        <div class="pure-controls">
+            <input type="submit" value="Search"/>
+        </div>
 
-    <br/>
-
-    <input type="submit" value="Search"/>
+    </fieldset>
 
 </form>
