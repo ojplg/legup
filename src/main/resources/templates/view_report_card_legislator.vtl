@@ -29,3 +29,26 @@
     </tr>
 </table>
 
+<br/>
+
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <td>Bill Name</td>
+            <td>Chief Sponsor</td>
+            <td>Sponsor</td>
+            <td>Vote</td>
+    </thead>
+
+    <tbody>
+        #foreach ($bill in ${reportCardLegislatorAnalysis.supportedBillDetails().sortedRowHeadings($billComparator)})
+            <tr>
+                <td>$bill.ShortDescription</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        #end
+
+    </tbody>
+</table>

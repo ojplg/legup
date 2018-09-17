@@ -11,6 +11,7 @@ import org.center4racialjustice.legup.web.Util;
 import org.eclipse.jetty.server.Request;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Comparator;
 
 public class ViewReportCardLegislator implements Handler {
 
@@ -28,6 +29,8 @@ public class ViewReportCardLegislator implements Handler {
         velocityContext.put("oneTimeKey", oneTimeKey);
         velocityContext.put("reportCardGrades", reportCardGrades);
         velocityContext.put("reportCardLegislatorAnalysis", reportCardLegislatorAnalysis);
+
+        velocityContext.put("billComparator", Comparator.naturalOrder());
 
         velocityContext.put("house", Chamber.House);
         velocityContext.put("senate", Chamber.Senate);
