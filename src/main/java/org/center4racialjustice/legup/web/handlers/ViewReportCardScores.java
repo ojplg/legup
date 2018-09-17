@@ -45,6 +45,7 @@ public class ViewReportCardScores implements Handler {
         velocityContext.put("computer", ReportCard.ScoreComputer);
         velocityContext.put("legislators", reportCardGrades.getLegislators());
         velocityContext.put("bills", reportCardGrades.getBills());
+        velocityContext.put("reportCard", reportCardGrades.getReportCard());
 
         return velocityContext;
     }

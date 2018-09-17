@@ -25,6 +25,8 @@ public class ReportCardGrades {
         this.grades = assignGrades();
     }
 
+    public ReportCard getReportCard() { return  reportCard;}
+
     public String getReportCardName(){
         return reportCard.getName();
     }
