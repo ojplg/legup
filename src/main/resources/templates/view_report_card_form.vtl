@@ -1,7 +1,9 @@
 
-<h4>Edit Report Card</h4>
+#set ( $links = [ "<a href='/legup/view_report_cards'>Report Card Index</a>" ] )
 
-<a href="/legup/view_report_cards">Report Card Index</a>
+#parse( "/templates/insert_nav_bar.vtl" )
+
+<h4>Edit Report Card</h4>
 
 <form action="/legup/save_report_card" id="save_report_card_form" class="pure-form pure-form-aligned">
 
