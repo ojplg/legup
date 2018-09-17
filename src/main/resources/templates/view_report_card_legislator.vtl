@@ -45,12 +45,12 @@
     <table class="pure-table pure-table-bordered">
         <thead>
             <tr>
-                <th>Bill Chamber</th>
-                <th>Bill Number</th>
-                <th>Bill Name</th>
-                <th>Chief Sponsor</th>
-                <th>Sponsor</th>
-                <th>Vote</th>
+                <th width="60px">Chamber</th>
+                <th width="60px">Number</th>
+                <th width="350px">Name</th>
+                <th width="75px">Chief Sponsor</th>
+                <th width="75px">Sponsor</th>
+                <th width="75px">Vote</th>
             </tr>
         </thead>
 
@@ -62,23 +62,23 @@
                     <td>$bill.ShortDescription</td>
                     <td align="center">
                         #if ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Good" )
-                            <img src="/legup/icons/check.png" height="20" width="20">
+                            <img src="/legup/icons/check.png" height="30" width="30">
                         #elseif ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Bad" )
-                            <img src="/legup/icons/x_mark.png"  height="20" width="20">
+                            <img src="/legup/icons/x_mark.png"  height="30" width="30">
                         #end
                     </td>
                     <td align="center">
                         #if ( $!{billDetails.get($bill, $sponsorKey)} == "Good" )
-                            <img src="/legup/icons/check.png" height="20" width="20">
+                            <img src="/legup/icons/check.png" height="30" width="30">
                         #elseif ( $!{billDetails.get($bill, $sponsorKey)} == "Bad" )
-                            <img src="/legup/icons/x_mark.png" height="20" width="20">
+                            <img src="/legup/icons/x_mark.png" height="30" width="30">
                         #end
                     </td>
                     <td align="center">
                         #if ( $!{billDetails.get($bill, $voteKey)} == "Good" )
-                            <img src="/legup/icons/check.png" height="20" width="20">
+                            <img src="/legup/icons/check.png" height="30" width="30">
                         #elseif ( $!{billDetails.get($bill, $voteKey)} == "Bad" )
-                            <img src="/legup/icons/x_mark.png" height="20" width="20">
+                            <img src="/legup/icons/x_mark.png" height="30" width="30">
                         #end
                     </td>
                 </tr>
