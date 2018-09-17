@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Chamber;
@@ -10,8 +12,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+
 public class BillSearcherParser {
 
+    private final Logger log = LogManager.getLogger(BillSearcherParser.class);
     private final ConnectionWrapper connectionWrapper;
 
     public BillSearcherParser(ConnectionWrapper connectionWrapper){
@@ -20,11 +24,14 @@ public class BillSearcherParser {
 
     public BillSearchResults doFullSearch(Chamber chamber, Long billNumber){
 
+
         try {
             BillSearcher searcher = new BillSearcher();
 
             String billHomePageUrl = searcher.searchForBaseUrl(chamber, billNumber);
             String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
+
+            log.info("Doing search for " + chamber + ", " + billNumber + ", " + billHomePageUrl);
 
             BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
             Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
