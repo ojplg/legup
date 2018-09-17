@@ -1,6 +1,4 @@
 
-<h4>$reportCard.Name: Scores</h4>
-
 <script>
 $(document).ready(function()
     {
@@ -9,10 +7,12 @@ $(document).ready(function()
 );
 </script>
 
-<a href="/legup/view_report_card_bills?one_time_key=$oneTimeKey">Bill Analysis</a> -
-<a href="/legup/view_report_card_form?report_card_id=$reportCard.Id">Edit</a>
+#set ($links = [ "<a href='/legup/view_report_card_bills?one_time_key=$oneTimeKey'>Bill Analysis</a>"
+               , "<a href='/legup/view_report_card_form?report_card_id=$reportCard.Id'>Edit</a>" ])
 
-<br/>
+#parse( "/templates/insert_nav_bar.vtl" )
+
+<h4>$reportCard.Name: Scores</h4>
 
 <table id="scoreTable" class="tablesorter">
     <thead>
