@@ -1,7 +1,5 @@
 package org.center4racialjustice.legup.domain;
 
-import org.center4racialjustice.legup.db.hrorm.Converter;
-
 import java.util.Arrays;
 import java.util.List;
 

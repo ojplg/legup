@@ -1,27 +1,7 @@
 
 <h4>Bill Search Results</h4>
 
-<h5>Bill Identification</h5>
-<table class="pure-table pure-table-horizontal">
-    <tbody>
-        <tr>
-            <td>Chamber</td>
-            <td>$bill.Chamber.Name</td>
-        </tr>
-        <tr>
-            <td>Number</td>
-            <td>$bill.Number</td>
-        </tr>
-        <tr>
-            <td>Session</td>
-            <td>$bill.Session</td>
-        </tr>
-        <tr>
-            <td>Short Description</td>
-            <td>$bill.ShortDescription</td>
-        </tr>
-    </tbody>
-</table>
+#parse( "/templates/insert_bill_identification.vtl" )
 
 <h5>Prior Save Data</h5>
 <table class="pure-table pure-table-horizontal">

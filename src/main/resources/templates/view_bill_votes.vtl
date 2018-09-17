@@ -1,24 +1,9 @@
 
 <h6><a href="/legup/view_bills">Bills Index</a></h6>
 
-<table class="pure-table pure-table-horizontal">
-    <tbody>
-        <tr>
-            <td>Chamber</td>
-            <td>$bill.Chamber</td>
-        </tr>
-        <tr>
-            <td>Number</td>
-            <td>$bill.Number</td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td>$bill.ShortDescription</td>
-        </tr>
-    </tbody>
-</table>
+#parse( "/templates/insert_bill_identification.vtl" )
 
-<p><a href="/legup/view_bill_sponsors?bill_id=$bill.Id">Sponsors</a></p>
+<p><a href="/legup/view_bill_sponsors?bill_id=$bill.Id">View Sponsors</a></p>
 
 <table class="pure-table pure-table-bordered">
     <thead>

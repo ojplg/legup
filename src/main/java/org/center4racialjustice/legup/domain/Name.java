@@ -98,7 +98,6 @@ public final class Name {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(firstName, firstInitial, lastName, middleInitial, suffix);
     }
 }
