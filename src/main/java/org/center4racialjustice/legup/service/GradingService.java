@@ -36,7 +36,7 @@ public class GradingService {
                 actions.addAll(billActions);
             }
 
-            return new ReportCardGrades(reportCard, actions );
+            return new ReportCardGrades(reportCard, actions);
         }
     }
 

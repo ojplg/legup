@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
-import org.center4racialjustice.legup.util.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,9 +12,6 @@ import java.util.stream.Collectors;
 public class TestBillHtmlParser {
 
     private static String HouseBill2771BaseUrl =
-            "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
-
-    String test =
             "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
     private static String HouseBill2771FileName =
@@ -60,7 +56,6 @@ public class TestBillHtmlParser {
 
     @Test
     public void testFindHouseSponsors(){
-
         BillHtmlParser parser = fromFileName(HouseBill2771FileName, HouseBill2771BaseUrl);
 
         SponsorNames sponsorNames = parser.getSponsorNames();
