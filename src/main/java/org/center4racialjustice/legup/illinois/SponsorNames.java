@@ -61,10 +61,12 @@ public class SponsorNames {
     public List<SponsorName> getUncollated(){
         List<SponsorName> incompletes = new ArrayList<>();
 
-        if( ! chiefHouseSponsor.isComplete() ){
+        if( chiefHouseSponsor != null &&
+                ! chiefHouseSponsor.isComplete() ){
             incompletes.add(chiefHouseSponsor);
         }
-        if( ! chiefSenateSponsor.isComplete() ){
+        if( chiefSenateSponsor != null &&
+                ! chiefSenateSponsor.isComplete() ){
             incompletes.add(chiefSenateSponsor);
         }
         for(SponsorName sponsorName : houseSponsors){
