@@ -31,7 +31,7 @@ $(document).ready(function()
     <tbody>
     #foreach ($legislator in $legislators)
         <tr>
-            <td><a href="/legup/view_legislator_votes?legislator_id=$legislator.Id">$legislator.LastName, $legislator.FirstName</a></td>
+            <td><a href="/legup/view_report_card_legislator?legislator_id=$legislator.Id&one_time_key=$oneTimeKey">$legislator.Display</a></td>
             <td>$legislator.Party</td>
             <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
             <td> ${grades.get($legislator).Percentage} </td>
