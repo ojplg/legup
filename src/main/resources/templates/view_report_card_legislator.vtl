@@ -31,24 +31,37 @@
 
 <br/>
 
-<table class="pure-table pure-table-bordered">
-    <thead>
-        <tr>
-            <td>Bill Name</td>
-            <td>Chief Sponsor</td>
-            <td>Sponsor</td>
-            <td>Vote</td>
-    </thead>
+#foreach ($billSide in ["Supported", "Opposed"] )
+    #if ($billSide == "Supported" )
+        #set ( $billDetails = $reportCardLegislatorAnalysis.supportedBillDetails() )
+    #else
+        #set ( $billDetails = $reportCardLegislatorAnalysis.opposedBillDetails() )
+    #end
 
-    <tbody>
-        #foreach ($bill in ${reportCardLegislatorAnalysis.supportedBillDetails().sortedRowHeadings($billComparator)})
+    <h5>$billSide Bills</h5>
+    <table class="pure-table pure-table-bordered">
+        <thead>
             <tr>
-                <td>$bill.ShortDescription</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        #end
+                <td>Bill Chamber</td>
+                <td>Bill Number</td>
+                <td>Bill Name</td>
+                <td>Chief Sponsor</td>
+                <td>Sponsor</td>
+                <td>Vote</td>
+        </thead>
 
-    </tbody>
-</table>
+        <tbody>
+            #foreach ($bill in ${billDetails.sortedRowHeadings($billComparator)})
+                <tr>
+                    <td>$bill.Chamber</td>
+                    <td>$bill.Number</td>
+                    <td>$bill.ShortDescription</td>
+                    <td>$!{billDetails.get($bill, $chiefSponsorKey)}</td>
+                    <td>$!{billDetails.get($bill, $sponsorKey)}</td>
+                    <td>$!{billDetails.get($bill, $voteKey)}</td>
+                </tr>
+            #end
+
+        </tbody>
+    </table>
+#end

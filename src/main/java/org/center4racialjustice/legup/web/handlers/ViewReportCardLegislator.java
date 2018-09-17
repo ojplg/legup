@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.velocity.VelocityContext;
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.domain.ReportCardLegislatorAnalysis;
@@ -32,15 +33,20 @@ public class ViewReportCardLegislator implements Handler {
 
         velocityContext.put("billComparator", Comparator.naturalOrder());
 
-        velocityContext.put("house", Chamber.House);
-        velocityContext.put("senate", Chamber.Senate);
+        velocityContext.put("voteKey", BillActionType.VOTE);
+        velocityContext.put("sponsorKey", BillActionType.SPONSOR);
+        velocityContext.put("chiefSponsorKey", BillActionType.CHIEF_SPONSOR);
 
-        velocityContext.put("yea", VoteSide.Yea);
-        velocityContext.put("nay", VoteSide.Nay);
-        velocityContext.put("notVoting", VoteSide.NotVoting);
-        velocityContext.put("present", VoteSide.Present);
 
-        velocityContext.put("sides", VoteSide.AllSides);
+//        velocityContext.put("house", Chamber.House);
+//        velocityContext.put("senate", Chamber.Senate);
+//
+//        velocityContext.put("yea", VoteSide.Yea);
+//        velocityContext.put("nay", VoteSide.Nay);
+//        velocityContext.put("notVoting", VoteSide.NotVoting);
+//        velocityContext.put("present", VoteSide.Present);
+//
+//        velocityContext.put("sides", VoteSide.AllSides);
 
         return velocityContext;
     }

@@ -49,7 +49,7 @@ public class ReportCardLegislatorAnalysis {
     public LookupTable<Bill, BillActionType, String> opposedBillDetails(){
         LookupTable<Bill, BillActionType, String> table = new LookupTable<>();
 
-        for(Bill bill : card.supportedBills()){
+        for(Bill bill : card.opposedBills()){
             for(BillAction action : actions){
                 if( action.getBill().equals(bill)){
                     if( action.isVote() ){
