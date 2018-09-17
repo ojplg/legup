@@ -20,7 +20,6 @@ import org.center4racialjustice.legup.web.handlers.ViewReportCardBill;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardBills;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardForm;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardLegislator;
-import org.center4racialjustice.legup.web.handlers.ViewReportCardLegislators;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardScores;
 import org.center4racialjustice.legup.web.handlers.ViewReportCards;
 import org.eclipse.jetty.server.Request;
@@ -62,7 +61,6 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewBillSponsors(connectionPool));
         handlers.add(new ViewReportCardBills());
         handlers.add(new ViewReportCardBill());
-        handlers.add(new ViewReportCardLegislators());
         handlers.add(new ViewReportCardLegislator());
 
         for (Handler handler : handlers) {
