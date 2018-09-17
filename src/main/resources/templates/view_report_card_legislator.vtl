@@ -56,9 +56,27 @@
                     <td>$bill.Chamber</td>
                     <td>$bill.Number</td>
                     <td>$bill.ShortDescription</td>
-                    <td>$!{billDetails.get($bill, $chiefSponsorKey)}</td>
-                    <td>$!{billDetails.get($bill, $sponsorKey)}</td>
-                    <td>$!{billDetails.get($bill, $voteKey)}</td>
+                    <td>
+                        #if ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Good" )
+                            <img src="/legup/icons/check.png" height="20" width="20">
+                        #elseif ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Bad" )
+                            <img src="/legup/icons/x_mark.png"  height="20" width="20">
+                        #end
+                    </td>
+                    <td>
+                        #if ( $!{billDetails.get($bill, $sponsorKey)} == "Good" )
+                            <img src="/legup/icons/check.png" height="20" width="20">
+                        #elseif ( $!{billDetails.get($bill, $sponsorKey)} == "Bad" )
+                            <img src="/legup/icons/x_mark.png" height="20" width="20">
+                        #end
+                    </td>
+                    <td>
+                        #if ( $!{billDetails.get($bill, $voteKey)} == "Good" )
+                            <img src="/legup/icons/check.png" height="20" width="20">
+                        #elseif ( $!{billDetails.get($bill, $voteKey)} == "Bad" )
+                            <img src="/legup/icons/x_mark.png" height="20" width="20">
+                        #end
+                    </td>
                 </tr>
             #end
 
