@@ -21,7 +21,7 @@ public class SaveSearchedBill implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) throws IOException {
+    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
 
         String oneTimeKey = request.getParameter("oneTimeKey");
 
