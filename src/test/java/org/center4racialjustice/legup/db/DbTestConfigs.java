@@ -11,8 +11,8 @@ import java.util.List;
 
 public class DbTestConfigs {
 
-    private static boolean initialized = false;
-    private static String connectionUrl = "jdbc:h2:./db/legup_h2_test";
+    private static boolean h2Initialized = false;
+    private static String h2ConnectionUrl = "jdbc:h2:./db/legup_h2_test";
 
     public static Connection connect(){
         return getH2Connection();
@@ -32,12 +32,12 @@ public class DbTestConfigs {
 
     public static Connection getH2Connection(){
         try {
-            if ( ! initialized ) {
+            if ( !h2Initialized) {
                 cleanUpOldDb();
                 initializeDb();
-                initialized = true;
+                h2Initialized = true;
             }
-            return DriverManager.getConnection(connectionUrl);
+            return DriverManager.getConnection(h2ConnectionUrl);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -61,6 +61,9 @@ public class DbTestConfigs {
 
             StringBuilder wholeFileBuffer = new StringBuilder();
             for( String line : lines){
+                // we omit some lines from the creation script
+                // for the h2 tests, we do not care about permissions
+                // and h2 does not support uniqueness constraints
                 if(line.startsWith("begin;")
                         || line.startsWith("grant all")
                         || line.startsWith("end;")
@@ -73,7 +76,7 @@ public class DbTestConfigs {
             String wholeFile = wholeFileBuffer.toString();
 
             Class.forName("org.h2.Driver" );
-            Connection connection = DriverManager.getConnection(connectionUrl);
+            Connection connection = DriverManager.getConnection(h2ConnectionUrl);
             Statement statement = connection.createStatement();
             statement.execute(wholeFile);
         } catch (Exception ex) {
@@ -81,7 +84,5 @@ public class DbTestConfigs {
         }
 
     }
-
-
 
 }
