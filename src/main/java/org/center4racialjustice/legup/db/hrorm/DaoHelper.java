@@ -53,7 +53,6 @@ public class DaoHelper {
         }
         sql.append(" where id = ");
         sql.append(primaryKey.getKey(item));
-        sql.append(" RETURNING ID");
         return sql.toString();
     }
 
@@ -102,8 +101,8 @@ public class DaoHelper {
             bldr.append(", ");
             bldr.append(DaoHelper.typedColumnsAsString("", joinColumns, false));
         }
-        bldr.append(" ) values ( DEFAULT, ");
-        int end = columnList.size() - 2;
+        bldr.append(" ) values ( ");
+        int end = columnList.size() - 1;
         if (!joinColumns.isEmpty()){
             end += joinColumns.size();
         }
@@ -112,36 +111,27 @@ public class DaoHelper {
         }
         bldr.append("? ");
         bldr.append(" ) ");
-        bldr.append(" RETURNING ID");
 
         return bldr.toString();
     }
 
-    public static <T> Long runInsertOrUpdate(Connection connection, String sql, List<TypedColumn<T>> allColumns, T item) {
+    public static <T> void runUpdate(Connection connection, String sql, List<TypedColumn<T>> allColumns, T item) {
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
 
         try {
             preparedStatement = connection.prepareStatement(sql);
 
-            // TODO: This is bogus. It artificially skips the ID column
-            // Should know to skip via primary key.
             for(int idx = 1; idx<allColumns.size(); idx++){
                 TypedColumn<T> column = allColumns.get(idx);
                 column.setValue(item, idx, preparedStatement);
             }
 
-            resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return resultSet.getLong("ID");
+            preparedStatement.execute();
 
         } catch (SQLException se){
             throw new RuntimeException("Wrapped SQL exception for " + sql, se);
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
@@ -149,12 +139,37 @@ public class DaoHelper {
                 log.error("Error during close",se);
             }
         }
-
     }
 
-    public static <T> Long doInsert(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, T item){
+    public static <T> void runInsert(Connection connection, String sql, List<TypedColumn<T>> allColumns, T item) {
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+
+            for(int idx = 0; idx<allColumns.size(); idx++){
+                TypedColumn<T> column = allColumns.get(idx);
+                column.setValue(item, idx + 1, preparedStatement);
+            }
+
+            preparedStatement.execute();
+
+        } catch (SQLException se){
+            throw new RuntimeException("Wrapped SQL exception for " + sql, se);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException se){
+                log.error("Error during close",se);
+            }
+        }
+    }
+
+    public static <T> void doInsert(Connection connection, String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns, T item){
         String sql = DaoHelper.insertStatement(table, dataColumns, joinColumns);
-        return runInsertOrUpdate(connection, sql, concatenate(dataColumns, joinColumns), item);
+        runInsert(connection, sql, concatenate(dataColumns, joinColumns), item);
     }
 
     public static void runDelete(Connection connection, String sql) {
@@ -167,7 +182,7 @@ public class DaoHelper {
 
     public static <T> void doUpdate(Connection connection, String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> dataColumns, PrimaryKey<T> primaryKey, T item){
         String sql = DaoHelper.updateStatement(table, columnList, dataColumns, item , primaryKey);
-        runInsertOrUpdate(connection, sql, concatenate(columnList, dataColumns), item);
+        runUpdate(connection, sql, concatenate(columnList, dataColumns), item);
     }
 
     public static <T> T populate(ResultSet resultSet, Supplier<T> supplier, List<TypedColumn<T>> allColumns)
@@ -254,6 +269,31 @@ public class DaoHelper {
             throw new RuntimeException(ex);
         }
 
+    }
+
+    public static long getNextSequenceValue(Connection connection, String sequenceName) {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select nextval('" + sequenceName + "')");
+            resultSet.next();
+            long value = resultSet.getLong(1);
+            return value;
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                if ( resultSet != null ){
+                    resultSet.close();
+                }
+                if ( statement != null){
+                    statement.close();
+                }
+            } catch (SQLException ex){
+                log.error("Could not close", ex);
+            }
+        }
     }
 
     public static <T> List<T> concatenate(List<? extends T> as, List<? extends T> bs){

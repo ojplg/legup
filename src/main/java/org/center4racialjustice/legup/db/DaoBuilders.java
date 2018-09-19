@@ -22,7 +22,7 @@ public class DaoBuilders {
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
-                .withPrimaryKey("ID", Bill::getId, Bill::setId)
+                .withPrimaryKey("ID", "bill_seq", Bill::getId, Bill::setId)
                 .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter)
                 .withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
                 .withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)
@@ -31,7 +31,7 @@ public class DaoBuilders {
 
     private static DaoBuilder<Legislator> legislatorDaoBuilder(){
         return new DaoBuilder<>("LEGISLATORS", Legislator::new)
-                .withPrimaryKey("ID", Legislator::getId, Legislator::setId)
+                .withPrimaryKey("ID", "legislator_seq", Legislator::getId, Legislator::setId)
                 .withStringColumn("FIRST_NAME", Legislator::getFirstName, Legislator::setFirstName)
                 .withStringColumn("MIDDLE_NAME_OR_INITIAL", Legislator::getMiddleInitialOrName, Legislator::setMiddleInitialOrName)
                 .withStringColumn("LAST_NAME", Legislator::getLastName, Legislator::setLastName)
@@ -45,7 +45,7 @@ public class DaoBuilders {
 
     private static DaoBuilder<ReportFactor> reportFactorDaoBuilder(){
         return new DaoBuilder<>("REPORT_FACTORS", ReportFactor::new)
-                .withPrimaryKey("ID", ReportFactor::getId, ReportFactor::setId)
+                .withPrimaryKey("ID", "report_factor_seq", ReportFactor::getId, ReportFactor::setId)
                 .withIntegerColumn("REPORT_CARD_ID", ReportFactor::getReportCardId, ReportFactor::setReportCardId)
                 .withConvertingStringColumn("VOTE_SIDE", ReportFactor::getVoteSide, ReportFactor::setVoteSide, VoteSideConverter.INSTANCE)
                 .withJoinColumn("BILL_ID", ReportFactor::getBill, ReportFactor::setBill, BILLS);
@@ -53,7 +53,7 @@ public class DaoBuilders {
 
     private static DaoBuilder<ReportCard> reportCardDaoBuilder(){
         return new DaoBuilder<>("REPORT_CARDS", ReportCard::new)
-                .withPrimaryKey("ID", ReportCard::getId, ReportCard::setId)
+                .withPrimaryKey("ID", "report_card_seq", ReportCard::getId, ReportCard::setId)
                 .withStringColumn("NAME", ReportCard::getName, ReportCard::setName)
                 .withIntegerColumn("SESSION_NUMBER", ReportCard::getSessionNumber, ReportCard::setSessionNumber)
                 .withChildren("REPORT_CARD_ID", ReportFactor::setReportCardId,
@@ -62,7 +62,7 @@ public class DaoBuilders {
 
     private static DaoBuilder<BillActionLoad> billActionLoadDaoBuilder(){
         return new DaoBuilder<>("BILL_ACTION_LOADS", BillActionLoad::new)
-                .withPrimaryKey("ID", BillActionLoad::getId, BillActionLoad::setId)
+                .withPrimaryKey("ID", "bill_action_load_seq", BillActionLoad::getId, BillActionLoad::setId)
                 .withLocalDateTimeColumn("LOAD_TIME", BillActionLoad::getLoadTime, BillActionLoad::setLoadTime)
                 .withStringColumn("URL", BillActionLoad::getUrl, BillActionLoad::setUrl)
                 .withIntegerColumn("CHECK_SUM", BillActionLoad::getCheckSum, BillActionLoad::setCheckSum)
@@ -71,7 +71,7 @@ public class DaoBuilders {
 
     private static DaoBuilder<BillAction> billActionDaoBuilder(){
         return new DaoBuilder<>("BILL_ACTIONS", BillAction::new)
-                .withPrimaryKey("ID", BillAction::getId, BillAction::setId)
+                .withPrimaryKey("ID", "bill_action_seq", BillAction::getId, BillAction::setId)
                 .withConvertingStringColumn("BILL_ACTION_TYPE", BillAction::getBillActionType, BillAction::setBillActionType, BillActionType.CONVERTER)
                 .withStringColumn("BILL_ACTION_DETAIL", BillAction::getBillActionDetail, BillAction::setBillActionDetail)
                 .withJoinColumn("BILL_ID", BillAction::getBill, BillAction::setBill, BILLS)

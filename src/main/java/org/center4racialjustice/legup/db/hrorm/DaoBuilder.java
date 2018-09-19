@@ -88,7 +88,7 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         return this;
     }
 
-    public DaoBuilder<T> withPrimaryKey(String columnName, Function<T, Long> getter, BiConsumer<T, Long> setter){
+    public DaoBuilder<T> withPrimaryKey(String columnName, String sequenceName, Function<T, Long> getter, BiConsumer<T, Long> setter){
 
         this.primaryKey = new PrimaryKey<T>() {
             @Override
@@ -103,6 +103,9 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
 
             @Override
             public String keyName() { return columnName; }
+
+            @Override
+            public String getSequenceName() { return sequenceName; }
         };
         TypedColumn<T> column = new LongColumn<>(columnName, "a", getter, setter);
         columns.add(column);

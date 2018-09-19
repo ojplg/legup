@@ -48,7 +48,9 @@ public class ChildrenDescriptor<T,U> {
         for(U child : children){
             parentSetter.accept(child, parentId);
             if( daoDescriptor.primaryKey().getKey(child) == null ) {
-                Long id = DaoHelper.doInsert(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), child);
+                long id = DaoHelper.getNextSequenceValue(connection, daoDescriptor.primaryKey().getSequenceName());
+                daoDescriptor.primaryKey().setKey(child, id);
+                DaoHelper.doInsert(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), child);
                 goodChildrenIds.add(id);
             } else {
                 DaoHelper.doUpdate(connection, daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), daoDescriptor.primaryKey(), child);

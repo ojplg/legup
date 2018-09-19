@@ -63,7 +63,9 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public long insert(T item) {
         String sql = insertSql();
-        long id = DaoHelper.runInsertOrUpdate(connection, sql, allColumns(), item);
+        long id = DaoHelper.getNextSequenceValue(connection, primaryKey.getSequenceName());
+        primaryKey.setKey(item, id);
+        DaoHelper.runInsert(connection, sql, allColumns(), item);
         primaryKey.setKey(item, id);
         for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
             childrenDescriptor.saveChildren(connection, item);
@@ -74,7 +76,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public void update(T item) {
         String sql = updateSql(item);
-        DaoHelper.runInsertOrUpdate(connection, sql, allColumns(), item);
+        DaoHelper.runUpdate(connection, sql, allColumns(), item);
         for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
             childrenDescriptor.saveChildren(connection, item);
         }
@@ -152,4 +154,5 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
             throw new RuntimeException(ex);
         }
     }
+
 }

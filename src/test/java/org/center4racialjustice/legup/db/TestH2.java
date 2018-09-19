@@ -42,7 +42,7 @@ public class TestH2 {
 
     private static void initializeDb(){
         try {
-            Path path = Paths.get("./db/create_h2_structures.sql");
+            Path path = Paths.get("./db/create_structures.sql");
             List<String> lines = Files.readAllLines(path);
 
             StringBuilder wholeFileBuffer = new StringBuilder();
