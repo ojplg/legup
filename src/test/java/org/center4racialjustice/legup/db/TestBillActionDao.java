@@ -72,12 +72,11 @@ public class TestBillActionDao {
         billActionLoad.setId(voteLoadId);
 
         Statement statement = connection.createStatement();
+        long voteId = 2456;
         String insertSql =
                 "insert into bill_actions (id, bill_id, legislator_id, bill_action_type, bill_action_detail, bill_action_load_id) values "
-                + "( 2456, " + billId + ", " + wilsonId + ", 'Vote', 'N', " + voteLoadId + ") RETURNING ID";
-        ResultSet resultSet = statement.executeQuery(insertSql);
-        resultSet.next();
-        long voteId = resultSet.getLong("id");
+                + "( " + voteId + ", " + billId + ", " + wilsonId + ", 'Vote', 'N', " + voteLoadId + ")";
+        statement.execute(insertSql);
 
         BillActionDao billActionDao = new BillActionDao(connection);
 
