@@ -47,6 +47,8 @@ public class DbTestConfigs {
         try {
             Path path = Paths.get("./db/legup_h2_test.mv.db");
             Files.deleteIfExists(path);
+            path = Paths.get("./db/legup_h2_test.trace.db");
+            Files.deleteIfExists(path);
         } catch (Exception ex){
             ex.printStackTrace();
         }
