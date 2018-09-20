@@ -3,7 +3,9 @@ package org.center4racialjustice.legup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.app.Velocity;
+import org.center4racialjustice.legup.db.ConnectionFactory;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.PostgresConnectionFactory;
 import org.center4racialjustice.legup.web.ServerStarter;
 
 import java.io.FileReader;
@@ -32,20 +34,20 @@ public class Main {
             }
 
             // make sure postgres drivers are loaded
-            Class.forName("org.postgresql.Driver");
-
-            ConnectionPool pool = new ConnectionPool(
+            ConnectionFactory connectionFactory = new PostgresConnectionFactory(
                     properties.getProperty("db.url"),
                     properties.getProperty("db.user"),
                     properties.getProperty("db.password")
             );
+
+            ConnectionPool connectionPool = new ConnectionPool(connectionFactory);
 
             Properties velocityProperties = new Properties();
             velocityProperties.put("resource.loader", "class");
             velocityProperties.put("class.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
             Velocity.init(velocityProperties);
 
-            ServerStarter serverStarter = new ServerStarter(pool);
+            ServerStarter serverStarter = new ServerStarter(connectionPool);
             serverStarter.start();
         } catch (Exception ex){
             System.out.println("Could not start server");

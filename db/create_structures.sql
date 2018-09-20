@@ -106,7 +106,6 @@ alter table report_factors add foreign key (report_card_id) references report_ca
 alter table report_factors add foreign key (bill_id) references bills(id);
 alter table report_factors add constraint uniq_report_factor unique (report_card_id, bill_id);
 
-
 grant all on sequence report_factor_seq to legupuser;
 grant all on table report_factors to legupuser;
 

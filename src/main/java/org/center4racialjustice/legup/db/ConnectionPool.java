@@ -1,31 +1,15 @@
 package org.center4racialjustice.legup.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 public class ConnectionPool {
 
-    private final String url;
-    private final String user;
-    private final String password;
+    private final ConnectionFactory connectionFactory;
 
-    public ConnectionPool(String url, String user, String password) {
-        this.url = url;
-        this.user = user;
-        this.password = password;
-    }
-
-    public Connection getConnection(){
-        try {
-            return DriverManager.getConnection(url, user, password);
-        } catch (SQLException ex){
-            throw new RuntimeException(ex);
-        }
+    public ConnectionPool(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
     public ConnectionWrapper getWrappedConnection(){
-        return new ConnectionWrapper(getConnection());
+        return new ConnectionWrapper(connectionFactory.connect());
     }
 
 }
