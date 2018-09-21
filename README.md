@@ -45,7 +45,6 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 
 Technical Betterments
 
-* Some tests depend on Postgres: move to in-memory DB
 * Some tests depend on the Internet: move to local files
 * Actually make a real connection pool and automated reclamation
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with Hibernate/javax.persistence 
