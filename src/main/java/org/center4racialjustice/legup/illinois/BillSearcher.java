@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,20 +60,33 @@ public class BillSearcher {
             Connection indexConnection = Jsoup.connect(indexUrl);
             Document indexDocument = indexConnection.get();
 
-            Elements lists = indexDocument.select("ul");
-            Element list = lists.get(0);
-
-            Elements listItems = list.select("li");
-            int idx = number.intValue() % 100 - 1;
-            Element item = listItems.get(idx);
-
-            Element anchor = item.selectFirst("a");
-            String url = anchor.attr("href");
-
-            return IllinoisLegislationHome + url;
+            return parseOutBillUrl(indexDocument, number.intValue());
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
+    }
+
+    public static String parseOutBillUrl(InputStream indexPageBody, String pageUrl, int number) {
+        try {
+            Document indexDocument = Jsoup.parse(indexPageBody, null, pageUrl);
+            return parseOutBillUrl(indexDocument, number);
+        } catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static String parseOutBillUrl(Document indexDocument, int number){
+        Elements lists = indexDocument.select("ul");
+        Element list = lists.get(0);
+
+        Elements listItems = list.select("li");
+        int idx = number % 100 - 1;
+        Element item = listItems.get(idx);
+
+        Element anchor = item.selectFirst("a");
+        String billUrl = anchor.attr("href");
+
+        return  billUrl;
     }
 
     private String uriParameter(Chamber chamber){
