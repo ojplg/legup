@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,14 +30,14 @@ public class SqlRunner<T> {
     }
 
     public List<T> select(String sql, Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
 
-            statement = connection.createStatement();
+            statement = connection.prepareStatement(sql);
 
-            resultSet = statement.executeQuery(sql);
+            resultSet = statement.executeQuery();
 
             List<T> items = new ArrayList<>();
 
