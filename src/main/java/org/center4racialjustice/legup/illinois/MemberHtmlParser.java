@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,11 +84,25 @@ public class MemberHtmlParser {
         Chamber chamber = getAssembly();
         Long sessionNumber = getSessionNumber();
 
+        List<Legislator> formerMembers = readTable(5, chamber, sessionNumber);
+        HashSet<Long> formerMemberDistricts = new HashSet<>();
+        for(Legislator legislator : formerMembers){
+            formerMemberDistricts.add(legislator.getDistrict());
+            legislator.setCompleteTerm(false);
+        }
+
+        List<Legislator> currentMembers = readTable(4, chamber, sessionNumber);
+        for(Legislator legislator : currentMembers){
+            if (formerMemberDistricts.contains(legislator.getDistrict())){
+                legislator.setCompleteTerm(false);
+            } else {
+                legislator.setCompleteTerm(true);
+            }
+        }
+
         List<Legislator> legislators = new ArrayList<>();
-        // main list
-        legislators.addAll(readTable(4, chamber, sessionNumber));
-        // former members
-        legislators.addAll(readTable(5, chamber, sessionNumber));
+        legislators.addAll(formerMembers);
+        legislators.addAll(currentMembers);
         return legislators;
     }
 

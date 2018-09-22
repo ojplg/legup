@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class Legislator implements Comparable<Legislator> {
@@ -63,5 +64,9 @@ public class Legislator implements Comparable<Legislator> {
 
     public static Tuple<List<Legislator>, List<Legislator>> splitByChamber(List<Legislator> legislators){
         return Lists.divide(legislators, l -> l.chamber.equals(Chamber.House));
+    }
+
+    public static List<Legislator> findByLastName(List<Legislator> legislators, String lastName){
+        return legislators.stream().filter(leg -> leg.getLastName().equals(lastName)).collect(Collectors.toList());
     }
 }
