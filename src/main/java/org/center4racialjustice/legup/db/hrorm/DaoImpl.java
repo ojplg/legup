@@ -20,6 +20,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     private final List<JoinColumn<T,?>> joinColumns;
     private final List<ChildrenDescriptor<T,?>> childrenDescriptors;
     private final SqlBuilder<T> sqlBuilder;
+    private final SqlRunner<T> sqlRunner;
 
     public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey,
                    List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns,
@@ -31,7 +32,8 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         this.supplier = supplier;
         this.joinColumns = Collections.unmodifiableList(joinColumns);
         this.childrenDescriptors = childrenDescriptors;
-        this.sqlBuilder = new SqlBuilder<T>(tableName, this.dataColumns, this.joinColumns, primaryKey);
+        this.sqlBuilder = new SqlBuilder<>(tableName, this.dataColumns, this.joinColumns, primaryKey);
+        this.sqlRunner = new SqlRunner<>(connection, dataColumns, joinColumns);
     }
 
     public String tableName(){
@@ -67,8 +69,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         String sql = insertSql();
         long id = DaoHelper.getNextSequenceValue(connection, primaryKey.getSequenceName());
         primaryKey.setKey(item, id);
-        DaoHelper.runInsert(connection, sql, allColumns(), item);
-        primaryKey.setKey(item, id);
+        sqlRunner.insert(sql, item);
         for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
             childrenDescriptor.saveChildren(connection, item);
         }
@@ -78,7 +79,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public void update(T item) {
         String sql = updateSql(item);
-        DaoHelper.runUpdate(connection, sql, allColumns(), item);
+        sqlRunner.update(sql, item);
         for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
             childrenDescriptor.saveChildren(connection, item);
         }
@@ -94,7 +95,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     public T select(long id) {
         String sql = sqlBuilder.select();
         sql = sql + " and a." + primaryKey.keyName() + " = " + id;
-        List<T> items = DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
+        List<T> items = sqlRunner.select(sql, supplier, childrenDescriptors);
         return DaoHelper.fromSingletonList(items, "");
     }
 
@@ -104,13 +105,13 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         List<String> idStrings = ids.stream().map(Object::toString).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " and a." + primaryKey.keyName() + " in (" + idsString + ")";
-        return DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
+        return sqlRunner.select(sql, supplier, childrenDescriptors);
     }
 
     @Override
     public List<T> selectAll() {
         String sql = sqlBuilder.select();
-        return DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
+        return sqlRunner.select(sql, supplier, childrenDescriptors);
     }
 
     @Override

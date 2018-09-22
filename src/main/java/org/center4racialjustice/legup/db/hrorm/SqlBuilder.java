@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db.hrorm;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -113,5 +114,16 @@ public class SqlBuilder<T> {
         return bldr.toString();
     }
 
+    public String selectByColumns(Collection<String> columnNames){
+        StringBuilder buf = new StringBuilder();
+        buf.append(select());
+        for(String columnName : columnNames){
+            buf.append(" and ");
+            buf.append(columnName);
+            buf.append(" = ? ");
+        }
+
+        return buf.toString();
+    }
 
 }
