@@ -1,6 +1,5 @@
 package org.center4racialjustice.legup.db.hrorm;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -17,12 +16,6 @@ public class SqlBuilder<T, J> {
         this.dataColumns = dataColumns;
         this.joinColumns = joinColumns;
         this.primaryKey = primaryKey;
-    }
-
-    private List<TypedColumn<T>> allColumns(){
-        List<TypedColumn<T>> list = new ArrayList<>(dataColumns);
-        list.addAll(joinColumns);
-        return list;
     }
 
     private String columnsAsString(String prefix, boolean withAliases, List<? extends TypedColumn> columns){
