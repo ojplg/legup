@@ -6,6 +6,8 @@ import org.center4racialjustice.legup.util.LookupTable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,11 @@ public class ReportCard {
     public void addReportFactor(ReportFactor factor){
         factor.setReportCardId(id);
         reportFactors.add(factor);
+    }
+
+    public void addReportCardLegislator(ReportCardLegislator legislator){
+        legislator.setReportCardId(id);
+        reportCardLegislators.add(legislator);
     }
 
     public ReportFactor findByBill(Bill bill){
@@ -58,6 +65,25 @@ public class ReportCard {
                 .filter(f -> f.getVoteSide().equals(VoteSide.Nay))
                 .map(f -> f.getBill())
                 .collect(Collectors.toList());
+    }
+
+    public SortedMap<Legislator, Boolean> findSelectedLegislators(List<Legislator> legislators){
+        TreeMap<Legislator, Boolean> map = new TreeMap<>();
+
+        if( reportCardLegislators.isEmpty() ){
+            for (Legislator legislator : legislators){
+                map.put(legislator, legislator.getCompleteTerm());
+            }
+        } else {
+            for (Legislator legislator : legislators) {
+                if (reportCardLegislators.stream().anyMatch(rcl -> rcl.getLegislator().equals(legislator))) {
+                    map.put(legislator, Boolean.TRUE);
+                } else {
+                    map.put(legislator, Boolean.FALSE);
+                }
+            }
+        }
+        return map;
     }
 
 }

@@ -45,9 +45,11 @@ public class Legislator implements Comparable<Legislator> {
         if ( comparison != 0 ){
             return comparison;
         }
-        comparison = this.firstName.compareTo(that.firstName);
-        if ( comparison != 0 ){
-            return comparison;
+        if( this.firstName != null ) {
+            comparison = this.firstName.compareTo(that.firstName);
+            if (comparison != 0) {
+                return comparison;
+            }
         }
         if( this.middleInitialOrName != null) {
             comparison = this.middleInitialOrName.compareTo(that.middleInitialOrName);

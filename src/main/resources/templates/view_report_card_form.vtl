@@ -49,6 +49,40 @@
             #end
         </table>
 
+        <div class="pure-g">
+
+            <div class="pure-u-1-2">
+                <h5>House</h5>
+                <table>
+                    #foreach ( $pair in ${selectedHouse.entrySet()})
+                        #set ( $legislator = $pair.Key )
+                        <tr>
+                            <td>$legislator.Display</td>
+                            <td>
+                                <input type="checkbox" name="legislator_$legislator.id" #if ( $pair.Value ) checked #end >
+                            </td>
+                        </tr>
+                    #end
+                </table>
+            </div>
+
+            <div class="pure-u-1-2">
+                <h5>Senate</h5>
+                <table>
+                    #foreach ( $pair in ${selectedSenate.entrySet()})
+                        #set ( $legislator = $pair.Key )
+                        <tr>
+                            <td>$legislator.Display</td>
+                            <td>
+                                <input type="checkbox" name="legislator_$legislator.id" #if ( $pair.Value ) checked #end >
+                            </td>
+                        </tr>
+                    #end
+                </table>
+            </div>
+
+        </div>
+
         <input type="submit" value="Save"/>
 
     <fieldset>

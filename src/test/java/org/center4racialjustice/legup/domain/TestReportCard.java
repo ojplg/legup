@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TestReportCard {
 
@@ -14,9 +16,9 @@ public class TestReportCard {
     public void testSimplestCalculation(){
 
         Bill bill = newBill(Chamber.Senate, 1L);
-        Legislator legislator = newLegislator(Chamber.House, "Smith");
+        Legislator legislator = newLegislator(Chamber.House, "Smith", true);
         ReportFactor factor = newFactor(bill, VoteSide.Yea);
-        ReportCard card = newReportCard( factor );
+        ReportCard card = newReportCard( new ReportFactor[]{ factor }, new Legislator[]{ legislator } );
 
         BillAction action = newVote(bill, legislator, VoteSide.Yea);
 
@@ -32,9 +34,9 @@ public class TestReportCard {
         Bill b2 = newBill(Chamber.House, 2L);
         Bill b3 = newBill(Chamber.House, 3L);
 
-        Legislator l1 = newLegislator(Chamber.House, "Apple");
-        Legislator l2 = newLegislator(Chamber.House, "Banana");
-        Legislator l3 = newLegislator(Chamber.House, "Cherry");
+        Legislator l1 = newLegislator(Chamber.House, "Apple", true);
+        Legislator l2 = newLegislator(Chamber.House, "Banana", true);
+        Legislator l3 = newLegislator(Chamber.House, "Cherry", false);
 
         BillAction ab11 = newChiefSponsor(b1, l1);
         BillAction ab12 = newSponsor(b1, l2);
@@ -56,7 +58,8 @@ public class TestReportCard {
         ReportFactor f2 = newFactor(b2, VoteSide.Nay);
         ReportFactor f3 = newFactor(b3, VoteSide.Yea);
 
-        ReportCard card = newReportCard(f1, f2, f3);
+        ReportCard card = newReportCard(new ReportFactor[] {f1, f2, f3},
+                new Legislator[] { l1, l2, l3 });
 
         List<BillAction> actionList = Arrays.asList(
                 ab11, ab12, ab13, ab14, ab15,
@@ -77,6 +80,37 @@ public class TestReportCard {
         Assert.assertEquals(0, (int) table.get(l3, b2));
         Assert.assertEquals(3, (int) table.get(l3, b3));
     }
+
+    @Test
+    public void testFindSelectedLegislators_ByDefaultBaseOnCompleteTerms(){
+        Legislator l1 = newLegislator(Chamber.House, "Newbie", false);
+        Legislator l2 = newLegislator(Chamber.House, "Incumbie", true);
+        List<Legislator> legislators = Arrays.asList(l1, l2);
+
+        ReportCard reportCard = newReportCard(new ReportFactor[0], new Legislator[0]);
+
+        Map<Legislator, Boolean> selected = reportCard.findSelectedLegislators(legislators);
+
+        Assert.assertEquals(Boolean.FALSE, selected.get(l1));
+        Assert.assertEquals(Boolean.TRUE, selected.get(l2));
+    }
+
+    @Test
+    public void testFindSelectedLegislators_ReflectsSettings(){
+        Legislator l1 = newLegislator(Chamber.House, "Aaa", true);
+        Legislator l2 = newLegislator(Chamber.House, "Bbb", false);
+        Legislator l3 = newLegislator(Chamber.House, "Ccc", true);
+        List<Legislator> legislators = Arrays.asList(l1, l2, l3);
+
+        ReportCard reportCard = newReportCard(new ReportFactor[0], new Legislator[]{ l2, l3});
+
+        Map<Legislator, Boolean> selected = reportCard.findSelectedLegislators(legislators);
+
+        Assert.assertEquals(Boolean.FALSE, selected.get(l1));
+        Assert.assertEquals(Boolean.TRUE, selected.get(l2));
+        Assert.assertEquals(Boolean.TRUE, selected.get(l3));
+    }
+
 
     private static long id = 1;
 
@@ -109,10 +143,14 @@ public class TestReportCard {
         return action;
     }
 
-    private static ReportCard newReportCard(ReportFactor ... factors){
+    private static ReportCard newReportCard(ReportFactor[] factors, Legislator[] legislators){
         ReportCard card = new ReportCard();
-        card.setReportFactors(Arrays.asList(factors));
         card.setId(nextId());
+        card.setReportFactors(Arrays.asList(factors));
+        List<ReportCardLegislator> rcList = Arrays.asList(legislators).stream()
+                .map(TestReportCard::newReportCardLegislator)
+                .collect(Collectors.toList());
+        card.setReportCardLegislators(rcList);
         return card;
     }
 
@@ -124,6 +162,13 @@ public class TestReportCard {
         return factor;
     }
 
+    private static ReportCardLegislator newReportCardLegislator(Legislator legislator){
+        ReportCardLegislator rcl = new ReportCardLegislator();
+        rcl.setLegislator(legislator);
+        rcl.setId(nextId());
+        return rcl;
+    }
+
     private static Bill newBill(Chamber chamber, Long number){
         Bill bill = new Bill();
         bill.setNumber(number);
@@ -133,11 +178,12 @@ public class TestReportCard {
         return bill;
     }
 
-    private static Legislator newLegislator(Chamber chamber, String lastName){
+    private static Legislator newLegislator(Chamber chamber, String lastName, boolean completeTerm){
         Legislator legislator = new Legislator();
         legislator.setId(nextId());
         legislator.setChamber(chamber);
         legislator.setLastName(lastName);
+        legislator.setCompleteTerm(completeTerm);
         return legislator;
     }
 

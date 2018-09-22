@@ -89,6 +89,8 @@ create table report_cards (
     session_number integer not null
 );
 
+alter table report_cards add constraint uniq_report_card unique (name);
+
 grant all on sequence report_card_seq to legupuser;
 grant all on table report_cards to legupuser;
 
