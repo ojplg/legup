@@ -67,6 +67,10 @@ public class ReportCard {
                 .collect(Collectors.toList());
     }
 
+    public List<Legislator> getSelectedLegislators(){
+        return reportCardLegislators.stream().map(ReportCardLegislator::getLegislator).collect(Collectors.toList());
+    }
+
     public SortedMap<Legislator, Boolean> findSelectedLegislators(List<Legislator> legislators){
         TreeMap<Legislator, Boolean> map = new TreeMap<>();
 
@@ -86,4 +90,26 @@ public class ReportCard {
         return map;
     }
 
+    public void resetSelectedLegislators(List<Legislator> legislators, List<Long> selectedLegislatorIds){
+        List<ReportCardLegislator> toRemove = new ArrayList<>();
+        List<Long> newIds = new ArrayList<>();
+        newIds.addAll(selectedLegislatorIds);
+        for( ReportCardLegislator rcl : reportCardLegislators ){
+            Long workingId = rcl.getId();
+            if ( ! selectedLegislatorIds.contains(workingId) ){
+                toRemove.add(rcl);
+                newIds.remove(workingId);
+            }
+            if ( selectedLegislatorIds.contains(workingId) ){
+                newIds.remove(workingId);
+            }
+        }
+        reportCardLegislators.removeAll(toRemove);
+        for (Long newId : newIds){
+            Legislator legislator = Lists.findfirst(legislators, l -> l.getId().equals(newId));
+            ReportCardLegislator rcl = new ReportCardLegislator();
+            rcl.setLegislator(legislator);
+            addReportCardLegislator(rcl);
+        }
+    }
 }

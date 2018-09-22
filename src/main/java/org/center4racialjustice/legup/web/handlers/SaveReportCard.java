@@ -4,8 +4,10 @@ import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
+import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
@@ -58,6 +60,7 @@ public class SaveReportCard implements Handler {
                 Map<Long, VoteSide> voteSideByBillIdMap = parseVoteSidesByBillIdMap(request);
                 List<ReportFactor> factorsToRemove = new ArrayList<>();
 
+                //FIXME: Move code to ReportCard object and add tests
                 for(ReportFactor reportFactor : reportCard.getReportFactors()){
                     Long billId = reportFactor.getBill().getId();
                     if( voteSideByBillIdMap.containsKey(billId)){
@@ -78,8 +81,16 @@ public class SaveReportCard implements Handler {
                     reportCard.getReportFactors().add(factor);
                 }
 
+                LegislatorDao legislatorDao = new LegislatorDao(connection);
+                List<Legislator> legislators = legislatorDao.readBySession(reportCard.getSessionNumber());
+                List<Long> selectedLegislatorIds = parseCheckedLegislators(request);
+
+                reportCard.resetSelectedLegislators(legislators, selectedLegislatorIds);
+
                 reportCardDao.save(reportCard);
             }
+
+
 
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("reportCard", reportCard);
@@ -87,12 +98,27 @@ public class SaveReportCard implements Handler {
         }
     }
 
+    private List<Long> parseCheckedLegislators(Request request){
+        String legislatorIdPrefix = "legislator_";
+        List<Long> legislatorIds = new ArrayList<>();
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while(parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            if (parameterName.startsWith(legislatorIdPrefix)){
+                String legislatorIdString = parameterName.substring(legislatorIdPrefix.length());
+                Long legislatorId = Long.parseLong(legislatorIdString);
+                legislatorIds.add(legislatorId);
+            }
+        }
+        return legislatorIds;
+    }
+
     private Map<Long, VoteSide> parseVoteSidesByBillIdMap(Request request){
+        final String billVoteSidePrefix = "bill_vote_side_";
         Map<Long, VoteSide> voteSideByBillIdMap = new HashMap<>();
         Enumeration<String> parameterNames = request.getParameterNames();
         while(parameterNames.hasMoreElements()){
             String parameterName = parameterNames.nextElement();
-            final String billVoteSidePrefix = "bill_vote_side_";
             if (parameterName.startsWith(billVoteSidePrefix)){
                 String billNumberString = parameterName.substring(billVoteSidePrefix.length());
                 Long billNumber = Long.parseLong(billNumberString);

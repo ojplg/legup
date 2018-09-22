@@ -111,6 +111,38 @@ public class TestReportCard {
         Assert.assertEquals(Boolean.TRUE, selected.get(l3));
     }
 
+    @Test
+    public void testResetSelectedLegislators_AddsNew(){
+        Legislator leg1 = newLegislator(Chamber.House, "Aaa", true);
+        List<Legislator> legislators = Arrays.asList(leg1);
+        Long leg1ID = leg1.getId();
+        List<Long> ids = Arrays.asList(leg1ID);
+
+        ReportCard reportCard = newReportCard(new ReportFactor[0], new Legislator[]{ });
+
+        Assert.assertTrue(reportCard.getReportCardLegislators().isEmpty());
+
+        reportCard.resetSelectedLegislators(legislators, ids);
+
+        Assert.assertEquals(1, reportCard.getReportCardLegislators().size());
+        Assert.assertTrue( reportCard.getSelectedLegislators().contains(leg1));
+    }
+
+    @Test
+    public void testResetSelectedLegislators_RemovesMissing(){
+        Legislator leg1 = newLegislator(Chamber.House, "Aaa", true);
+        List<Legislator> legislators = Arrays.asList(leg1);
+
+        ReportCard reportCard = newReportCard(new ReportFactor[0], new Legislator[]{ leg1 });
+
+        Assert.assertEquals(1, reportCard.getReportCardLegislators().size());
+        Assert.assertTrue( reportCard.getSelectedLegislators().contains(leg1));
+
+        reportCard.resetSelectedLegislators(legislators, Collections.emptyList());
+
+        Assert.assertTrue((reportCard.getReportCardLegislators().isEmpty()));
+    }
+
 
     private static long id = 1;
 
@@ -131,7 +163,6 @@ public class TestReportCard {
         action.setId(nextId());
         return action;
     }
-
 
     private static BillAction newVote(Bill bill, Legislator legislator, VoteSide voteSide){
         BillAction action = new BillAction();
