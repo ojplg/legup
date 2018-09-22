@@ -18,6 +18,7 @@ create table legislators (
     chamber text not null,
     party text,
     session_number integer not null,
+    complete_term text,
     member_id text
 );
 

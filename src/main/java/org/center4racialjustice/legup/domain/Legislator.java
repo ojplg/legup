@@ -20,6 +20,7 @@ public class Legislator implements Comparable<Legislator> {
     private long district;
     private long sessionNumber;
     private String memberId;
+    private Boolean completeTerm;
 
     public void setName(Name name){
         this.unparsedName = name.getUnparsedName();
@@ -54,18 +55,6 @@ public class Legislator implements Comparable<Legislator> {
             }
         }
         return 0;
-    }
-
-    public boolean persistedFieldsWithoutIdEqual(Legislator that){
-        return this.lastName.equals(that.lastName)
-                && this.firstName.equals(that.firstName)
-                && this.suffix.equals(that.suffix)
-                && this.middleInitialOrName.equals(that.middleInitialOrName)
-                && this.party.equals(that.party)
-                && this.chamber.equals(that.chamber)
-                && this.district == that.district
-                && this.sessionNumber == that.sessionNumber
-                && this.memberId.equals(that.memberId);
     }
 
     public String getDisplay(){

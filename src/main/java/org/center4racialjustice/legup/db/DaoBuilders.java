@@ -40,6 +40,7 @@ public class DaoBuilders {
                 .withIntegerColumn("DISTRICT", Legislator::getDistrict, Legislator::setDistrict)
                 .withStringColumn("PARTY", Legislator::getParty, Legislator::setParty)
                 .withIntegerColumn("SESSION_NUMBER", Legislator::getSessionNumber, Legislator::setSessionNumber)
+                .withBooleanColumn("COMPLETE_TERM", Legislator::getCompleteTerm, Legislator::setCompleteTerm)
                 .withStringColumn("MEMBER_ID", Legislator::getMemberId, Legislator::setMemberId);
     }
 

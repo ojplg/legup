@@ -73,6 +73,11 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         return this;
     }
 
+    public DaoBuilder<T> withBooleanColumn(String columnName, Function<T, Boolean> getter, BiConsumer<T, Boolean> setter){
+        columns.add(new StringConverterColumn<>(columnName, "a", getter, setter, BooleanConverter.INSTANCE));
+        return this;
+    }
+
     public <U> DaoBuilder<T> withJoinColumn(String columnName, Function<T, U> getter, BiConsumer<T,U> setter, DaoDescriptor<U> daoDescriptor){
         prefixIndex += 1;
         JoinColumn<T,U> joinColumn = new JoinColumn<>(columnName, prefixes[prefixIndex], getter, setter, daoDescriptor);
