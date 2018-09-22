@@ -12,107 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class DaoHelper {
 
     private static final Logger log = LogManager.getLogger(DaoHelper.class);
 
-    static String typedColumnsAsString(String prefix, List<? extends TypedColumn> columnList, boolean withAliases){
-        Function<TypedColumn,String> stringer;
-        if( withAliases && prefix != null ) {
-            stringer = c -> prefix + "." + c.getName() + " as " + prefix + c.getName();
-        } else if (prefix != null ){
-            stringer = c -> prefix + c.getName();
-        } else {
-            stringer = TypedColumn::getName;
-        }
-        List<String> columnNames = columnList.stream().map(stringer).collect(Collectors.toList());
-        return String.join(", ", columnNames);
-    }
-
     public static <T> String updateStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns, T item, PrimaryKey<T> primaryKey){
-        StringBuilder sql = new StringBuilder("update ");
-        sql.append(table);
-        sql.append(" set ");
-        for(int idx=1; idx<columnList.size(); idx++){
-            TypedColumn column = columnList.get(idx);
-            sql.append(column.getName());
-            sql.append(" = ? ");
-            if (idx < columnList.size() - 1){
-                sql.append(", ");
-            }
-        }
-        for(int idx=0; idx<joinColumns.size(); idx++){
-            JoinColumn joinColumn = joinColumns.get(idx);
-            sql.append(", ");
-            sql.append(joinColumn.getName());
-            sql.append(" = ? ");
-        }
-        sql.append(" where id = ");
-        sql.append(primaryKey.getKey(item));
-        return sql.toString();
+        SqlBuilder sqlBuilder = new SqlBuilder(table, columnList, joinColumns, primaryKey);
+        return sqlBuilder.update(item);
     }
 
     public static <T> String joinSelectSql(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns){
-        StringBuilder buf = new StringBuilder();
-        buf.append("select ");
-        buf.append(DaoHelper.typedColumnsAsString("a", dataColumns, true));
-        for(JoinColumn<T,?> joinColumn : joinColumns) {
-            buf.append(", ");
-            buf.append(DaoHelper.typedColumnsAsString(
-                    joinColumn.getPrefix(),
-                    joinColumn.getColumnList(),
-                    true
-            ));
-        }
-        buf.append(" from ");
-        buf.append(table);
-        buf.append(" a");
-        for(JoinColumn joinColumn : joinColumns) {
-            buf.append(", ");
-            buf.append(joinColumn.getTable());
-            buf.append(" ");
-            buf.append(joinColumn.getPrefix());
-        }
-        buf.append(" where 1=1 ");
-        for( int idx=0; idx<joinColumns.size(); idx++ ){
-            JoinColumn joinColumn = joinColumns.get(idx);
-            buf.append(" and ");
-            buf.append("a.");
-            buf.append(joinColumn.getName());
-            buf.append("=");
-            buf.append(joinColumn.getPrefix());
-            buf.append(".id");
-        }
-
-        return buf.toString();
+        SqlBuilder sqlBuilder = new SqlBuilder(table, dataColumns, joinColumns, null);
+        return sqlBuilder.select();
     }
 
     public static <T> String insertStatement(String table, List<TypedColumn<T>> columnList, List<JoinColumn<T,?>> joinColumns){
-        StringBuilder bldr = new StringBuilder();
-        bldr.append("insert into ");
-        bldr.append(table);
-        bldr.append(" ( ");
-        bldr.append(DaoHelper.typedColumnsAsString("",columnList, false));
-        if( ! joinColumns.isEmpty() ) {
-            bldr.append(", ");
-            bldr.append(DaoHelper.typedColumnsAsString("", joinColumns, false));
-        }
-        bldr.append(" ) values ( ");
-        int end = columnList.size() - 1;
-        if (!joinColumns.isEmpty()){
-            end += joinColumns.size();
-        }
-        for(int idx=0; idx<end; idx++){
-            bldr.append("?, ");
-        }
-        bldr.append("? ");
-        bldr.append(" ) ");
-
-        return bldr.toString();
+        SqlBuilder sqlBuilder = new SqlBuilder(table, columnList, joinColumns, null);
+        return sqlBuilder.insert();
     }
 
     public static <T> void runUpdate(Connection connection, String sql, List<TypedColumn<T>> allColumns, T item) {
