@@ -33,8 +33,10 @@ public class ChildrenDescriptor<PARENT,CHILD> {
         this.primaryKey = primaryKey;
         this.parentSetter = parentSetter;
 
-        this.sqlBuilder =
-                new SqlBuilder<>(daoDescriptor.tableName(), daoDescriptor.dataColumns(), daoDescriptor.joinColumns(), daoDescriptor.primaryKey());
+        this.sqlBuilder = new SqlBuilder<>(daoDescriptor.tableName(),
+                daoDescriptor.dataColumns(),
+                daoDescriptor.joinColumns(),
+                daoDescriptor.primaryKey());
     }
 
     public void populateChildren(Connection connection, PARENT item){
