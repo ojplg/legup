@@ -36,7 +36,6 @@ public class TestBillSearcher {
     public void findBillUrl_Senate_123(){
 
         InputStream inputStream = this.getClass().getResourceAsStream("/html/senate_bills_101_200.html");
-        BillSearcher searcher = new BillSearcher();
 
         String url = BillSearcher.parseOutBillUrl(inputStream,
                 "http://www.ilga.gov/legislation/grplist.asp?num1=101&num2=200&DocTypeID=SB&GA=100&SessionId=91", 123);
@@ -54,16 +53,5 @@ public class TestBillSearcher {
         Assert.assertEquals("http://www.ilga.gov/legislation/grplist.asp?num1=101&num2=200&DocTypeID=SB&GA=100&SessionId=91", url);
     }
 
-    @Test
-    public void findBillVotesUrls_House_2771(){
-
-        BillSearcher searcher = new BillSearcher();
-        String votesPageUrl = "http://www.ilga.gov/legislation/votehistory.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
-
-        Map<String, String> votePdfsUrls = searcher.searchForVotesUrls(votesPageUrl);
-
-        Assert.assertEquals(6, votePdfsUrls.size());
-        Assert.assertTrue( votePdfsUrls.containsValue("http://www.ilga.gov/legislation/votehistory/100/house/10000HB2771sam001_05312018_028000C.pdf") );
-    }
 }
 

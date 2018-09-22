@@ -12,42 +12,16 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class BillSearcher {
-
-    public static String IllinoisLegislationHome = "http://www.ilga.gov";
 
     public String gaParameterValue = "100";
     public String sessionIdParameterValue = "91";
 
     public Map<String, String> searchForVotesUrls(String votesPageUrl){
-        try {
-            Connection votesPageConnection = Jsoup.connect(votesPageUrl);
-            Document votesPageDocument = votesPageConnection.get();
-
-            Elements tables = votesPageDocument.select("table");
-            Element voteLinkTable = tables.get(6);
-
-            Elements rows = voteLinkTable.select("tr");
-
-            Map<String, String> urls = new HashMap<>();
-            for( int idx=1; idx<rows.size(); idx++ ){
-                Element row = rows.get(idx);
-                Element td = row.selectFirst("td");
-                Element anchor = td.selectFirst("a");
-
-                String url = IllinoisLegislationHome + anchor.attr("href");
-                String text = anchor.text();
-
-                urls.put(text, url);
-            }
-
-            return urls;
-        } catch (IOException ex){
-            throw new RuntimeException(ex);
-        }
+        BillVotesListParser billVotesListParser = new BillVotesListParser(votesPageUrl);
+        return billVotesListParser.grabVotesUrls();
     }
 
     public String convertToVotesPage(String billHomePage){
