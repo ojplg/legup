@@ -22,11 +22,6 @@ public class SqlRunner<T> {
     private final Connection connection;
     private final List<TypedColumn<T>> allColumns;
 
-    public SqlRunner(Connection connection, List<TypedColumn<T>> allColumns) {
-        this.connection = connection;
-        this.allColumns = allColumns;
-    }
-
     public SqlRunner(Connection connection, List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns) {
         this.connection = connection;
         List<TypedColumn<T>> columns = new ArrayList<>();
@@ -95,7 +90,6 @@ public class SqlRunner<T> {
         }
 
     }
-
 
     public void insert(String sql, T item) {
         PreparedStatement preparedStatement = null;

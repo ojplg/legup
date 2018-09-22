@@ -18,8 +18,12 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     private final SqlBuilder<T> sqlBuilder;
     private final SqlRunner<T> sqlRunner;
 
-    public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey,
-                   List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns,
+    public DaoImpl(Connection connection,
+                   String tableName,
+                   Supplier<T> supplier,
+                   PrimaryKey<T> primaryKey,
+                   List<TypedColumn<T>> dataColumns,
+                   List<JoinColumn<T,?>> joinColumns,
                    List<ChildrenDescriptor<T,?>> childrenDescriptors){
         this.connection = connection;
         this.tableName = tableName;
@@ -92,7 +96,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         String sql = sqlBuilder.select();
         sql = sql + " and a." + primaryKey.keyName() + " = " + id;
         List<T> items = sqlRunner.select(sql, supplier, childrenDescriptors);
-        return DaoHelper.fromSingletonList(items, "");
+        return fromSingletonList(items);
     }
 
     @Override
@@ -113,7 +117,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public T selectByColumns(T item, List<String> columnNames){
         List<T> items = selectManyByColumns(item, columnNames);
-        return DaoHelper.fromSingletonList(items, "");
+        return fromSingletonList(items);
     }
 
     @Override
@@ -122,4 +126,13 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         return sqlRunner.selectByColumns(sql, supplier, columnMap(columnNames), item);
     }
 
+    private <A> A fromSingletonList(List<A> items) {
+        if (items.isEmpty()) {
+            return null;
+        }
+        if (items.size() == 1) {
+            return items.get(0);
+        }
+        throw new RuntimeException("Found " + items.size() + " items.");
+    }
 }

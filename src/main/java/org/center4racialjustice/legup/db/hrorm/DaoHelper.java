@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 public class DaoHelper {
 
@@ -29,8 +28,7 @@ public class DaoHelper {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select nextval('" + sequenceName + "')");
             resultSet.next();
-            long value = resultSet.getLong(1);
-            return value;
+            return resultSet.getLong(1);
         } catch (SQLException ex){
             throw new RuntimeException(ex);
         } finally {
@@ -46,15 +44,4 @@ public class DaoHelper {
             }
         }
     }
-
-    public static <T> T fromSingletonList(List<T> items, String errorMsg) {
-        if (items.isEmpty()) {
-            return null;
-        }
-        if (items.size() == 1) {
-            return items.get(0);
-        }
-        throw new RuntimeException("Found " + items.size() + " items. Message: " + errorMsg);
-    }
-
 }
