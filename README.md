@@ -12,7 +12,19 @@ LegUp exposes its functionality via a simple web application.
 
 # Technical
 
-* A pre-requisite to running the application (or the tests), is to install Postgres.
+* The build is done using maven just
+   ```` 
+   mvn compile
+   mvn test
+   ````   
+* Assuming mvn builds things, then you can do:
+   ````
+   ./dev.sh
+   ````
+   And the application will start running on port 8000.
+* The dev.sh script above will launch against an in-memory H2 database, and data
+  will not be persisted on restart.
+  To use the application with permanent storage, you must install Postgres.
   Under the db directory are some scripts. Run the shell script
     ````
     cd db/
@@ -22,22 +34,15 @@ LegUp exposes its functionality via a simple web application.
     if you think running random shell scripts that ask for your password several times
     is nuts, just do what it says in the script and check the contents of the SQL files
     referenced to make sure nothing crazy is happening.)
-* The build is done using maven just
-   ```` 
-   mvn compile
-   mvn test
-   ````   
-* Assuming the DB is in place, and mvn builds things, then you can do:
-   ````
-   ./run.sh
-   ````
-   And the application will start running on port 8000.
+    Once this is complete, the run.sh script should work, and data will persist across
+    application restarts.
 * Some dependencies, aside from postgres, are
   * Lombok (for good or for ill)
   * Jetty
   * Velocity
   * PDFBox
-  * JSoup    
+  * JSoup
+  * H2 (for tests)   
 
 # TODO list
 
