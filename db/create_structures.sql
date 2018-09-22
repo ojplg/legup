@@ -110,5 +110,21 @@ alter table report_factors add constraint uniq_report_factor unique (report_card
 grant all on sequence report_factor_seq to legupuser;
 grant all on table report_factors to legupuser;
 
+
+-- REPORT CARD LEGISLATORS
+create sequence report_card_legislator_seq start 1;
+
+create table report_card_legislators (
+    id integer PRIMARY KEY,
+    report_card_id integer not null,
+    legislator_id integer not null
+);
+
+alter table report_card_legislators add foreign key (report_card_id) references report_cards(id);
+alter table report_card_legislators add foreign key (legislator_id) references legislators(id);
+
+grant all on sequence report_card_legislator_seq to legupuser;
+grant all on table report_card_legislators to legupuser;
+
 end;
 

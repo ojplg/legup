@@ -18,6 +18,7 @@ public class ReportCard {
     private String name;
     private long sessionNumber;
     private List<ReportFactor> reportFactors = new ArrayList<>();
+    private List<ReportCardLegislator> reportCardLegislators = new ArrayList<>();
 
     public void addReportFactor(ReportFactor factor){
         factor.setReportCardId(id);
