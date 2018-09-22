@@ -1,10 +1,6 @@
 package org.center4racialjustice.legup.db.hrorm;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -122,40 +118,8 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public List<T> selectManyByColumns(T item, List<String> columnNames) {
-        StringBuilder buf = new StringBuilder();
-        buf.append(sqlBuilder.select());
-        buf.append(" and ");
-        for(int idx=0 ; idx < columnNames.size() ; idx++ ){
-            String columnName = columnNames.get(idx);
-            buf.append("a");
-            buf.append(".");
-            buf.append(columnName);
-            buf.append(" = ?");
-            if( idx < columnNames.size() - 1 ) {
-                buf.append(" and ");
-            }
-        }
-        String sql = buf.toString();
-
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            for(int idx=0 ; idx < columnNames.size() ; idx++ ){
-                String columnName = columnNames.get(idx);
-                TypedColumn<T> column = columnMap(columnNames).get(columnName);
-                column.setValue(item, idx + 1, statement);
-            }
-            ResultSet resultSet = statement.executeQuery();
-            List<T> items = new ArrayList<>();
-
-            while (resultSet.next()) {
-                T t = DaoHelper.populate( resultSet, supplier, allColumns());
-                items.add(t);
-            }
-
-            return items;
-        } catch (SQLException ex){
-            throw new RuntimeException(ex);
-        }
+        String sql = sqlBuilder.selectByColumns(columnNames);
+        return sqlRunner.selectByColumns(sql, supplier, columnMap(columnNames), item);
     }
 
 }

@@ -8,9 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class DaoHelper {
 
@@ -22,17 +20,6 @@ public class DaoHelper {
         } catch (SQLException ex){
             throw new RuntimeException(ex);
         }
-    }
-
-    public static <T> T populate(ResultSet resultSet, Supplier<T> supplier, List<TypedColumn<T>> allColumns)
-            throws SQLException {
-        T item = supplier.get();
-
-        for (TypedColumn<T> column: allColumns) {
-            column.populate(item, resultSet);
-        }
-
-        return item;
     }
 
     public static long getNextSequenceValue(Connection connection, String sequenceName) {

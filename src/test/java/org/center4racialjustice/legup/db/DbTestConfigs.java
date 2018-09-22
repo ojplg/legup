@@ -10,7 +10,8 @@ public class DbTestConfigs {
             "jdbc:postgresql://localhost:5432/legup_test","legupuser", "legupuserpass");
 
     public static Connection connect(){
-        return getH2Connection();
+        return getPostgresConnection();
+        //return getH2Connection();
     }
 
     public static Connection getPostgresConnection(){

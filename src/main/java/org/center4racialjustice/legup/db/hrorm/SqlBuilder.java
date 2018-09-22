@@ -67,6 +67,19 @@ public class SqlBuilder<T> {
         return buf.toString();
     }
 
+    public String selectByColumns(Collection<String> columnNames){
+        StringBuilder buf = new StringBuilder();
+        buf.append(select());
+        for(String columnName : columnNames){
+            buf.append(" and ");
+            buf.append("a.");
+            buf.append(columnName);
+            buf.append(" = ? ");
+        }
+
+        return buf.toString();
+    }
+
     public String update(T item){
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
@@ -114,16 +127,5 @@ public class SqlBuilder<T> {
         return bldr.toString();
     }
 
-    public String selectByColumns(Collection<String> columnNames){
-        StringBuilder buf = new StringBuilder();
-        buf.append(select());
-        for(String columnName : columnNames){
-            buf.append(" and ");
-            buf.append(columnName);
-            buf.append(" = ? ");
-        }
-
-        return buf.toString();
-    }
 
 }
