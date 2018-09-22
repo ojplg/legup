@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.util.Map;
 
 public class TestBillSearcher {
 
@@ -33,22 +32,11 @@ public class TestBillSearcher {
      */
 
     @Test
-    public void findBillUrl_Senate_123(){
-
-        InputStream inputStream = this.getClass().getResourceAsStream("/html/senate_bills_101_200.html");
-
-        String url = BillSearcher.parseOutBillUrl(inputStream,
-                "http://www.ilga.gov/legislation/grplist.asp?num1=101&num2=200&DocTypeID=SB&GA=100&SessionId=91", 123);
-
-        Assert.assertEquals("http://www.ilga.gov/legislation/BillStatus.asp?DocNum=123&GAID=14&DocTypeID=SB&LegId=100000&SessionID=91&GA=100", url);
-    }
-
-    @Test
     public void findBillSubIndexPage_Senate_123(){
 
         BillSearcher searcher = new BillSearcher();
 
-        String url = searcher.searchForSubIndexPage(Chamber.Senate, 123L);
+        String url = searcher.subIndexPageUrl(Chamber.Senate, 123L);
 
         Assert.assertEquals("http://www.ilga.gov/legislation/grplist.asp?num1=101&num2=200&DocTypeID=SB&GA=100&SessionId=91", url);
     }

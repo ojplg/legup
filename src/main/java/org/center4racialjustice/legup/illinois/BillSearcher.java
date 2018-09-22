@@ -3,13 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.apache.http.client.utils.URIBuilder;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -29,38 +23,9 @@ public class BillSearcher {
     }
 
     public String searchForBaseUrl(Chamber chamber, Long number){
-        try {
-            String indexUrl = searchForSubIndexPage(chamber, number);
-            Connection indexConnection = Jsoup.connect(indexUrl);
-            Document indexDocument = indexConnection.get();
-
-            return parseOutBillUrl(indexDocument, number.intValue());
-        } catch (IOException ex){
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public static String parseOutBillUrl(InputStream indexPageBody, String pageUrl, int number) {
-        try {
-            Document indexDocument = Jsoup.parse(indexPageBody, null, pageUrl);
-            return parseOutBillUrl(indexDocument, number);
-        } catch (IOException ex){
-            throw new RuntimeException(ex);
-        }
-    }
-
-    private static String parseOutBillUrl(Document indexDocument, int number){
-        Elements lists = indexDocument.select("ul");
-        Element list = lists.get(0);
-
-        Elements listItems = list.select("li");
-        int idx = number % 100 - 1;
-        Element item = listItems.get(idx);
-
-        Element anchor = item.selectFirst("a");
-        String billUrl = anchor.attr("href");
-
-        return  billUrl;
+        String indexUrl = subIndexPageUrl(chamber, number);
+        BillSubIndexPageParser parser = new BillSubIndexPageParser(indexUrl);
+        return parser.parseOutBillUrl(number.intValue());
     }
 
     private String uriParameter(Chamber chamber){
@@ -71,7 +36,7 @@ public class BillSearcher {
         throw new RuntimeException("Unupported chamber " + chamber);
     }
 
-    public String searchForSubIndexPage(Chamber chamber, Long number){
+    public String subIndexPageUrl(Chamber chamber, Long number){
         try {
             // FIXME: this will not work for the last group (which does not end at a multiple of 100)
             Tuple<Long, Long> bounds = getBounds(number);
