@@ -47,10 +47,16 @@ public class ReportCard {
             }
 
             int score = action.score(factor.getVoteSide());
-            scoreTable.merge(action.getLegislator(), bill, score, ScoreComputer);
+            if ( isIncludedLegislator(action.getLegislator())) {
+                scoreTable.merge(action.getLegislator(), bill, score, ScoreComputer);
+            }
         }
 
         return scoreTable;
+    }
+
+    private boolean isIncludedLegislator(Legislator legislator){
+        return reportCardLegislators.stream().anyMatch(rcl -> rcl.getLegislator().equals(legislator));
     }
 
     public List<Bill> supportedBills(){
