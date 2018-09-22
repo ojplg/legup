@@ -35,11 +35,6 @@ public class DaoHelper {
         return item;
     }
 
-    public static <T> List<T> read(Connection connection, String sql, List<TypedColumn<T>> allColumns, Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
-        SqlRunner<T> sqlRunner = new SqlRunner<>(connection, allColumns);
-        return sqlRunner.select(sql, supplier, childrenDescriptors);
-    }
-
     public static long getNextSequenceValue(Connection connection, String sequenceName) {
         Statement statement = null;
         ResultSet resultSet = null;
@@ -63,12 +58,6 @@ public class DaoHelper {
                 log.error("Could not close", ex);
             }
         }
-    }
-
-    public static <T> List<T> concatenate(List<? extends T> as, List<? extends T> bs){
-        List<T> list = new ArrayList<>(as);
-        list.addAll(bs);
-        return list;
     }
 
     public static <T> T fromSingletonList(List<T> items, String errorMsg) {
