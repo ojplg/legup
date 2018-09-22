@@ -19,6 +19,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     private final Supplier<T> supplier;
     private final List<JoinColumn<T,?>> joinColumns;
     private final List<ChildrenDescriptor<T,?>> childrenDescriptors;
+    private final SqlBuilder<T> sqlBuilder;
 
     public DaoImpl(Connection connection, String tableName, Supplier<T> supplier, PrimaryKey<T> primaryKey,
                    List<TypedColumn<T>> dataColumns, List<JoinColumn<T,?>> joinColumns,
@@ -30,6 +31,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         this.supplier = supplier;
         this.joinColumns = Collections.unmodifiableList(joinColumns);
         this.childrenDescriptors = childrenDescriptors;
+        this.sqlBuilder = new SqlBuilder<T>(tableName, this.dataColumns, this.joinColumns, primaryKey);
     }
 
     public String tableName(){
@@ -49,11 +51,11 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     public PrimaryKey<T> primaryKey() { return primaryKey; }
 
     public String insertSql(){
-        return DaoHelper.insertStatement(tableName, dataColumns, joinColumns);
+        return sqlBuilder.insert();
     }
 
     public String updateSql(T item){
-        return DaoHelper.updateStatement(tableName, dataColumns, joinColumns, item, primaryKey);
+        return sqlBuilder.update(item);
     }
 
     public String deleteSql(T item){
@@ -90,7 +92,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public T select(long id) {
-        String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
+        String sql = sqlBuilder.select();
         sql = sql + " and a." + primaryKey.keyName() + " = " + id;
         List<T> items = DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
         return DaoHelper.fromSingletonList(items, "");
@@ -98,7 +100,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public List<T> selectMany(List<Long> ids) {
-        String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
+        String sql = sqlBuilder.select();
         List<String> idStrings = ids.stream().map(Object::toString).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
         sql = sql + " and a." + primaryKey.keyName() + " in (" + idsString + ")";
@@ -107,7 +109,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public List<T> selectAll() {
-        String sql = DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns);
+        String sql = sqlBuilder.select();
         return DaoHelper.read(connection, sql, allColumns(), supplier, childrenDescriptors);
     }
 
@@ -120,7 +122,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectManyByColumns(T item, List<String> columnNames) {
         StringBuilder buf = new StringBuilder();
-        buf.append(DaoHelper.joinSelectSql(tableName, dataColumns, joinColumns));
+        buf.append(sqlBuilder.select());
         buf.append(" and ");
         for(int idx=0 ; idx < columnNames.size() ; idx++ ){
             String columnName = columnNames.get(idx);

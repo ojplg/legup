@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SqlBuilder<T, J> {
+public class SqlBuilder<T> {
 
     private final String table;
     private final List<TypedColumn<T>> dataColumns;
-    private final List<JoinColumn<T, J>> joinColumns;
+    private final List<JoinColumn<T, ?>> joinColumns;
     private final PrimaryKey<T> primaryKey;
 
-    public SqlBuilder(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T, J>> joinColumns, PrimaryKey<T> primaryKey) {
+    public SqlBuilder(String table, List<TypedColumn<T>> dataColumns, List<JoinColumn<T, ?>> joinColumns, PrimaryKey<T> primaryKey) {
         this.table = table;
         this.dataColumns = dataColumns;
         this.joinColumns = joinColumns;
@@ -35,7 +35,7 @@ public class SqlBuilder<T, J> {
         StringBuilder buf = new StringBuilder();
         buf.append("select ");
         buf.append(columnsAsString("a", true, dataColumns));
-        for(JoinColumn<T,J> joinColumn : joinColumns) {
+        for(JoinColumn<T, ?> joinColumn : joinColumns) {
             buf.append(", ");
             buf.append(columnsAsString(
                     joinColumn.getPrefix(),
