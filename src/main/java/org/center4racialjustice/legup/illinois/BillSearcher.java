@@ -4,7 +4,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
 
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
 
