@@ -19,6 +19,10 @@ delete from report_factors;
 drop table report_factors;
 drop sequence report_factor_seq;
 
+delete from report_card_legislators;
+drop table report_card_legislators;
+drop sequence report_card_legislator_seq;
+
 delete from report_cards;
 drop table report_cards;
 drop sequence report_card_seq;
