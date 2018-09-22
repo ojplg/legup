@@ -52,21 +52,13 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     public PrimaryKey<T> primaryKey() { return primaryKey; }
 
-    public String insertSql(){
-        return sqlBuilder.insert();
-    }
-
-    public String updateSql(T item){
-        return sqlBuilder.update(item);
-    }
-
     public String deleteSql(T item){
         return "delete from " + tableName + " where " + primaryKey.keyName() + " = " + primaryKey.getKey(item);
     }
 
     @Override
     public long insert(T item) {
-        String sql = insertSql();
+        String sql = sqlBuilder.insert();
         long id = DaoHelper.getNextSequenceValue(connection, primaryKey.getSequenceName());
         primaryKey.setKey(item, id);
         sqlRunner.insert(sql, item);
@@ -78,7 +70,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     @Override
     public void update(T item) {
-        String sql = updateSql(item);
+        String sql = sqlBuilder.update(item);
         sqlRunner.update(sql, item);
         for(ChildrenDescriptor<T,?> childrenDescriptor : childrenDescriptors){
             childrenDescriptor.saveChildren(connection, item);
