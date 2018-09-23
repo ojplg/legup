@@ -28,30 +28,31 @@ public class BillVotesParser {
     private static final List<String> hundredthLines =
             Arrays.asList("ONE HUNDREDTH", "100th General Assembly");
 
-    public static BillVotes readFromUrlAndParse(String url) throws IOException {
+    public static BillVotes readFromUrlAndParse(String url) {
         String contents = BillVotesParser.readFileFromUrl(url);
         return  BillVotesParser.parseFileContents(url, contents);
     }
 
-    public static String readFileFromUrl(String url)
-    throws IOException {
-        PDDocument doc = new PDDocument();
-        doc.close();
-
-        URL url_ = new URL(url);
-
-        HttpURLConnection connection = (HttpURLConnection) url_.openConnection();
-        connection.connect();
-
-        InputStream inputStream = connection.getInputStream();
-
+    public static String readFileFromUrl(String url) {
         try {
+            PDDocument doc = new PDDocument();
+            doc.close();
+
+            URL url_ = new URL(url);
+
+            HttpURLConnection connection = (HttpURLConnection) url_.openConnection();
+            connection.connect();
+
+            InputStream inputStream = connection.getInputStream();
+
             doc = PDDocument.load(inputStream);
             PDFTextStripper stripper = new PDFTextStripper();
-            return stripper.getText(doc);
-        } finally {
+            String content = stripper.getText(doc);
             doc.close();
             inputStream.close();
+            return content;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

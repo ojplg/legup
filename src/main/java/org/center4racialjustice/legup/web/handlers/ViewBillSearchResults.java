@@ -124,6 +124,7 @@ public class ViewBillSearchResults implements Handler {
             BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
 
             List<BillActionLoad> priorLoads = billPersistence.checkForPriorLoads(billSearchResults);
+            log.info("Found prior loads for: " + chamber + "." + number + ": " + priorLoads);
             billSearchResults.setPriorLoads(priorLoads);
             return billSearchResults;
         }

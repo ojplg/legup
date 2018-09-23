@@ -8,10 +8,8 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 
 public class BillSearcherParser {
 
@@ -23,32 +21,26 @@ public class BillSearcherParser {
     }
 
     public BillSearchResults doFullSearch(Chamber chamber, Long billNumber){
+        log.info("Doing search for " + chamber + ", " + billNumber);
 
+        BillSearcher searcher = new BillSearcher();
 
-        try {
-            log.info("Doing search for " + chamber + ", " + billNumber);
+        String billHomePageUrl = searcher.searchForBaseUrl(chamber, billNumber);
+        String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
 
-            BillSearcher searcher = new BillSearcher();
+        BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
+        Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
-            String billHomePageUrl = searcher.searchForBaseUrl(chamber, billNumber);
-            String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
+        LegislatorDao legislatorDao = new LegislatorDao(connectionWrapper);
+        List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
 
-            BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
-            Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
+        BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
+        BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
 
-            LegislatorDao legislatorDao = new LegislatorDao(connectionWrapper);
-            List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
-
-            BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
-            BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
-
-            return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults);
-        } catch(IOException ex){
-            throw new RuntimeException(ex);
-        }
+        return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults);
     }
 
-    private BillVotesResults findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) throws IOException {
+    private BillVotesResults findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) {
         String votePdfUrl = null;
         for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet()){
             if( urlPair.getKey().contains("Third Reading")

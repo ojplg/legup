@@ -115,7 +115,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectManyByColumns(T item, List<String> columnNames) {
         String sql = sqlBuilder.selectByColumns(columnNames);
-        return sqlRunner.selectByColumns(sql, supplier, columnMap(columnNames), item);
+        return sqlRunner.selectByColumns(sql, supplier, columnNames, columnMap(columnNames), item);
     }
 
     private <A> A fromSingletonList(List<A> items) {

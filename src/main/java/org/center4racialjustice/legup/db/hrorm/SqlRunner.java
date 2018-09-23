@@ -67,12 +67,13 @@ public class SqlRunner<T> {
 
     }
 
-    public List<T> selectByColumns(String sql, Supplier<T> supplier, SortedMap<String, TypedColumn<T>> columnNameMap, T item){
+    public List<T> selectByColumns(String sql, Supplier<T> supplier, List<String> columnNames, SortedMap<String, TypedColumn<T>> columnNameMap, T item){
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             int idx = 1;
-            for(Map.Entry<String, TypedColumn<T>> entry : columnNameMap.entrySet()){
-                entry.getValue().setValue(item, idx, statement);
+            for(String columnName : columnNames){
+                TypedColumn<T> column = columnNameMap.get(columnName);
+                column.setValue(item, idx, statement);
                 idx++;
             }
             ResultSet resultSet = statement.executeQuery();

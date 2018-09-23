@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import jdk.nashorn.internal.parser.Lexer;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.junit.Assert;
@@ -138,6 +139,27 @@ public class TestLegislatorDao {
         Assert.assertEquals(Chamber.Senate, secondFromDB.getChamber());
         Assert.assertEquals("Democrat", secondFromDB.getParty());
         Assert.assertEquals("Herbietta", secondFromDB.getFirstName());
+    }
+
+    @Test
+    public void testReadByMemberId(){
+        Legislator legislator = new Legislator();
+        legislator.setFirstName("Herbietta");
+        legislator.setLastName("Johnson-McGee");
+        legislator.setDistrict(9L);
+        legislator.setSessionNumber(100L);
+        legislator.setParty("Democrat");
+        legislator.setChamber(Chamber.House);
+        legislator.setMemberId("123");
+
+        LegislatorDao dao = new LegislatorDao(DbTestConfigs.connect());
+
+        dao.insert(legislator);
+
+        Legislator readLeg = dao.readByMemberId("123");
+
+        Assert.assertNotNull(readLeg);
+
     }
 
 }

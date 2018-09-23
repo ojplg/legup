@@ -37,6 +37,7 @@ public class BillPersistence {
     public List<BillActionLoad> checkForPriorLoads(BillSearchResults billSearchResults){
         try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
             Bill parsedBill = billSearchResults.getBill();
+            log.info("Checking for prior loads for " + parsedBill.getChamber() + "." + parsedBill.getNumber() + " session " + parsedBill.getSession());
             BillDao billDao = new BillDao(connection);
             Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill);
             if (dbBill == null) {
@@ -59,7 +60,7 @@ public class BillPersistence {
             BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());
             billActionLoadDao.insert(billActionLoad);
 
-            SponsorSaveResults sponsorsSaved = saveSponsors(connection, parsedBill, billActionLoad, billSearchResults);
+            SponsorSaveResults sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
             BillActionLoad houseLoad = billSearchResults.createHouseBillActionLoad(parsedBill);
@@ -90,7 +91,7 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private SponsorSaveResults saveSponsors(ConnectionWrapper connection, Bill bill, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
+    private SponsorSaveResults saveSponsors(ConnectionWrapper connection, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
