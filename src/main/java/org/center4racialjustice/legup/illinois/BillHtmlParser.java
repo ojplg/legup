@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
@@ -17,6 +19,8 @@ import java.util.regex.Pattern;
 
 public class BillHtmlParser {
 
+    private static final Logger log = LogManager.getLogger(BillHtmlParser.class);
+
     private final String url;
     private final Document document;
     private final Chamber chamber;
@@ -25,6 +29,7 @@ public class BillHtmlParser {
     public BillHtmlParser(String url){
         try {
             this.url = url;
+            log.info("Searching " + url);
             this.document = Jsoup.connect(url).get();
             Tuple<Chamber, Long> tuple = parseBillIdentity();
             chamber = tuple.getFirst();

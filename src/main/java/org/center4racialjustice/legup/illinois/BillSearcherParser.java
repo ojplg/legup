@@ -26,12 +26,12 @@ public class BillSearcherParser {
 
 
         try {
+            log.info("Doing search for " + chamber + ", " + billNumber);
+
             BillSearcher searcher = new BillSearcher();
 
             String billHomePageUrl = searcher.searchForBaseUrl(chamber, billNumber);
             String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
-
-            log.info("Doing search for " + chamber + ", " + billNumber + ", " + billHomePageUrl);
 
             BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
             Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);

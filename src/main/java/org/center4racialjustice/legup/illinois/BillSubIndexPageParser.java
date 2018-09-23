@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,6 +13,8 @@ import java.io.InputStream;
 
 public class BillSubIndexPageParser {
 
+    private static final Logger log = LogManager.getLogger(BillSubIndexPageParser.class);
+
     public static String IllinoisLegislationHome = "http://www.ilga.gov";
 
     private final Document document;
@@ -18,6 +22,7 @@ public class BillSubIndexPageParser {
 
     public BillSubIndexPageParser(String url) {
         try {
+            log.info("Searching " + url);
             Connection votesPageConnection = Jsoup.connect(url);
             document = votesPageConnection.get();
             prefix = IllinoisLegislationHome;

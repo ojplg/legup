@@ -8,7 +8,7 @@ import java.io.InputStream;
 public class TestBillSubIndexPageParser {
 
     @Test
-    public void findBillUrl_Senate_123(){
+    public void testFindSubIndexPage_Senate_123(){
 
         InputStream inputStream = this.getClass().getResourceAsStream("/html/senate_bills_101_200.html");
 
