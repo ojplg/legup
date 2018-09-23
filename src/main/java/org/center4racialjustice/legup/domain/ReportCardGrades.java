@@ -12,17 +12,20 @@ import java.util.stream.Collectors;
 public class ReportCardGrades {
 
     private final ReportCard reportCard;
-
-    private final LookupTable<Legislator, Bill, Integer> lookupTable;
-    private final Map<Legislator, Grade> grades;
     private final List<BillAction> actions;
+    private final LookupTable<Legislator, Bill, Integer> lookupTable;
+    private final Grader grader;
+    private final Map<Legislator, Grade> grades;
 
     public ReportCardGrades(ReportCard reportCard, List<BillAction> actions){
         this.reportCard = reportCard;
         this.actions = actions;
 
         this.lookupTable = reportCard.calculateScores(actions);
-        this.grades = assignGrades();
+
+        Map<Legislator, Integer> sums = sumScores();
+        this.grader = new Grader(sums.values());
+        this.grades = assignGrades(sums);
     }
 
     public ReportCard getReportCard() { return  reportCard;}
@@ -47,18 +50,12 @@ public class ReportCardGrades {
         return lookupTable.sortedRowHeadings(Legislator::compareTo);
     }
 
-    private Map<Legislator, Grade> assignGrades(){
-        Map<Legislator, Integer> sums = sumScores();
-        Integer min = findMin(sums);
-        Integer max = findMax(sums);
-        Grader grader = new Grader(min, max);
-
+    private Map<Legislator, Grade> assignGrades(Map<Legislator, Integer> sums){
         Map<Legislator, Grade> grades = new HashMap<>();
         for( Map.Entry<Legislator, Integer> entry : sums.entrySet()){
             Grade grade = grader.assignGrade(entry.getValue());
             grades.put(entry.getKey(), grade);
         }
-
         return grades;
     }
 
@@ -93,24 +90,16 @@ public class ReportCardGrades {
         return sums;
     }
 
-    private static Integer findMax(Map<Legislator, Integer> sums){
-        Integer max = Integer.MIN_VALUE;
-        for(Integer amount : sums.values()){
-            if (amount > max){
-                max = amount;
-            }
-        }
-        return max;
+    public int getLowScore() {
+        return grader.getLowScore();
     }
 
-    private static Integer findMin(Map<Legislator, Integer> sums){
-        Integer min = Integer.MAX_VALUE;
-        for(Integer amount : sums.values()){
-            if (amount < min){
-                min = amount;
-            }
-        }
-        return min;
+    public int getHighScore() {
+        return grader.getHighScore();
+    }
+
+    public int getMean() {
+        return grader.getMean();
     }
 
 }

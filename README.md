@@ -62,7 +62,6 @@ Technical Betterments
 Features/bugs to work on
 
 * CSV screens for cut-and-paste to spreadsheets
-* Low, high, median score on report card page
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found
   * The legislator model includes a session id, but many legislators serve in multiple sessions.
