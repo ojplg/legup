@@ -51,11 +51,13 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 Technical Betterments
 
 * Actually make a real connection pool and automated reclamation
-* Maybe throw out the whole of the DB access layer (hrorm) and replace with Hibernate/javax.persistence 
-  or Mybatis (there's a branch for this) or JDBI (proyal's favorite) 
-  or at least break hrorm to a stand-alone project
-* Need a way to chain handlers, perhaps changing the handler interface to something more useful
-* Framework for form error checking (though there are few forms with much interaction) and error reporting
+* Maybe throw out the whole of the DB access layer (hrorm) and replace with 
+  Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
+  (proyal's favorite) or at least break hrorm to a stand-alone project
+* Need a way to chain handlers, perhaps changing the handler interface to 
+  something more useful
+* Framework for form error checking (though there are few forms with much interaction) 
+  and error reporting
 * Add more logging, particularly for bill searching
 
 Features/bugs to work on

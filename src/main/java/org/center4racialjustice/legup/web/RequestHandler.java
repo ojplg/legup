@@ -19,7 +19,13 @@ public class RequestHandler {
 
     public RequestHandler(Handler handler) {
         this.handler = handler;
-        this.convertedName = convertToLowercaseWithUnderlines(handler.getClass().getSimpleName());
+        // FIXME: this is pretty hacky. Need to decide on one framework to rule them all.
+        if ( handler instanceof  ResponderHandler ){
+            ResponderHandler responderHandler = (ResponderHandler) handler;
+            this.convertedName = convertToLowercaseWithUnderlines(responderHandler.getRouteName());
+        } else {
+            this.convertedName = convertToLowercaseWithUnderlines(handler.getClass().getSimpleName());
+        }
     }
 
     public void processRequest(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {

@@ -1,0 +1,24 @@
+<table class="pure-table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Party</th>
+        <th>Vote</th>
+        <th>Sponsor</th>
+        <th>Chief Sponsor</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    #foreach ($legislator in $legislators)
+        <tr>
+            <td>$legislator.Display</td>
+            <td>$legislator.Party</td>
+            <td> $!{billActionTable.get($legislator, "Vote")} </td>
+            <td> $!{billActionTable.get($legislator, "Sponsor")} </td>
+            <td> $!{billActionTable.get($legislator, "Chief Sponsor")} </td>
+        </tr>
+    #end
+    </tbody>
+
+</table>
