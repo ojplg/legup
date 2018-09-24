@@ -56,8 +56,7 @@ Technical Betterments
   or at least break hrorm to a stand-alone project
 * Need a way to chain handlers, perhaps changing the handler interface to something more useful
 * Framework for form error checking (though there are few forms with much interaction) and error reporting
-* Add more logging, particular for bill searching
-* Add a way to do name overrides in configuration or maybe DB
+* Add more logging, particularly for bill searching
 
 Features/bugs to work on
 
