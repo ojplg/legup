@@ -12,7 +12,7 @@ public class NameParser {
     public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
     public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\., ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
-    public static String firstAndLastRegularOrder = "([A-Z][A-Za-z\\-']+) ([A-Z][A-Za-zñ\\-']+)";
+    public static String firstAndLastRegularOrder = "([A-Z][A-Za-zé\\-']+) ([A-Z][A-Za-zéñ\\-']+)";
     public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
     public static String firstAndLastRegularOrderWithSuffix = firstAndLastRegularOrder + ", ([A-Z][A-Za-z]+)\\.?";
     public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z]).? ([A-Z][A-Za-z']+)";
@@ -39,9 +39,7 @@ public class NameParser {
         // TODO: Move these overrides out of here.
         specialOverides.put("C.D. Davidsmeyer", new Name("C.D. Davidsmeyer","C.D.","","Davidsmeyer", null, null));
         specialOverides.put("La Shawn K. Ford", new Name ("La Shawn K. Ford","La Shawn", "K", "Ford", null,null));
-        specialOverides.put("Andr� Thapedi", new Name("Andr� Thapedi","André","", "Thapedi", null, null));
         specialOverides.put("Wm. Sam McCann", new Name("Wm. Sam McCann", "Wm.", "Sam", "McCann",null,null));
-        specialOverides.put("Antonio Mu�oz", new Name("Antonio Mu�oz", "Antonio",null,"Muñoz",null,null));
         specialOverides.put("Mr. Speaker", new Name("Mr. Speaker", "Michael", "J", "Madigan", null, null));
         specialOverides.put("Patricia Van Pelt", new Name("Patricia Van Pelt", "Patricia", null, "Van Pelt", null, null));
         specialOverides.put("Linda Chapa LaVia", new Name("Linda Chapa LaVia", "Linda", null, "Chapa LaVia", null, null));

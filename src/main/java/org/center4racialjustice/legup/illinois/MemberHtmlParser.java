@@ -1,9 +1,17 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,6 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MemberHtmlParser {
+
+    private static final Logger log = LogManager.getLogger(MemberHtmlParser.class);
 
     private static final String AssemblyRegex = "Current (House|Senate) Members";
     private static final Pattern AssemblyPattern = Pattern.compile(AssemblyRegex);
@@ -37,11 +47,33 @@ public class MemberHtmlParser {
     }
 
     public static MemberHtmlParser load(String url) {
+        CloseableHttpResponse httpResponse = null;
         try {
-            Document doc = Jsoup.connect(url).get();
+            // Annoyingly, this code does not seem to work.
+            // The Apache requester correctly handles the charset, but
+            // JSOUP seems not to.
+//            Connection connection = Jsoup.connect(url);
+//            Connection.Response response = connection.execute();
+//            response.charset("windows-1252");
+//            Document doc = connection.get();
+
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(url);
+            httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+
+            Document doc = Jsoup.parse(httpEntity.getContent(), "windows-1252", url);
             return new MemberHtmlParser(doc);
         } catch (IOException ex){
             throw new RuntimeException(ex);
+        } finally {
+            try {
+                if (httpResponse != null) {
+                    httpResponse.close();
+                }
+            } catch (IOException ex){
+                log.error("This is surprising", ex);
+            }
         }
     }
 
