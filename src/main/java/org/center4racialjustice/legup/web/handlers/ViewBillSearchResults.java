@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.SponsorNames;
@@ -25,10 +26,12 @@ public class ViewBillSearchResults implements Handler {
 
     private final ConnectionPool connectionPool;
     private final BillPersistence billPersistence;
+    private final NameParser nameParser;
 
-    public ViewBillSearchResults(ConnectionPool connectionPool) {
+    public ViewBillSearchResults(ConnectionPool connectionPool, NameParser nameParser) {
         this.connectionPool = connectionPool;
         this.billPersistence = new BillPersistence(connectionPool);
+        this.nameParser =  nameParser;
     }
 
     @Override
@@ -120,7 +123,7 @@ public class ViewBillSearchResults implements Handler {
 
     private BillSearchResults doSearch(Chamber chamber, Long number){
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
-            BillSearcherParser billSearcherParser = new BillSearcherParser(connection);
+            BillSearcherParser billSearcherParser = new BillSearcherParser(connection, nameParser);
             BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
 
             List<BillActionLoad> priorLoads = billPersistence.checkForPriorLoads(billSearchResults);

@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameOverrides;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Test;
@@ -17,6 +18,11 @@ public class TestBillVotesParser {
     private final String houseBill2771FileName =  "/pdfs/10000HB2771_04272017_028000T.pdf";
     private final String houseBill4324FileName =  "/pdfs/10000HB4324_04272018_065000T.pdf";
     private final String senateBill1781FileName = "/pdfs/10000SB1781_05302017_032000T.pdf";
+
+    private static NameParser loadNameParser(){
+        NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
+        return new NameParser(nameOverrides.getOverrides());
+    }
 
     private static BillVotes houseBill4324(){
         BillVotes billVotes = new BillVotes();
@@ -100,31 +106,31 @@ public class TestBillVotesParser {
 
     @Test
     public void testBill4234(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName);
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName, loadNameParser());
         checkNonListFields(houseBill4324(), billVotes);
     }
 
     @Test
     public void testBill8(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName);
+        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName, loadNameParser());
         checkNonListFields(senateBill8(), billVotes);
     }
 
     @Test
     public void testBill3179(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName);
+        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName, loadNameParser());
         checkNonListFields(houseBill3179(), billVotes);
     }
 
     @Test
     public void testBill2771(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName);
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName, loadNameParser());
         checkNonListFields(houseBill2771(), billVotes);
     }
 
     @Test
     public void testBill1781(){
-        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName);
+        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName, loadNameParser());
         checkNonListFields(senateBill1781(), billVotes);
     }
 
@@ -163,7 +169,10 @@ public class TestBillVotesParser {
         Name james = nameParser.fromLastNameFirstString("Clayborne Jr., James F");
         VoteRecord expected2 = new VoteRecord(james, VoteSide.NotVoting);
         String input = "Y Redblatt, Alfred NV Clayborne Jr., James F";
-        List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
+
+        BillVotesParser parser = new BillVotesParser(loadNameParser());
+
+        List<VoteRecord> records = parser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[]{expected1, expected2};
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
@@ -175,7 +184,8 @@ public class TestBillVotesParser {
         Name jim = Name.fromFirstLast("Jim", "Oberweis");
         VoteRecord v1 = new VoteRecord(chris, VoteSide.Yea);
         VoteRecord v2 = new VoteRecord(jim, VoteSide.Yea);
-        List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
+        BillVotesParser parser = new BillVotesParser(loadNameParser());
+        List<VoteRecord> records = parser.parseVoteRecordLine(input);
         VoteRecord[] expectedRecords = new VoteRecord[] { v1, v2 };
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
@@ -194,7 +204,8 @@ public class TestBillVotesParser {
                 new VoteRecord(oberweis, VoteSide.Present),
                 new VoteRecord(vanpelt, VoteSide.Yea)
         };
-        List<VoteRecord> records = BillVotesParser.parseVoteRecordLine(input);
+        BillVotesParser parser = new BillVotesParser(loadNameParser());
+        List<VoteRecord> records = parser.parseVoteRecordLine(input);
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
 

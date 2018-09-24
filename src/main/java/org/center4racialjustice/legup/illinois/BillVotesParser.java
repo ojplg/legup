@@ -13,14 +13,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BillVotesParser {
 
-    private static final NameParser nameParser = new NameParser(new HashMap<>());
 
     private static final List<String> ignoreLines =
             Arrays.asList("Denotes Excused Absence");
@@ -28,9 +26,16 @@ public class BillVotesParser {
     private static final List<String> hundredthLines =
             Arrays.asList("ONE HUNDREDTH", "100th General Assembly");
 
-    public static BillVotes readFromUrlAndParse(String url) {
+    private final NameParser nameParser;
+
+    public BillVotesParser(NameParser nameParser){
+        this.nameParser = nameParser;
+    }
+
+    public static BillVotes readFromUrlAndParse(String url, NameParser nameParser) {
         String contents = BillVotesParser.readFileFromUrl(url);
-        return  BillVotesParser.parseFileContents(url, contents);
+        BillVotesParser parser = new BillVotesParser(nameParser);
+        return  parser.parseFileContents(url, contents);
     }
 
     public static String readFileFromUrl(String url) {
@@ -119,7 +124,7 @@ public class BillVotesParser {
         }
     }
 
-    public static List<VoteRecord> parseVoteRecordLine(String input){
+    public List<VoteRecord> parseVoteRecordLine(String input){
         String remainder = input.trim();
         List<VoteRecord> records = new ArrayList<>();
         while (remainder.length() > 0){
@@ -144,9 +149,10 @@ public class BillVotesParser {
         return records;
     }
 
-    public static BillVotes parseFile(String filename) {
+    public static BillVotes parseFile(String filename, NameParser nameParser) {
         String content = readFileToString(filename);
-        return parseFileContents("",content);
+        BillVotesParser parser = new BillVotesParser(nameParser);
+        return parser.parseFileContents("",content);
     }
 
     private static String[] houseVoteStrings = new String[]{ "HOUSE ROLL CALL" };
@@ -175,7 +181,7 @@ public class BillVotesParser {
         return null;
     }
 
-    public static BillVotes parseFileContents(String url, String content){
+    public BillVotes parseFileContents(String url, String content){
         String[] lines = content.split("\n");
         BillVotes bv = new BillVotes(url, content);
         for(int idx=0; idx<lines.length; idx++){

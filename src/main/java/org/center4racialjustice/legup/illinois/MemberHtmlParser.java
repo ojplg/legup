@@ -11,7 +11,6 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,9 +19,9 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,13 +39,14 @@ public class MemberHtmlParser {
     public static final Pattern MemberIdExtractionPattern = Pattern.compile(MemberIdExtractionRegex);
 
     private final Document document;
-    private final NameParser nameParser = new NameParser(new HashMap<>());
+    private final NameParser nameParser;
 
-    private MemberHtmlParser(Document document){
+    private MemberHtmlParser(Document document, NameParser nameParser){
+        this.nameParser = nameParser;
         this.document = document;
     }
 
-    public static MemberHtmlParser load(String url) {
+    public static MemberHtmlParser load(String url, NameParser nameParser) {
         CloseableHttpResponse httpResponse = null;
         try {
             // Annoyingly, this code does not seem to work.
@@ -63,7 +63,7 @@ public class MemberHtmlParser {
             HttpEntity httpEntity = httpResponse.getEntity();
 
             Document doc = Jsoup.parse(httpEntity.getContent(), "windows-1252", url);
-            return new MemberHtmlParser(doc);
+            return new MemberHtmlParser(doc, nameParser);
         } catch (IOException ex){
             throw new RuntimeException(ex);
         } finally {
@@ -77,10 +77,10 @@ public class MemberHtmlParser {
         }
     }
 
-    public static MemberHtmlParser loadFromInputStream(InputStream inputStream, String url){
+    public static MemberHtmlParser loadFromInputStream(InputStream inputStream, String url, Map<String, Name> nameOverrides){
         try {
             Document doc = Jsoup.parse(inputStream, null, url);
-            return new MemberHtmlParser(doc);
+            return new MemberHtmlParser(doc, new NameParser(nameOverrides));
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }

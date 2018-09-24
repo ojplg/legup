@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.web;
 
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.SessionIdManager;
@@ -14,8 +15,10 @@ public class ServerStarter {
 
     private final int port = 8000;
     private final ConnectionPool connectionPool;
+    private final NameParser nameParser;
 
-    public ServerStarter(ConnectionPool connectionPool){
+    public ServerStarter(ConnectionPool connectionPool, NameParser nameParser){
+        this.nameParser = nameParser;
         this.connectionPool = connectionPool;
     }
 
@@ -40,7 +43,7 @@ public class ServerStarter {
         ContextHandler appHandler = new ContextHandler();
         appHandler.setContextPath("/legup");
         HandlerList appHandlers = new HandlerList();
-        AppHandler legUpHandler = new AppHandler(connectionPool);
+        AppHandler legUpHandler = new AppHandler(connectionPool, nameParser);
         appHandlers.setHandlers(new Handler[]{ sessionHandler, legUpHandler, resourceHandler });
         appHandler.setHandler(appHandlers);
 

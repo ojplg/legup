@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.handlers;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.illinois.MemberHtmlParser;
 import org.center4racialjustice.legup.service.LegislatorPersistence;
 import org.center4racialjustice.legup.web.Handler;
@@ -15,16 +16,18 @@ import java.util.List;
 public class ViewParsedLegislators implements Handler {
 
     private final LegislatorPersistence legislatorPersistence;
+    private final NameParser nameParser;
 
-    public ViewParsedLegislators(ConnectionPool connectionPool) {
+    public ViewParsedLegislators(ConnectionPool connectionPool, NameParser nameParser) {
         this.legislatorPersistence = new LegislatorPersistence(connectionPool);
+        this.nameParser = nameParser;
     }
 
     @Override
     public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
         String memberUrl = request.getParameter("url");
 
-        MemberHtmlParser parser = MemberHtmlParser.load(memberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.load(memberUrl, nameParser);
         List<Legislator> legislators = parser.getLegislators();
         List<Legislator> unknownLegislators = legislatorPersistence.filterOutSavedLegislators(legislators);
 

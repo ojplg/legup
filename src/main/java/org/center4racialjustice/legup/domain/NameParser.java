@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class NameParser {
 
-    public static String president = "Mr. President";
+//    public static String president = "Mr. President";
     public static String simpleLastNameRegex = "([A-Z][A-Za-zñ\\-' ]+)";
     public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z])\\.";
     public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
@@ -36,14 +36,14 @@ public class NameParser {
 
     public NameParser(Map<String, Name> specialOverides) {
         this.specialOverides = specialOverides;
-        // TODO: Move these overrides out of here.
-        specialOverides.put("C.D. Davidsmeyer", new Name("C.D. Davidsmeyer","C.D.","","Davidsmeyer", null, null));
-        specialOverides.put("La Shawn K. Ford", new Name ("La Shawn K. Ford","La Shawn", "K", "Ford", null,null));
-        specialOverides.put("Wm. Sam McCann", new Name("Wm. Sam McCann", "Wm.", "Sam", "McCann",null,null));
-        specialOverides.put("Mr. Speaker", new Name("Mr. Speaker", "Michael", "J", "Madigan", null, null));
-        specialOverides.put("Patricia Van Pelt", new Name("Patricia Van Pelt", "Patricia", null, "Van Pelt", null, null));
-        specialOverides.put("Linda Chapa LaVia", new Name("Linda Chapa LaVia", "Linda", null, "Chapa LaVia", null, null));
-        specialOverides.put("Mr. President", new Name("John Cullerton", "John", "J", "Cullerton", null, null));
+//        // TODO: Move these overrides out of here.
+//        specialOverides.put("C.D. Davidsmeyer", new Name("C.D. Davidsmeyer","C.D.","","Davidsmeyer", null, null));
+//        specialOverides.put("La Shawn K. Ford", new Name ("La Shawn K. Ford","La Shawn", "K", "Ford", null,null));
+//        specialOverides.put("Wm. Sam McCann", new Name("Wm. Sam McCann", "Wm.", "Sam", "McCann",null,null));
+//        specialOverides.put("Mr. Speaker", new Name("Mr. Speaker", "Michael", "J", "Madigan", null, null));
+//        specialOverides.put("Patricia Van Pelt", new Name("Patricia Van Pelt", "Patricia", null, "Van Pelt", null, null));
+//        specialOverides.put("Linda Chapa LaVia", new Name("Linda Chapa LaVia", "Linda", null, "Chapa LaVia", null, null));
+//        specialOverides.put("Mr. President", new Name("John Cullerton", "John", "J", "Cullerton", null, null));
     }
 
     public Name fromRegularOrderString(String input){
@@ -104,10 +104,10 @@ public class NameParser {
         if (specialOverides.containsKey(trimmedInput)){
             return specialOverides.get(trimmedInput);
         }
-
-        if( trimmedInput.equals(president)){
-            return new Name(trimmedInput, null, null, president, null, null);
-        }
+//
+//        if( trimmedInput.equals(president)){
+//            return new Name(trimmedInput, null, null, president, null, null);
+//        }
         Matcher simpleLastNameMatcher = simpleLastNamePattern.matcher(trimmedInput);
         if( simpleLastNameMatcher.matches() ){
             return new Name(trimmedInput, null, null, trimmedInput, null, null);

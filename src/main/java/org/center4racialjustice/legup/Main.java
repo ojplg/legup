@@ -7,6 +7,8 @@ import org.center4racialjustice.legup.db.ConnectionFactory;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.H2ConnectionFactory;
 import org.center4racialjustice.legup.db.PostgresConnectionFactory;
+import org.center4racialjustice.legup.domain.NameOverrides;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.web.ServerStarter;
 
 import java.io.FileReader;
@@ -43,7 +45,9 @@ public class Main {
             velocityProperties.put("class.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
             Velocity.init(velocityProperties);
 
-            ServerStarter serverStarter = new ServerStarter(connectionPool);
+            NameParser nameParser = NameOverrides.loadNameParser("conf/name.overrides");
+
+            ServerStarter serverStarter = new ServerStarter(connectionPool, nameParser);
             serverStarter.start();
         } catch (Exception ex){
             System.out.println("Could not start server");

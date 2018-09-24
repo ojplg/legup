@@ -2,20 +2,28 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameOverrides;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 public class TestMemberHtmlParser {
+
+    private static Map<String, Name> loadOverrides(){
+        NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
+        return nameOverrides.getOverrides();
+    }
 
     public static final String HouseMemberUrl = "http://www.ilga.gov/house/default.asp";
 
     @Test
     public void loadAndreNameWithAccent(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
         List<Legislator> legislators = parser.getLegislators();
 
         List<Legislator> filtered = Legislator.findByLastName(legislators, "Thapedi");
@@ -27,7 +35,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testParsingHouseMembers() {
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         List<Legislator> names = parser.getLegislators();
         Assert.assertEquals(128, names.size());
@@ -36,7 +44,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testGetAssembly(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         Chamber chamber = parser.getAssembly();
         Assert.assertEquals(Chamber.House, chamber);
@@ -46,7 +54,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testGetSession(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         long session = parser.getSessionNumber();
         Assert.assertEquals(100L, session);
@@ -55,7 +63,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testParseOutMemberId(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         List<Legislator> legislators = parser.getLegislators();
 
@@ -67,7 +75,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testMembersInSecondTableShouldNotBeCompleteTerm(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         List<Legislator> legislators = parser.getLegislators();
 
@@ -79,7 +87,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testMembersInSameDistrictAsThoseInSecondTableShouldNotBeCompleteTerm(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         List<Legislator> legislators = parser.getLegislators();
 
@@ -91,7 +99,7 @@ public class TestMemberHtmlParser {
     @Test
     public void testDistrictsMentionedOnceAreCompleteTerm(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_100_house.html");
-        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl);
+        MemberHtmlParser parser = MemberHtmlParser.loadFromInputStream(inputStream, HouseMemberUrl, loadOverrides());
 
         List<Legislator> legislators = parser.getLegislators();
 

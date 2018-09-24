@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameParser;
 
 import java.util.List;
 import java.util.Map;
@@ -14,10 +15,13 @@ import java.util.Map;
 public class BillSearcherParser {
 
     private final Logger log = LogManager.getLogger(BillSearcherParser.class);
-    private final ConnectionWrapper connectionWrapper;
 
-    public BillSearcherParser(ConnectionWrapper connectionWrapper){
+    private final ConnectionWrapper connectionWrapper;
+    private final NameParser nameParser;
+
+    public BillSearcherParser(ConnectionWrapper connectionWrapper, NameParser nameParser){
         this.connectionWrapper = connectionWrapper;
+        this.nameParser = nameParser;
     }
 
     public BillSearchResults doFullSearch(Chamber chamber, Long billNumber){
@@ -53,7 +57,7 @@ public class BillSearcherParser {
             return BillVotesResults.NO_RESULTS;
         }
 
-        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(votePdfUrl);
+        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(votePdfUrl, nameParser);
 
         VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
         collator.collate();

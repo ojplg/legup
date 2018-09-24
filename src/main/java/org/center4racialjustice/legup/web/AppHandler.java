@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.web.handlers.SaveReportCard;
 import org.center4racialjustice.legup.web.handlers.SaveSearchedBill;
 import org.center4racialjustice.legup.web.handlers.ViewBillForm;
@@ -39,12 +40,12 @@ public class AppHandler extends AbstractHandler {
 
     private final Map<String, RequestHandler> handlerMap = new HashMap<>();
 
-    AppHandler(ConnectionPool connectionPool) {
+    AppHandler(ConnectionPool connectionPool, NameParser nameParser) {
         List<Handler> handlers = new ArrayList<>();
 
         handlers.add(new ViewBillForm());
         handlers.add(new ViewFindLegislatorsForm());
-        handlers.add(new ViewParsedLegislators(connectionPool));
+        handlers.add(new ViewParsedLegislators(connectionPool, nameParser));
         handlers.add(new SaveLegislators(connectionPool));
         handlers.add(new ViewLegislators(connectionPool));
         handlers.add(new ViewBills(connectionPool));
@@ -56,7 +57,7 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new SaveReportCard(connectionPool));
         handlers.add(new ViewReportCardScores(connectionPool));
         handlers.add(new ViewBillSearchForm());
-        handlers.add(new ViewBillSearchResults(connectionPool));
+        handlers.add(new ViewBillSearchResults(connectionPool, nameParser));
         handlers.add(new SaveSearchedBill(connectionPool));
         handlers.add(new ViewBillSponsors(connectionPool));
         handlers.add(new ViewReportCardBills());
