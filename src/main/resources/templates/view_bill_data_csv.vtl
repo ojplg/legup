@@ -1,0 +1,4 @@
+Name;Party;Vote;Sponsor;Chief Sponsor<br>
+#foreach ($legislator in $legislators)
+$legislator.Display;$legislator.Party;$!{billActionTable.get($legislator, "Vote")};$!{billActionTable.get($legislator, "Sponsor")};$!{billActionTable.get($legislator, "Chief Sponsor")}<br/>
+#end

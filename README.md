@@ -54,15 +54,17 @@ Technical Betterments
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with 
   Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
   (proyal's favorite) or at least break hrorm to a stand-alone project
-* Need a way to chain handlers, perhaps changing the handler interface to 
-  something more useful
-* Framework for form error checking (though there are few forms with much interaction) 
-  and error reporting
 * Add more logging, particularly for bill searching
+* Web Framework
+  * Resolve Handler/Responder schism
+  * Need a way to to bypass container and set content type not html (for CSV pages)
+  * Need a way to chain responders/handlers
+  * Need a way to override default routing easily without giving up simple default behavior
+  * Need a way to override template without giving up simple default behavior
+  * Perhaps some framework for error checking (though form submission is quite limited)
 
 Features/bugs to work on
 
-* CSV screens for cut-and-paste to spreadsheets
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found
   * The legislator model includes a session id, but many legislators serve in multiple sessions.
