@@ -25,7 +25,7 @@ public class BillSearcherParser {
     }
 
     public BillSearchResults doFullSearch(Chamber chamber, Long billNumber){
-        log.info("Doing search for " + chamber + ", " + billNumber);
+        log.info("Doing search for " + chamber + "." + billNumber);
 
         BillSearcher searcher = new BillSearcher();
 
@@ -33,6 +33,9 @@ public class BillSearcherParser {
         String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
 
         BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
+
+        log.info("Found " + billHtmlParser.getSponsorNames().totalSponsorCount() + " total sponsors");
+
         Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
         LegislatorDao legislatorDao = new LegislatorDao(connectionWrapper);
@@ -54,6 +57,7 @@ public class BillSearcherParser {
             }
         }
         if( votePdfUrl == null ){
+            log.info("No votes found in chamber " + chamber);
             return BillVotesResults.NO_RESULTS;
         }
 
@@ -64,6 +68,8 @@ public class BillSearcherParser {
 
         List<CollatedVote> collatedVotes = collator.getAllCollatedVotes();
         List<Name> uncollatedVotes = collator.getUncollated();
+
+        log.info("Chamber " + chamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
 
         return new BillVotesResults(collatedVotes, uncollatedVotes, votePdfUrl, billVotes.getChecksum());
     }

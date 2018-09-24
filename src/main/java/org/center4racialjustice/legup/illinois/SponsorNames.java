@@ -38,6 +38,17 @@ public class SponsorNames {
         }
     }
 
+    public int totalSponsorCount(){
+        int sum = 0;
+        if (chiefHouseSponsor != null){
+            sum++;
+        }
+        if ( chiefSenateSponsor != null){
+            sum++;
+        }
+        return sum + houseSponsors.size() + senateSponsors.size();
+    }
+
     public void completeAll(List<Legislator> legislators){
         Map<String, Legislator> legislatorMap = Lists.asMap(legislators, Legislator::getMemberId);
         if( chiefHouseSponsor != null && legislatorMap.containsKey(chiefHouseSponsor.getMemberId())){
