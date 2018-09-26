@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.function.Supplier;
 
 public class SqlRunner<T> {
@@ -67,7 +66,7 @@ public class SqlRunner<T> {
 
     }
 
-    public List<T> selectByColumns(String sql, Supplier<T> supplier, List<String> columnNames, SortedMap<String, TypedColumn<T>> columnNameMap, T item){
+    public List<T> selectByColumns(String sql, Supplier<T> supplier, List<String> columnNames, Map<String, TypedColumn<T>> columnNameMap, T item){
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             int idx = 1;

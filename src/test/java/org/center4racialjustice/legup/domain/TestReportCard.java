@@ -98,7 +98,7 @@ public class TestReportCard {
     @Test
     public void testFindSelectedLegislators_ReflectsSettings(){
         Legislator l1 = newLegislator(Chamber.House, "Aaa", true);
-        Legislator l2 = newLegislator(Chamber.House, "Bbb", false);
+        Legislator l2 = newLegislator(Chamber.Senate, "Bbb", false);
         Legislator l3 = newLegislator(Chamber.House, "Ccc", true);
         List<Legislator> legislators = Arrays.asList(l1, l2, l3);
 
@@ -178,7 +178,7 @@ public class TestReportCard {
         ReportCard card = new ReportCard();
         card.setId(nextId());
         card.setReportFactors(Arrays.asList(factors));
-        List<ReportCardLegislator> rcList = Arrays.asList(legislators).stream()
+        List<ReportCardLegislator> rcList = Arrays.stream(legislators)
                 .map(TestReportCard::newReportCardLegislator)
                 .collect(Collectors.toList());
         card.setReportCardLegislators(rcList);
