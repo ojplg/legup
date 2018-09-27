@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.db.hrorm;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,13 +29,13 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
                    List<ChildrenDescriptor<T,?>> childrenDescriptors){
         this.connection = connection;
         this.tableName = tableName;
-        this.dataColumns = Collections.unmodifiableList(dataColumns);
+        this.dataColumns = Collections.unmodifiableList(new ArrayList<>(dataColumns));
         this.primaryKey = primaryKey;
         this.supplier = supplier;
-        this.joinColumns = Collections.unmodifiableList(joinColumns);
-        this.childrenDescriptors = childrenDescriptors;
+        this.joinColumns = Collections.unmodifiableList(new ArrayList<>(joinColumns));
+        this.childrenDescriptors = Collections.unmodifiableList(new ArrayList<>(childrenDescriptors));
         this.sqlBuilder = new SqlBuilder<>(tableName, this.dataColumns, this.joinColumns, primaryKey);
-        this.sqlRunner = new SqlRunner<>(connection, dataColumns, joinColumns);
+        this.sqlRunner = new SqlRunner<>(connection, this.dataColumns, this.joinColumns);
     }
 
     public String tableName(){
