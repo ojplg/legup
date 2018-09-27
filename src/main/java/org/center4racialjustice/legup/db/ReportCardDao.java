@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.db.hrorm.Dao;
 import org.center4racialjustice.legup.domain.ReportCard;
 
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.List;
 
 public class ReportCardDao {
@@ -24,6 +25,12 @@ public class ReportCardDao {
             innerDao.update(reportCard);
             return reportCard.getId();
         }
+    }
+
+    public ReportCard selectByName(String name){
+        ReportCard reportCard = new ReportCard();
+        reportCard.setName(name);
+        return innerDao.selectByColumns(reportCard, "NAME");
     }
 
     public List<ReportCard> readAll(){

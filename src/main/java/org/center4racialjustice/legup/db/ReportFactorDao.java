@@ -22,7 +22,7 @@ public class ReportFactorDao {
     public List<ReportFactor> readByReportCardId(long reportCardId){
         ReportFactor reportFactor = new ReportFactor();
         reportFactor.setReportCardId(reportCardId);
-        return innerDao.selectManyByColumns(reportFactor, Arrays.asList("REPORT_CARD_ID"));
+        return innerDao.selectManyByColumns(reportFactor, "REPORT_CARD_ID");
     }
 
     public Long save(ReportFactor reportFactor){

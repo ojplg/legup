@@ -29,14 +29,14 @@ public class BillActionDao {
         BillAction billAction = new BillAction();
         billAction.setLegislator(legislator);
 
-        return innerDao.selectManyByColumns(billAction, Arrays.asList("LEGISLATOR_ID"));
+        return innerDao.selectManyByColumns(billAction, "LEGISLATOR_ID");
     }
 
     public List<BillAction> readByBill(Bill bill){
         BillAction billAction = new BillAction();
         billAction.setBill(bill);
 
-        return innerDao.selectManyByColumns(billAction, Arrays.asList("BILL_ID"));
+        return innerDao.selectManyByColumns(billAction, "BILL_ID");
     }
 
     public BillAction read(long id){

@@ -27,7 +27,7 @@ public class BillActionLoadDao {
     public List<BillActionLoad> readByBill(Bill bill) {
         BillActionLoad billActionLoad = new BillActionLoad();
         billActionLoad.setBill(bill);
-        return innerDao.selectManyByColumns(billActionLoad, Arrays.asList("BILL_ID"));
+        return innerDao.selectManyByColumns(billActionLoad, "BILL_ID");
     }
 
     public BillActionLoad select(Long id){

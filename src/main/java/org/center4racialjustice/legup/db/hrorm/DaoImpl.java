@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.db.hrorm;
 
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -107,15 +108,15 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     }
 
     @Override
-    public T selectByColumns(T item, List<String> columnNames){
+    public T selectByColumns(T item, String ... columnNames){
         List<T> items = selectManyByColumns(item, columnNames);
         return fromSingletonList(items);
     }
 
     @Override
-    public List<T> selectManyByColumns(T item, List<String> columnNames) {
+    public List<T> selectManyByColumns(T item, String ... columnNames) {
         String sql = sqlBuilder.selectByColumns(columnNames);
-        return sqlRunner.selectByColumns(sql, supplier, columnNames, columnMap(columnNames), item);
+        return sqlRunner.selectByColumns(sql, supplier, Arrays.asList(columnNames), columnMap(columnNames), item);
     }
 
     private <A> A fromSingletonList(List<A> items) {

@@ -40,14 +40,13 @@ public class ChildrenDescriptor<PARENT,CHILD> {
     }
 
     public void populateChildren(Connection connection, PARENT item){
-        List<String> columnNames = Collections.singletonList(parentChildColumnName);
-        SortedMap<String, TypedColumn<CHILD>> columnNameMap = daoDescriptor.columnMap(columnNames);
+        SortedMap<String, TypedColumn<CHILD>> columnNameMap = daoDescriptor.columnMap(parentChildColumnName);
         CHILD key = daoDescriptor.supplier().get();
         Long id = primaryKey.getKey(item);
         parentSetter.accept(key, id);
-        String sql = sqlBuilder.selectByColumns(columnNameMap.keySet());
+        String sql = sqlBuilder.selectByColumns(parentChildColumnName);
         SqlRunner<CHILD> sqlRunner = new SqlRunner<>(connection, daoDescriptor.dataColumns(), daoDescriptor.joinColumns());
-        List<CHILD> children = sqlRunner.selectByColumns(sql, daoDescriptor.supplier(), columnNames, columnNameMap, key);
+        List<CHILD> children = sqlRunner.selectByColumns(sql, daoDescriptor.supplier(), Collections.singletonList(parentChildColumnName), columnNameMap, key);
         setter.accept(item, children);
     }
 

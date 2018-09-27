@@ -10,7 +10,7 @@ public interface Dao<T> {
     T select(long id);
     List<T> selectMany(List<Long> ids);
     List<T> selectAll();
-    T selectByColumns(T item, List<String> columnName);
-    List<T> selectManyByColumns(T item, List<String> columnNames);
+    T selectByColumns(T item, String ... columnNames);
+    List<T> selectManyByColumns(T item, String ... columnNames);
 
 }

@@ -39,13 +39,13 @@ public class LegislatorDao {
     public List<Legislator> readBySession(long session){
         Legislator legislator = new Legislator();
         legislator.setSessionNumber(session);
-        return innerDao.selectManyByColumns(legislator, Arrays.asList("SESSION_NUMBER"));
+        return innerDao.selectManyByColumns(legislator, "SESSION_NUMBER");
     }
 
     public Legislator readByMemberId(String memberId){
         Legislator legislator = new Legislator();
         legislator.setMemberId(memberId);
-        return innerDao.selectByColumns(legislator, Arrays.asList("MEMBER_ID"));
+        return innerDao.selectByColumns(legislator,"MEMBER_ID");
     }
 
     public List<Legislator> readByChamberDistrictSession(Chamber chamber, long district, long session){
@@ -54,6 +54,6 @@ public class LegislatorDao {
         legislator.setChamber(chamber);
         legislator.setDistrict(district);
         legislator.setSessionNumber(session);
-        return innerDao.selectManyByColumns(legislator, Arrays.asList("CHAMBER", "DISTRICT", "SESSION_NUMBER" ));
+        return innerDao.selectManyByColumns(legislator, "CHAMBER", "DISTRICT", "SESSION_NUMBER");
     }
 }

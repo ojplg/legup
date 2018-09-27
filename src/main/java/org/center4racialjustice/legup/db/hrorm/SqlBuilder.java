@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db.hrorm;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -67,7 +68,7 @@ public class SqlBuilder<T> {
         return buf.toString();
     }
 
-    public String selectByColumns(Collection<String> columnNames){
+    public String selectByColumns(String ... columnNames){
         StringBuilder buf = new StringBuilder();
         buf.append(select());
         for(String columnName : columnNames){

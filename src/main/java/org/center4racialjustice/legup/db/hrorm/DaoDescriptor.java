@@ -1,8 +1,10 @@
 package org.center4racialjustice.legup.db.hrorm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -23,10 +25,11 @@ public interface DaoDescriptor<T> {
         return Collections.unmodifiableList(allColumns);
     }
 
-    default SortedMap<String, TypedColumn<T>> columnMap(Collection<String> columnNames){
+    default SortedMap<String, TypedColumn<T>> columnMap(String ... columnNames){
         SortedMap<String, TypedColumn<T>> map = new TreeMap<>();
+        HashSet<String> nameSet = new HashSet<>(Arrays.asList(columnNames));
         for(TypedColumn<T> column : allColumns()){
-            if (columnNames.contains(column.getName())) {
+            if (nameSet.contains(column.getName())) {
                 map.put(column.getName(), column);
             }
         }

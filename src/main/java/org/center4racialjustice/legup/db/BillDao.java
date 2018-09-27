@@ -20,7 +20,7 @@ public class BillDao {
     }
 
     public Bill readBySessionChamberAndNumber(Bill bill){
-        return innerDao.selectByColumns(bill, Arrays.asList("SESSION_NUMBER", "CHAMBER", "BILL_NUMBER"));
+        return innerDao.selectByColumns(bill, "SESSION_NUMBER", "CHAMBER", "BILL_NUMBER");
     }
 
     public void insert(Bill bill){
@@ -31,7 +31,7 @@ public class BillDao {
         Bill bill = new Bill();
         bill.setSession(session);
 
-        return innerDao.selectManyByColumns(bill, Arrays.asList("SESSION_NUMBER"));
+        return innerDao.selectManyByColumns(bill, "SESSION_NUMBER");
     }
 
     public List<Bill> readByIds(List<Long> ids){
