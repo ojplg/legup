@@ -20,6 +20,7 @@ import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.SponsorNames;
+import org.center4racialjustice.legup.util.LookupTable;
 
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +76,31 @@ public class BillPersistence {
 
             BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
             return new BillSaveResults(parsedBill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
+        }
+    }
+
+    public LookupTable<Legislator, String, String> generateBillActionSummary(long billId){
+        try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
+
+            BillDao billDao = new BillDao(connection);
+            BillActionDao billActionDao = new BillActionDao(connection);
+
+            Bill bill = billDao.read(billId);
+
+            List<BillAction> billActions = billActionDao.readByBill(bill);
+
+            LookupTable<Legislator, String, String> billActionTable = new LookupTable<>();
+
+            for (BillAction billAction : billActions) {
+                Legislator leg = billAction.getLegislator();
+                if (billAction.isVote()) {
+                    Vote vote = billAction.asVote();
+                    billActionTable.put(leg, "Vote", vote.getVoteSide().getDisplayString());
+                } else {
+                    billActionTable.put(leg, billAction.getBillActionType().getCode(), "Check");
+                }
+            }
+            return billActionTable;
         }
     }
 

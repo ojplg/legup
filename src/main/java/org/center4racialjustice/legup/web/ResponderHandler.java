@@ -17,6 +17,7 @@ public class ResponderHandler implements Handler {
     public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
         LegupSubmission legupSubmission = new LegupSubmission(legupSession, request);
         LegupResponse legupResponse = responder.handle(legupSubmission);
+        httpServletResponse.setHeader("Content-Type", legupResponse.getContentType());
         return legupResponse.getVelocityContext();
     }
 

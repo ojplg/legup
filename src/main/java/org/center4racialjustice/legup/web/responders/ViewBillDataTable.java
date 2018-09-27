@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.domain.BillActionSummary;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Vote;
+import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -27,33 +28,14 @@ public class ViewBillDataTable implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
+        long billId = submission.getLongRequestParameter("bill_id");
 
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
-            long billId = submission.getLongRequestParameter("bill_id");
+        BillPersistence billPersistence = new BillPersistence(connectionPool);
+        LookupTable<Legislator, String, String> billActionTable = billPersistence.generateBillActionSummary(billId);
 
-            BillDao billDao = new BillDao(connection);
-            BillActionDao billActionDao = new BillActionDao(connection);
-
-            Bill bill = billDao.read(billId);
-
-            List<BillAction> billActions = billActionDao.readByBill(bill);
-
-            LookupTable<Legislator, String, String> billActionTable = new LookupTable<>();
-
-            for( BillAction billAction : billActions ){
-                Legislator leg = billAction.getLegislator();
-                if ( billAction.isVote() ){
-                    Vote vote = billAction.asVote();
-                    billActionTable.put(leg, "Vote", vote.getVoteSide().getDisplayString());
-                } else {
-                    billActionTable.put(leg, billAction.getBillActionType().getCode(), "Check");
-                }
-            }
-
-            LegupResponse response = new LegupResponse();
-            response.putVelocityData("billActionTable", billActionTable);
-            response.putVelocityData("legislators", billActionTable.sortedRowHeadings(Legislator::compareTo));
-            return response;
-        }
+        LegupResponse response = new LegupResponse(this.getClass());
+        response.putVelocityData("billActionTable", billActionTable);
+        response.putVelocityData("legislators", billActionTable.sortedRowHeadings(Legislator::compareTo));
+        return response;
     }
 }

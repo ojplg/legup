@@ -1,7 +1,10 @@
 package org.center4racialjustice.legup.web;
 
+import org.apache.http.HttpEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.web.handlers.SaveReportCard;
@@ -31,6 +34,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +45,7 @@ public class AppHandler extends AbstractHandler {
     private static final Logger log = LogManager.getLogger(AppHandler.class);
 
     private final Map<String, RequestHandler> handlerMap = new HashMap<>();
+    private final Map<String, Responder> responderMap = new HashMap<>();
 
     AppHandler(ConnectionPool connectionPool, NameParser nameParser) {
         List<Handler> handlers = new ArrayList<>();
@@ -66,14 +71,25 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewReportCardBill());
         handlers.add(new ViewReportCardLegislator());
 
-        handlers.add(new ResponderHandler(new ViewBillDataTable(connectionPool)));
-        handlers.add(new ResponderHandler(new ViewBillDataCsv(connectionPool)));
+//        handlers.add(new ResponderHandler(new ViewBillDataTable(connectionPool)));
+//        handlers.add(new ResponderHandler(new ViewBillDataCsv(connectionPool)));
 
         for (Handler handler : handlers) {
             RequestHandler requestHandler = new RequestHandler(handler);
             String routeName = requestHandler.getRouteName();
             log.info("Setting handler for " + routeName);
             handlerMap.put(routeName, requestHandler);
+        }
+
+        List<Responder> responders = new ArrayList<>();
+
+        responders.add(new ViewBillDataTable(connectionPool));
+        responders.add(new ViewBillDataCsv(connectionPool));
+
+        for (Responder responder : responders) {
+            String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());
+            log.info("Setting responder for " + routeName);
+            responderMap.put(routeName, responder);
         }
     }
 
@@ -91,6 +107,14 @@ public class AppHandler extends AbstractHandler {
 
             RequestHandler requestHandler = handlerMap.get(appPath);
             requestHandler.processRequest(request, legupSession, httpServletResponse);
+        } else if ( responderMap.containsKey(appPath) ) {
+            HttpSession session = request.getSession();
+            LegupSession legupSession = doSession(session);
+            LegupSubmission legupSubmission = new LegupSubmission(legupSession, request);
+            Responder responder = responderMap.get(appPath);
+            LegupResponse legupResponse = responder.handle(legupSubmission);
+            processResponse(legupResponse, httpServletResponse);
+            request.setHandled(true);
         } else {
             log.info("Request for resource handler: " + appPath);
         }
@@ -106,4 +130,23 @@ public class AppHandler extends AbstractHandler {
         log.info("Session count " + count);
         return legupSession;
     }
+
+    private void processResponse(LegupResponse legupResponse, HttpServletResponse httpServletResponse) {
+        try {
+            log.info("Processed request with " + legupResponse.getResponderClassName());
+            String templatePath = "/templates/" + legupResponse.getTemplateName();
+            Writer writer = httpServletResponse.getWriter();
+            VelocityContext velocityContext = legupResponse.getVelocityContext();
+            if (legupResponse.useContainer()) {
+                velocityContext.put("contents", templatePath);
+                Velocity.mergeTemplate("/templates/container.vtl", "ISO-8859-1", velocityContext, writer);
+            } else {
+                Velocity.mergeTemplate(templatePath, "ISO-8859-1", velocityContext, writer);
+            }
+        } catch (Exception ex) {
+            log.error("Exception in request processing", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
 }
