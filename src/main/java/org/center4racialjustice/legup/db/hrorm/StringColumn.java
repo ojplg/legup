@@ -46,4 +46,10 @@ public class StringColumn<T> implements TypedColumn<T> {
         String value = getter.apply(item);
         preparedStatement.setString(index, value);
     }
+
+    @Override
+    public boolean isPrimaryKey() {
+        return false;
+    }
+
 }

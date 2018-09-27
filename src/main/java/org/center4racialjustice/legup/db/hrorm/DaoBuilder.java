@@ -94,26 +94,8 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
     }
 
     public DaoBuilder<T> withPrimaryKey(String columnName, String sequenceName, Function<T, Long> getter, BiConsumer<T, Long> setter){
-
-        this.primaryKey = new PrimaryKey<T>() {
-            @Override
-            public Long getKey(T item) {
-                return getter.apply(item);
-            }
-
-            @Override
-            public void setKey(T item, Long id) {
-                setter.accept(item, id);
-            }
-
-            @Override
-            public String keyName() { return columnName; }
-
-            @Override
-            public String getSequenceName() { return sequenceName; }
-        };
-        TypedColumn<T> column = new LongColumn<>(columnName, "a", getter, setter);
-        columns.add(column);
+        this.primaryKey = new PrimaryKeyImpl<T>(columnName, "a", getter, setter, sequenceName);
+        columns.add(primaryKey);
         return this;
     }
 

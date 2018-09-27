@@ -12,4 +12,6 @@ public interface TypedColumn<T> {
     void setValue(T item, int index, PreparedStatement preparedStatement) throws SQLException;
 
     TypedColumn<T> withPrefix(String prefix);
+
+    boolean isPrimaryKey();
 }

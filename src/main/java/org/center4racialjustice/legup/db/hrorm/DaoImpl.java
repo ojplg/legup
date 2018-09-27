@@ -53,7 +53,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     public PrimaryKey<T> primaryKey() { return primaryKey; }
 
     public String deleteSql(T item){
-        return "delete from " + tableName + " where " + primaryKey.keyName() + " = " + primaryKey.getKey(item);
+        return "delete from " + tableName + " where " + primaryKey.getName() + " = " + primaryKey.getKey(item);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public T select(long id) {
         String sql = sqlBuilder.select();
-        sql = sql + " and a." + primaryKey.keyName() + " = " + id;
+        sql = sql + " and a." + primaryKey.getName() + " = " + id;
         List<T> items = sqlRunner.select(sql, supplier, childrenDescriptors);
         return fromSingletonList(items);
     }
@@ -96,7 +96,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
         String sql = sqlBuilder.select();
         List<String> idStrings = ids.stream().map(Object::toString).collect(Collectors.toList());
         String idsString = String.join(",", idStrings);
-        sql = sql + " and a." + primaryKey.keyName() + " in (" + idsString + ")";
+        sql = sql + " and a." + primaryKey.getName() + " in (" + idsString + ")";
         return sqlRunner.select(sql, supplier, childrenDescriptors);
     }
 

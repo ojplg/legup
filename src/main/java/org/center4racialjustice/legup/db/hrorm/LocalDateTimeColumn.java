@@ -50,6 +50,11 @@ public class LocalDateTimeColumn<T> implements TypedColumn<T> {
         Timestamp sqlTime = Timestamp.valueOf(value);
         preparedStatement.setTimestamp(index, sqlTime);
     }
+
+    @Override
+    public boolean isPrimaryKey() {
+        return false;
+    }
 }
 
 

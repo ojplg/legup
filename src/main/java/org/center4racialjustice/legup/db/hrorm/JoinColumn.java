@@ -84,4 +84,9 @@ public class JoinColumn<T, J> implements TypedColumn<T> {
     public List<TypedColumn<J>> getColumnList(){
         return columnList;
     }
+
+    @Override
+    public boolean isPrimaryKey() {
+        return false;
+    }
 }

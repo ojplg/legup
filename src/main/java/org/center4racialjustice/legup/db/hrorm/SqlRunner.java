@@ -87,7 +87,6 @@ public class SqlRunner<T> {
         } catch (SQLException ex){
             throw new RuntimeException(ex);
         }
-
     }
 
     public void insert(String sql, T item) {
@@ -122,9 +121,12 @@ public class SqlRunner<T> {
         try {
             preparedStatement = connection.prepareStatement(sql);
 
-            for(int idx = 1; idx<allColumns.size(); idx++){
-                TypedColumn<T> column = allColumns.get(idx);
-                column.setValue(item, idx, preparedStatement);
+            int idx = 1;
+            for(TypedColumn<T> column : allColumns){
+                if( ! column.isPrimaryKey() ) {
+                    column.setValue(item, idx, preparedStatement);
+                    idx++;
+                }
             }
 
             preparedStatement.execute();

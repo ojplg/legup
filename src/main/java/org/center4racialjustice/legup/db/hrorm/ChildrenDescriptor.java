@@ -89,7 +89,7 @@ public class ChildrenDescriptor<PARENT,CHILD> {
             List<String> goodChildrenIdStrings = goodChildrenIds.stream().map(Object::toString).collect(Collectors.toList());
 
             buf.append(" and ");
-            buf.append(daoDescriptor.primaryKey().keyName());
+            buf.append(daoDescriptor.primaryKey().getName());
             buf.append(" not in ");
             buf.append("(");
             buf.append(String.join(", ", goodChildrenIdStrings));

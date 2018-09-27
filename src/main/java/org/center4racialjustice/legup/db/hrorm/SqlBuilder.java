@@ -84,14 +84,11 @@ public class SqlBuilder<T> {
         StringBuilder sql = new StringBuilder("update ");
         sql.append(table);
         sql.append(" set ");
-        for(int idx=1; idx<dataColumns.size(); idx++){
-            TypedColumn column = dataColumns.get(idx);
-            sql.append(column.getName());
-            sql.append(" = ? ");
-            if (idx < dataColumns.size() - 1){
-                sql.append(", ");
-            }
-        }
+        List<String> dataColumnEntries = dataColumns.stream()
+                .filter(c -> ! c.isPrimaryKey())
+                .map(c -> c.getName() + "= ?")
+                .collect(Collectors.toList());
+        sql.append(String.join(", ", dataColumnEntries));
         for(int idx=0; idx<joinColumns.size(); idx++){
             JoinColumn joinColumn = joinColumns.get(idx);
             sql.append(", ");

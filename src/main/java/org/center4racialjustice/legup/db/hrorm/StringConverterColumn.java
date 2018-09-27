@@ -50,4 +50,10 @@ public class StringConverterColumn<T, E> implements TypedColumn<T> {
         String code = converter.to(value);
         preparedStatement.setString(index, code);
     }
+
+    @Override
+    public boolean isPrimaryKey() {
+        return false;
+    }
+
 }

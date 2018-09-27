@@ -46,4 +46,9 @@ public class LongColumn<T> implements TypedColumn<T> {
         Long value = getter.apply(item);
         preparedStatement.setLong(index, value);
     }
+
+    @Override
+    public boolean isPrimaryKey() {
+        return false;
+    }
 }

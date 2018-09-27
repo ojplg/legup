@@ -24,8 +24,8 @@ public class DaoBuilders {
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
-                .withPrimaryKey("ID", "bill_seq", Bill::getId, Bill::setId)
                 .withConvertingStringColumn("CHAMBER", Bill::getChamber, Bill::setChamber, Chamber.Converter)
+                .withPrimaryKey("ID", "bill_seq", Bill::getId, Bill::setId)
                 .withIntegerColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
                 .withIntegerColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)
                 .withStringColumn("SHORT_DESCRIPTION", Bill::getShortDescription, Bill::setShortDescription);
@@ -33,11 +33,11 @@ public class DaoBuilders {
 
     private static DaoBuilder<Legislator> legislatorDaoBuilder(){
         return new DaoBuilder<>("LEGISLATORS", Legislator::new)
-                .withPrimaryKey("ID", "legislator_seq", Legislator::getId, Legislator::setId)
                 .withStringColumn("FIRST_NAME", Legislator::getFirstName, Legislator::setFirstName)
                 .withStringColumn("MIDDLE_NAME_OR_INITIAL", Legislator::getMiddleInitialOrName, Legislator::setMiddleInitialOrName)
                 .withStringColumn("LAST_NAME", Legislator::getLastName, Legislator::setLastName)
                 .withStringColumn("SUFFIX", Legislator::getSuffix, Legislator::setSuffix)
+                .withPrimaryKey("ID", "legislator_seq", Legislator::getId, Legislator::setId)
                 .withConvertingStringColumn("CHAMBER", Legislator::getChamber, Legislator::setChamber, Chamber.Converter)
                 .withIntegerColumn("DISTRICT", Legislator::getDistrict, Legislator::setDistrict)
                 .withStringColumn("PARTY", Legislator::getParty, Legislator::setParty)
