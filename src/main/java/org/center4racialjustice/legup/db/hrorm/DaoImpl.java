@@ -53,6 +53,11 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
 
     public PrimaryKey<T> primaryKey() { return primaryKey; }
 
+    @Override
+    public List<ChildrenDescriptor<T, ?>> childrenDescriptors() {
+        return null;
+    }
+
     public String deleteSql(T item){
         return "delete from " + tableName + " where " + primaryKey.getName() + " = " + primaryKey.getKey(item);
     }
@@ -116,7 +121,7 @@ public class DaoImpl<T> implements Dao<T>, DaoDescriptor<T> {
     @Override
     public List<T> selectManyByColumns(T item, String ... columnNames) {
         String sql = sqlBuilder.selectByColumns(columnNames);
-        return sqlRunner.selectByColumns(sql, supplier, Arrays.asList(columnNames), columnMap(columnNames), item);
+        return sqlRunner.selectByColumns(sql, supplier, Arrays.asList(columnNames), columnMap(columnNames), childrenDescriptors, item);
     }
 
     private <A> A fromSingletonList(List<A> items) {

@@ -29,28 +29,37 @@ public class SqlRunner<T> {
     }
 
     public List<T> select(String sql, Supplier<T> supplier, List<ChildrenDescriptor<T,?>> childrenDescriptors){
-        PreparedStatement statement = null;
+        return selectByColumns(sql, supplier, Collections.emptyList(), Collections.emptyMap(), childrenDescriptors, null);
+    }
+
+    public List<T> selectByColumns(String sql, Supplier<T> supplier, List<String> columnNames, Map<String, TypedColumn<T>> columnNameMap,  List<ChildrenDescriptor<T,?>> childrenDescriptors, T item){
         ResultSet resultSet = null;
-
+        PreparedStatement statement = null;
         try {
-
             statement = connection.prepareStatement(sql);
+            int idx = 1;
+            for(String columnName : columnNames){
+                TypedColumn<T> column = columnNameMap.get(columnName);
+                column.setValue(item, idx, statement);
+                idx++;
+            }
 
             resultSet = statement.executeQuery();
 
-            List<T> items = new ArrayList<>();
+            List<T> results = new ArrayList<>();
 
             while (resultSet.next()) {
-                T item = populate(resultSet, supplier);
+                T result = populate(resultSet, supplier);
                 for(ChildrenDescriptor<T,?> descriptor : childrenDescriptors){
-                    descriptor.populateChildren(connection, item);
+                    descriptor.populateChildren(connection, result);
                 }
-                items.add(item);
+                results.add(result);
             }
 
-            return items;
-        } catch (SQLException se){
-            throw new RuntimeException(se);
+            return results;
+
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
         } finally {
             try {
                 if (resultSet != null) {
@@ -62,30 +71,6 @@ public class SqlRunner<T> {
             } catch (SQLException se){
                 log.error("Error during close",se);
             }
-        }
-
-    }
-
-    public List<T> selectByColumns(String sql, Supplier<T> supplier, List<String> columnNames, Map<String, TypedColumn<T>> columnNameMap, T item){
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            int idx = 1;
-            for(String columnName : columnNames){
-                TypedColumn<T> column = columnNameMap.get(columnName);
-                column.setValue(item, idx, statement);
-                idx++;
-            }
-            ResultSet resultSet = statement.executeQuery();
-            List<T> items = new ArrayList<>();
-
-            while (resultSet.next()) {
-                T t = populate(resultSet, supplier);
-                items.add(t);
-            }
-
-            return items;
-        } catch (SQLException ex){
-            throw new RuntimeException(ex);
         }
     }
 

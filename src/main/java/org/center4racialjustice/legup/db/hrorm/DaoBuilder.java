@@ -44,6 +44,11 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         return primaryKey;
     }
 
+    @Override
+    public List<ChildrenDescriptor<T, ?>> childrenDescriptors() {
+        return childrenDescriptors;
+    }
+
     public List<JoinColumn<T,?>> joinColumns() { return joinColumns; }
 
     public Dao<T> buildDao(Connection connection){

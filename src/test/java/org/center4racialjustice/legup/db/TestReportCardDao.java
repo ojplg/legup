@@ -227,4 +227,40 @@ public class TestReportCardDao {
 
     }
 
+    @Test
+    public void testSelectByName(){
+        Connection connection = DbTestConfigs.connect();
+
+        Bill bill = new Bill();
+        bill.setSession(123);
+        bill.setNumber(6);
+        bill.setChamber(Chamber.House);
+
+        BillDao billDao = new BillDao(connection);
+
+        billDao.save(bill);
+
+        ReportCard reportCard = new ReportCard();
+        reportCard.setName("Card With Factor");
+        reportCard.setSessionNumber(123);
+
+        ReportFactor reportFactor = new ReportFactor();
+        reportFactor.setBill(bill);
+        reportFactor.setVoteSide(VoteSide.Nay);
+
+        reportCard.setReportFactors(Collections.singletonList(reportFactor));
+
+        ReportCardDao reportCardDao = new ReportCardDao(connection);
+
+        reportCardDao.save(reportCard);
+        long reportCardId = reportCard.getId();
+
+        ReportCard readCard = reportCardDao.selectByName("Card With Factor");
+        Assert.assertEquals("Card With Factor", readCard.getName());
+        Assert.assertEquals(1, readCard.getReportFactors().size());
+        Assert.assertEquals(VoteSide.Nay, readCard.getReportFactors().get(0).getVoteSide());
+        Assert.assertEquals(bill, readCard.getReportFactors().get(0).getBill());
+
+    }
+
 }

@@ -17,6 +17,7 @@ public interface DaoDescriptor<T> {
     List<TypedColumn<T>> dataColumns();
     List<JoinColumn<T,?>> joinColumns();
     PrimaryKey<T> primaryKey();
+    List<ChildrenDescriptor<T, ?>> childrenDescriptors();
 
     default List<TypedColumn<T>> allColumns(){
         List<TypedColumn<T>> allColumns = new ArrayList<>();
