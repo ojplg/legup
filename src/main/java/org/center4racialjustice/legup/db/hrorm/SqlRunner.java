@@ -90,32 +90,14 @@ public class SqlRunner<T> {
     }
 
     public void insert(String sql, T item) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-
-            for(int idx = 0; idx<allColumns.size(); idx++){
-                TypedColumn<T> column = allColumns.get(idx);
-                column.setValue(item, idx + 1, preparedStatement);
-            }
-
-            preparedStatement.execute();
-
-        } catch (SQLException se){
-            throw new RuntimeException("Wrapped SQL exception for " + sql, se);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException se){
-                log.error("Error during close",se);
-            }
-        }
+        runInsertOrUpdate(sql, item, false);
     }
 
     public void update(String sql, T item) {
+        runInsertOrUpdate(sql, item, true);
+    }
+
+    private void runInsertOrUpdate(String sql, T item, boolean isUpdate){
         PreparedStatement preparedStatement = null;
 
         try {
@@ -123,7 +105,7 @@ public class SqlRunner<T> {
 
             int idx = 1;
             for(TypedColumn<T> column : allColumns){
-                if( ! column.isPrimaryKey() ) {
+                if( ! ( isUpdate && column.isPrimaryKey() ) ) {
                     column.setValue(item, idx, preparedStatement);
                     idx++;
                 }
@@ -142,6 +124,7 @@ public class SqlRunner<T> {
                 log.error("Error during close",se);
             }
         }
+
     }
 
     private T populate(ResultSet resultSet, Supplier<T> supplier)
