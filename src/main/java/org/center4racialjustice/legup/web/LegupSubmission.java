@@ -24,7 +24,11 @@ public class LegupSubmission {
     }
 
     public Long getLongRequestParameter(String parameterName){
-        return Util.getLongParameter(request, parameterName);
+        String parameterValueString = request.getParameter(parameterName);
+        if ( parameterValueString != null && parameterValueString.length() > 0 ){
+            return Long.parseLong(parameterValueString);
+        }
+        return null;
     }
 
     public String getParameter(String parameterName){

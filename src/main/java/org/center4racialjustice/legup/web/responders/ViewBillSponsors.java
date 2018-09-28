@@ -1,4 +1,4 @@
-package org.center4racialjustice.legup.web.handlers;
+package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillDao;

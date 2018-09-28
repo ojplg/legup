@@ -1,4 +1,4 @@
-package org.center4racialjustice.legup.web.handlers;
+package org.center4racialjustice.legup.web.responders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

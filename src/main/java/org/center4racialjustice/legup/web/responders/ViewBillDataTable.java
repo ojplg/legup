@@ -1,22 +1,12 @@
-package org.center4racialjustice.legup.web.handlers;
+package org.center4racialjustice.legup.web.responders;
 
-import org.center4racialjustice.legup.db.BillActionDao;
-import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
-import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillAction;
-import org.center4racialjustice.legup.domain.BillActionSummary;
-import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
-
-import java.util.List;
 
 public class ViewBillDataTable implements Responder {
 
