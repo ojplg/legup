@@ -57,11 +57,7 @@ Technical Betterments
 * Add more logging, particularly for bill searching
 * Silent logging for unit tests (maybe)
 * Web Framework
-  * Resolve Handler/Responder schism
-  * Need a way to to bypass container and set content type not html (for CSV pages)
-  * Need a way to chain responders/handlers
-  * Need a way to override default routing easily without giving up simple default behavior
-  * Need a way to override template without giving up simple default behavior
+  * Perhaps need a way to chain responders
   * Perhaps some framework for error checking (though form submission is quite limited)
 
 Features/bugs to work on
