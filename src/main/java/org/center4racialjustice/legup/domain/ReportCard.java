@@ -73,14 +73,14 @@ public class ReportCard {
     public List<Bill> supportedBills(){
         return reportFactors.stream()
                 .filter(f -> f.getVoteSide().equals(VoteSide.Yea))
-                .map(f -> f.getBill())
+                .map(ReportFactor::getBill)
                 .collect(Collectors.toList());
     }
 
     public List<Bill> opposedBills(){
         return reportFactors.stream()
                 .filter(f -> f.getVoteSide().equals(VoteSide.Nay))
-                .map(f -> f.getBill())
+                .map(ReportFactor::getBill)
                 .collect(Collectors.toList());
     }
 
@@ -133,8 +133,7 @@ public class ReportCard {
 
     public void resetSelectedLegislators(List<Legislator> legislators, List<Long> selectedLegislatorIds){
         List<ReportCardLegislator> toRemove = new ArrayList<>();
-        List<Long> newIds = new ArrayList<>();
-        newIds.addAll(selectedLegislatorIds);
+        List<Long> newIds = new ArrayList<>(selectedLegislatorIds);
         for( ReportCardLegislator rcl : reportCardLegislators ){
             Long workingId = rcl.getId();
             if ( ! selectedLegislatorIds.contains(workingId) ){
