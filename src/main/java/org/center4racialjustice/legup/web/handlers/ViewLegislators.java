@@ -1,19 +1,17 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.web.Handler;
-import org.center4racialjustice.legup.web.LegupSession;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupResponse;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 
-public class ViewLegislators implements Handler {
+public class ViewLegislators implements Responder {
 
     private final ConnectionPool connectionPool;
 
@@ -22,17 +20,15 @@ public class ViewLegislators implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse){
-
+    public LegupResponse handle(LegupSubmission submission) {
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
             LegislatorDao dao = new LegislatorDao(connection);
             List<Legislator> legislators = dao.readAll();
             Collections.sort(legislators);
 
-            VelocityContext vc = new VelocityContext();
-            vc.put("legislators", legislators);
-            return vc;
+            LegupResponse response = new LegupResponse(this.getClass());
+            response.putVelocityData("legislators", legislators);
+            return response;
         }
-
     }
 }

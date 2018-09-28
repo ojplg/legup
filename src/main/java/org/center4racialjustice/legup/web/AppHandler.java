@@ -49,15 +49,15 @@ public class AppHandler extends AbstractHandler {
 
     AppHandler(ConnectionPool connectionPool, NameParser nameParser) {
         List<Handler> handlers = new ArrayList<>();
+        List<Responder> responders = new ArrayList<>();
 
-        handlers.add(new ViewBillForm());
-        handlers.add(new ViewFindLegislatorsForm());
-        handlers.add(new ViewParsedLegislators(connectionPool, nameParser));
-        handlers.add(new SaveLegislators(connectionPool));
-        handlers.add(new ViewLegislators(connectionPool));
+        responders.add(new ViewBillForm());
+        responders.add(new ViewFindLegislatorsForm());
+        responders.add(new ViewParsedLegislators(connectionPool, nameParser));
+        responders.add(new SaveLegislators(connectionPool));
+        responders.add(new ViewLegislators(connectionPool));
         handlers.add(new ViewBills(connectionPool));
         handlers.add(new ViewBillVotes(connectionPool));
-        handlers.add(new ViewLegislators(connectionPool));
         handlers.add(new ViewLegislatorVotes(connectionPool));
         handlers.add(new ViewReportCards(connectionPool));
         handlers.add(new ViewReportCardForm(connectionPool));
@@ -71,9 +71,6 @@ public class AppHandler extends AbstractHandler {
         handlers.add(new ViewReportCardBill());
         handlers.add(new ViewReportCardLegislator());
 
-//        handlers.add(new ResponderHandler(new ViewBillDataTable(connectionPool)));
-//        handlers.add(new ResponderHandler(new ViewBillDataCsv(connectionPool)));
-
         for (Handler handler : handlers) {
             RequestHandler requestHandler = new RequestHandler(handler);
             String routeName = requestHandler.getRouteName();
@@ -81,7 +78,6 @@ public class AppHandler extends AbstractHandler {
             handlerMap.put(routeName, requestHandler);
         }
 
-        List<Responder> responders = new ArrayList<>();
 
         responders.add(new ViewBillDataTable(connectionPool));
         responders.add(new ViewBillDataCsv(connectionPool));

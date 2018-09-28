@@ -1,19 +1,18 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.illinois.MemberHtmlParser;
 import org.center4racialjustice.legup.service.LegislatorPersistence;
-import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class ViewParsedLegislators implements Handler {
+public class ViewParsedLegislators implements Responder {
 
     private final LegislatorPersistence legislatorPersistence;
     private final NameParser nameParser;
@@ -24,20 +23,20 @@ public class ViewParsedLegislators implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
-        String memberUrl = request.getParameter("url");
+    public LegupResponse handle(LegupSubmission submission) {
+        String memberUrl = submission.getParameter("url");
 
         MemberHtmlParser parser = MemberHtmlParser.load(memberUrl, nameParser);
         List<Legislator> legislators = parser.getLegislators();
         List<Legislator> unknownLegislators = legislatorPersistence.filterOutSavedLegislators(legislators);
 
-        String oneTimeKey = legupSession.setObject(LegupSession.UnknownLegislatorsKey, unknownLegislators);
+        String oneTimeKey = submission.setObject(LegupSession.UnknownLegislatorsKey, unknownLegislators);
 
-        VelocityContext vc = new VelocityContext();
-        vc.put("legislators", unknownLegislators);
-        vc.put("parsedLegislatorCount", legislators.size());
-        vc.put("oneTimeKey", oneTimeKey);
+        LegupResponse response = new LegupResponse(this.getClass());
+        response.putVelocityData("legislators", unknownLegislators);
+        response.putVelocityData("parsedLegislatorCount", legislators.size());
+        response.putVelocityData("oneTimeKey", oneTimeKey);
 
-        return vc;
+        return response;
     }
 }
