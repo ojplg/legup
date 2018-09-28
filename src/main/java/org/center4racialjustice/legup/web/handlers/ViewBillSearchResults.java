@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.BillActionLoad;
@@ -12,15 +11,14 @@ import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.service.BillPersistence;
-import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
-import org.center4racialjustice.legup.web.Util;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class ViewBillSearchResults implements Handler {
+public class ViewBillSearchResults implements Responder {
 
     private static final Logger log = LogManager.getLogger(ViewBillSearchResults.class);
 
@@ -35,10 +33,9 @@ public class ViewBillSearchResults implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
-
-        Chamber chamber = Util.getConvertedParameter(request, "chamber", Chamber.Converter);
-        Long number = Util.getLongParameter(request, "number");
+    public LegupResponse handle(LegupSubmission submission) {
+        Chamber chamber = submission.getConvertedParameter("chamber", Chamber.Converter);
+        Long number = submission.getLongRequestParameter( "number");
 
         BillSearchResults billSearchResults = doSearch(chamber, number);
         if( BillSearchResults.MatchStatus.UnmatchedValues.equals(billSearchResults.getBillHtmlLoadStatus()) ){
@@ -49,39 +46,38 @@ public class ViewBillSearchResults implements Handler {
             billSearchResults = doReSearch(chamber, number, billSearchResults);
         }
 
-        String oneTimeKey = legupSession.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
+        String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
-        VelocityContext velocityContext = new VelocityContext();
+        LegupResponse response = new LegupResponse(this.getClass());
 
-        velocityContext.put("billSearchResults", billSearchResults);
-        velocityContext.put("bill", billSearchResults.getBill());
+        response.putVelocityData("billSearchResults", billSearchResults);
+        response.putVelocityData("bill", billSearchResults.getBill());
 
         boolean hasUncollatedVotes = billSearchResults.getUncollatedHouseVotes().size() > 0
                 || billSearchResults.getUncollatedSenateVotes().size() > 0;
-        velocityContext.put("hasUncollatedVotes", hasUncollatedVotes);
-        velocityContext.put("uncollatedHouseVotes", billSearchResults.getUncollatedHouseVotes());
-        velocityContext.put("uncollatedSenateVotes", billSearchResults.getUncollatedSenateVotes());
+        response.putVelocityData("hasUncollatedVotes", hasUncollatedVotes);
+        response.putVelocityData("uncollatedHouseVotes", billSearchResults.getUncollatedHouseVotes());
+        response.putVelocityData("uncollatedSenateVotes", billSearchResults.getUncollatedSenateVotes());
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
-        velocityContext.put("uncollatedSponsors", sponsorNames.getUncollated());
-        velocityContext.put("hasUncollatedSponsors", sponsorNames.getUncollated().size() > 0);
+        response.putVelocityData("uncollatedSponsors", sponsorNames.getUncollated());
+        response.putVelocityData("hasUncollatedSponsors", sponsorNames.getUncollated().size() > 0);
 
-        velocityContext.put("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
-        velocityContext.put("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
+        response.putVelocityData("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
+        response.putVelocityData("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
 
-        velocityContext.put("houseSponsorCount", sponsorNames.getHouseSponsors().size());
-        velocityContext.put("senateSponsorCount", sponsorNames.getSenateSponsors().size());
+        response.putVelocityData("houseSponsorCount", sponsorNames.getHouseSponsors().size());
+        response.putVelocityData("senateSponsorCount", sponsorNames.getSenateSponsors().size());
 
-        velocityContext.put("houseVoteCount", billSearchResults.getHouseVotes().size());
-        velocityContext.put("senateVoteCount", billSearchResults.getSenateVotes().size());
+        response.putVelocityData("houseVoteCount", billSearchResults.getHouseVotes().size());
+        response.putVelocityData("senateVoteCount", billSearchResults.getSenateVotes().size());
 
-        velocityContext.put("DateTimeFormatter", BillActionLoad.Formatter);
+        response.putVelocityData("DateTimeFormatter", BillActionLoad.Formatter);
 
-        velocityContext.put("oneTimeKey", oneTimeKey);
+        response.putVelocityData("oneTimeKey", oneTimeKey);
 
-        return velocityContext;
-
+        return response;
     }
 
     private BillSearchResults doReSearch(Chamber chamber, Long number, BillSearchResults billSearchResults){

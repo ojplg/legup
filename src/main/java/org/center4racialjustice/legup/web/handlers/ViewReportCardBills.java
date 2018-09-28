@@ -1,28 +1,25 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
-import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
-
-public class ViewReportCardBills implements Handler {
+public class ViewReportCardBills implements Responder {
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
+    public LegupResponse handle(LegupSubmission submission) {
+        ReportCardGrades reportCardGrades = (ReportCardGrades) submission.getObject(LegupSession.ReportCardGradesKey);
+        String oneTimeKey = submission.getParameter("one_time_key");
 
-        String oneTimeKey = request.getParameter("one_time_key");
+        LegupResponse response = new LegupResponse(this.getClass());
 
-        ReportCardGrades reportCardGrades = (ReportCardGrades) legupSession.getObject(LegupSession.ReportCardGradesKey, oneTimeKey);
+        response.putVelocityData("bills", reportCardGrades.getBills());
+        response.putVelocityData("reportCardName", reportCardGrades.getReportCardName());
+        response.putVelocityData("oneTimeKey", oneTimeKey);
 
-        VelocityContext velocityContext = new VelocityContext();
-
-        velocityContext.put("bills", reportCardGrades.getBills());
-        velocityContext.put("reportCardName", reportCardGrades.getReportCardName());
-        velocityContext.put("oneTimeKey", oneTimeKey);
-
-        return velocityContext;
+        return response;
     }
+
 }

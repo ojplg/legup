@@ -1,6 +1,5 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
@@ -12,16 +11,15 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
-import org.center4racialjustice.legup.web.Handler;
-import org.center4racialjustice.legup.web.LegupSession;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupResponse;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ViewBillSponsors implements Handler {
+public class ViewBillSponsors implements Responder {
 
     private final ConnectionPool connectionPool;
 
@@ -30,10 +28,8 @@ public class ViewBillSponsors implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
-
-        String billIdParameter = request.getParameter("bill_id");
-        long billId = Long.parseLong(billIdParameter);
+    public LegupResponse handle(LegupSubmission submission) {
+        long billId = submission.getLongRequestParameter("bill_id");
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
@@ -64,21 +60,20 @@ public class ViewBillSponsors implements Handler {
             List<Legislator> chiefHouseSponsors = chiefSponsorsTuple.getFirst();
             List<Legislator> chiefSenateSponsors = chiefSponsorsTuple.getSecond();
 
-            VelocityContext velocityContext = new VelocityContext();
+            LegupResponse response = new LegupResponse(this.getClass());
 
             if( chiefHouseSponsors.size() > 0 ){
-                velocityContext.put("chief_house_sponsor", chiefHouseSponsors.get(0));
+                response.putVelocityData("chief_house_sponsor", chiefHouseSponsors.get(0));
             }
             if( chiefSenateSponsors.size() > 0 ){
-                velocityContext.put("chief_senate_sponsor", chiefSenateSponsors.get(0));
+                response.putVelocityData("chief_senate_sponsor", chiefSenateSponsors.get(0));
             }
 
-            velocityContext.put("house_sponsors", houseSponsors);
-            velocityContext.put("senate_sponsors", senateSponsors);
-            velocityContext.put("bill", bill);
+            response.putVelocityData("house_sponsors", houseSponsors);
+            response.putVelocityData("senate_sponsors", senateSponsors);
+            response.putVelocityData("bill", bill);
 
-            return velocityContext;
+            return response;
         }
-
     }
 }

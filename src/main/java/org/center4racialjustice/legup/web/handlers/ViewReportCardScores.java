@@ -1,6 +1,5 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Grade;
@@ -9,15 +8,14 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.service.GradingService;
 import org.center4racialjustice.legup.util.LookupTable;
-import org.center4racialjustice.legup.web.Handler;
+import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
-import org.center4racialjustice.legup.web.Util;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class ViewReportCardScores implements Handler {
+public class ViewReportCardScores implements Responder {
 
     private final GradingService gradingService;
 
@@ -26,28 +24,28 @@ public class ViewReportCardScores implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
+    public LegupResponse handle(LegupSubmission submission) {
 
-        long reportCardId = Util.getLongParameter(request, "report_card_id");
+        long reportCardId = submission.getLongRequestParameter( "report_card_id");
 
         ReportCardGrades reportCardGrades = gradingService.calculate(reportCardId);
 
-        String oneTimeKey = legupSession.setObject(LegupSession.ReportCardGradesKey, reportCardGrades);
+        String oneTimeKey = submission.setObject(LegupSession.ReportCardGradesKey, reportCardGrades);
 
         LookupTable<Legislator, Bill, Integer> scores = reportCardGrades.getLookupTable();
         Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
-        VelocityContext velocityContext = new VelocityContext();
+        LegupResponse response = new LegupResponse(this.getClass());
 
-        velocityContext.put("oneTimeKey", oneTimeKey);
-        velocityContext.put("scores", scores);
-        velocityContext.put("grades", grades);
-        velocityContext.put("computer", ReportCard.ScoreComputer);
-        velocityContext.put("legislators", reportCardGrades.getLegislators());
-        velocityContext.put("bills", reportCardGrades.getBills());
-        velocityContext.put("reportCard", reportCardGrades.getReportCard());
-        velocityContext.put("reportCardGrades", reportCardGrades);
+        response.putVelocityData("oneTimeKey", oneTimeKey);
+        response.putVelocityData("scores", scores);
+        response.putVelocityData("grades", grades);
+        response.putVelocityData("computer", ReportCard.ScoreComputer);
+        response.putVelocityData("legislators", reportCardGrades.getLegislators());
+        response.putVelocityData("bills", reportCardGrades.getBills());
+        response.putVelocityData("reportCard", reportCardGrades.getReportCard());
+        response.putVelocityData("reportCardGrades", reportCardGrades);
 
-        return velocityContext;
+        return response;
     }
 }

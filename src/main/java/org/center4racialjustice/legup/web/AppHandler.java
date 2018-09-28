@@ -1,6 +1,5 @@
 package org.center4racialjustice.legup.web;
 
-import org.apache.http.HttpEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
@@ -44,11 +43,9 @@ public class AppHandler extends AbstractHandler {
 
     private static final Logger log = LogManager.getLogger(AppHandler.class);
 
-    private final Map<String, RequestHandler> handlerMap = new HashMap<>();
     private final Map<String, Responder> responderMap = new HashMap<>();
 
     AppHandler(ConnectionPool connectionPool, NameParser nameParser) {
-        List<Handler> handlers = new ArrayList<>();
         List<Responder> responders = new ArrayList<>();
 
         responders.add(new ViewBillForm());
@@ -62,23 +59,14 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewReportCards(connectionPool));
         responders.add(new ViewReportCardForm(connectionPool));
         responders.add(new SaveReportCard(connectionPool));
-        handlers.add(new ViewReportCardScores(connectionPool));
-        handlers.add(new ViewBillSearchForm());
-        handlers.add(new ViewBillSearchResults(connectionPool, nameParser));
-        handlers.add(new SaveSearchedBill(connectionPool));
-        handlers.add(new ViewBillSponsors(connectionPool));
-        handlers.add(new ViewReportCardBills());
-        handlers.add(new ViewReportCardBill());
-        handlers.add(new ViewReportCardLegislator());
-
-        for (Handler handler : handlers) {
-            RequestHandler requestHandler = new RequestHandler(handler);
-            String routeName = requestHandler.getRouteName();
-            log.info("Setting handler for " + routeName);
-            handlerMap.put(routeName, requestHandler);
-        }
-
-
+        responders.add(new ViewReportCardScores(connectionPool));
+        responders.add(new ViewBillSearchForm());
+        responders.add(new ViewBillSearchResults(connectionPool, nameParser));
+        responders.add(new SaveSearchedBill(connectionPool));
+        responders.add(new ViewBillSponsors(connectionPool));
+        responders.add(new ViewReportCardBills());
+        responders.add(new ViewReportCardBill());
+        responders.add(new ViewReportCardLegislator());
         responders.add(new ViewBillDataTable(connectionPool));
         responders.add(new ViewBillDataCsv(connectionPool));
 
@@ -97,13 +85,7 @@ public class AppHandler extends AbstractHandler {
 
         log.info("Handling request to " + appPath);
 
-        if( handlerMap.containsKey(appPath) ){
-            HttpSession session = request.getSession();
-            LegupSession legupSession = doSession(session);
-
-            RequestHandler requestHandler = handlerMap.get(appPath);
-            requestHandler.processRequest(request, legupSession, httpServletResponse);
-        } else if ( responderMap.containsKey(appPath) ) {
+        if ( responderMap.containsKey(appPath) ) {
             HttpSession session = request.getSession();
             LegupSession legupSession = doSession(session);
             LegupSubmission legupSubmission = new LegupSubmission(legupSession, request);
