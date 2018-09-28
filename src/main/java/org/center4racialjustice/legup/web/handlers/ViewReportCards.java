@@ -1,18 +1,16 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.ReportCard;
-import org.center4racialjustice.legup.web.Handler;
-import org.center4racialjustice.legup.web.LegupSession;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupResponse;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class ViewReportCards implements Handler {
+public class ViewReportCards implements Responder {
 
     private final ConnectionPool connectionPool;
 
@@ -21,16 +19,14 @@ public class ViewReportCards implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
+    public LegupResponse handle(LegupSubmission submission) {
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
-            VelocityContext velocityContext = new VelocityContext();
-
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             List<ReportCard> reportCards = reportCardDao.readAll();
 
-            velocityContext.put("report_cards", reportCards);
-
-            return velocityContext;
+            LegupResponse response = new LegupResponse(this.getClass());
+            response.putVelocityData("report_cards", reportCards);
+            return response;
         }
     }
 }

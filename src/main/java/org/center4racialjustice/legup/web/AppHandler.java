@@ -56,10 +56,10 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewParsedLegislators(connectionPool, nameParser));
         responders.add(new SaveLegislators(connectionPool));
         responders.add(new ViewLegislators(connectionPool));
-        handlers.add(new ViewBills(connectionPool));
-        handlers.add(new ViewBillVotes(connectionPool));
-        handlers.add(new ViewLegislatorVotes(connectionPool));
-        handlers.add(new ViewReportCards(connectionPool));
+        responders.add(new ViewBills(connectionPool));
+        responders.add(new ViewBillVotes(connectionPool));
+        responders.add(new ViewLegislatorVotes(connectionPool));
+        responders.add(new ViewReportCards(connectionPool));
         handlers.add(new ViewReportCardForm(connectionPool));
         handlers.add(new SaveReportCard(connectionPool));
         handlers.add(new ViewReportCardScores(connectionPool));

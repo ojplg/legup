@@ -1,24 +1,21 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
+import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionSummary;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.VoteSide;
-import org.center4racialjustice.legup.web.Handler;
-import org.center4racialjustice.legup.web.LegupSession;
-import org.center4racialjustice.legup.web.Util;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupResponse;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class ViewBillVotes implements Handler {
+public class ViewBillVotes implements Responder {
 
     private final ConnectionPool connectionPool;
 
@@ -27,9 +24,8 @@ public class ViewBillVotes implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
-
-        long billId = Util.getLongParameter(request,"bill_id");
+    public LegupResponse handle(LegupSubmission submission) {
+        long billId = submission.getLongRequestParameter("bill_id");
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
             BillDao billDao = new BillDao(connection);
@@ -40,22 +36,22 @@ public class ViewBillVotes implements Handler {
             List<BillAction> billActions = billActionDao.readByBill(bill);
             BillActionSummary billActionSummary = new BillActionSummary(billActions);
 
-            VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("billActionSummary", billActionSummary);
-            velocityContext.put("bill", bill);
+            LegupResponse legupResponse = new LegupResponse(this.getClass());
 
-            velocityContext.put("house", Chamber.House);
-            velocityContext.put("senate", Chamber.Senate);
+            legupResponse.putVelocityData("billActionSummary", billActionSummary);
+            legupResponse.putVelocityData("bill", bill);
 
-            velocityContext.put("yea", VoteSide.Yea);
-            velocityContext.put("nay", VoteSide.Nay);
-            velocityContext.put("notVoting", VoteSide.NotVoting);
-            velocityContext.put("present", VoteSide.Present);
+            legupResponse.putVelocityData("house", Chamber.House);
+            legupResponse.putVelocityData("senate", Chamber.Senate);
 
-            velocityContext.put("sides", VoteSide.AllSides);
+            legupResponse.putVelocityData("yea", VoteSide.Yea);
+            legupResponse.putVelocityData("nay", VoteSide.Nay);
+            legupResponse.putVelocityData("notVoting", VoteSide.NotVoting);
+            legupResponse.putVelocityData("present", VoteSide.Present);
 
-            return velocityContext;
+            legupResponse.putVelocityData("sides", VoteSide.AllSides);
+
+            return legupResponse;
         }
-
     }
 }
