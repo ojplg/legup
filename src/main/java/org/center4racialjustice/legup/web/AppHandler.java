@@ -25,8 +25,8 @@ import org.center4racialjustice.legup.web.handlers.ViewReportCardForm;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardLegislator;
 import org.center4racialjustice.legup.web.handlers.ViewReportCardScores;
 import org.center4racialjustice.legup.web.handlers.ViewReportCards;
-import org.center4racialjustice.legup.web.responders.ViewBillDataCsv;
-import org.center4racialjustice.legup.web.responders.ViewBillDataTable;
+import org.center4racialjustice.legup.web.handlers.ViewBillDataCsv;
+import org.center4racialjustice.legup.web.handlers.ViewBillDataTable;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
