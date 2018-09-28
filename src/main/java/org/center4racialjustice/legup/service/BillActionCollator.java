@@ -35,9 +35,9 @@ public class BillActionCollator {
             }
         }
 
-        Collections.sort(votes, Vote.ByBillComparator);
-        Collections.sort(sponsorships, BillAction.ByBillComparator);
-        Collections.sort(chiefSponsorships, BillAction.ByBillComparator);
+        votes.sort(Vote.ByBillComparator);
+        sponsorships.sort(BillAction.ByBillComparator);
+        chiefSponsorships.sort(BillAction.ByBillComparator);
 
         this.votes = Collections.unmodifiableList(votes);
         this.sponsorships = Collections.unmodifiableList(sponsorships);
