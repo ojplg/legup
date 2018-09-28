@@ -24,14 +24,9 @@ public class SaveLegislators implements Responder {
 
         LegupResponse response = new LegupResponse(this.getClass());
 
-        if( unknownLegislators != null ) {
-            int savedCount = legislatorPersistence.insertLegislators(unknownLegislators);
-            response.putVelocityData("saved_legislator_count", savedCount);
-        } else {
-            // FIXME: Actually, this should do something else.
-            // Display an error or something
-            response.putVelocityData("saved_legislator_count", 0);
-        }
+        int savedCount = legislatorPersistence.insertLegislators(unknownLegislators);
+        response.putVelocityData("saved_legislator_count", savedCount);
+
         return response;
     }
 }
