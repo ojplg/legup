@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,13 +63,13 @@ public class LookupTable<R, C, V> {
 
     public List<R> sortedRowHeadings(Comparator<R> comparator) {
         List<R> rows = new ArrayList<>(getRowHeadings());
-        Collections.sort(rows, comparator);
+        rows.sort(comparator);
         return rows;
     }
 
     public List<C> sortedColumnHeadings(Comparator<C> comparator) {
         List<C> columns = new ArrayList<>(getColumnHeadings());
-        Collections.sort(columns, comparator);
+        columns.sort(comparator);
         return columns;
     }
 
