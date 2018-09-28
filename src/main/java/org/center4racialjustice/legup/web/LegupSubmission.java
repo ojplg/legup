@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.web;
 
 import org.eclipse.jetty.server.Request;
 
+import java.util.Enumeration;
+
 public class LegupSubmission {
 
     private final LegupSession legupSession;
@@ -27,5 +29,9 @@ public class LegupSubmission {
     public Object getObject(String key){
         String oneTimeKey = request.getParameter("oneTimeKey");
         return legupSession.getObject(key, oneTimeKey);
+    }
+
+    public Enumeration<String> getParameterNames(){
+        return request.getParameterNames();
     }
 }

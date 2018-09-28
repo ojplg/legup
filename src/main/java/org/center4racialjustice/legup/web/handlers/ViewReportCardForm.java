@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.web.handlers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
@@ -11,23 +10,20 @@ import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
-import org.center4racialjustice.legup.domain.ReportCardLegislator;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
-import org.center4racialjustice.legup.web.Handler;
-import org.center4racialjustice.legup.web.LegupSession;
-import org.center4racialjustice.legup.web.Util;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupResponse;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class ViewReportCardForm implements Handler {
+public class ViewReportCardForm implements Responder {
 
     private static final Logger log = LogManager.getLogger(ViewReportCardForm.class);
 
@@ -38,11 +34,11 @@ public class ViewReportCardForm implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
+    public LegupResponse handle(LegupSubmission submission) {
 
-        Long reportCardId = Util.getLongParameter(request, "report_card_id");
+        Long reportCardId = submission.getLongRequestParameter("report_card_id");
         if ( reportCardId == null ){
-            return new VelocityContext();
+            return new LegupResponse(this.getClass());
         }
 
         log.info("Request for form for " + reportCardId);
@@ -72,14 +68,14 @@ public class ViewReportCardForm implements Handler {
             log.info("selected house " + selectedHouse.size());
             log.info("selected senate " + selectedSenate.size());
 
-            VelocityContext velocityContext = new VelocityContext();
+            LegupResponse response = new LegupResponse(this.getClass());
 
-            velocityContext.put("report_card", reportCard);
-            velocityContext.put("factor_settings", factorSettings);
-            velocityContext.put("selectedHouse", selectedHouse);
-            velocityContext.put("selectedSenate", selectedSenate);
+            response.putVelocityData("report_card", reportCard);
+            response.putVelocityData("factor_settings", factorSettings);
+            response.putVelocityData("selectedHouse", selectedHouse);
+            response.putVelocityData("selectedSenate", selectedSenate);
 
-            return velocityContext;
+            return response;
         }
     }
 

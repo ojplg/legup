@@ -1,6 +1,5 @@
 package org.center4racialjustice.legup.web.handlers;
 
-import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.ConnectionWrapper;
@@ -11,19 +10,17 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
-import org.center4racialjustice.legup.web.Handler;
-import org.center4racialjustice.legup.web.LegupSession;
-import org.center4racialjustice.legup.web.Util;
-import org.eclipse.jetty.server.Request;
+import org.center4racialjustice.legup.web.LegupResponse;
+import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.Responder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SaveReportCard implements Handler {
+public class SaveReportCard implements Responder {
 
     private final ConnectionPool connectionPool;
 
@@ -32,13 +29,12 @@ public class SaveReportCard implements Handler {
     }
 
     @Override
-    public VelocityContext handle(Request request, LegupSession legupSession, HttpServletResponse httpServletResponse) {
+    public LegupResponse handle(LegupSubmission submission) {
 
         try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
-            Long id = Util.getLongParameter(request, "id");
-            String name = request.getParameter("name");
-            String sessionString = request.getParameter("session");
-            long session = Long.parseLong(sessionString);
+            Long id = submission.getLongRequestParameter( "id");
+            String name = submission.getParameter("name");
+            long session = submission.getLongRequestParameter("session");
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             BillDao billDao = new BillDao(connection);
@@ -57,7 +53,7 @@ public class SaveReportCard implements Handler {
                 reportCard.setName(name);
                 reportCard.setSessionNumber(session);
 
-                Map<Long, VoteSide> voteSideByBillIdMap = parseVoteSidesByBillIdMap(request);
+                Map<Long, VoteSide> voteSideByBillIdMap = parseVoteSidesByBillIdMap(submission);
                 List<ReportFactor> factorsToRemove = new ArrayList<>();
 
                 //FIXME: Move code to ReportCard object and add tests
@@ -83,25 +79,23 @@ public class SaveReportCard implements Handler {
 
                 LegislatorDao legislatorDao = new LegislatorDao(connection);
                 List<Legislator> legislators = legislatorDao.readBySession(reportCard.getSessionNumber());
-                List<Long> selectedLegislatorIds = parseCheckedLegislators(request);
+                List<Long> selectedLegislatorIds = parseCheckedLegislators(submission);
 
                 reportCard.resetSelectedLegislators(legislators, selectedLegislatorIds);
 
                 reportCardDao.save(reportCard);
             }
 
-
-
-            VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("reportCard", reportCard);
-            return velocityContext;
+            LegupResponse response = new LegupResponse(this.getClass());
+            response.putVelocityData("reportCard", reportCard);
+            return response;
         }
     }
 
-    private List<Long> parseCheckedLegislators(Request request){
+    private List<Long> parseCheckedLegislators(LegupSubmission submission){
         String legislatorIdPrefix = "legislator_";
         List<Long> legislatorIds = new ArrayList<>();
-        Enumeration<String> parameterNames = request.getParameterNames();
+        Enumeration<String> parameterNames = submission.getParameterNames();
         while(parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
             if (parameterName.startsWith(legislatorIdPrefix)){
@@ -113,16 +107,16 @@ public class SaveReportCard implements Handler {
         return legislatorIds;
     }
 
-    private Map<Long, VoteSide> parseVoteSidesByBillIdMap(Request request){
+    private Map<Long, VoteSide> parseVoteSidesByBillIdMap(LegupSubmission submission){
         final String billVoteSidePrefix = "bill_vote_side_";
         Map<Long, VoteSide> voteSideByBillIdMap = new HashMap<>();
-        Enumeration<String> parameterNames = request.getParameterNames();
+        Enumeration<String> parameterNames = submission.getParameterNames();
         while(parameterNames.hasMoreElements()){
             String parameterName = parameterNames.nextElement();
             if (parameterName.startsWith(billVoteSidePrefix)){
                 String billNumberString = parameterName.substring(billVoteSidePrefix.length());
                 Long billNumber = Long.parseLong(billNumberString);
-                String voteString = request.getParameter(parameterName);
+                String voteString = submission.getParameter(parameterName);
                 if ( voteString.equals("Yes") || voteString.equals("No")) {
                     VoteSide voteSide = VoteSide.fromCode(voteString.substring(0, 1));
                     voteSideByBillIdMap.put(billNumber, voteSide);
