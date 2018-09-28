@@ -36,7 +36,7 @@ public class LegupSubmission {
     }
 
     public Object getObject(String key){
-        String oneTimeKey = request.getParameter("oneTimeKey");
+        String oneTimeKey = request.getParameter("one_time_key");
         return legupSession.getObject(key, oneTimeKey);
     }
 
