@@ -1,11 +1,11 @@
 package org.center4racialjustice.legup.db.hrorm;
 
-public class BooleanConverter implements Converter<String, Boolean> {
+public class BooleanConverter implements Converter<Boolean, String> {
 
     public static final BooleanConverter INSTANCE = new BooleanConverter();
 
     @Override
-    public String to(Boolean aBoolean) {
+    public String from(Boolean aBoolean) {
         if ( aBoolean == null ) {
             return null;
         }
@@ -13,7 +13,7 @@ public class BooleanConverter implements Converter<String, Boolean> {
     }
 
     @Override
-    public Boolean from(String s) {
+    public Boolean to(String s) {
         if ( s == null ){
             return null;
         }

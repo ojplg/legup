@@ -15,10 +15,10 @@ public class LegupSubmission {
         this.request = request;
     }
 
-    public <T> T getConvertedParameter(String parameterName, Converter<String, T> converter){
+    public <T> T getConvertedParameter(String parameterName, Converter<T, String> converter){
         String parameterValueString = request.getParameter(parameterName);
         if ( parameterValueString != null ){
-            return converter.from(parameterValueString);
+            return converter.to(parameterValueString);
         }
         return null;
     }

@@ -1,8 +1,8 @@
 package org.center4racialjustice.legup.db.hrorm;
 
-public interface Converter<T,U> {
+public interface Converter<CLASS,CODE> {
 
-    T to(U u);
-    U from(T t);
+    CODE from(CLASS item);
+    CLASS to(CODE code);
 
 }

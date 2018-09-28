@@ -65,14 +65,14 @@ public class BillActionType {
         return code;
     }
 
-    static class BillActionTypeConverter implements Converter<String, BillActionType> {
+    static class BillActionTypeConverter implements Converter<BillActionType, String> {
         @Override
-        public String to(BillActionType billActionType) {
+        public String from(BillActionType billActionType) {
             return billActionType.getCode();
         }
 
         @Override
-        public BillActionType from(String s) {
+        public BillActionType to(String s) {
             return BillActionType.fromCode(s);
         }
     }

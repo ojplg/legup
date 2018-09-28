@@ -9,14 +9,12 @@ public class Chamber implements Comparable<Chamber> {
     public static final Chamber House = new Chamber("House");
     public static final Chamber Senate = new Chamber("Senate");
 
-    public static final Converter<String, Chamber> Converter = new Converter<String, Chamber>() {
+    public static final Converter<Chamber, String> Converter = new Converter<Chamber, String>() {
         @Override
-        public Chamber from(String s) {
-            return Chamber.fromString(s);
-        }
+        public Chamber to(String s) { return Chamber.fromString(s); }
 
         @Override
-        public String to(Chamber chamber) {
+        public String from(Chamber chamber) {
             return chamber.toString();
         }
     };

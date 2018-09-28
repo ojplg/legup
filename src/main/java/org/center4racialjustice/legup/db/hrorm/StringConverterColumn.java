@@ -12,9 +12,9 @@ public class StringConverterColumn<T, E> implements TypedColumn<T> {
     private final String prefix;
     private final BiConsumer<T, E> setter;
     private final Function<T, E> getter;
-    private final Converter<String, E> converter;
+    private final Converter<E, String> converter;
 
-    public StringConverterColumn(String name, String prefix, Function<T, E> getter, BiConsumer<T, E> setter, Converter<String, E> converter) {
+    public StringConverterColumn(String name, String prefix, Function<T, E> getter, BiConsumer<T, E> setter, Converter<E, String> converter) {
         this.name = name;
         this.prefix = prefix;
         this.getter = getter;
@@ -40,14 +40,14 @@ public class StringConverterColumn<T, E> implements TypedColumn<T> {
     @Override
     public void populate(T item, ResultSet resultSet) throws SQLException {
         String code = resultSet.getString(prefix + name);
-        E value = converter.from(code);
+        E value = converter.to(code);
         setter.accept(item, value);
     }
 
     @Override
     public void setValue(T item, int index, PreparedStatement preparedStatement) throws SQLException {
         E value = getter.apply(item);
-        String code = converter.to(value);
+        String code = converter.from(value);
         preparedStatement.setString(index, code);
     }
 

@@ -67,7 +67,7 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
         return this;
     }
 
-    public <E> DaoBuilder<T> withConvertingStringColumn(String columnName, Function<T, E> getter, BiConsumer<T, E> setter, Converter<String, E> converter){
+    public <E> DaoBuilder<T> withConvertingStringColumn(String columnName, Function<T, E> getter, BiConsumer<T, E> setter, Converter<E, String> converter){
         TypedColumn<T> column = new StringConverterColumn<>(columnName, "a", getter, setter, converter);
         columns.add(column);
         return this;
@@ -99,7 +99,7 @@ public class DaoBuilder<T> implements DaoDescriptor<T> {
     }
 
     public DaoBuilder<T> withPrimaryKey(String columnName, String sequenceName, Function<T, Long> getter, BiConsumer<T, Long> setter){
-        this.primaryKey = new PrimaryKeyImpl<T>(columnName, "a", getter, setter, sequenceName);
+        this.primaryKey = new PrimaryKeyImpl<>(columnName, "a", getter, setter, sequenceName);
         columns.add(primaryKey);
         return this;
     }
