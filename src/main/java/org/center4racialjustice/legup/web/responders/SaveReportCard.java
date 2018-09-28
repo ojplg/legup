@@ -37,7 +37,6 @@ public class SaveReportCard implements Responder {
             long session = submission.getLongRequestParameter("session");
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
-            BillDao billDao = new BillDao(connection);
 
             ReportCard reportCard;
             if( id == null ){
@@ -54,33 +53,13 @@ public class SaveReportCard implements Responder {
                 reportCard.setSessionNumber(session);
 
                 Map<Long, VoteSide> voteSideByBillIdMap = parseVoteSidesByBillIdMap(submission);
-                List<ReportFactor> factorsToRemove = new ArrayList<>();
-
-                //FIXME: Move code to ReportCard object and add tests
-                for(ReportFactor reportFactor : reportCard.getReportFactors()){
-                    Long billId = reportFactor.getBill().getId();
-                    if( voteSideByBillIdMap.containsKey(billId)){
-                        reportFactor.setVoteSide(voteSideByBillIdMap.get(billId));
-                        voteSideByBillIdMap.remove(billId);
-                    } else {
-                        factorsToRemove.add(reportFactor);
-                    }
-                }
-                for( ReportFactor reportFactor : factorsToRemove ){
-                    reportCard.getReportFactors().remove(reportFactor);
-                }
-                for(Map.Entry<Long, VoteSide> billVotePair : voteSideByBillIdMap.entrySet()){
-                    Bill bill = billDao.read(billVotePair.getKey());
-                    ReportFactor factor = new ReportFactor();
-                    factor.setVoteSide(billVotePair.getValue());
-                    factor.setBill(bill);
-                    reportCard.getReportFactors().add(factor);
-                }
+                BillDao billDao = new BillDao(connection);
+                List<Bill> bills = billDao.readBySession(session);
+                reportCard.resetReportFactorSettings(bills, voteSideByBillIdMap);
 
                 LegislatorDao legislatorDao = new LegislatorDao(connection);
                 List<Legislator> legislators = legislatorDao.readBySession(reportCard.getSessionNumber());
                 List<Long> selectedLegislatorIds = parseCheckedLegislators(submission);
-
                 reportCard.resetSelectedLegislators(legislators, selectedLegislatorIds);
 
                 reportCardDao.save(reportCard);

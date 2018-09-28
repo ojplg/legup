@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.util.LookupTable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BinaryOperator;
@@ -30,6 +31,16 @@ public class ReportCard {
     public void addReportCardLegislator(ReportCardLegislator legislator){
         legislator.setReportCardId(id);
         reportCardLegislators.add(legislator);
+    }
+
+    public void setReportFactors(List<ReportFactor> reportFactors) {
+        this.reportFactors.clear();
+        reportFactors.forEach(this::addReportFactor);
+    }
+
+    public void setReportCardLegislators(List<ReportCardLegislator> reportCardLegislators) {
+        this.reportCardLegislators.clear();
+        reportCardLegislators.forEach(this::addReportCardLegislator);
     }
 
     public ReportFactor findByBill(Bill bill){
@@ -94,6 +105,30 @@ public class ReportCard {
             }
         }
         return map;
+    }
+
+    public void resetReportFactorSettings(List<Bill> bills, Map<Long, VoteSide> billRecommendations){
+        List<ReportFactor> factorsToRemove = new ArrayList<>();
+        for(ReportFactor reportFactor : reportFactors){
+            Long billId = reportFactor.getBill().getId();
+            if( billRecommendations.containsKey(billId)){
+                reportFactor.setVoteSide(billRecommendations.get(billId));
+                billRecommendations.remove(billId);
+            } else {
+                factorsToRemove.add(reportFactor);
+            }
+        }
+        for( ReportFactor reportFactor : factorsToRemove ){
+            reportFactors.remove(reportFactor);
+        }
+        for(Map.Entry<Long, VoteSide> billVotePair : billRecommendations.entrySet()){
+            Bill bill = Lists.findfirst(bills, b -> b.getId().equals(billVotePair.getKey()));
+            ReportFactor factor = new ReportFactor();
+            factor.setVoteSide(billVotePair.getValue());
+            factor.setBill(bill);
+            addReportFactor(factor);
+        }
+
     }
 
     public void resetSelectedLegislators(List<Legislator> legislators, List<Long> selectedLegislatorIds){

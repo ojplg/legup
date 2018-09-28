@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -143,6 +144,52 @@ public class TestReportCard {
         Assert.assertTrue((reportCard.getReportCardLegislators().isEmpty()));
     }
 
+    @Test
+    public void testResetReportFactorSettings_AddNewFactor(){
+        ReportCard reportCard = newReportCard(new ReportFactor[0], new Legislator[0]);
+
+        Bill bill = newBill(Chamber.House, 1234L);
+
+        Map<Long, VoteSide> voteRecommendations = new HashMap<>();
+        voteRecommendations.put(bill.getId(), VoteSide.Yea);
+
+        reportCard.resetReportFactorSettings(Collections.singletonList(bill), voteRecommendations);
+
+        Assert.assertEquals(1, reportCard.getReportFactors().size());
+        Assert.assertEquals(bill.getId(), reportCard.getReportFactors().get(0).getBill().getId());
+        Assert.assertEquals(VoteSide.Yea, reportCard.getReportFactors().get(0).getVoteSide());
+    }
+
+    @Test
+    public void testResetReportFactorSettings_ChangeFactorSetting(){
+
+        Bill bill = newBill(Chamber.House, 1234L);
+        ReportFactor reportFactor = newFactor(bill, VoteSide.Yea);
+        ReportCard reportCard = newReportCard(new ReportFactor[] { reportFactor }, new Legislator[0]);
+
+        Map<Long, VoteSide> voteRecommendations = new HashMap<>();
+        voteRecommendations.put(bill.getId(), VoteSide.Nay);
+
+        reportCard.resetReportFactorSettings(Collections.singletonList(bill), voteRecommendations);
+
+        Assert.assertEquals(1, reportCard.getReportFactors().size());
+        Assert.assertEquals(bill.getId(), reportCard.getReportFactors().get(0).getBill().getId());
+        Assert.assertEquals(VoteSide.Nay, reportCard.getReportFactors().get(0).getVoteSide());
+    }
+
+    @Test
+    public void testResetReportFactorSettings_RemoveFactor(){
+
+        Bill bill = newBill(Chamber.House, 1234L);
+        ReportFactor reportFactor = newFactor(bill, VoteSide.Yea);
+        ReportCard reportCard = newReportCard(new ReportFactor[] { reportFactor }, new Legislator[0]);
+
+        Map<Long, VoteSide> voteRecommendations = new HashMap<>();
+
+        reportCard.resetReportFactorSettings(Collections.singletonList(bill), voteRecommendations);
+
+        Assert.assertEquals(0, reportCard.getReportFactors().size());
+    }
 
     private static long id = 1;
 
