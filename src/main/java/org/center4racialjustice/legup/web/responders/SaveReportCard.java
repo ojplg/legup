@@ -8,7 +8,6 @@ import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
-import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -19,6 +18,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SaveReportCard implements Responder {
 
@@ -72,36 +72,20 @@ public class SaveReportCard implements Responder {
     }
 
     private List<Long> parseCheckedLegislators(LegupSubmission submission){
-        String legislatorIdPrefix = "legislator_";
-        List<Long> legislatorIds = new ArrayList<>();
-        Enumeration<String> parameterNames = submission.getParameterNames();
-        while(parameterNames.hasMoreElements()) {
-            String parameterName = parameterNames.nextElement();
-            if (parameterName.startsWith(legislatorIdPrefix)){
-                String legislatorIdString = parameterName.substring(legislatorIdPrefix.length());
-                Long legislatorId = Long.parseLong(legislatorIdString);
-                legislatorIds.add(legislatorId);
-            }
-        }
-        return legislatorIds;
+        Map<Long, String> legislatorParameters = submission.extractNumberedParameters("legislator_");
+        return new ArrayList<>(legislatorParameters.keySet());
     }
 
     private Map<Long, VoteSide> parseVoteSidesByBillIdMap(LegupSubmission submission){
-        final String billVoteSidePrefix = "bill_vote_side_";
-        Map<Long, VoteSide> voteSideByBillIdMap = new HashMap<>();
-        Enumeration<String> parameterNames = submission.getParameterNames();
-        while(parameterNames.hasMoreElements()){
-            String parameterName = parameterNames.nextElement();
-            if (parameterName.startsWith(billVoteSidePrefix)){
-                String billNumberString = parameterName.substring(billVoteSidePrefix.length());
-                Long billNumber = Long.parseLong(billNumberString);
-                String voteString = submission.getParameter(parameterName);
-                if ( voteString.equals("Yes") || voteString.equals("No")) {
-                    VoteSide voteSide = VoteSide.fromCode(voteString.substring(0, 1));
-                    voteSideByBillIdMap.put(billNumber, voteSide);
-                }
+        Map<Long, String> voteSideParameters = submission.extractNumberedParameters("bill_vote_side_");
+        Map<Long, VoteSide> voteSidesByBillIdMap = new HashMap<>();
+        for( Map.Entry<Long, String> entry : voteSideParameters.entrySet() ){
+            String voteString = entry.getValue();
+            if ( voteString.equalsIgnoreCase("Yes") || voteString.equalsIgnoreCase("No")) {
+                VoteSide voteSide = VoteSide.fromCode(voteString.substring(0, 1));
+                voteSidesByBillIdMap.put(entry.getKey(), voteSide);
             }
         }
-        return voteSideByBillIdMap;
+       return voteSidesByBillIdMap;
     }
 }

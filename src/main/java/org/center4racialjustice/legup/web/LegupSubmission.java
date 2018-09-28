@@ -4,6 +4,8 @@ import org.center4racialjustice.legup.db.hrorm.Converter;
 import org.eclipse.jetty.server.Request;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LegupSubmission {
 
@@ -44,7 +46,19 @@ public class LegupSubmission {
         return legupSession.getObject(key, oneTimeKey);
     }
 
-    public Enumeration<String> getParameterNames(){
-        return request.getParameterNames();
+    public Map<Long, String> extractNumberedParameters(String prefix){
+        Map<Long, String> parameterValues = new HashMap<>();
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while(parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            if (parameterName.startsWith(prefix)){
+                String numberString = parameterName.substring(prefix.length());
+                Long number = Long.parseLong(numberString);
+                String value = request.getParameter(parameterName);
+                parameterValues.put(number, value);
+            }
+        }
+        return parameterValues;
     }
+
 }
