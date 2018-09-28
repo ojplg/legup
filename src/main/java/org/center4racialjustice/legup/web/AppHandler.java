@@ -24,6 +24,7 @@ import org.center4racialjustice.legup.web.responders.ViewReportCardBills;
 import org.center4racialjustice.legup.web.responders.ViewReportCardForm;
 import org.center4racialjustice.legup.web.responders.ViewReportCardLegislator;
 import org.center4racialjustice.legup.web.responders.ViewReportCardScores;
+import org.center4racialjustice.legup.web.responders.ViewReportCardScoresCsv;
 import org.center4racialjustice.legup.web.responders.ViewReportCards;
 import org.center4racialjustice.legup.web.responders.ViewBillDataCsv;
 import org.center4racialjustice.legup.web.responders.ViewBillDataTable;
@@ -69,6 +70,7 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewReportCardLegislator());
         responders.add(new ViewBillDataTable(connectionPool));
         responders.add(new ViewBillDataCsv(connectionPool));
+        responders.add(new ViewReportCardScoresCsv());
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());

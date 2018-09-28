@@ -8,7 +8,8 @@ $(document).ready(function()
 </script>
 
 #set ($links = [ "<a href='/legup/view_report_card_bills?one_time_key=$oneTimeKey'>Bill Analysis</a>"
-               , "<a href='/legup/view_report_card_form?report_card_id=$reportCard.Id'>Edit</a>" ])
+               , "<a href='/legup/view_report_card_form?report_card_id=$reportCard.Id'>Edit</a>"
+               , "<a href='/legup/view_report_card_scores_csv?one_time_key=$oneTimeKey'>CSV</a>"])
 
 #parse( "/templates/insert_nav_bar.vtl" )
 
