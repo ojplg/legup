@@ -5,7 +5,7 @@
 
 if [ "$1" = aws ]; 
   then
-    SUDO="sudo postgres"
+    SUDO="sudo -u postgres"
 fi
 
 DATE=`date +%Y%m%d`
