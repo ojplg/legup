@@ -34,6 +34,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,25 +83,27 @@ public class AppHandler extends AbstractHandler {
     @Override
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                    HttpServletResponse httpServletResponse) {
+        try {
+            String appPath = request.getPathInfo();
 
-        String appPath = request.getPathInfo();
-
-        log.info("Handling request to " + appPath);
-
-        if ( responderMap.containsKey(appPath) ) {
-            HttpSession session = request.getSession();
-            LegupSession legupSession = doSession(session);
-            LegupSubmission legupSubmission = new LegupSubmission(legupSession, request);
-            Responder responder = responderMap.get(appPath);
-            LegupResponse legupResponse = responder.handle(legupSubmission);
-            processResponse(legupResponse, httpServletResponse);
-            request.setHandled(true);
-        } else {
-            log.info("Request for resource handler: " + appPath);
+            if (responderMap.containsKey(appPath)) {
+                Responder responder = responderMap.get(appPath);
+                log.info("Handling request to " + appPath + " with " + responder.getClass().getSimpleName());
+                LegupSubmission legupSubmission = instantiateSubmission(request);
+                LegupResponse legupResponse = responder.handle(legupSubmission);
+                processResponse(legupResponse, httpServletResponse);
+                request.setHandled(true);
+            } else {
+                log.info("Request for resource handler: " + appPath);
+            }
+        } catch (Exception ex){
+            log.error("Exception in request processing", ex);
+            throw new RuntimeException(ex);
         }
     }
 
-    private LegupSession doSession(HttpSession session){
+    private LegupSubmission instantiateSubmission(Request request){
+        HttpSession session = request.getSession();
         LegupSession legupSession = (LegupSession) session.getAttribute("LegupSession");
         if (legupSession == null){
             legupSession = new LegupSession();
@@ -108,25 +111,20 @@ public class AppHandler extends AbstractHandler {
         }
         int count = legupSession.increment();
         log.info("Session count " + count);
-        return legupSession;
+        return new LegupSubmission(legupSession, request);
     }
 
-    private void processResponse(LegupResponse legupResponse, HttpServletResponse httpServletResponse) {
-        try {
-            log.info("Processed request with " + legupResponse.getResponderClassName());
-            String templatePath = "/templates/" + legupResponse.getTemplateName();
-            Writer writer = httpServletResponse.getWriter();
-            VelocityContext velocityContext = legupResponse.getVelocityContext();
-            if (legupResponse.useContainer()) {
-                velocityContext.put("contents", templatePath);
-                Velocity.mergeTemplate("/templates/container.vtl", "ISO-8859-1", velocityContext, writer);
-            } else {
-                Velocity.mergeTemplate(templatePath, "ISO-8859-1", velocityContext, writer);
-            }
-        } catch (Exception ex) {
-            log.error("Exception in request processing", ex);
-            throw new RuntimeException(ex);
+    private void processResponse(LegupResponse legupResponse, HttpServletResponse httpServletResponse)
+    throws IOException {
+        String templatePath = "/templates/" + legupResponse.getTemplateName();
+        log.info("Rendering response with template " + templatePath);
+        Writer writer = httpServletResponse.getWriter();
+        VelocityContext velocityContext = legupResponse.getVelocityContext();
+        if (legupResponse.useContainer()) {
+            velocityContext.put("contents", templatePath);
+            Velocity.mergeTemplate("/templates/container.vtl", "ISO-8859-1", velocityContext, writer);
+        } else {
+            Velocity.mergeTemplate(templatePath, "ISO-8859-1", velocityContext, writer);
         }
     }
-
 }
