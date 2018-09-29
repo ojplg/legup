@@ -118,6 +118,7 @@ public class AppHandler extends AbstractHandler {
     throws IOException {
         String templatePath = "/templates/" + legupResponse.getTemplateName();
         log.info("Rendering response with template " + templatePath);
+        httpServletResponse.setHeader("Content-Type", legupResponse.getContentType());
         Writer writer = httpServletResponse.getWriter();
         VelocityContext velocityContext = legupResponse.getVelocityContext();
         if (legupResponse.useContainer()) {
