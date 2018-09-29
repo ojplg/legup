@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.center4racialjustice.legup.domain.Chamber;
@@ -19,6 +21,7 @@ import java.util.regex.Pattern;
 
 public class BillVotesParser {
 
+    private static final Logger log = LogManager.getLogger(BillVotesParser.class);
 
     private static final List<String> ignoreLines =
             Arrays.asList("Denotes Excused Absence");
@@ -39,6 +42,7 @@ public class BillVotesParser {
     }
 
     public static String readFileFromUrl(String url) {
+        log.info("Searching " + url);
         try {
             PDDocument doc = new PDDocument();
             doc.close();

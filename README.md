@@ -54,7 +54,6 @@ Technical Betterments
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with 
   Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
   (proyal's favorite) or at least break hrorm to a stand-alone project
-* Add more logging, particularly for bill searching
 * Silent logging for unit tests (maybe)
 * Web Framework
   * Perhaps need a way to chain responders
