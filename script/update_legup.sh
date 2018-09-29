@@ -5,7 +5,7 @@
 cd /home/ubuntu/git/legup
 echo "pulling from git"
 git pull
-PID=`ps aux | grep legup | grep -v grep | sed 's/[a-z]*[ ]*\([0-9]*\).*/\1/'`
+PID=`ps aux | grep legup | grep -v grep | grep -v update_legup | sed 's/[a-z]*[ ]*\([0-9]*\).*/\1/'`
 echo "killing $PID"
 kill $PID
 echo "recompiling"
