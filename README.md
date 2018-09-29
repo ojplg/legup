@@ -50,6 +50,10 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 
 Technical Betterments
 
+* Frank recommends http://www.liquibase.org/ for managing migrations. This
+  could become a concern, once Legup is being used and the database cannot
+  simply be nuked.
+* Also, need to look into [postgres backups](https://www.postgresql.org/docs/10/static/backup.html)
 * Actually make a real connection pool and automated reclamation
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with 
   Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
@@ -67,7 +71,7 @@ Features/bugs to work on
     A way to link or mark people as the same would be helpful.
 * Bill Persistence
   * Perhaps four (or 5) upload chunks, separating sponsors from bill itself
-  * Need to use transactions for all the pieces
+  * Need to use transactions for all the pieces (also turn off postgres autocommit)
   * Need to handle situation where only some parts have changed, use updates and deletes
 * Scoring/Grading
   * Need different grading scales for different chambers
