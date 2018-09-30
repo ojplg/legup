@@ -52,8 +52,10 @@ Technical Betterments
 
 * Frank recommends http://www.liquibase.org/ for managing migrations. This
   could become a concern, once Legup is being used and the database cannot
-  simply be nuked.
+  simply be nuked. I have included liquibase mark-ups in the sql scripts
+  and a short script for using liquibase to build the schema.
 * Also, need to look into [postgres backups](https://www.postgresql.org/docs/10/static/backup.html)
+  I have set up pg_dump for cron on the aws instance.
 * Actually make a real connection pool and automated reclamation
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with 
   Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
