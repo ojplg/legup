@@ -1,7 +1,11 @@
+--liquibase formatted sql
+
 -- script for the creation of structures necessary to support legup
 -- Try running
 -- psql -f structures.sql legup
 -- once the database and user have been created
+
+--changeset ojplg:1
 
 begin;
 
