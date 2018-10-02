@@ -1,6 +1,11 @@
 <div class="nav_bar">
-    #foreach ($link in $links)
-        $link
-        &nbsp;
+    <span>
+        #foreach ($link in $links)
+            $link
+            &nbsp;
+        #end
+    </span>
+    #if ( $helpLink )
+        <span style="float:right;"><a onclick="Legup.helpWindow('$helpLink')" href="#">Help</a></span>
     #end
 </div>

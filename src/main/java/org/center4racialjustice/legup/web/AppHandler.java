@@ -44,6 +44,7 @@ import java.util.Map;
 public class AppHandler extends AbstractHandler {
 
     private static final Logger log = LogManager.getLogger(AppHandler.class);
+    private static final Logger requestLog = LogManager.getLogger("request");
 
     private final Map<String, Responder> responderMap = new HashMap<>();
 
@@ -84,6 +85,8 @@ public class AppHandler extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                    HttpServletResponse httpServletResponse) {
         try {
+            requestLog.info(request.getOriginalURI());
+
             String appPath = request.getPathInfo();
 
             if (responderMap.containsKey(appPath)) {
@@ -93,6 +96,10 @@ public class AppHandler extends AbstractHandler {
                 LegupResponse legupResponse = responder.handle(legupSubmission);
                 processResponse(legupResponse, httpServletResponse);
                 request.setHandled(true);
+            } else if ( appPath.startsWith("/help") ) {
+                log.info("serving help for " + appPath);
+                doHelpRequest(appPath, httpServletResponse);
+                request.setHandled(true);
             } else {
                 log.info("Request for resource handler: " + appPath);
             }
@@ -100,6 +107,16 @@ public class AppHandler extends AbstractHandler {
             log.error("Exception in request processing", ex);
             throw new RuntimeException(ex);
         }
+    }
+
+    private void doHelpRequest(String appPath, HttpServletResponse httpServletResponse)
+    throws IOException {
+        String helpTemplate = appPath.substring(5);
+        log.info("From appPath " + appPath + " help template " + helpTemplate);
+        Writer writer = httpServletResponse.getWriter();
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("helpTemplate", "/templates/help/" + helpTemplate + ".vtl");
+        Velocity.mergeTemplate("/templates/help/container.vtl", "ISO-8859-1", velocityContext, writer);
     }
 
     private LegupSubmission instantiateSubmission(Request request){
