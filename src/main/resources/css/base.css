@@ -19,3 +19,9 @@ div.footer {
     right: 15px;
 }
 
+body.helpscreen {
+    margin-right: 6px;
+    margin-left: 6px;
+    background-color:LightBlue;
+}
+
