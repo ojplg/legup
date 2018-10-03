@@ -67,6 +67,7 @@ Technical Betterments
 
 Features/bugs to work on
 
+* Write more help screens
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found
   * The legislator model includes a session id, but many legislators serve in multiple sessions.

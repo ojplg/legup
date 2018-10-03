@@ -31,6 +31,7 @@ public class SaveReportCard implements Responder {
         String name = submission.getParameter("name");
         long session = submission.getLongRequestParameter("session");
 
+        // TODO: refactor this complex logic to a service.
         ReportCard reportCard = connectionPool.runAndCommit( connection ->
         {
             ReportCardDao reportCardDao = new ReportCardDao(connection);
