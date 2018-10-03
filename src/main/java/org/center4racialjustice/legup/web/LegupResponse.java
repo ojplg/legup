@@ -13,6 +13,12 @@ public class LegupResponse {
         return new LegupResponse(responderClass, false, "text/plain");
     }
 
+    public static LegupResponse forError(Class formClass, String errorMessage){
+        LegupResponse legupResponse = new LegupResponse(formClass);
+        legupResponse.putVelocityData("errorMessage", errorMessage);
+        return legupResponse;
+    }
+
     public LegupResponse(Class responderClass, boolean useContainer, String contentType){
         this.velocityContext = new VelocityContext();
         this.useContainer = useContainer;

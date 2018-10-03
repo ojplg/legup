@@ -33,6 +33,15 @@ public class LegupSubmission {
         return null;
     }
 
+    public boolean isValidLongParameter(String parameterName){
+        try {
+            Long value = getLongRequestParameter(parameterName);
+            return value != null;
+        } catch (NumberFormatException ex){
+            return false;
+        }
+    }
+
     public String getParameter(String parameterName){
         return request.getParameter(parameterName);
     }

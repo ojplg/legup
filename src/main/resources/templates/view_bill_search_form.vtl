@@ -20,6 +20,9 @@
         <div class="pure-control-group">
             <label for="number">Number</label>
             <input name="number"/>
+            #if ( $numberError )
+                <span class="pure-form-message-inline">$numberError</span>
+            #end
         </div>
 
         <div class="pure-controls">
