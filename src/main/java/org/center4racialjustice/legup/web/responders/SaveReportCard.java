@@ -1,13 +1,9 @@
 package org.center4racialjustice.legup.web.responders;
 
-import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.LegislatorDao;
-import org.center4racialjustice.legup.db.ReportCardDao;
-import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
@@ -19,10 +15,10 @@ import java.util.Map;
 
 public class SaveReportCard implements Responder {
 
-    private final ConnectionPool connectionPool;
+    private final ReportCardPersistence reportCardPersistence;
 
     public SaveReportCard(ConnectionPool connectionPool){
-        this.connectionPool = connectionPool;
+        this.reportCardPersistence = new ReportCardPersistence(connectionPool);
     }
 
     @Override
@@ -31,42 +27,17 @@ public class SaveReportCard implements Responder {
         String name = submission.getParameter("name");
         long session = submission.getLongRequestParameter("session");
 
-        // TODO: refactor this complex logic to a service.
-        ReportCard reportCard = connectionPool.runAndCommit( connection ->
-        {
-            ReportCardDao reportCardDao = new ReportCardDao(connection);
-
-            ReportCard card;
-            if( id == null ){
-                card = new ReportCard();
-                card.setName(name);
-                card.setSessionNumber(session);
-
-                long reportCardId = reportCardDao.save(card);
-                card.setId(reportCardId);
-            } else {
-                card = reportCardDao.read(id);
-
-                card.setName(name);
-                card.setSessionNumber(session);
-
-                Map<Long, VoteSide> voteSideByBillIdMap = parseVoteSidesByBillIdMap(submission);
-                BillDao billDao = new BillDao(connection);
-                List<Bill> bills = billDao.readBySession(session);
-                card.resetReportFactorSettings(bills, voteSideByBillIdMap);
-
-                LegislatorDao legislatorDao = new LegislatorDao(connection);
-                List<Legislator> legislators = legislatorDao.readBySession(card.getSessionNumber());
-                List<Long> selectedLegislatorIds = parseCheckedLegislators(submission);
-                card.resetSelectedLegislators(legislators, selectedLegislatorIds);
-
-                reportCardDao.save(card);
-            }
-            return card;
-        });
+        ReportCard card;
+        if( id == null ){
+            card = reportCardPersistence.saveNewCard(name, session);
+        } else {
+            List<Long> legislatorIds = parseCheckedLegislators(submission);
+            Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
+            card = reportCardPersistence.updateReportCard(id, name, session, voteSideMap, legislatorIds);
+        }
 
         LegupResponse response = new LegupResponse(this.getClass());
-        response.putVelocityData("reportCard", reportCard);
+        response.putVelocityData("reportCard", card);
         return response;
     }
 
