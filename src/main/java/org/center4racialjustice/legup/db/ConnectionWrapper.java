@@ -10,10 +10,31 @@ public class ConnectionWrapper implements Closeable {
 
     public ConnectionWrapper(Connection connection){
         this.connection = connection;
+        try {
+            this.connection.setAutoCommit(false);
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     public Connection getConnection(){
         return connection;
+    }
+
+    public void rollback(){
+        try {
+            this.connection.rollback();
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void commit(){
+        try {
+            this.connection.commit();
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     public void close(){

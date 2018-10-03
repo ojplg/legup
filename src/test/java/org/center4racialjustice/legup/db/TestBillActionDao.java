@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import java.util.List;
 public class TestBillActionDao {
 
     @Before
+    @After
     public void setUp() throws SQLException {
         clearTables();
     }
@@ -30,9 +32,9 @@ public class TestBillActionDao {
         Statement statement = connection.createStatement();
         statement.execute("delete from bill_actions");
         statement.execute("delete from bill_action_loads");
-        statement.execute("delete from report_factors");
         statement.execute("delete from bills");
         statement.execute("delete from legislators");
+        connection.commit();
         statement.close();
         connection.close();
     }
@@ -50,8 +52,7 @@ public class TestBillActionDao {
         wilson.setSessionNumber(314);
 
         LegislatorDao legislatorDao = new LegislatorDao(connection);
-        long wilsonId = legislatorDao.insert(wilson);
-        wilson.setId(wilsonId);
+        Long wilsonId = legislatorDao.insert(wilson);
 
         Bill bill = new Bill();
         bill.setChamber(Chamber.House);
@@ -78,6 +79,8 @@ public class TestBillActionDao {
                 + "( " + voteId + ", " + billId + ", " + wilsonId + ", 'Vote', 'N', " + voteLoadId + ")";
         statement.execute(insertSql);
 
+        connection.commit();
+
         BillActionDao billActionDao = new BillActionDao(connection);
 
         BillAction billAction = billActionDao.read(voteId);
@@ -89,7 +92,7 @@ public class TestBillActionDao {
     }
 
     @Test
-    public void testInsert() {
+    public void testInsert() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -131,11 +134,14 @@ public class TestBillActionDao {
 
         BillAction billAction = BillAction.fromVote(vote);
         long voteId = billActionDao.insert(billAction);
+
+        connection.commit();
+
         Assert.assertTrue(voteId > 0);
     }
 
     @Test
-    public void testLoadByBill() {
+    public void testLoadByBill() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -177,6 +183,9 @@ public class TestBillActionDao {
         BillAction billAction = BillAction.fromVote(vote);
 
         long voteId = billActionDao.insert(billAction);
+
+        connection.commit();
+
         Assert.assertTrue(voteId > 0);
 
         List<BillAction> readVotes = billActionDao.readByBill(bill);

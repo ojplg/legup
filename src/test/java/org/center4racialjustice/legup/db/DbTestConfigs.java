@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.db;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DbTestConfigs {
 
@@ -14,12 +15,18 @@ public class DbTestConfigs {
             PostgresUrl,PostgresUser, PostgresPassword);
 
     public static Connection connect(){
-//        return getPostgresConnection();
+//       return getPostgresConnection();
         return getH2Connection();
     }
 
     public static Connection getPostgresConnection(){
-        return postgresConnectionFactory.connect();
+        try {
+            Connection connection = postgresConnectionFactory.connect();
+            connection.setAutoCommit(false);
+            return connection;
+        } catch (SQLException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     public static Connection getH2Connection(){

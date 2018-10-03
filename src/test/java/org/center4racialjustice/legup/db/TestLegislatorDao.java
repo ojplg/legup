@@ -1,8 +1,8 @@
 package org.center4racialjustice.legup.db;
 
-import jdk.nashorn.internal.parser.Lexer;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +15,7 @@ import java.util.List;
 public class TestLegislatorDao {
 
     @Before
+    @After
     public void setUp() throws SQLException {
         clearTables();
     }
@@ -22,9 +23,8 @@ public class TestLegislatorDao {
     private static void clearTables() throws SQLException {
         Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
-        statement.execute("delete from bill_actions");
-        statement.execute("delete from bill_action_loads");
         statement.execute("delete from legislators");
+        connection.commit();
         statement.close();
         connection.close();
     }

@@ -17,20 +17,21 @@ public class DaoHelper {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql) ){
             preparedStatement.execute();
         } catch (SQLException ex){
-            throw new RuntimeException(ex);
+            throw new HrormException(ex, sql);
         }
     }
 
     public static long getNextSequenceValue(Connection connection, String sequenceName) {
         Statement statement = null;
         ResultSet resultSet = null;
+        String sql = "select nextval('" + sequenceName + "')";
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("select nextval('" + sequenceName + "')");
+            resultSet = statement.executeQuery(sql);
             resultSet.next();
             return resultSet.getLong(1);
         } catch (SQLException ex){
-            throw new RuntimeException(ex);
+            throw new HrormException(ex, sql);
         } finally {
             try {
                 if ( resultSet != null ){

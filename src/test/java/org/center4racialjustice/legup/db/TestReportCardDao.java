@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import java.util.List;
 public class TestReportCardDao {
 
     @Before
+    @After
     public void setUp() throws SQLException {
         clearTables();
     }
@@ -30,12 +32,13 @@ public class TestReportCardDao {
         statement.execute("delete from report_factors");
         statement.execute("delete from bills");
         statement.execute("delete from report_cards");
+        connection.commit();
         statement.close();
         connection.close();
     }
 
     @Test
-    public void testReadAndWriteReportFactor(){
+    public void testReadAndWriteReportFactor() throws SQLException {
         Connection connection = DbTestConfigs.connect();
 
         Bill bill = new Bill();
@@ -65,6 +68,8 @@ public class TestReportCardDao {
 
         reportFactorDao.save(reportFactor);
 
+        connection.commit();
+
         Assert.assertNotNull(reportFactor.getId());
 
         ReportFactor readFactor = reportFactorDao.readByReportCardId(reportCard.getId()).get(0);
@@ -75,7 +80,7 @@ public class TestReportCardDao {
 
 
     @Test
-    public void testSaveAndReadAll(){
+    public void testSaveAndReadAll() throws SQLException {
 
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Simple Card");
@@ -86,6 +91,8 @@ public class TestReportCardDao {
 
         long reportCardId = reportCardDao.save(reportCard);
 
+        connection.commit();
+
         Assert.assertTrue(reportCardId > 0);
 
         List<ReportCard> readCards = reportCardDao.readAll();
@@ -94,7 +101,7 @@ public class TestReportCardDao {
     }
 
     @Test
-    public void testSaveWithFactor(){
+    public void testSaveWithFactor() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -120,6 +127,9 @@ public class TestReportCardDao {
         ReportCardDao reportCardDao = new ReportCardDao(connection);
 
         reportCardDao.save(reportCard);
+
+        connection.commit();
+
         long reportCardId = reportCard.getId();
 
         ReportCard readCard = reportCardDao.read(reportCardId);
@@ -129,7 +139,7 @@ public class TestReportCardDao {
     }
 
     @Test
-    public void testSaveWithFactorUpdatesNewFactorAdded(){
+    public void testSaveWithFactorUpdatesNewFactorAdded() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -174,6 +184,8 @@ public class TestReportCardDao {
 
         reportCardDao.save(readCard);
 
+        connection.commit();
+
         ReportCard secondCardRead = reportCardDao.read(reportCardId);
         Assert.assertEquals("Card With Factor Updated", secondCardRead.getName());
         Assert.assertEquals(2, secondCardRead.getReportFactors().size());
@@ -181,7 +193,7 @@ public class TestReportCardDao {
     }
 
     @Test
-    public void testSaveWithFactorUpdateVoteSide(){
+    public void testSaveWithFactorUpdateVoteSide() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -217,6 +229,8 @@ public class TestReportCardDao {
         readCard.getReportFactors().get(0).setVoteSide(VoteSide.Yea);
         reportCardDao.save(readCard);
 
+        connection.commit();
+
         ReportCard secondReadCard = reportCardDao.read(reportCardId);
 
         Assert.assertEquals("Card With Factor", secondReadCard.getName());
@@ -228,7 +242,7 @@ public class TestReportCardDao {
     }
 
     @Test
-    public void testSelectByName(){
+    public void testSelectByName() throws SQLException {
         Connection connection = DbTestConfigs.connect();
 
         Bill bill = new Bill();
@@ -253,7 +267,8 @@ public class TestReportCardDao {
         ReportCardDao reportCardDao = new ReportCardDao(connection);
 
         reportCardDao.save(reportCard);
-        long reportCardId = reportCard.getId();
+
+        connection.commit();
 
         ReportCard readCard = reportCardDao.selectByName("Card With Factor");
         Assert.assertEquals("Card With Factor", readCard.getName());

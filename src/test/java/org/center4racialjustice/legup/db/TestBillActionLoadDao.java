@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.db;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class TestBillActionLoadDao {
 
     @Before
+    @After
     public void setUp() throws SQLException {
         clearTables();
     }
@@ -26,24 +28,21 @@ public class TestBillActionLoadDao {
     private static void clearTables() throws SQLException {
         Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
-        statement.execute("delete from bill_actions");
         statement.execute("delete from bill_action_loads");
-        statement.execute("delete from report_factors");
         statement.execute("delete from bills");
-        statement.execute("delete from legislators");
+        connection.commit();
         statement.close();
         connection.close();
     }
 
     @Test
-    public void testSelect() {
+    public void testSelect() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
         Bill bill1 = new Bill();
         bill1.setChamber(Chamber.House);
         bill1.setNumber(1);
-
 
         BillDao billDao = new BillDao(connection);
         billDao.save(bill1);
@@ -57,6 +56,8 @@ public class TestBillActionLoadDao {
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         billActionLoadDao.insert(billActionLoad1);
 
+        connection.commit();
+
         BillActionLoad load = billActionLoadDao.select(billActionLoad1.getId());
 
         Assert.assertEquals(bill1, load.getBill());
@@ -64,7 +65,7 @@ public class TestBillActionLoadDao {
 
 
     @Test
-    public void testSelectAll() {
+    public void testSelectAll() throws SQLException {
 
         Connection connection = DbTestConfigs.connect();
 
@@ -95,6 +96,8 @@ public class TestBillActionLoadDao {
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         billActionLoadDao.insert(billActionLoad1);
         billActionLoadDao.insert(billActionLoad2);
+
+        connection.commit();
 
         List<BillActionLoad> loads = billActionLoadDao.selectAll();
 
@@ -108,8 +111,7 @@ public class TestBillActionLoadDao {
 
 
     @Test
-    public void testSelectMany() {
-
+    public void testSelectMany() throws SQLException {
         Connection connection = DbTestConfigs.connect();
 
         Bill bill1 = new Bill();
@@ -139,6 +141,8 @@ public class TestBillActionLoadDao {
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         billActionLoadDao.insert(billActionLoad1);
         billActionLoadDao.insert(billActionLoad2);
+
+        connection.commit();
 
         List<BillActionLoad> loads = billActionLoadDao.selectMany(Arrays.asList(billActionLoad1.getId(), billActionLoad2.getId()));
 

@@ -51,7 +51,7 @@ public class BillPersistence {
     }
 
     public BillSaveResults saveParsedData(BillSearchResults billSearchResults) {
-        try (ConnectionWrapper connection=connectionPool.getWrappedConnection()){
+        BillSaveResults results = connectionPool.runAndCommit(connection -> {
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
@@ -76,7 +76,8 @@ public class BillPersistence {
 
             BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
             return new BillSaveResults(parsedBill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
-        }
+        });
+        return results;
     }
 
     public LookupTable<Legislator, String, String> generateBillActionSummary(long billId){

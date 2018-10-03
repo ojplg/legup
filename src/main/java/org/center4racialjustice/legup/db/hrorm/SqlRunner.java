@@ -59,7 +59,7 @@ public class SqlRunner<T> {
             return results;
 
         } catch (SQLException ex){
-            throw new RuntimeException(ex);
+            throw new HrormException(ex, sql);
         } finally {
             try {
                 if (resultSet != null) {
@@ -99,7 +99,7 @@ public class SqlRunner<T> {
             preparedStatement.execute();
 
         } catch (SQLException se){
-            throw new RuntimeException("Wrapped SQL exception for " + sql, se);
+            throw new HrormException(se, sql);
         } finally {
             try {
                 if (preparedStatement != null) {

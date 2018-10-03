@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class PostgresConnectionFactory implements  ConnectionFactory {
+public class PostgresConnectionFactory implements ConnectionFactory {
     private final String url;
     private final String user;
     private final String password;
