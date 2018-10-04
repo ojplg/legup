@@ -16,6 +16,7 @@ import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ViewBillSearchResults implements Responder {
@@ -35,9 +36,8 @@ public class ViewBillSearchResults implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         if ( ! submission.isValidLongParameter("number") ){
-            LegupResponse response = LegupResponse.forError(ViewBillSearchForm.class, "Problem parsing form input");
-            response.putVelocityData("numberError", "Could not parse bill number from input " + submission.getParameter("number"));
-            return response;
+            return LegupResponse.forError(ViewBillSearchForm.class, "Problem parsing form input",
+                    Collections.singletonMap("number","Could not parse bill number from input " + submission.getParameter("number")));
         }
 
         Chamber chamber = submission.getConvertedParameter("chamber", Chamber.Converter);

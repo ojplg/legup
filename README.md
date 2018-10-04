@@ -61,9 +61,6 @@ Technical Betterments
   Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
   (proyal's favorite) or at least break hrorm to a stand-alone project
 * Silent logging for unit tests (maybe)
-* Web Framework
-  * Perhaps need a way to chain responders
-  * Perhaps some framework for error checking (though form submission is quite limited)
 
 Features/bugs to work on
 

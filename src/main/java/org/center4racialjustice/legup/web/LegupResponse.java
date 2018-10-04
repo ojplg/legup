@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.velocity.VelocityContext;
 
+import java.util.Map;
+
 public class LegupResponse {
 
     private final VelocityContext velocityContext;
@@ -13,9 +15,12 @@ public class LegupResponse {
         return new LegupResponse(responderClass, false, "text/plain");
     }
 
-    public static LegupResponse forError(Class formClass, String errorMessage){
+    public static LegupResponse forError(Class formClass, String errorMessage, Map<String, String> errors){
         LegupResponse legupResponse = new LegupResponse(formClass);
         legupResponse.putVelocityData("errorMessage", errorMessage);
+        for(Map.Entry<String, String> entry : errors.entrySet()){
+            legupResponse.putVelocityData(entry.getKey() + "Error", entry.getValue());
+        }
         return legupResponse;
     }
 

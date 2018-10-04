@@ -33,6 +33,11 @@ public class LegupSubmission {
         return null;
     }
 
+    public boolean isNonEmptyStringParameter(String parameterName){
+        String parameterValue = request.getParameter(parameterName);
+        return parameterValue != null && parameterValue.trim().length() > 0;
+    }
+
     public boolean isValidLongParameter(String parameterName){
         try {
             Long value = getLongRequestParameter(parameterName);
