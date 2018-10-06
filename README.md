@@ -59,7 +59,7 @@ Technical Betterments
 * Actually make a real connection pool and automated reclamation
 * Maybe throw out the whole of the DB access layer (hrorm) and replace with 
   Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
-  (proyal's favorite) or at least break hrorm to a stand-alone project
+  (proyal's favorite) 
 * Silent logging for unit tests (maybe)
 
 Features/bugs to work on
