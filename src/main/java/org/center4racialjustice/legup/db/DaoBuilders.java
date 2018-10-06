@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.db;
 
-import org.center4racialjustice.legup.db.hrorm.DaoBuilder;
+import org.hrorm.DaoBuilder;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;

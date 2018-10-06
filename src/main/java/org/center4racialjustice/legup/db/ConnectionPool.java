@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.db;
 
-import org.center4racialjustice.legup.db.hrorm.HrormException;
+import org.hrorm.HrormException;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

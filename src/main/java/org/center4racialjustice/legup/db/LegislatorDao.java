@@ -1,11 +1,10 @@
 package org.center4racialjustice.legup.db;
 
-import org.center4racialjustice.legup.db.hrorm.Dao;
+import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 
 import java.sql.Connection;
-import java.util.Arrays;
 import java.util.List;
 
 public class LegislatorDao {

@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.web;
 
-import org.center4racialjustice.legup.db.hrorm.Converter;
+import org.hrorm.Converter;
 import org.eclipse.jetty.server.Request;
 
 import java.util.Enumeration;

@@ -1,6 +1,6 @@
 package org.center4racialjustice.legup.domain;
 
-import org.center4racialjustice.legup.db.hrorm.Converter;
+import org.hrorm.Converter;
 
 public class VoteSideConverter implements Converter<VoteSide, String> {
 
