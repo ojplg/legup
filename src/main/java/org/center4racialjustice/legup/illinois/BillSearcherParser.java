@@ -2,13 +2,13 @@ package org.center4racialjustice.legup.illinois;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +16,11 @@ public class BillSearcherParser {
 
     private final Logger log = LogManager.getLogger(BillSearcherParser.class);
 
-    private final ConnectionWrapper connectionWrapper;
+    private final Connection connection;
     private final NameParser nameParser;
 
-    public BillSearcherParser(ConnectionWrapper connectionWrapper, NameParser nameParser){
-        this.connectionWrapper = connectionWrapper;
+    public BillSearcherParser(Connection connection, NameParser nameParser){
+        this.connection = connection;
         this.nameParser = nameParser;
     }
 
@@ -38,7 +38,7 @@ public class BillSearcherParser {
 
         Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
-        LegislatorDao legislatorDao = new LegislatorDao(connectionWrapper);
+        LegislatorDao legislatorDao = new LegislatorDao(connection);
         List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
 
         BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);

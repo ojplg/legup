@@ -10,10 +10,6 @@ public class ReportFactorDao {
 
     private final Dao<ReportFactor> innerDao;
 
-    public ReportFactorDao(ConnectionWrapper wrapper){
-        this(wrapper.getConnection());
-    }
-
     public ReportFactorDao(Connection connection) {
         this.innerDao = DaoBuilders.REPORT_FACTORS.buildDao(connection);
     }

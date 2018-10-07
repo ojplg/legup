@@ -3,7 +3,6 @@ package org.center4racialjustice.legup.web.responders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.NameParser;
@@ -124,7 +123,7 @@ public class ViewBillSearchResults implements Responder {
     }
 
     private BillSearchResults doSearch(Chamber chamber, Long number){
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
+        return connectionPool.useConnection( connection -> {
             BillSearcherParser billSearcherParser = new BillSearcherParser(connection, nameParser);
             BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
 
@@ -132,6 +131,6 @@ public class ViewBillSearchResults implements Responder {
             log.info("Found prior loads for: " + chamber + "." + number + ": " + priorLoads);
             billSearchResults.setPriorLoads(priorLoads);
             return billSearchResults;
-        }
+        });
     }
 }

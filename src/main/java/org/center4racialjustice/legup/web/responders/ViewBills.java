@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
@@ -22,7 +21,7 @@ public class ViewBills implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection() ){
+        return connectionPool.useConnection(connection -> {
 
             BillDao dao = new BillDao(connection);
             List<Bill> bills = dao.readAll();
@@ -35,7 +34,6 @@ public class ViewBills implements Responder {
             response.putVelocityData("house_bills", dividedBills.getFirst());
             response.putVelocityData("senate_bills", dividedBills.getSecond());
             return response;
-        }
-
+        });
     }
 }

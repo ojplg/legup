@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
@@ -43,7 +42,7 @@ public class ViewReportCardForm implements Responder {
 
         log.info("Request for form for " + reportCardId);
 
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
+        return connectionPool.useConnection( connection -> {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             ReportCard reportCard = reportCardDao.read(reportCardId);
@@ -76,7 +75,7 @@ public class ViewReportCardForm implements Responder {
             response.putVelocityData("selectedSenate", selectedSenate);
 
             return response;
-        }
+        });
     }
 
     private SortedMap<Bill, String> computeFactorSettings(List<Bill> bills, ReportCard reportCard){

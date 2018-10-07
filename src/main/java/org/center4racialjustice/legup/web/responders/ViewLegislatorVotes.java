@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Legislator;
@@ -25,7 +24,7 @@ public class ViewLegislatorVotes implements Responder {
     public LegupResponse handle(LegupSubmission submission) {
         long legislatorId = submission.getLongRequestParameter("legislator_id");
 
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
+        return connectionPool.useConnection(connection -> {
             LegislatorDao legislatorDao = new LegislatorDao(connection);
 
             Legislator legislator = legislatorDao.read(legislatorId);
@@ -42,7 +41,6 @@ public class ViewLegislatorVotes implements Responder {
             response.putVelocityData("legislator", legislator);
 
             return response;
-        }
-
+        });
     }
 }

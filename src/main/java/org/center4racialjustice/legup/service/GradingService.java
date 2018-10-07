@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
@@ -22,7 +21,7 @@ public class GradingService {
     }
 
     public ReportCardGrades calculate(long reportCardId) {
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()) {
+        return connectionPool.useConnection(connection -> {
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             BillActionDao billActionDao = new BillActionDao(connection);
@@ -37,7 +36,7 @@ public class GradingService {
             }
 
             return new ReportCardGrades(reportCard, actions);
-        }
+        });
     }
 
 }

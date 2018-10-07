@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.web.LegupResponse;
@@ -20,13 +19,13 @@ public class ViewReportCards implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-        try (ConnectionWrapper connection = connectionPool.getWrappedConnection()){
+        return connectionPool.useConnection(connection -> {
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             List<ReportCard> reportCards = reportCardDao.readAll();
 
             LegupResponse response = new LegupResponse(this.getClass());
             response.putVelocityData("report_cards", reportCards);
             return response;
-        }
+        });
     }
 }

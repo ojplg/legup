@@ -10,10 +10,6 @@ public class BillDao {
 
     private final Dao<Bill> innerDao;
 
-    public BillDao(ConnectionWrapper wrapper) {
-        this(wrapper.getConnection());
-    }
-
     public BillDao(Connection connection) {
         this.innerDao = DaoBuilders.BILLS.buildDao(connection);
     }

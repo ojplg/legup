@@ -1,48 +1,43 @@
 package org.center4racialjustice.legup.db;
 
-import org.hrorm.HrormException;
+import org.hrorm.Transactor;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ConnectionPool {
 
     private final ConnectionFactory connectionFactory;
+    private final Transactor transactor;
 
     public ConnectionPool(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+        this.transactor = new Transactor(connectionFactory::connect);
     }
 
-    public ConnectionWrapper getWrappedConnection(){
-        return new ConnectionWrapper(connectionFactory.connect());
+    public void runAndCommit(Consumer<Connection> action){
+        transactor.runAndCommit(action);
     }
 
-    public void runAndCommit(Consumer<ConnectionWrapper> action){
-        ConnectionWrapper connectionWrapper = null;
+    public <R> R runAndCommit(Function<Connection, R> function){
+        return transactor.runAndCommit(function);
+    }
+
+    public <R> R useConnection(Function<Connection, R> function){
+        Connection connection = null;
         try {
-            connectionWrapper = getWrappedConnection();
-            action.accept(connectionWrapper);
-            connectionWrapper.commit();
-        } catch (HrormException ex){
-            connectionWrapper.rollback();
-            throw ex;
+            connection = connectionFactory.connect();
+            return function.apply(connection);
         } finally {
-            connectionWrapper.close();
-        }
-    }
-
-    public <R> R runAndCommit(Function<ConnectionWrapper, R> function){
-        ConnectionWrapper connectionWrapper = null;
-        try {
-            connectionWrapper = getWrappedConnection();
-            R result = function.apply(connectionWrapper);
-            connectionWrapper.commit();
-            return result;
-        } catch (HrormException ex){
-            connectionWrapper.rollback();
-            throw ex;
-        } finally {
-            connectionWrapper.close();
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex){
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

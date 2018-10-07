@@ -6,7 +6,6 @@ import org.center4racialjustice.legup.db.BillActionDao;
 import org.center4racialjustice.legup.db.BillActionLoadDao;
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ConnectionWrapper;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
@@ -22,6 +21,7 @@ import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.util.LookupTable;
 
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class BillPersistence {
     }
 
     public List<BillActionLoad> checkForPriorLoads(BillSearchResults billSearchResults){
-        try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
+        return connectionPool.useConnection( connection -> {
             Bill parsedBill = billSearchResults.getBill();
             log.info("Checking for prior loads for " + parsedBill.getChamber() + "." + parsedBill.getNumber() + " session " + parsedBill.getSession());
             BillDao billDao = new BillDao(connection);
@@ -47,7 +47,7 @@ public class BillPersistence {
                 BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
                 return billActionLoadDao.readByBill(dbBill);
             }
-        }
+        });
     }
 
     public BillSaveResults saveParsedData(BillSearchResults billSearchResults) {
@@ -81,7 +81,7 @@ public class BillPersistence {
     }
 
     public LookupTable<Legislator, String, String> generateBillActionSummary(long billId){
-        try (ConnectionWrapper connection=connectionPool.getWrappedConnection()) {
+        return connectionPool.useConnection(connection ->  {
 
             BillDao billDao = new BillDao(connection);
             BillActionDao billActionDao = new BillActionDao(connection);
@@ -102,10 +102,10 @@ public class BillPersistence {
                 }
             }
             return billActionTable;
-        }
+        });
     }
 
-    private int saveVotes(ConnectionWrapper connection, BillActionLoad billActionLoad, List<CollatedVote> votes) {
+    private int saveVotes(Connection connection, BillActionLoad billActionLoad, List<CollatedVote> votes) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
         int savedCount = 0;
@@ -118,7 +118,7 @@ public class BillPersistence {
         return savedCount;
     }
 
-    private SponsorSaveResults saveSponsors(ConnectionWrapper connection, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
+    private SponsorSaveResults saveSponsors(Connection connection, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();

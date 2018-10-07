@@ -9,10 +9,6 @@ import java.util.List;
 public class ReportCardDao {
     private final Dao<ReportCard> innerDao;
 
-    public ReportCardDao(ConnectionWrapper wrapper){
-        this(wrapper.getConnection());
-    }
-
     public ReportCardDao(Connection connection) {
         this.innerDao = DaoBuilders.REPORT_CARDS.buildDao(connection);
     }
