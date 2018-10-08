@@ -23,11 +23,11 @@ public class PostgresConnectionFactory implements ConnectionFactory {
 
     public Connection connect(){
         try {
-            return DriverManager.getConnection(url, user, password);
+            Connection connection = DriverManager.getConnection(url, user, password);
+            connection.setAutoCommit(false);
+            return connection;
         } catch (SQLException ex){
             throw new RuntimeException(ex);
         }
     }
-
-
 }
