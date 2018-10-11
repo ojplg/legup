@@ -49,7 +49,7 @@ public class DaoBuilders {
     private static DaoBuilder<ReportFactor> reportFactorDaoBuilder(){
         return new DaoBuilder<>("REPORT_FACTORS", ReportFactor::new)
                 .withPrimaryKey("ID", "report_factor_seq", ReportFactor::getId, ReportFactor::setId)
-                .withIntegerColumn("REPORT_CARD_ID", ReportFactor::getReportCardId, ReportFactor::setReportCardId)
+                .withParentColumn("REPORT_CARD_ID", ReportFactor::getReportCard, ReportFactor::setReportCard)
                 .withConvertingStringColumn("VOTE_SIDE", ReportFactor::getVoteSide, ReportFactor::setVoteSide, VoteSideConverter.INSTANCE)
                 .withJoinColumn("BILL_ID", ReportFactor::getBill, ReportFactor::setBill, BILLS);
     }
@@ -57,7 +57,7 @@ public class DaoBuilders {
     private static DaoBuilder<ReportCardLegislator> reportCardLegislatorDaoBuilder(){
         return new DaoBuilder<>("REPORT_CARD_LEGISLATORS", ReportCardLegislator::new)
                 .withPrimaryKey("ID", "report_card_legislator_seq", ReportCardLegislator::getId, ReportCardLegislator::setId)
-                .withIntegerColumn("REPORT_CARD_ID", ReportCardLegislator::getReportCardId, ReportCardLegislator::setId)
+                .withParentColumn("REPORT_CARD_ID", ReportCardLegislator::getReportCard, ReportCardLegislator::setReportCard)
                 .withJoinColumn("LEGISLATOR_ID", ReportCardLegislator::getLegislator, ReportCardLegislator::setLegislator, LEGISLATORS);
     }
 
@@ -66,10 +66,8 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "report_card_seq", ReportCard::getId, ReportCard::setId)
                 .withStringColumn("NAME", ReportCard::getName, ReportCard::setName)
                 .withIntegerColumn("SESSION_NUMBER", ReportCard::getSessionNumber, ReportCard::setSessionNumber)
-                .withChildren("REPORT_CARD_ID", ReportFactor::setReportCardId,
-                        ReportCard::getReportFactors, ReportCard::setReportFactors, REPORT_FACTORS)
-                .withChildren("REPORT_CARD_ID", ReportCardLegislator::setReportCardId,
-                        ReportCard::getReportCardLegislators, ReportCard::setReportCardLegislators, REPORT_CARD_LEGISLATORS);
+                .withChildren(ReportCard::getReportFactors, ReportCard::setReportFactors, REPORT_FACTORS)
+                .withChildren(ReportCard::getReportCardLegislators, ReportCard::setReportCardLegislators, REPORT_CARD_LEGISLATORS);
     }
 
     private static DaoBuilder<BillActionLoad> billActionLoadDaoBuilder(){

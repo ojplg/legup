@@ -5,9 +5,9 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -18,9 +18,9 @@ import java.util.List;
 
 public class TestReportCardDao {
 
-    @Before
-    @After
-    public void setUp() throws SQLException {
+    @BeforeClass
+    @AfterClass
+    public static void setUp() throws SQLException {
         clearTables();
     }
 
@@ -30,6 +30,7 @@ public class TestReportCardDao {
         statement.execute("delete from bill_actions");
         statement.execute("delete from bill_action_loads");
         statement.execute("delete from report_factors");
+        statement.execute("delete from report_card_legislators");
         statement.execute("delete from bills");
         statement.execute("delete from report_cards");
         connection.commit();
@@ -38,49 +39,67 @@ public class TestReportCardDao {
     }
 
     @Test
-    public void testReadAndWriteReportFactor() throws SQLException {
-        Connection connection = DbTestConfigs.connect();
+    public void testSaveCardThenAddFactor() throws SQLException {
 
-        Bill bill = new Bill();
-        bill.setSession(123);
-        bill.setNumber(6);
-        bill.setChamber(Chamber.House);
-        bill.setShortDescription("BILLBILL");
+        long id;
+        Bill bill;
+        {
+            Connection connection = DbTestConfigs.connect();
 
-        BillDao billDao = new BillDao(connection);
-        billDao.save(bill);
+            bill = new Bill();
+            bill.setSession(123);
+            bill.setNumber(6);
+            bill.setChamber(Chamber.House);
+            bill.setShortDescription("BILLBILL");
 
-        ReportCard reportCard = new ReportCard();
-        reportCard.setName("Foo");
-        reportCard.setSessionNumber(12);
+            BillDao billDao = new BillDao(connection);
+            billDao.save(bill);
 
-        ReportCardDao reportCardDao = new ReportCardDao(connection);
-        reportCardDao.save(reportCard);
+            connection.commit();
+        }
+        {
+            Connection connection = DbTestConfigs.connect();
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
+            ReportCard reportCard = new ReportCard();
+            reportCard.setName("Foo");
+            reportCard.setSessionNumber(123);
 
-        Assert.assertNotNull(reportCard.getId());
+            id = reportCardDao.save(reportCard);
 
-        ReportFactor reportFactor = new ReportFactor();
-        reportFactor.setBill(bill);
-        reportFactor.setVoteSide(VoteSide.Nay);
-        reportFactor.setReportCardId(reportCard.getId());
+            connection.commit();
+        }
+        {
+            Connection connection = DbTestConfigs.connect();
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
+            ReportCard reportCard = reportCardDao.read(id);
 
-        ReportFactorDao reportFactorDao = new ReportFactorDao(connection);
+            ReportFactor reportFactor = new ReportFactor();
+            reportFactor.setBill(bill);
+            reportFactor.setVoteSide(VoteSide.Nay);
 
-        reportFactorDao.save(reportFactor);
+            reportCard.addReportFactor(reportFactor);
 
-        connection.commit();
+            reportCardDao.save(reportCard);
 
-        Assert.assertNotNull(reportFactor.getId());
+            connection.commit();
+        }
 
-        ReportFactor readFactor = reportFactorDao.readByReportCardId(reportCard.getId()).get(0);
+        {
+            Connection connection = DbTestConfigs.connect();
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
 
-        Assert.assertEquals("BILLBILL", readFactor.getBill().getShortDescription());
+            ReportCard reportCard = reportCardDao.read(id);
 
+            Assert.assertEquals(1, reportCard.getReportFactors().size());
+            Assert.assertEquals("BILLBILL", reportCard.getReportFactors().get(0).getBill().getShortDescription());
+        }
     }
 
 
     @Test
     public void testSaveAndReadAll() throws SQLException {
+
+        clearTables();
 
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Simple Card");
@@ -103,93 +122,135 @@ public class TestReportCardDao {
     @Test
     public void testSaveWithFactor() throws SQLException {
 
-        Connection connection = DbTestConfigs.connect();
+        long reportCardId;
+        {
+            Connection connection = DbTestConfigs.connect();
 
-        Bill bill = new Bill();
-        bill.setSession(123);
-        bill.setNumber(6);
-        bill.setChamber(Chamber.House);
+            Bill bill = new Bill();
+            bill.setSession(123);
+            bill.setNumber(61);
+            bill.setChamber(Chamber.House);
 
-        BillDao billDao = new BillDao(connection);
+            BillDao billDao = new BillDao(connection);
 
-        billDao.save(bill);
+            billDao.save(bill);
 
-        ReportCard reportCard = new ReportCard();
-        reportCard.setName("Card With Factor");
-        reportCard.setSessionNumber(123);
+            ReportCard reportCard = new ReportCard();
+            reportCard.setName("Card With Factor");
+            reportCard.setSessionNumber(123);
 
-        ReportFactor reportFactor = new ReportFactor();
-        reportFactor.setBill(bill);
-        reportFactor.setVoteSide(VoteSide.Nay);
+            ReportFactor reportFactor = new ReportFactor();
+            reportFactor.setBill(bill);
+            reportFactor.setVoteSide(VoteSide.Nay);
 
-        reportCard.setReportFactors(Collections.singletonList(reportFactor));
+            reportCard.setReportFactors(Collections.singletonList(reportFactor));
 
-        ReportCardDao reportCardDao = new ReportCardDao(connection);
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
 
-        reportCardDao.save(reportCard);
+            reportCardId = reportCardDao.save(reportCard);
 
-        connection.commit();
+            connection.commit();
+        }
 
-        long reportCardId = reportCard.getId();
+        {
+            Connection connection = DbTestConfigs.connect();
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
 
-        ReportCard readCard = reportCardDao.read(reportCardId);
-        Assert.assertEquals("Card With Factor", readCard.getName());
-        Assert.assertEquals(1, readCard.getReportFactors().size());
-        Assert.assertEquals(VoteSide.Nay, readCard.getReportFactors().get(0).getVoteSide());
+            ReportCard readCard = reportCardDao.read(reportCardId);
+            Assert.assertEquals("Card With Factor", readCard.getName());
+            Assert.assertEquals(1, readCard.getReportFactors().size());
+            Assert.assertEquals(VoteSide.Nay, readCard.getReportFactors().get(0).getVoteSide());
+        }
     }
 
     @Test
     public void testSaveWithFactorUpdatesNewFactorAdded() throws SQLException {
 
-        Connection connection = DbTestConfigs.connect();
+        long reportCardId;
+        Bill bill1;
+        Bill bill2;
+        {
+            bill1 = new Bill();
+            bill1.setSession(123);
+            bill1.setNumber(1);
+            bill1.setChamber(Chamber.House);
 
-        Bill bill1 = new Bill();
-        bill1.setSession(123);
-        bill1.setNumber(1);
-        bill1.setChamber(Chamber.House);
+            bill2 = new Bill();
+            bill2.setSession(123);
+            bill2.setNumber(2);
+            bill2.setChamber(Chamber.House);
 
-        Bill bill2 = new Bill();
-        bill2.setSession(123);
-        bill2.setNumber(2);
-        bill2.setChamber(Chamber.House);
 
-        BillDao billDao = new BillDao(connection);
+            Connection connection = DbTestConfigs.connect();
+            BillDao billDao = new BillDao(connection);
 
-        billDao.save(bill1);
-        billDao.save(bill2);
+            billDao.save(bill1);
+            billDao.save(bill2);
 
-        ReportCard reportCard = new ReportCard();
-        reportCard.setName("Card With Factor");
-        reportCard.setSessionNumber(123);
+            connection.commit();
+        }
+        {
+            Connection connection = DbTestConfigs.connect();
 
-        ReportFactor reportFactor = new ReportFactor();
-        reportFactor.setBill(bill1);
-        reportFactor.setVoteSide(VoteSide.Nay);
+            ReportCard reportCard = new ReportCard();
+            reportCard.setName("Card With Factor Again");
+            reportCard.setSessionNumber(123);
 
-        reportCard.setReportFactors(Collections.singletonList(reportFactor));
+            ReportFactor reportFactor = new ReportFactor();
+            reportFactor.setBill(bill1);
+            reportFactor.setVoteSide(VoteSide.Nay);
 
-        ReportCardDao reportCardDao = new ReportCardDao(connection);
+            reportCard.addReportFactor(reportFactor);
 
-        reportCardDao.save(reportCard);
-        long reportCardId = reportCard.getId();
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
 
-        ReportCard readCard = reportCardDao.read(reportCardId);
+            reportCardDao.save(reportCard);
+            reportCardId = reportCard.getId();
+            connection.commit();
 
-        ReportFactor factor2 = new ReportFactor();
-        factor2.setBill(bill2);
-        factor2.setVoteSide(VoteSide.Yea);
+            System.out.println("Saved report card with id " + reportCardId);
+        }
+        {
+            Connection connection = DbTestConfigs.connect();
 
-        readCard.addReportFactor(factor2);
-        readCard.setName("Card With Factor Updated");
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
 
-        reportCardDao.save(readCard);
+            System.out.println("Working on report card with ID " + reportCardId);
+            ReportCard readCard = reportCardDao.read(reportCardId);
+            System.out.println("Found report card with ID " + readCard.getId());
 
-        connection.commit();
+            Assert.assertEquals(1, readCard.getReportFactors().size());
 
-        ReportCard secondCardRead = reportCardDao.read(reportCardId);
-        Assert.assertEquals("Card With Factor Updated", secondCardRead.getName());
-        Assert.assertEquals(2, secondCardRead.getReportFactors().size());
-        Assert.assertEquals(VoteSide.Nay, secondCardRead.getReportFactors().get(0).getVoteSide());
+            ReportFactor factor2 = new ReportFactor();
+
+            System.out.println("Adding bill with id " + bill2.getId());
+
+            factor2.setBill(bill2);
+            factor2.setVoteSide(VoteSide.Yea);
+
+            readCard.addReportFactor(factor2);
+            readCard.setName("Card With Factor Updated");
+
+            Assert.assertEquals(2, readCard.getReportFactors().size());
+
+            reportCardDao.save(readCard);
+
+            connection.commit();
+
+            System.out.println("*************************************");
+            System.out.println("*************************************");
+
+            System.out.println(readCard);
+        }
+        {
+            Connection connection = DbTestConfigs.connect();
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
+
+            ReportCard secondCardRead = reportCardDao.read(reportCardId);
+            Assert.assertEquals("Card With Factor Updated", secondCardRead.getName());
+            Assert.assertEquals(2, secondCardRead.getReportFactors().size());
+            Assert.assertEquals(VoteSide.Nay, secondCardRead.getReportFactors().get(0).getVoteSide());
+        }
     }
 
     @Test
@@ -199,7 +260,7 @@ public class TestReportCardDao {
 
         Bill bill = new Bill();
         bill.setSession(123);
-        bill.setNumber(6);
+        bill.setNumber(62);
         bill.setChamber(Chamber.House);
 
         BillDao billDao = new BillDao(connection);
@@ -207,7 +268,7 @@ public class TestReportCardDao {
         billDao.save(bill);
 
         ReportCard reportCard = new ReportCard();
-        reportCard.setName("Card With Factor");
+        reportCard.setName("Card With Factor 3");
         reportCard.setSessionNumber(123);
 
         ReportFactor reportFactor = new ReportFactor();
@@ -222,7 +283,7 @@ public class TestReportCardDao {
         long reportCardId = reportCard.getId();
 
         ReportCard readCard = reportCardDao.read(reportCardId);
-        Assert.assertEquals("Card With Factor", readCard.getName());
+        Assert.assertEquals("Card With Factor 3", readCard.getName());
         Assert.assertEquals(1, readCard.getReportFactors().size());
         Assert.assertEquals(VoteSide.Nay, readCard.getReportFactors().get(0).getVoteSide());
 
@@ -233,7 +294,7 @@ public class TestReportCardDao {
 
         ReportCard secondReadCard = reportCardDao.read(reportCardId);
 
-        Assert.assertEquals("Card With Factor", secondReadCard.getName());
+        Assert.assertEquals("Card With Factor 3", secondReadCard.getName());
         Assert.assertEquals(1, secondReadCard.getReportFactors().size());
         Assert.assertEquals(VoteSide.Yea, secondReadCard.getReportFactors().get(0).getVoteSide());
 
@@ -247,7 +308,7 @@ public class TestReportCardDao {
 
         Bill bill = new Bill();
         bill.setSession(123);
-        bill.setNumber(6);
+        bill.setNumber(63);
         bill.setChamber(Chamber.House);
 
         BillDao billDao = new BillDao(connection);
@@ -255,7 +316,7 @@ public class TestReportCardDao {
         billDao.save(bill);
 
         ReportCard reportCard = new ReportCard();
-        reportCard.setName("Card With Factor");
+        reportCard.setName("Card With Factor 4");
         reportCard.setSessionNumber(123);
 
         ReportFactor reportFactor = new ReportFactor();
@@ -270,8 +331,8 @@ public class TestReportCardDao {
 
         connection.commit();
 
-        ReportCard readCard = reportCardDao.selectByName("Card With Factor");
-        Assert.assertEquals("Card With Factor", readCard.getName());
+        ReportCard readCard = reportCardDao.selectByName("Card With Factor 4");
+        Assert.assertEquals("Card With Factor 4", readCard.getName());
         Assert.assertEquals(1, readCard.getReportFactors().size());
         Assert.assertEquals(VoteSide.Nay, readCard.getReportFactors().get(0).getVoteSide());
         Assert.assertEquals(bill, readCard.getReportFactors().get(0).getBill());

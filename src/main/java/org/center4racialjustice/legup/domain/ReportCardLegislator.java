@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ReportCardLegislator {
     private Long id;
-    private Long reportCardId;
+    private ReportCard reportCard;
     private Legislator legislator;
 }

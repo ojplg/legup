@@ -24,12 +24,10 @@ public class ReportCard {
     private List<ReportCardLegislator> reportCardLegislators = new ArrayList<>();
 
     public void addReportFactor(ReportFactor factor){
-        factor.setReportCardId(id);
         reportFactors.add(factor);
     }
 
     public void addReportCardLegislator(ReportCardLegislator legislator){
-        legislator.setReportCardId(id);
         reportCardLegislators.add(legislator);
     }
 

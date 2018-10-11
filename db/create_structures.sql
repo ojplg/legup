@@ -109,7 +109,7 @@ create table report_factors (
     vote_side text not null
 );
 
-alter table report_factors add foreign key (report_card_id) references report_cards(id);
+--alter table report_factors add foreign key (report_card_id) references report_cards(id);
 alter table report_factors add foreign key (bill_id) references bills(id);
 alter table report_factors add constraint uniq_report_factor unique (report_card_id, bill_id);
 
