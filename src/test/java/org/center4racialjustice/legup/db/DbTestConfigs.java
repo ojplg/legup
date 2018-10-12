@@ -15,8 +15,8 @@ public class DbTestConfigs {
             PostgresUrl,PostgresUser, PostgresPassword);
 
     public static Connection connect(){
-       return getPostgresConnection();
-//        return getH2Connection();
+//       return getPostgresConnection();
+        return getH2Connection();
     }
 
     public static Connection getPostgresConnection(){
