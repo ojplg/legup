@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.List;
 
@@ -17,30 +18,30 @@ public class BillSearchResults {
         Unchecked,NoPriorValues,MatchedValues,UnmatchedValues;
     }
 
-    private final Bill bill;
+    private final Bill parsedBill;
+    private final Bill savedBill;
     private final SponsorNames sponsorNames;
     private final long checksum;
     private final String url;
     private final BillVotesResults houseVoteResults;
     private final BillVotesResults senateVoteResults;
 
-    private BillActionLoads billActionLoads = null;
+    private final BillActionLoads billActionLoads;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              List<Legislator> legislators,
                              BillVotesResults houseVoteResults,
-                             BillVotesResults senateVoteResults){
-        this.bill = billHtmlParser.getBill();
+                             BillVotesResults senateVoteResults,
+                             Tuple<Bill,List<BillActionLoad>> savedBillInformation){
+        this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislators);
         this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
         this.houseVoteResults = houseVoteResults;
         this.senateVoteResults = senateVoteResults;
-    }
-
-    public void setPriorLoads(List<BillActionLoad> existingDbLoads){
-        billActionLoads = new BillActionLoads(existingDbLoads);
+        this.billActionLoads = new BillActionLoads(savedBillInformation.getSecond());
+        this.savedBill = savedBillInformation.getFirst();
     }
 
     public MatchStatus getBillHtmlLoadStatus(){
@@ -105,8 +106,8 @@ public class BillSearchResults {
         return billActionLoads.getSenateVotesLoad();
     }
 
-    public Bill getBill(){
-        return bill;
+    public Bill getParsedBill(){
+        return parsedBill;
     }
 
     public SponsorNames getSponsorNames() {

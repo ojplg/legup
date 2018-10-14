@@ -16,7 +16,6 @@ import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
 
 import java.util.Collections;
-import java.util.List;
 
 public class ViewBillSearchResults implements Responder {
 
@@ -56,7 +55,7 @@ public class ViewBillSearchResults implements Responder {
         LegupResponse response = new LegupResponse(this.getClass());
 
         response.putVelocityData("billSearchResults", billSearchResults);
-        response.putVelocityData("bill", billSearchResults.getBill());
+        response.putVelocityData("bill", billSearchResults.getParsedBill());
 
         boolean hasUncollatedVotes = billSearchResults.getUncollatedHouseVotes().size() > 0
                 || billSearchResults.getUncollatedSenateVotes().size() > 0;
@@ -123,14 +122,8 @@ public class ViewBillSearchResults implements Responder {
     }
 
     private BillSearchResults doSearch(Chamber chamber, Long number){
-        return connectionPool.useConnection( connection -> {
-            BillSearcherParser billSearcherParser = new BillSearcherParser(connection, nameParser);
-            BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
-
-            List<BillActionLoad> priorLoads = billPersistence.checkForPriorLoads(billSearchResults);
-            log.info("Found prior loads for: " + chamber + "." + number + ": " + priorLoads);
-            billSearchResults.setPriorLoads(priorLoads);
-            return billSearchResults;
-        });
+        BillSearcherParser billSearcherParser = new BillSearcherParser(connectionPool, nameParser);
+        BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
+        return billSearchResults;
     }
 }

@@ -20,6 +20,7 @@ import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.util.LookupTable;
+import org.center4racialjustice.legup.util.Tuple;
 
 import java.sql.Connection;
 import java.util.Collections;
@@ -35,18 +36,19 @@ public class BillPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public List<BillActionLoad> checkForPriorLoads(BillSearchResults billSearchResults){
+    public Tuple<Bill,List<BillActionLoad>> checkForPriorLoads(Bill parsedBill){
         return connectionPool.useConnection( connection -> {
-            Bill parsedBill = billSearchResults.getBill();
             log.info("Checking for prior loads for " + parsedBill.getChamber() + "." + parsedBill.getNumber() + " session " + parsedBill.getSession());
             BillDao billDao = new BillDao(connection);
+            List<BillActionLoad> loads;
             Bill dbBill = billDao.readBySessionChamberAndNumber(parsedBill);
             if (dbBill == null) {
-                return Collections.emptyList();
+                loads = Collections.emptyList();
             } else {
                 BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
-                return billActionLoadDao.readByBill(dbBill);
+                loads = billActionLoadDao.readByBill(dbBill);
             }
+            return new Tuple<>(dbBill, loads);
         });
     }
 
@@ -55,7 +57,7 @@ public class BillPersistence {
             BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
-            Bill parsedBill = billSearchResults.getBill();
+            Bill parsedBill = billSearchResults.getParsedBill();
             billDao.insert(parsedBill);
 
             BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());

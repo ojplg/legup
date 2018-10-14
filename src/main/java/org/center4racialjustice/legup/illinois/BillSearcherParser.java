@@ -2,13 +2,17 @@ package org.center4racialjustice.legup.illinois;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
+import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.service.BillPersistence;
+import org.center4racialjustice.legup.util.Tuple;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +20,11 @@ public class BillSearcherParser {
 
     private final Logger log = LogManager.getLogger(BillSearcherParser.class);
 
-    private final Connection connection;
+    private final ConnectionPool connectionPool;
     private final NameParser nameParser;
 
-    public BillSearcherParser(Connection connection, NameParser nameParser){
-        this.connection = connection;
+    public BillSearcherParser(ConnectionPool connectionPool, NameParser nameParser){
+        this.connectionPool = connectionPool;
         this.nameParser = nameParser;
     }
 
@@ -38,13 +42,20 @@ public class BillSearcherParser {
 
         Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
-        LegislatorDao legislatorDao = new LegislatorDao(connection);
-        List<Legislator> legislators = legislatorDao.readBySession(billHtmlParser.getSession());
+        List<Legislator> legislators = connectionPool.useConnection(connection -> {
+                    LegislatorDao legislatorDao = new LegislatorDao(connection);
+                    return legislatorDao.readBySession(billHtmlParser.getSession());
+                });
 
         BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
         BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
+        
+        BillPersistence billPersistence = new BillPersistence(connectionPool);
+        Tuple<Bill,List<BillActionLoad>> savedBillInfo = billPersistence.checkForPriorLoads(billHtmlParser.getBill());
+        log.info("Found prior loads for: " + chamber + "." + billNumber + ": " + savedBillInfo);
 
-        return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults);
+        return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults, savedBillInfo);
+
     }
 
     private BillVotesResults findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) {
