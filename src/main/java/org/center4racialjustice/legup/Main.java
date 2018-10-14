@@ -17,11 +17,17 @@ import java.util.Properties;
 
 public class Main {
 
-    private static final Logger log = LogManager.getLogger(Main.class);
-
     private static final Properties properties = new Properties();
+    private static Logger log;
+
+    static {
+        // We need to set this property before we even instantiate a single logger
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+        log = LogManager.getLogger(Main.class);
+    }
 
     public static void main(String[] args){
+
         log.info("Starting");
 
         try {
