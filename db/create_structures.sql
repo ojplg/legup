@@ -132,9 +132,8 @@ alter table report_card_legislators add foreign key (legislator_id) references l
 grant all on sequence report_card_legislator_seq to legupuser;
 grant all on table report_card_legislators to legupuser;
 
+end;
+
 --changeset ojplg:2
 
 alter table bill_actions add constraint uniq_bill_action unique (bill_id, legislator_id, bill_action_type);
-
-end;
-
