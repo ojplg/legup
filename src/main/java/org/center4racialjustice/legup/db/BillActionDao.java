@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
@@ -34,8 +35,19 @@ public class BillActionDao {
         return innerDao.selectManyByColumns(billAction, "BILL_ID");
     }
 
+    public List<BillAction> readByBillActionLoad(BillActionLoad billActionLoad){
+        BillAction billAction = new BillAction();
+        billAction.setBillActionLoad(billActionLoad);
+
+        return innerDao.selectManyByColumns(billAction, "BILL_ACTION_LOAD_ID");
+    }
+
     public BillAction read(long id){
         return innerDao.select(id);
+    }
+
+    public void delete(BillAction billAction){
+        innerDao.delete(billAction);
     }
 
 }

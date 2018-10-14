@@ -81,14 +81,31 @@ public class BillPersistence {
             SponsorSaveResults sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
-            BillActionLoad houseLoad = billSearchResults.createHouseBillActionLoad(bill);
-            billActionLoadDao.insert(houseLoad);
-            int houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
+            int houseVotesSaved = 0;
+            BillActionLoad houseLoad = billSearchResults.getHouseVotesLoad();
+            if( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ) {
+                houseLoad = billSearchResults.createHouseBillActionLoad(bill);
+                billActionLoadDao.insert(houseLoad);
+                houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
+            } else if ( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues ){
+                houseLoad = billSearchResults.updateHouseBillActionLoad();
+                billActionLoadDao.update(houseLoad);
+                houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
+            }
             log.info("Saved " + houseVotesSaved + " house votes");
 
-            BillActionLoad senateLoad = billSearchResults.createSenateBillActionLoad(bill);
-            billActionLoadDao.insert(senateLoad);
-            int senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+            int senateVotesSaved = 0;
+            BillActionLoad senateLoad = billSearchResults.getSenateVotesLoad();
+
+            if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ) {
+                senateLoad = billSearchResults.createSenateBillActionLoad(bill);
+                billActionLoadDao.insert(senateLoad);
+                senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+            } else if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues){
+               senateLoad = billSearchResults.updateSenateBillActionLoad();
+               billActionLoadDao.update(senateLoad);
+               senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+            }
             log.info("Saved " + senateVotesSaved + " senate votes");
 
             BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
@@ -151,6 +168,8 @@ public class BillPersistence {
     private int saveVotes(Connection connection, BillActionLoad billActionLoad, List<CollatedVote> votes) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
+        deleteOldActionRecords(billActionDao, billActionLoad);
+
         int savedCount = 0;
         for (CollatedVote collatedVote : votes) {
             Vote vote = collatedVote.asVote(billActionLoad);
@@ -163,6 +182,8 @@ public class BillPersistence {
 
     private SponsorSaveResults saveSponsors(Connection connection, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
         BillActionDao billActionDao = new BillActionDao(connection);
+
+        deleteOldActionRecords(billActionDao, billActionLoad);
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
@@ -192,6 +213,13 @@ public class BillPersistence {
         }
 
         return new SponsorSaveResults(chiefHouseSponsor, chiefSenateSponsor, houseSponsorCount, senateSponsorCount);
+    }
+
+    private void deleteOldActionRecords(BillActionDao billActionDao, BillActionLoad billActionLoad){
+        List<BillAction> oldActions = billActionDao.readByBillActionLoad(billActionLoad);
+        for(BillAction billAction : oldActions){
+            billActionDao.delete(billAction);
+        }
     }
 
     private void saveBillAction(BillActionDao billActionDao, Legislator legislator,

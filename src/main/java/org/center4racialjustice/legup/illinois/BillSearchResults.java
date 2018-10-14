@@ -124,6 +124,21 @@ public class BillSearchResults {
         return BillActionLoad.create(bill, senateVoteResults.getUrl(), senateVoteResults.getChecksum());
     }
 
+    public BillActionLoad updateHouseBillActionLoad(){
+        BillActionLoad existingLoad = getHouseVotesLoad();
+        existingLoad.setUrl(houseVoteResults.getUrl());
+        existingLoad.setCheckSum(houseVoteResults.getChecksum());
+        return existingLoad;
+    }
+
+    public BillActionLoad updateSenateBillActionLoad(){
+        BillActionLoad existingLoad = getSenateVotesLoad();
+        existingLoad.setUrl(senateVoteResults.getUrl());
+        existingLoad.setCheckSum(senateVoteResults.getChecksum());
+        return existingLoad;
+    }
+
+
     public List<CollatedVote> getHouseVotes() {
         return houseVoteResults.getCollatedVotes();
     }
