@@ -71,8 +71,6 @@ Features/bugs to work on
     A way to link or mark people as the same would be helpful.
 * Bill Persistence
   * Perhaps four (or 5) upload chunks, separating sponsors from bill itself
-  * Need to use transactions for all the pieces (also turn off postgres autocommit)
-  * Need to handle situation where only some parts have changed, use updates and deletes
 * Scoring/Grading
   * Need different grading scales for different chambers
   * Allow configuration for score options, either in config files or report cards: something
