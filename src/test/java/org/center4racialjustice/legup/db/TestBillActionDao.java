@@ -59,7 +59,7 @@ public class TestBillActionDao {
         bill.setNumber(123);
 
         BillDao billDao = new BillDao(connection);
-        long billId = billDao.save(bill);
+        long billId = billDao.insert(bill);
         bill.setId(billId);
 
         BillActionLoad billActionLoad = new BillActionLoad();
@@ -111,7 +111,7 @@ public class TestBillActionDao {
         bill.setNumber(123);
 
         BillDao billDao = new BillDao(connection);
-        long billId = billDao.save(bill);
+        long billId = billDao.insert(bill);
         bill.setId(billId);
 
         BillActionLoad billActionLoad = new BillActionLoad();
@@ -160,7 +160,7 @@ public class TestBillActionDao {
         bill.setNumber(123);
 
         BillDao billDao = new BillDao(connection);
-        long billId = billDao.save(bill);
+        long billId = billDao.insert(bill);
         bill.setId(billId);
 
         BillActionLoad billActionLoad = new BillActionLoad();

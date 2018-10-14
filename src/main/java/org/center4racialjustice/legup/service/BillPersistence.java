@@ -23,6 +23,7 @@ import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,32 +55,72 @@ public class BillPersistence {
 
     public BillSaveResults saveParsedData(BillSearchResults billSearchResults) {
         BillSaveResults results = connectionPool.runAndCommit(connection -> {
-            BillDao billDao = new BillDao(connection);
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
-            Bill parsedBill = billSearchResults.getParsedBill();
-            billDao.insert(parsedBill);
+            Bill bill;
+            BillActionLoad billActionLoad;
 
-            BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());
-            billActionLoadDao.insert(billActionLoad);
+            if( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ){
+                Tuple<Bill, BillActionLoad> billSaveTuple = insertNewBill( connection,
+                    billSearchResults.getParsedBill(), billSearchResults.getUrl(), billSearchResults.getChecksum() );
+                bill = billSaveTuple.getFirst();
+                billActionLoad = billSaveTuple.getSecond();
+            } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.MatchedValues ){
+                bill = billSearchResults.getSavedBill();
+                billActionLoad = billSearchResults.getBillHtmlLoad();
+            } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues ){
+                Tuple<Bill, BillActionLoad> billSaveTuple = updateBill( connection,
+                        billSearchResults.getUpdatedBill(),  billSearchResults.getBillHtmlLoad(),
+                        billSearchResults.getUrl(), billSearchResults.getChecksum() );
+                bill = billSaveTuple.getFirst();
+                billActionLoad = billSaveTuple.getSecond();
+            } else {
+                throw new RuntimeException("Cannot persist match status " + billSearchResults.getBillHtmlLoadStatus());
+            }
 
             SponsorSaveResults sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
             log.info("Saved sponsors: " + sponsorsSaved);
 
-            BillActionLoad houseLoad = billSearchResults.createHouseBillActionLoad(parsedBill);
+            BillActionLoad houseLoad = billSearchResults.createHouseBillActionLoad(bill);
             billActionLoadDao.insert(houseLoad);
             int houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
             log.info("Saved " + houseVotesSaved + " house votes");
 
-            BillActionLoad senateLoad = billSearchResults.createSenateBillActionLoad(parsedBill);
+            BillActionLoad senateLoad = billSearchResults.createSenateBillActionLoad(bill);
             billActionLoadDao.insert(senateLoad);
             int senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
             log.info("Saved " + senateVotesSaved + " senate votes");
 
             BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
-            return new BillSaveResults(parsedBill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
+            return new BillSaveResults(bill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
         });
         return results;
+    }
+
+    private Tuple<Bill, BillActionLoad> updateBill(Connection connection, Bill bill, BillActionLoad oldLoad, String url, long checkSum) {
+        BillDao billDao = new BillDao(connection);
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+
+        billDao.update(bill);
+        oldLoad.setCheckSum(checkSum);
+        oldLoad.setLoadTime(LocalDateTime.now());
+        oldLoad.setUrl(url);
+
+        billActionLoadDao.update(oldLoad);
+
+        return new Tuple<>(bill, oldLoad);
+    }
+
+    private Tuple<Bill, BillActionLoad> insertNewBill(Connection connection, Bill parsedBill, String url, long checkSum){
+        BillDao billDao = new BillDao(connection);
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+
+        billDao.insert(parsedBill);
+
+        BillActionLoad billActionLoad = BillActionLoad.create(parsedBill, url, checkSum);
+        billActionLoadDao.insert(billActionLoad);
+
+        return new Tuple<>(parsedBill, billActionLoad);
     }
 
     public LookupTable<Legislator, String, String> generateBillActionSummary(long billId){

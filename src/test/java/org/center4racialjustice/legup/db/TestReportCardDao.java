@@ -53,7 +53,7 @@ public class TestReportCardDao {
             bill.setShortDescription("BILLBILL");
 
             BillDao billDao = new BillDao(connection);
-            billDao.save(bill);
+            billDao.insert(bill);
 
             connection.commit();
         }
@@ -133,7 +133,7 @@ public class TestReportCardDao {
 
             BillDao billDao = new BillDao(connection);
 
-            billDao.save(bill);
+            billDao.insert(bill);
 
             ReportCard reportCard = new ReportCard();
             reportCard.setName("Card With Factor");
@@ -184,8 +184,8 @@ public class TestReportCardDao {
             Connection connection = DbTestConfigs.connect();
             BillDao billDao = new BillDao(connection);
 
-            billDao.save(bill1);
-            billDao.save(bill2);
+            billDao.insert(bill1);
+            billDao.insert(bill2);
 
             connection.commit();
         }
@@ -265,7 +265,7 @@ public class TestReportCardDao {
 
         BillDao billDao = new BillDao(connection);
 
-        billDao.save(bill);
+        billDao.insert(bill);
 
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Card With Factor 3");
@@ -313,7 +313,7 @@ public class TestReportCardDao {
 
         BillDao billDao = new BillDao(connection);
 
-        billDao.save(bill);
+        billDao.insert(bill);
 
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Card With Factor 4");

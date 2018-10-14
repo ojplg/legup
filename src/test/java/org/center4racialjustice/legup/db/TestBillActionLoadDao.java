@@ -48,7 +48,7 @@ public class TestBillActionLoadDao {
         bill1.setNumber(1);
 
         BillDao billDao = new BillDao(connection);
-        billDao.save(bill1);
+        billDao.insert(bill1);
 
         BillActionLoad billActionLoad1 = new BillActionLoad();
         billActionLoad1.setBill(bill1);
@@ -81,8 +81,8 @@ public class TestBillActionLoadDao {
         bill2.setNumber(2);
 
         BillDao billDao = new BillDao(connection);
-        billDao.save(bill1);
-        billDao.save(bill2);
+        billDao.insert(bill1);
+        billDao.insert(bill2);
 
         BillActionLoad billActionLoad1 = new BillActionLoad();
         billActionLoad1.setBill(bill1);
@@ -126,8 +126,8 @@ public class TestBillActionLoadDao {
         bill2.setNumber(2);
 
         BillDao billDao = new BillDao(connection);
-        billDao.save(bill1);
-        billDao.save(bill2);
+        billDao.insert(bill1);
+        billDao.insert(bill2);
 
         BillActionLoad billActionLoad1 = new BillActionLoad();
         billActionLoad1.setBill(bill1);

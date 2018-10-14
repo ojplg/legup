@@ -18,7 +18,7 @@ public class TestBillDao {
         insertBill.setNumber(2771L);
         insertBill.setShortDescription("Foo");
 
-        billDao.save(insertBill);
+        billDao.insert(insertBill);
 
         Assert.assertNotNull(insertBill.getId());
 

@@ -49,7 +49,7 @@ public class BillSearcherParser {
 
         BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
         BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
-        
+
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         Tuple<Bill,List<BillActionLoad>> savedBillInfo = billPersistence.checkForPriorLoads(billHtmlParser.getBill());
         log.info("Found prior loads for: " + chamber + "." + billNumber + ": " + savedBillInfo);

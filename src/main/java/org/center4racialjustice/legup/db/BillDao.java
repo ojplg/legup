@@ -18,8 +18,8 @@ public class BillDao {
         return innerDao.selectByColumns(bill, "SESSION_NUMBER", "CHAMBER", "BILL_NUMBER");
     }
 
-    public void insert(Bill bill){
-        innerDao.insert(bill);
+    public long insert(Bill bill){
+        return innerDao.insert(bill);
     }
 
     public List<Bill> readBySession(long session){
@@ -33,8 +33,8 @@ public class BillDao {
         return innerDao.selectMany(ids);
     }
 
-    public long save(Bill item) {
-        return innerDao.insert(item);
+    public void update(Bill item) {
+        innerDao.update(item);
     }
 
     public Bill read(long id) {

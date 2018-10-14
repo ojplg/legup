@@ -19,6 +19,11 @@ public class BillActionLoadDao {
         return innerDao.insert(billActionLoad);
     }
 
+    public void update(BillActionLoad billActionLoad){
+        innerDao.update(billActionLoad);
+    }
+
+
     public List<BillActionLoad> readByBill(Bill bill) {
         BillActionLoad billActionLoad = new BillActionLoad();
         billActionLoad.setBill(bill);
