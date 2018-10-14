@@ -133,7 +133,7 @@ public class ReportCard {
         List<ReportCardLegislator> toRemove = new ArrayList<>();
         List<Long> newIds = new ArrayList<>(selectedLegislatorIds);
         for( ReportCardLegislator rcl : reportCardLegislators ){
-            Long workingId = rcl.getId();
+            Long workingId = rcl.getLegislator().getId();
             if ( ! selectedLegislatorIds.contains(workingId) ){
                 toRemove.add(rcl);
                 newIds.remove(workingId);
