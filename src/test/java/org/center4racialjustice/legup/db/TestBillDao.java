@@ -7,6 +7,10 @@ import org.junit.Test;
 
 public class TestBillDao {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void testSearchByChamberStuff(){
 

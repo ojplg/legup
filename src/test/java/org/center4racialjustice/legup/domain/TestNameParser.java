@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 
 public class TestNameParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     private static Map<String, Name> loadOverrides(){
         NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
         return nameOverrides.getOverrides();

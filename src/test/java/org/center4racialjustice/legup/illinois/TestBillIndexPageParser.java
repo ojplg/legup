@@ -8,6 +8,10 @@ import java.io.InputStream;
 
 public class TestBillIndexPageParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void test_findSubIndexUrl_Senate_3622(){
 

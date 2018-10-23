@@ -13,6 +13,10 @@ import java.util.List;
 
 public class TestBillVotesParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     private final String bill8FileName = "/pdfs/10000SB0008_02082017_002000T.pdf";
     private final String bill3179FileName = "/pdfs/10000HB3179_05262017_048000T.pdf";
     private final String houseBill2771FileName =  "/pdfs/10000HB2771_04272017_028000T.pdf";

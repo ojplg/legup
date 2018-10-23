@@ -18,6 +18,10 @@ import java.util.List;
 
 public class TestReportCardDao {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @BeforeClass
     @AfterClass
     public static void setUp() throws SQLException {
@@ -207,23 +211,17 @@ public class TestReportCardDao {
             reportCardDao.save(reportCard);
             reportCardId = reportCard.getId();
             connection.commit();
-
-            System.out.println("Saved report card with id " + reportCardId);
         }
         {
             Connection connection = DbTestConfigs.connect();
 
             ReportCardDao reportCardDao = new ReportCardDao(connection);
 
-            System.out.println("Working on report card with ID " + reportCardId);
             ReportCard readCard = reportCardDao.read(reportCardId);
-            System.out.println("Found report card with ID " + readCard.getId());
 
             Assert.assertEquals(1, readCard.getReportFactors().size());
 
             ReportFactor factor2 = new ReportFactor();
-
-            System.out.println("Adding bill with id " + bill2.getId());
 
             factor2.setBill(bill2);
             factor2.setVoteSide(VoteSide.Yea);
@@ -236,11 +234,6 @@ public class TestReportCardDao {
             reportCardDao.save(readCard);
 
             connection.commit();
-
-            System.out.println("*************************************");
-            System.out.println("*************************************");
-
-            System.out.println(readCard);
         }
         {
             Connection connection = DbTestConfigs.connect();

@@ -13,6 +13,10 @@ import java.util.Map;
 
 public class TestMemberHtmlParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     private static Map<String, Name> loadOverrides(){
         NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
         return nameOverrides.getOverrides();

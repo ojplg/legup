@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
 
 public class TestBillActionLoadDao {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Before
     @After
     public void setUp() throws SQLException {

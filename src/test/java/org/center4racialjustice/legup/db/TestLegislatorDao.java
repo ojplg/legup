@@ -14,6 +14,10 @@ import java.util.List;
 
 public class TestLegislatorDao {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Before
     @After
     public void setUp() throws SQLException {

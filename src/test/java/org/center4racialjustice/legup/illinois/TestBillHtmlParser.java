@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 public class TestBillHtmlParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     private static String HouseBill2771BaseUrl =
             "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 

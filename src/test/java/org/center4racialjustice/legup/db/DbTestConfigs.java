@@ -5,6 +5,10 @@ import java.sql.SQLException;
 
 public class DbTestConfigs {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     public static final String PostgresUrl = "jdbc:postgresql://localhost:5432/legup_test";
     public static final String PostgresUser = "legupuser";
     public static final String PostgresPassword = "legupuserpass";

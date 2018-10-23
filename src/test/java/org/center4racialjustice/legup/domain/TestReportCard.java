@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 
 public class TestReportCard {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void testSimplestCalculation(){
 

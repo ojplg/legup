@@ -6,6 +6,10 @@ import org.junit.Test;
 
 public class TestBillSearcher {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void testSearchForBaseUrl_Senate_123(){
 

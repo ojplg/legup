@@ -7,6 +7,10 @@ import java.io.InputStream;
 
 public class TestBillSubIndexPageParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void testFindSubIndexPage_Senate_123(){
 

@@ -12,6 +12,10 @@ import java.util.List;
 
 public class TestVotesLegislatorsCollator {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void correctlyMatchesByLastName(){
         BillVotes bv = new BillVotes();

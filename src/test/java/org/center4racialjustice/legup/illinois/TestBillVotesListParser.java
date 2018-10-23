@@ -8,6 +8,10 @@ import java.util.Map;
 
 public class TestBillVotesListParser {
 
+    static {
+        System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
+    }
+
     @Test
     public void findBillVotesUrls_House_2771() {
 
