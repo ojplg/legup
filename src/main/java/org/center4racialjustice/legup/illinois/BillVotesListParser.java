@@ -63,6 +63,10 @@ public class BillVotesListParser {
             }
         }
 
+        for(Map.Entry<String, String> entry : urls.entrySet()){
+            log.info("Found url for " + entry.getKey() + " with value " + entry.getValue());
+        }
+
         return urls;
     }
 
