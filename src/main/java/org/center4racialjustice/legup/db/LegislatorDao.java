@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.db;
 
 import org.hrorm.Dao;
-import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 
 import java.sql.Connection;
@@ -41,14 +40,5 @@ public class LegislatorDao {
         Legislator legislator = new Legislator();
         legislator.setMemberId(memberId);
         return innerDao.selectByColumns(legislator,"MEMBER_ID");
-    }
-
-    public List<Legislator> readByChamberDistrictSession(Chamber chamber, long district, long session){
-        // NOTE: These are not unique! Legislators can be replaced mid-term.
-        Legislator legislator = new Legislator();
-        legislator.setChamber(chamber);
-        legislator.setDistrict(district);
-        legislator.setSessionNumber(session);
-        return innerDao.selectManyByColumns(legislator, "CHAMBER", "DISTRICT", "SESSION_NUMBER");
     }
 }

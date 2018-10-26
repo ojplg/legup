@@ -29,10 +29,6 @@ public class BillDao {
         return innerDao.selectManyByColumns(bill, "SESSION_NUMBER");
     }
 
-    public List<Bill> readByIds(List<Long> ids){
-        return innerDao.selectMany(ids);
-    }
-
     public void update(Bill item) {
         innerDao.update(item);
     }
