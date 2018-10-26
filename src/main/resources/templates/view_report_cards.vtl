@@ -11,12 +11,25 @@
     #foreach ($report_card in $report_cards)
         <tr>
             <td>$report_card.Name</td>
-            <td><a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a></td>
-            <td><a href="/legup/view_report_card_form?report_card_id=$report_card.Id">edit</a></td>
+            <td>
+                <span class="tooltip">
+                    <span class="tooltiptext">See the results of applying a report card to known votes.</span>
+                    <a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a>
+                </span>
+            </td>
+            <td>
+                <span class="tooltip">
+                    <span class="tooltiptext">Change the configuration of this report card.</span>
+                    <a href="/legup/view_report_card_form?report_card_id=$report_card.Id">edit</a>
+                </span>
+            </td>
         </tr>
     #end
 </table>
 
 <br/>
 
-<a href="/legup/view_report_card_form">New</a>
+<span class="tooltip">
+    <span class="tooltiptext">Create a new report card.</span>
+    <a href="/legup/view_report_card_form">New</a>
+</span>
