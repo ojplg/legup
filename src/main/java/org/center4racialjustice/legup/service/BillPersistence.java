@@ -54,7 +54,7 @@ public class BillPersistence {
     }
 
     public BillSaveResults saveParsedData(BillSearchResults billSearchResults) {
-        BillSaveResults results = connectionPool.runAndCommit(connection -> {
+        return connectionPool.runAndCommit(connection -> {
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
             Bill bill;
@@ -111,7 +111,6 @@ public class BillPersistence {
             BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
             return new BillSaveResults(bill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
         });
-        return results;
     }
 
     private Tuple<Bill, BillActionLoad> updateBill(Connection connection, Bill bill, BillActionLoad oldLoad, String url, long checkSum) {
