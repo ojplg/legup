@@ -12,10 +12,12 @@
         <tr>
             <td>$report_card.Name</td>
             <td>
-                <span class="tooltip">
-                    <span class="tooltiptext">See the results of applying a report card to known votes.</span>
-                    <a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a>
-                </span>
+                #if ( ${report_card.hasFactors()} )
+                    <span class="tooltip">
+                        <span class="tooltiptext">See the results of applying a report card to known votes.</span>
+                        <a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a>
+                    </span>
+                #end
             </td>
             <td>
                 <span class="tooltip">

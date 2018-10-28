@@ -86,6 +86,10 @@ public class ReportCard {
         return reportCardLegislators.stream().map(ReportCardLegislator::getLegislator).collect(Collectors.toList());
     }
 
+    public boolean hasFactors(){
+        return reportFactors.size() > 0;
+    }
+
     public SortedMap<Legislator, Boolean> findSelectedLegislators(List<Legislator> legislators){
         TreeMap<Legislator, Boolean> map = new TreeMap<>();
 
