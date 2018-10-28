@@ -17,6 +17,7 @@ public class ViewReportCardBills implements Responder {
 
         response.putVelocityData("bills", reportCardGrades.getBills());
         response.putVelocityData("reportCardName", reportCardGrades.getReportCardName());
+        response.putVelocityData("reportCardId", reportCardGrades.getReportCard().getId());
         response.putVelocityData("oneTimeKey", oneTimeKey);
 
         return response;
