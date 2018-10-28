@@ -11,6 +11,8 @@ $(document).ready(function()
                , "<a href='/legup/view_report_card_form?report_card_id=$reportCard.Id'>Edit</a>"
                , "<a href='/legup/view_report_card_scores_csv?one_time_key=$oneTimeKey'>CSV</a>"])
 
+#set ( $helpLink = '/legup/help/view_report_card_scores' )
+
 #parse( "/templates/insert_nav_bar.vtl" )
 
 <h4>$reportCard.Name: Scores</h4>
