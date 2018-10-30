@@ -78,8 +78,6 @@ Features/bugs to work on
   * Allow configuartion of grading options: absolute grades versus grading on a curve
 * Add legislator tracking for veto session, etc (Louisa must define)
 * Load things other than "Third Reading" Vote PDFs: Committee votes
-* Break up new report card creation from bill editing. Being able to edit the session makes
-  no sense.
 
 # Better Option
 

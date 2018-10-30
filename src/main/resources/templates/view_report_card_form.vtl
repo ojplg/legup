@@ -5,26 +5,19 @@
 
 <h4>Edit Report Card</h4>
 
+<table class="pure-table">
+    <tr>
+        <td>Name</td><td>$report_card.Name</td>
+    </tr>
+    <tr>
+        <td>Session</td><td>$report_card.SessionNumber</td>
+    </tr>
+</table>
+
 <form action="/legup/save_report_card" id="save_report_card_form" class="pure-form pure-form-aligned" method="post">
 
     <fieldset>
-        <input type="hidden" name="id" value="$!report_card.Id"/>
-
-        <div class="pure-control-group">
-            <label for="name">Name</label>
-            <input type="text" name="name" value="$!report_card.Name"/>
-            #if ( $nameError )
-                <span class="pure-form-message-inline">$nameError</span>
-            #end
-        </div>
-
-        <div class="pure-control-group">
-            <label for="session">Session</label>
-            <input type="text" name="session" value="$!report_card.SessionNumber"/>
-            #if ( $sessionError )
-                <span class="pure-form-message-inline">$sessionError</span>
-            #end
-        </div>
+        <input type="hidden" name="id" value="$report_card.Id"/>
 
         <h5>Factors</h5>
         <table class="pure-table">
@@ -54,6 +47,8 @@
                 </tr>
             #end
         </table>
+
+        <input type="submit" value="Save"/>
 
         <div class="pure-g">
 

@@ -6,6 +6,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.web.responders.SaveNewReportCard;
 import org.center4racialjustice.legup.web.responders.SaveReportCard;
 import org.center4racialjustice.legup.web.responders.SaveSearchedBill;
 import org.center4racialjustice.legup.web.responders.ViewBillForm;
@@ -14,6 +15,7 @@ import org.center4racialjustice.legup.web.responders.ViewBillSearchResults;
 import org.center4racialjustice.legup.web.responders.ViewBillSponsors;
 import org.center4racialjustice.legup.web.responders.ViewLegislatorVotes;
 import org.center4racialjustice.legup.web.responders.ViewLegislators;
+import org.center4racialjustice.legup.web.responders.ViewNewReportCardForm;
 import org.center4racialjustice.legup.web.responders.ViewParsedLegislators;
 import org.center4racialjustice.legup.web.responders.ViewFindLegislatorsForm;
 import org.center4racialjustice.legup.web.responders.SaveLegislators;
@@ -73,6 +75,8 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewBillDataTable(connectionPool));
         responders.add(new ViewBillDataCsv(connectionPool));
         responders.add(new ViewReportCardScoresCsv());
+        responders.add(new ViewNewReportCardForm());
+        responders.add(new SaveNewReportCard(connectionPool));
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());

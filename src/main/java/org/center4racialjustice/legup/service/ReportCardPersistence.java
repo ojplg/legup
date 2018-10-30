@@ -34,15 +34,14 @@ public class ReportCardPersistence {
         );
     }
 
-    public ReportCard updateReportCard(long id, String name, long sessionNumber,
+    public ReportCard updateReportCard(long id,
                                         Map<Long, VoteSide> voteSideByBillIdMap,
                                         List<Long> selectedLegislatorIds){
         return connectionPool.runAndCommit(
                 connection -> {
                     ReportCardDao reportCardDao = new ReportCardDao(connection);
                     ReportCard reportCard = reportCardDao.read(id);
-                    reportCard.setName(name);
-                    reportCard.setSessionNumber(sessionNumber);
+                    Long sessionNumber = reportCard.getSessionNumber();
 
                     BillDao billDao = new BillDao(connection);
                     List<Bill> bills = billDao.readBySession(sessionNumber);
