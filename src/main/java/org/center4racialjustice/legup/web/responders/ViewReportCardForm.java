@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
+import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.LegupResponse;
@@ -27,9 +28,11 @@ public class ViewReportCardForm implements Responder {
     private static final Logger log = LogManager.getLogger(ViewReportCardForm.class);
 
     private final ConnectionPool connectionPool;
+    private final ReportCardPersistence reportCardPersistence;
 
     public ViewReportCardForm(ConnectionPool connectionPool){
         this.connectionPool = connectionPool;
+        this.reportCardPersistence = new ReportCardPersistence(connectionPool);
     }
 
     @Override
@@ -42,58 +45,24 @@ public class ViewReportCardForm implements Responder {
 
         log.info("Request for form for " + reportCardId);
 
-        return connectionPool.useConnection( connection -> {
+        ReportCard reportCard = connectionPool.useConnection(
+                connection -> {
+                    ReportCardDao reportCardDao = new ReportCardDao(connection);
+                    return reportCardDao.read(reportCardId);
+                });
 
-            ReportCardDao reportCardDao = new ReportCardDao(connection);
-            ReportCard reportCard = reportCardDao.read(reportCardId);
+        SortedMap<Bill, String> factorSettings = reportCardPersistence.computeFactorSettings(reportCard);
+        Tuple<SortedMap<Legislator, Boolean>, SortedMap<Legislator, Boolean>> selectedLegislators =
+                reportCardPersistence.computeSelectedLegislators(reportCard);
 
-            Long sessionId = reportCard.getSessionNumber();
+        LegupResponse response = new LegupResponse(this.getClass());
 
-            BillDao billDao = new BillDao(connection);
-            List<Bill> bills = billDao.readBySession(sessionId);
-            Collections.sort(bills);
-            SortedMap<Bill, String> factorSettings = computeFactorSettings(bills, reportCard);
+        response.putVelocityData("report_card", reportCard);
+        response.putVelocityData("factor_settings", factorSettings);
+        response.putVelocityData("selectedHouse", selectedLegislators.getFirst());
+        response.putVelocityData("selectedSenate", selectedLegislators.getSecond());
 
-            LegislatorDao legislatorDao = new LegislatorDao(connection);
-            List<Legislator> legislators = legislatorDao.readBySession(sessionId);
-
-            log.info("Found legislators " + legislators.size());
-
-            Tuple<List<Legislator>, List<Legislator>> splitLegislators = Legislator.splitByChamber(legislators);
-
-            SortedMap<Legislator, Boolean> selectedHouse = reportCard.findSelectedLegislators(splitLegislators.getFirst());
-            SortedMap<Legislator, Boolean> selectedSenate = reportCard.findSelectedLegislators(splitLegislators.getSecond());
-
-            log.info("selected house " + selectedHouse.size());
-            log.info("selected senate " + selectedSenate.size());
-
-            LegupResponse response = new LegupResponse(this.getClass());
-
-            response.putVelocityData("report_card", reportCard);
-            response.putVelocityData("factor_settings", factorSettings);
-            response.putVelocityData("selectedHouse", selectedHouse);
-            response.putVelocityData("selectedSenate", selectedSenate);
-
-            return response;
-        });
-    }
-
-    private SortedMap<Bill, String> computeFactorSettings(List<Bill> bills, ReportCard reportCard){
-        List<ReportFactor> factors = reportCard.getReportFactors();
-        Map<Long, ReportFactor> factorsByBillId = Lists.asMap(factors, f -> f.getBill().getId());
-
-        SortedMap<Bill, String> factorSettings = new TreeMap<>();
-
-        for(Bill bill : bills){
-            ReportFactor matchingFactor = factorsByBillId.get(bill.getId());
-            if ( matchingFactor == null ){
-                factorSettings.put(bill, "Unselected");
-            } else {
-                factorSettings.put(bill, matchingFactor.getVoteSide().getCode());
-            }
-
-        }
-        return factorSettings;
+        return response;
     }
 
 }

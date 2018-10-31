@@ -154,4 +154,23 @@ public class ReportCard {
             addReportCardLegislator(rcl);
         }
     }
+
+    public SortedMap<Bill, String> computeFactorSettings(List<Bill> bills){
+        List<ReportFactor> factors = getReportFactors();
+        Map<Long, ReportFactor> factorsByBillId = Lists.asMap(factors, f -> f.getBill().getId());
+
+        SortedMap<Bill, String> factorSettings = new TreeMap<>();
+
+        for(Bill bill : bills){
+            ReportFactor matchingFactor = factorsByBillId.get(bill.getId());
+            if ( matchingFactor == null ){
+                factorSettings.put(bill, "Unselected");
+            } else {
+                factorSettings.put(bill, matchingFactor.getVoteSide().getCode());
+            }
+
+        }
+        return factorSettings;
+    }
+
 }
