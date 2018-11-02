@@ -137,3 +137,28 @@ end;
 --changeset ojplg:2
 
 alter table bill_actions add constraint uniq_bill_action unique (bill_id, legislator_id, bill_action_type);
+
+--changeset ojplg:3
+
+create sequence organization_seq start 1;
+
+create table organizations (
+    id integer PRIMARY KEY,
+    name text not null
+);
+
+create sequence user_seq start 1;
+
+create table users (
+    id integer PRIMARY KEY,
+    email text not null,
+    salt text not null,
+    password text not null,
+    organization_id integer not null
+);
+
+alter table users add foreign key (organization_id) references organizations(id);
+
+alter table report_cards add organization_id integer not null;
+
+alter table report_cards add foreign key (organization_id) references organizations(id);

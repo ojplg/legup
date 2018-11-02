@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.Organization;
+import org.center4racialjustice.legup.domain.User;
 import org.hrorm.DaoBuilder;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
@@ -88,5 +90,19 @@ public class DaoBuilders {
                 .withJoinColumn("LEGISLATOR_ID", BillAction::getLegislator, BillAction::setLegislator, LEGISLATORS)
                 .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS);
 
+    }
+
+    private static DaoBuilder<User> userDaoBuilder(){
+        return new DaoBuilder<>("USERS", User::new)
+                .withPrimaryKey("ID", "user_seq", User::getId, User::setId)
+                .withStringColumn("EMAIL", User::getEmail, User::setEmail)
+                .withStringColumn("SALT", User::getSalt, User::setSalt)
+                .withStringColumn("PASSWORD", User::getPassword, User::setPassword);
+    }
+
+    private static DaoBuilder<Organization> organizationDaoBuilder(){
+        return new DaoBuilder<>("ORGANIZATIONS", Organization::new)
+                .withPrimaryKey("ID", "organization_seq", Organization::getId, Organization::setId)
+                .withStringColumn("NAME", Organization::getName, Organization::setName);
     }
 }
