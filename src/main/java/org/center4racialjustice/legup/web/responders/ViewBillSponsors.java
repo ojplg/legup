@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
@@ -59,7 +60,7 @@ public class ViewBillSponsors implements Responder {
             List<Legislator> chiefHouseSponsors = chiefSponsorsTuple.getFirst();
             List<Legislator> chiefSenateSponsors = chiefSponsorsTuple.getSecond();
 
-            LegupResponse response = new LegupResponse(this.getClass());
+            HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
 
             if( chiefHouseSponsors.size() > 0 ){
                 response.putVelocityData("chief_house_sponsor", chiefHouseSponsors.get(0));

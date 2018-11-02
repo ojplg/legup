@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionSummary;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
@@ -35,7 +36,7 @@ public class ViewBillVotes implements Responder {
             List<BillAction> billActions = billActionDao.readByBill(bill);
             BillActionSummary billActionSummary = new BillActionSummary(billActions);
 
-            LegupResponse legupResponse = new LegupResponse(this.getClass());
+            HtmlLegupResponse legupResponse = new HtmlLegupResponse(this.getClass());
 
             legupResponse.putVelocityData("billActionSummary", billActionSummary);
             legupResponse.putVelocityData("bill", bill);

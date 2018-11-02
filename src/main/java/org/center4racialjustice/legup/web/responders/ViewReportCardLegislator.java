@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.responders;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.domain.ReportCardLegislatorAnalysis;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -21,7 +22,7 @@ public class ViewReportCardLegislator implements Responder {
         ReportCardGrades reportCardGrades = (ReportCardGrades) submission.getObject(LegupSession.ReportCardGradesKey);
         ReportCardLegislatorAnalysis reportCardLegislatorAnalysis = reportCardGrades.getLegislatorAnalysis(legislatorId);
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
 
         response.putVelocityData("oneTimeKey", oneTimeKey);
         response.putVelocityData("reportCardGrades", reportCardGrades);

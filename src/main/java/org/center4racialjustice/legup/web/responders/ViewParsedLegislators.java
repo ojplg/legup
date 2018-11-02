@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.illinois.MemberHtmlParser;
 import org.center4racialjustice.legup.service.LegislatorPersistence;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -32,7 +33,7 @@ public class ViewParsedLegislators implements Responder {
 
         String oneTimeKey = submission.setObject(LegupSession.UnknownLegislatorsKey, unknownLegislators);
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
         response.putVelocityData("legislators", unknownLegislators);
         response.putVelocityData("parsedLegislatorCount", legislators.size());
         response.putVelocityData("oneTimeKey", oneTimeKey);

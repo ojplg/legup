@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.service.BillPersistence;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -34,7 +35,7 @@ public class ViewBillSearchResults implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         if ( ! submission.isValidLongParameter("number") ){
-            return LegupResponse.forError(ViewBillSearchForm.class, "Problem parsing form input",
+            return HtmlLegupResponse.forError(ViewBillSearchForm.class, "Problem parsing form input",
                     Collections.singletonMap("number","Could not parse bill number from input " + submission.getParameter("number")));
         }
 
@@ -52,7 +53,7 @@ public class ViewBillSearchResults implements Responder {
 
         String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
 
         response.putVelocityData("billSearchResults", billSearchResults);
         response.putVelocityData("bill", billSearchResults.getParsedBill());

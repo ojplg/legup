@@ -4,8 +4,10 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.LookupTable;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.PlainTextLegupResponse;
 import org.center4racialjustice.legup.web.Responder;
 
 public class ViewBillDataCsv implements Responder {
@@ -23,7 +25,7 @@ public class ViewBillDataCsv implements Responder {
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         LookupTable<Legislator, String, String> billActionTable = billPersistence.generateBillActionSummary(billId);
 
-        LegupResponse response = LegupResponse.forPlaintext(this.getClass());
+        PlainTextLegupResponse response = new PlainTextLegupResponse(this.getClass());
         response.putVelocityData("billActionTable", billActionTable);
         response.putVelocityData("legislators", billActionTable.sortedRowHeadings(Legislator::compareTo));
         return response;

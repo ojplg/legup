@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.util.Tuple;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
@@ -26,7 +27,7 @@ public class SaveNewReportCard implements Responder {
     public LegupResponse handle(LegupSubmission submission) {
         Map<String, String> errors = validate(submission);
         if (errors.size() > 0) {
-            return LegupResponse.forError(
+            return HtmlLegupResponse.forError(
                     ViewReportCardForm.class, "Could not save report card. See error(s) below.", errors);
         }
 
@@ -39,7 +40,7 @@ public class SaveNewReportCard implements Responder {
         Tuple<SortedMap<Legislator, Boolean>, SortedMap<Legislator, Boolean>> selectedLegislators =
                 reportCardPersistence.computeSelectedLegislators(card);
 
-        LegupResponse response = new LegupResponse(ViewReportCardForm.class);
+        HtmlLegupResponse response = new HtmlLegupResponse(ViewReportCardForm.class);
 
         response.putVelocityData("report_card", card);
         response.putVelocityData("factor_settings", factorSettings);

@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.ReportCardBillAnalysis;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -20,7 +21,7 @@ public class ViewReportCardBill implements Responder {
         ReportCardGrades reportCardGrades = (ReportCardGrades) submission.getObject(LegupSession.ReportCardGradesKey);
         ReportCardBillAnalysis reportCardBillAnalysis = reportCardGrades.getBillAnalysis(billId);
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
 
         response.putVelocityData("oneTimeKey", oneTimeKey);
         response.putVelocityData("reportCardGrades", reportCardGrades);

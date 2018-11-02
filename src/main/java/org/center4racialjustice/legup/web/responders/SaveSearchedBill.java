@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.service.BillPersistence;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -25,7 +26,7 @@ public class SaveSearchedBill implements Responder {
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         BillSaveResults billSaveResults = billPersistence.saveParsedData(billSearchResults);
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
         response.putVelocityData("bill", billSaveResults.getBill());
         response.putVelocityData("sponsorSaveResults", billSaveResults.getSponsorSaveResults());
         response.putVelocityData("billSaveResults", billSaveResults);

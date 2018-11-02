@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.service.GradingService;
 import org.center4racialjustice.legup.util.LookupTable;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -35,7 +36,7 @@ public class ViewReportCardScores implements Responder {
         LookupTable<Legislator, Bill, Integer> scores = reportCardGrades.getLookupTable();
         Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
 
         response.putVelocityData("oneTimeKey", oneTimeKey);
         response.putVelocityData("scores", scores);

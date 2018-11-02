@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
+import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
@@ -34,7 +35,7 @@ public class SaveReportCard implements Responder {
         Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
         ReportCard card = reportCardPersistence.updateReportCard(id, voteSideMap, legislatorIds);
 
-        LegupResponse response = new LegupResponse(this.getClass());
+        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
         response.putVelocityData("reportCard", card);
         return response;
     }
