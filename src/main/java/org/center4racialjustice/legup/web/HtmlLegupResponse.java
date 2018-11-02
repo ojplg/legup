@@ -22,7 +22,7 @@ public class HtmlLegupResponse implements LegupResponse {
         this.velocityContext = new VelocityContext();
         this.templateName = Util.classNameToLowercaseWithUnderlines(responderClass) + ".vtl";
     }
-    
+
     public void putVelocityData(String key, Object value){
         velocityContext.put(key, value);
     }
@@ -43,7 +43,17 @@ public class HtmlLegupResponse implements LegupResponse {
     }
 
     @Override
-    public String getTemplateName(){
+    public String actionKey(){
         return templateName;
+    }
+
+    @Override
+    public boolean shouldRender() {
+        return true;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        throw new UnsupportedOperationException();
     }
 }

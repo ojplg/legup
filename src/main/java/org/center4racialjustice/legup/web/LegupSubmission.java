@@ -1,5 +1,8 @@
 package org.center4racialjustice.legup.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.util.MultiMap;
 import org.hrorm.Converter;
 import org.eclipse.jetty.server.Request;
 
@@ -9,16 +12,39 @@ import java.util.Map;
 
 public class LegupSubmission {
 
+    private final Logger log = LogManager.getLogger(LegupSubmission.class);
+
     private final LegupSession legupSession;
-    private final Request request;
+    private final Map<String,String> parameters;
 
     public LegupSubmission(LegupSession legupSession, Request request) {
         this.legupSession = legupSession;
-        this.request = request;
+        this.parameters = new HashMap<>();
+
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while( parameterNames.hasMoreElements()){
+            String name = parameterNames.nextElement();
+            String value = request.getParameter(name);
+            parameters.put(name, value);
+        }
+
+        log.info("HAVE PARAMETERS  " + parameters.size());
+//        for(String parameterName : parameters.keySet()) {
+//            log.info("   " + parameterName + "  ->  " + parameters.getString(parameterName));
+//        }
+    }
+
+    private LegupSubmission(LegupSession legupSession, Map<String, String> parameters){
+        this.legupSession = legupSession;
+        this.parameters = parameters;
+    }
+
+    public LegupSubmission update(Map<String, String> parameters){
+        return new LegupSubmission(legupSession, parameters);
     }
 
     public <T> T getConvertedParameter(String parameterName, Converter<T, String> converter){
-        String parameterValueString = request.getParameter(parameterName);
+        String parameterValueString = internalGetParameter(parameterName);
         if ( parameterValueString != null ){
             return converter.to(parameterValueString);
         }
@@ -26,7 +52,7 @@ public class LegupSubmission {
     }
 
     public Long getLongRequestParameter(String parameterName){
-        String parameterValueString = request.getParameter(parameterName);
+        String parameterValueString = internalGetParameter(parameterName);
         if ( parameterValueString != null && parameterValueString.length() > 0 ){
             return Long.parseLong(parameterValueString);
         }
@@ -34,7 +60,7 @@ public class LegupSubmission {
     }
 
     public boolean isNonEmptyStringParameter(String parameterName){
-        String parameterValue = request.getParameter(parameterName);
+        String parameterValue = internalGetParameter(parameterName);
         return parameterValue != null && parameterValue.trim().length() > 0;
     }
 
@@ -48,7 +74,7 @@ public class LegupSubmission {
     }
 
     public String getParameter(String parameterName){
-        return request.getParameter(parameterName);
+        return internalGetParameter(parameterName);
     }
 
     public String setObject(String key, Object item){
@@ -56,23 +82,28 @@ public class LegupSubmission {
     }
 
     public Object getObject(String key){
-        String oneTimeKey = request.getParameter("one_time_key");
+        String oneTimeKey = internalGetParameter("one_time_key");
         return legupSession.getObject(key, oneTimeKey);
     }
 
     public Map<Long, String> extractNumberedParameters(String prefix){
         Map<Long, String> parameterValues = new HashMap<>();
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while(parameterNames.hasMoreElements()) {
-            String parameterName = parameterNames.nextElement();
+        for(String parameterName : parameters.keySet() ) {
             if (parameterName.startsWith(prefix)){
                 String numberString = parameterName.substring(prefix.length());
                 Long number = Long.parseLong(numberString);
-                String value = request.getParameter(parameterName);
+                String value = parameters.get(parameterName);
                 parameterValues.put(number, value);
             }
         }
         return parameterValues;
+    }
+
+    private String internalGetParameter(String parameterName){
+        log.info("Looking for " + parameterName);
+        String value = parameters.get(parameterName);
+        log.info(" FOUND " + value);
+        return value;
     }
 
 }

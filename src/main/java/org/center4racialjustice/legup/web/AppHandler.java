@@ -94,12 +94,7 @@ public class AppHandler extends AbstractHandler {
             String appPath = request.getPathInfo();
 
             if (responderMap.containsKey(appPath)) {
-                Responder responder = responderMap.get(appPath);
-                log.info("Handling request to " + appPath + " with " + responder.getClass().getSimpleName());
-                LegupSubmission legupSubmission = instantiateSubmission(request);
-                LegupResponse legupResponse = responder.handle(legupSubmission);
-                processResponse(legupResponse, httpServletResponse);
-                request.setHandled(true);
+                runResponder(request, httpServletResponse);
             } else if ( appPath.startsWith("/help") ) {
                 log.info("serving help for " + appPath);
                 doHelpRequest(appPath, httpServletResponse);
@@ -135,9 +130,28 @@ public class AppHandler extends AbstractHandler {
         return new LegupSubmission(legupSession, request);
     }
 
+    private void runResponder(Request request, HttpServletResponse httpServletResponse)
+    throws IOException {
+        String appPath = request.getPathInfo();
+        Responder responder = responderMap.get(appPath);
+        LegupSubmission legupSubmission = instantiateSubmission(request);
+
+        log.info("Handling request to " + appPath + " with " + responder.getClass().getSimpleName());
+        LegupResponse legupResponse = responder.handle(legupSubmission);
+        while( ! legupResponse.shouldRender() ){
+            String nextKey = legupResponse.actionKey();
+            log.info("Forwarded response to " + nextKey);
+            Responder nextResponder = responderMap.get(nextKey);
+            legupSubmission = legupSubmission.update(legupResponse.getParameters());
+            legupResponse = nextResponder.handle(legupSubmission);
+        }
+        processResponse(legupResponse, httpServletResponse);
+        request.setHandled(true);
+    }
+
     private void processResponse(LegupResponse legupResponse, HttpServletResponse httpServletResponse)
     throws IOException {
-        String templatePath = "/templates/" + legupResponse.getTemplateName();
+        String templatePath = "/templates/" + legupResponse.actionKey();
         log.info("Rendering response with template " + templatePath);
         httpServletResponse.setHeader("Content-Type", legupResponse.getContentType());
         Writer writer = httpServletResponse.getWriter();

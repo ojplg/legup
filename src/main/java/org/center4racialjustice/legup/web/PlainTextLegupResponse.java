@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.velocity.VelocityContext;
 
+import java.util.Map;
+
 public class PlainTextLegupResponse implements LegupResponse {
 
     private final String templateName;
@@ -32,7 +34,17 @@ public class PlainTextLegupResponse implements LegupResponse {
     }
 
     @Override
-    public String getTemplateName() {
+    public String actionKey() {
         return templateName;
+    }
+
+    @Override
+    public boolean shouldRender() {
+        return true;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        throw new UnsupportedOperationException();
     }
 }

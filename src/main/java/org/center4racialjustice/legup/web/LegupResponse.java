@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.velocity.VelocityContext;
 
+import java.util.Map;
+
 public interface LegupResponse {
     VelocityContext getVelocityContext();
 
@@ -9,5 +11,9 @@ public interface LegupResponse {
 
     String getContentType();
 
-    String getTemplateName();
+    String actionKey();
+
+    boolean shouldRender();
+
+    Map<String,String> getParameters();
 }
