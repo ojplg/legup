@@ -21,7 +21,7 @@ public class User {
     private static String encrypt(String password, String salt) {
         try {
             SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            KeySpec ks = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 1024, 128);
+            KeySpec ks = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 10000, 128);
             SecretKey s = f.generateSecret(ks);
             return new String(s.getEncoded());
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex){
