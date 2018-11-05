@@ -7,6 +7,7 @@ import org.apache.velocity.app.Velocity;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.web.responders.SaveNewReportCard;
+import org.center4racialjustice.legup.web.responders.SaveNewUser;
 import org.center4racialjustice.legup.web.responders.SaveReportCard;
 import org.center4racialjustice.legup.web.responders.SaveSearchedBill;
 import org.center4racialjustice.legup.web.responders.ViewBillForm;
@@ -77,6 +78,7 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewReportCardScoresCsv());
         responders.add(new ViewNewReportCardForm());
         responders.add(new SaveNewReportCard(connectionPool));
+        responders.add(new SaveNewUser(connectionPool));
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());
