@@ -51,4 +51,8 @@ public class LegupSession {
     public void setLoggedInUser(User user){
         this.loggedInUser = user;
     }
+
+    public User getLoggedInUser(){
+        return this.loggedInUser;
+    }
 }

@@ -11,7 +11,7 @@
 
         <div class="pure-control-group">
             <label for="name">Name</label>
-            <input type="text" id="name" value="$!report_card.Name"/>
+            <input type="text" id="name" name="name" value="$!report_card.Name"/>
             #if ( $nameError )
                 <span class="pure-form-message-inline">$nameError</span>
             #end
@@ -19,7 +19,7 @@
 
         <div class="pure-control-group">
             <label for="session">Session</label>
-            <input type="text" id="session" value="$!report_card.SessionNumber"/>
+            <input type="text" id="session" name="session" value="$!report_card.SessionNumber"/>
             #if ( $sessionError )
                 <span class="pure-form-message-inline">$sessionError</span>
             #end

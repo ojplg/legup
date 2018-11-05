@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.eclipse.jetty.util.MultiMap;
 import org.hrorm.Converter;
@@ -107,4 +108,11 @@ public class LegupSubmission {
         this.legupSession.setLoggedInUser(user);
     }
 
+    public boolean isLoggedIn(){
+        return legupSession.getLoggedInUser() != null;
+    }
+
+    public Organization getOrganization(){
+        return legupSession.getLoggedInUser().getOrganization();
+    }
 }
