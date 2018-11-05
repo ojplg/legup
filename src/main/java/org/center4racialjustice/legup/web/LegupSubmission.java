@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.domain.User;
 import org.eclipse.jetty.util.MultiMap;
 import org.hrorm.Converter;
 import org.eclipse.jetty.server.Request;
@@ -27,11 +28,6 @@ public class LegupSubmission {
             String value = request.getParameter(name);
             parameters.put(name, value);
         }
-
-        log.info("HAVE PARAMETERS  " + parameters.size());
-//        for(String parameterName : parameters.keySet()) {
-//            log.info("   " + parameterName + "  ->  " + parameters.getString(parameterName));
-//        }
     }
 
     private LegupSubmission(LegupSession legupSession, Map<String, String> parameters){
@@ -104,6 +100,11 @@ public class LegupSubmission {
         String value = parameters.get(parameterName);
         log.info(" FOUND " + value);
         return value;
+    }
+
+
+    public void setLoggedInUser(User user){
+        this.legupSession.setLoggedInUser(user);
     }
 
 }
