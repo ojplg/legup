@@ -49,4 +49,21 @@ public class UserService {
         });
     }
 
+    public User login(String email, String password){
+        log.info("Logging in new user " + email);
+
+        return connectionPool.useConnection( connection ->
+                {
+                    User template = new User();
+                    template.setEmail(email);
+                    Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
+                    User user = dao.selectByColumns(template, "EMAIL");
+                    if ( user.correctPassword(password)){
+                        return user;
+                    }
+                    return null;
+                }
+        );
+    }
+
 }
