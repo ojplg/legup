@@ -2,9 +2,11 @@ package org.center4racialjustice.legup.db;
 
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.hrorm.Dao;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -31,15 +33,29 @@ public class TestReportCardDao {
     private static void clearTables() throws SQLException {
         Connection connection = DbTestConfigs.connect();
         Statement statement = connection.createStatement();
+        statement.execute("delete from users");
         statement.execute("delete from bill_actions");
         statement.execute("delete from bill_action_loads");
         statement.execute("delete from report_factors");
         statement.execute("delete from report_card_legislators");
         statement.execute("delete from bills");
         statement.execute("delete from report_cards");
+        statement.execute("delete from organizations");
         connection.commit();
         statement.close();
         connection.close();
+    }
+
+    private Organization newSavedOrganization(String orgName){
+        Organization organization = new Organization();
+        organization.setName(orgName);
+
+        Connection con = DbTestConfigs.connect();
+        Dao<Organization> orgDao = DaoBuilders.ORGANIZATIONS.buildDao(con);
+
+        orgDao.insert(organization);
+
+        return organization;
     }
 
     @Test
@@ -47,6 +63,10 @@ public class TestReportCardDao {
 
         long id;
         Bill bill;
+        Organization organization = newSavedOrganization("organ");
+
+        System.out.println("ORG ID is " + organization.getId());
+
         {
             Connection connection = DbTestConfigs.connect();
 
@@ -67,6 +87,7 @@ public class TestReportCardDao {
             ReportCard reportCard = new ReportCard();
             reportCard.setName("Foo");
             reportCard.setSessionNumber(123);
+            reportCard.setOrganization(organization);
 
             id = reportCardDao.save(reportCard);
 

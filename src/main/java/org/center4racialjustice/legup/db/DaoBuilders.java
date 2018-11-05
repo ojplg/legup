@@ -23,6 +23,8 @@ public class DaoBuilders {
     public static final DaoBuilder<ReportCard> REPORT_CARDS = reportCardDaoBuilder();
     public static final DaoBuilder<BillActionLoad> BILL_ACTION_LOADS = billActionLoadDaoBuilder();
     public static final DaoBuilder<BillAction> BILL_ACTIONS = billActionDaoBuilder();
+    public static final DaoBuilder<Organization> ORGANIZATIONS = organizationDaoBuilder();
+    public static final DaoBuilder<User> USERS = userDaoBuilder();
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
@@ -68,6 +70,7 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "report_card_seq", ReportCard::getId, ReportCard::setId)
                 .withStringColumn("NAME", ReportCard::getName, ReportCard::setName)
                 .withIntegerColumn("SESSION_NUMBER", ReportCard::getSessionNumber, ReportCard::setSessionNumber)
+                .withParentColumn("ORGANIZATION_ID", ReportCard::getOrganization, ReportCard::setOrganization)
                 .withChildren(ReportCard::getReportFactors, ReportCard::setReportFactors, REPORT_FACTORS)
                 .withChildren(ReportCard::getReportCardLegislators, ReportCard::setReportCardLegislators, REPORT_CARD_LEGISLATORS);
     }
@@ -92,17 +95,19 @@ public class DaoBuilders {
 
     }
 
+    private static DaoBuilder<Organization> organizationDaoBuilder(){
+        return new DaoBuilder<>("ORGANIZATIONS", Organization::new)
+                .withPrimaryKey("ID", "organization_seq", Organization::getId, Organization::setId)
+                .withStringColumn("NAME", Organization::getName, Organization::setName)
+                .withChildren(Organization::getReportCards, Organization::setReportCards, REPORT_CARDS);
+    }
+
     private static DaoBuilder<User> userDaoBuilder(){
         return new DaoBuilder<>("USERS", User::new)
                 .withPrimaryKey("ID", "user_seq", User::getId, User::setId)
                 .withStringColumn("EMAIL", User::getEmail, User::setEmail)
                 .withStringColumn("SALT", User::getSalt, User::setSalt)
-                .withStringColumn("PASSWORD", User::getPassword, User::setPassword);
-    }
-
-    private static DaoBuilder<Organization> organizationDaoBuilder(){
-        return new DaoBuilder<>("ORGANIZATIONS", Organization::new)
-                .withPrimaryKey("ID", "organization_seq", Organization::getId, Organization::setId)
-                .withStringColumn("NAME", Organization::getName, Organization::setName);
+                .withStringColumn("PASSWORD", User::getPassword, User::setPassword)
+                .withJoinColumn("ORGANIZATION_ID", User::getOrganization, User::setOrganization, ORGANIZATIONS);
     }
 }

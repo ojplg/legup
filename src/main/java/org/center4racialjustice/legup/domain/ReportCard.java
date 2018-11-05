@@ -22,6 +22,7 @@ public class ReportCard {
     private long sessionNumber;
     private List<ReportFactor> reportFactors = new ArrayList<>();
     private List<ReportCardLegislator> reportCardLegislators = new ArrayList<>();
+    private Organization organization;
 
     public void addReportFactor(ReportFactor factor){
         reportFactors.add(factor);
