@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LegUp</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/legup/css/base.css">
+    <script src="/legup/js/legup.js"></script>
+</head>
+<body>
+
+<div class="contents">
+
+    <div>
+        <div style="width: 40%; float:left;">
+            <h4>Login</h4>
+            <form action="/legup/user_login" id="user_login_form" class="pure-form pure-form-aligned" method="post">
+                <div class="pure-control-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email"/>
+
+                    <label for="password">Password</label>
+                    <input id="password" type="password"/>
+                </div>
+            </form>
+        </div>
+
+        <div style="width: 40%; float:left;">
+            <h4>New User</h4>
+            <form action="/legup/save_new_user" id="save_new_user_form" class="pure-form pure-form-aligned" method="post">
+                <div class="pure-control-group">
+                    <label for="new_user_email">Email</label>
+                    <input type="text" id="new_user_email"/>
+
+                    <label for="new_user_organization">Organization</label>
+                    <input type="text" id="new_user_organization"/>
+
+                    <label for="new_user_password">Password</label>
+                    <input id="new_user_password" type="password"/>
+                </div>
+
+            </form>
+        </div>
+
+        <br style="clear: left;" />
+    </div>
+</div>
+</body>
+</html>
