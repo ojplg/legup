@@ -65,8 +65,6 @@ public class TestReportCardDao {
         Bill bill;
         Organization organization = newSavedOrganization("organ");
 
-        System.out.println("ORG ID is " + organization.getId());
-
         {
             Connection connection = DbTestConfigs.connect();
 
@@ -97,10 +95,12 @@ public class TestReportCardDao {
             Connection connection = DbTestConfigs.connect();
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             ReportCard reportCard = reportCardDao.read(id);
+            reportCard.setOrganization(organization);
 
             ReportFactor reportFactor = new ReportFactor();
             reportFactor.setBill(bill);
             reportFactor.setVoteSide(VoteSide.Nay);
+
 
             reportCard.addReportFactor(reportFactor);
 
@@ -129,6 +129,8 @@ public class TestReportCardDao {
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Simple Card");
         reportCard.setSessionNumber(2018);
+        reportCard.setOrganization(newSavedOrganization("Smurf"));
+
 
         Connection connection = DbTestConfigs.connect();
         ReportCardDao reportCardDao = new ReportCardDao(connection);
@@ -163,6 +165,7 @@ public class TestReportCardDao {
             ReportCard reportCard = new ReportCard();
             reportCard.setName("Card With Factor");
             reportCard.setSessionNumber(123);
+            reportCard.setOrganization(newSavedOrganization("Large"));
 
             ReportFactor reportFactor = new ReportFactor();
             reportFactor.setBill(bill);
@@ -194,6 +197,7 @@ public class TestReportCardDao {
         long reportCardId;
         Bill bill1;
         Bill bill2;
+        Organization organization = newSavedOrganization("Small");
         {
             bill1 = new Bill();
             bill1.setSession(123);
@@ -220,6 +224,7 @@ public class TestReportCardDao {
             ReportCard reportCard = new ReportCard();
             reportCard.setName("Card With Factor Again");
             reportCard.setSessionNumber(123);
+            reportCard.setOrganization(organization);
 
             ReportFactor reportFactor = new ReportFactor();
             reportFactor.setBill(bill1);
@@ -239,6 +244,7 @@ public class TestReportCardDao {
             ReportCardDao reportCardDao = new ReportCardDao(connection);
 
             ReportCard readCard = reportCardDao.read(reportCardId);
+            readCard.setOrganization(organization);
 
             Assert.assertEquals(1, readCard.getReportFactors().size());
 
@@ -272,6 +278,8 @@ public class TestReportCardDao {
 
         Connection connection = DbTestConfigs.connect();
 
+        Organization organization = newSavedOrganization("Turn");
+
         Bill bill = new Bill();
         bill.setSession(123);
         bill.setNumber(62);
@@ -284,6 +292,7 @@ public class TestReportCardDao {
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Card With Factor 3");
         reportCard.setSessionNumber(123);
+        reportCard.setOrganization(organization);
 
         ReportFactor reportFactor = new ReportFactor();
         reportFactor.setBill(bill);
@@ -302,6 +311,7 @@ public class TestReportCardDao {
         Assert.assertEquals(VoteSide.Nay, readCard.getReportFactors().get(0).getVoteSide());
 
         readCard.getReportFactors().get(0).setVoteSide(VoteSide.Yea);
+        readCard.setOrganization(organization);
         reportCardDao.save(readCard);
 
         connection.commit();
@@ -332,6 +342,7 @@ public class TestReportCardDao {
         ReportCard reportCard = new ReportCard();
         reportCard.setName("Card With Factor 4");
         reportCard.setSessionNumber(123);
+        reportCard.setOrganization(newSavedOrganization("Fliff"));
 
         ReportFactor reportFactor = new ReportFactor();
         reportFactor.setBill(bill);
