@@ -55,4 +55,8 @@ public class LegupSession {
     public User getLoggedInUser(){
         return this.loggedInUser;
     }
+
+    public void logout(){
+        this.loggedInUser = null;
+    }
 }

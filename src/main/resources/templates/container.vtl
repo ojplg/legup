@@ -14,10 +14,19 @@
 
 <div class="topmatter">
     &nbsp;&nbsp;<b><a href="/legup">LegUp</a></b>
+    <span style="float:right;">
+        #if ( $topmatter.user )
+            $topmatter.user.email&nbsp;
+            <a href="/legup/user_logout">(logout)</a>
+        #else
+            <a href="/legup/html/login.html">Login</a>
+        #end
+        &nbsp;&nbsp;
+    </span>
 </div>
 
 <div class="nav_bar_2">
-    <span>&nbsp;</span>
+    <span>&nbsp;&nbsp;</span>
     <span>
         #foreach ($link in $topmatter.links)
             <a href="$link.href">$link.text</a>

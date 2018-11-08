@@ -107,8 +107,12 @@ public class LegupSubmission {
 
     public User getLoggedInUser() { return this.legupSession.getLoggedInUser(); }
 
-    public boolean isLoggedIn(){
+    public boolean isLoggedIn() {
         return legupSession.getLoggedInUser() != null;
+    }
+
+    public void logout(){
+        legupSession.logout();
     }
 
     public Organization getOrganization(){

@@ -11,6 +11,7 @@ import org.center4racialjustice.legup.web.responders.SaveNewUser;
 import org.center4racialjustice.legup.web.responders.SaveReportCard;
 import org.center4racialjustice.legup.web.responders.SaveSearchedBill;
 import org.center4racialjustice.legup.web.responders.UserLogin;
+import org.center4racialjustice.legup.web.responders.UserLogout;
 import org.center4racialjustice.legup.web.responders.ViewBillForm;
 import org.center4racialjustice.legup.web.responders.ViewBillSearchForm;
 import org.center4racialjustice.legup.web.responders.ViewBillSearchResults;
@@ -95,6 +96,7 @@ public class AppHandler extends AbstractHandler {
         responders.add(new SaveNewReportCard(connectionPool));
         responders.add(new SaveNewUser(connectionPool));
         responders.add(new UserLogin(connectionPool));
+        responders.add(new UserLogout());
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());
