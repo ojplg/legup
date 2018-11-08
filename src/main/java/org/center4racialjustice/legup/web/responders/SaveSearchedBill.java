@@ -8,7 +8,11 @@ import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class SaveSearchedBill implements Responder {
 
@@ -31,5 +35,13 @@ public class SaveSearchedBill implements Responder {
         response.putVelocityData("sponsorSaveResults", billSaveResults.getSponsorSaveResults());
         response.putVelocityData("billSaveResults", billSaveResults);
         return response;
+    }
+
+    @Override
+    public List<NavLink> navLinks() {
+        return Arrays.asList(
+            new NavLink("Bill Search", "/legup/view_bill_search_form"),
+            new NavLink("Bills Index", "/legup/view_bills")
+        );
     }
 }

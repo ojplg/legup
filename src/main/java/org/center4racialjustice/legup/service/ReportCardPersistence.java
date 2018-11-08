@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.util.Tuple;
@@ -27,10 +28,11 @@ public class ReportCardPersistence {
         this.connectionPool = connectionPool;
     }
 
-    public ReportCard saveNewCard(String name, long sessionNumber){
+    public ReportCard saveNewCard(String name, long sessionNumber, Organization organization){
         ReportCard reportCard = new ReportCard();
         reportCard.setName(name);
         reportCard.setSessionNumber(sessionNumber);
+        reportCard.setOrganization(organization);
 
         return connectionPool.runAndCommit(
                 connection -> {
@@ -42,12 +44,14 @@ public class ReportCardPersistence {
     }
 
     public ReportCard updateReportCard(long id,
+                                        Organization organization,
                                         Map<Long, VoteSide> voteSideByBillIdMap,
                                         List<Long> selectedLegislatorIds){
         return connectionPool.runAndCommit(
                 connection -> {
                     ReportCardDao reportCardDao = new ReportCardDao(connection);
                     ReportCard reportCard = reportCardDao.read(id);
+                    reportCard.setOrganization(organization);
                     Long sessionNumber = reportCard.getSessionNumber();
 
                     BillDao billDao = new BillDao(connection);

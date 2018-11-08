@@ -1,15 +1,18 @@
 package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +34,14 @@ public class SaveReportCard implements Responder {
             // TODO handle error
         }
 
+        Organization organization = submission.getOrganization();
+        if( organization == null ){
+            // TODO handle error
+        }
+
         List<Long> legislatorIds = parseCheckedLegislators(submission);
         Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
-        ReportCard card = reportCardPersistence.updateReportCard(id, voteSideMap, legislatorIds);
+        ReportCard card = reportCardPersistence.updateReportCard(id, organization, voteSideMap, legislatorIds);
 
         HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
         response.putVelocityData("reportCard", card);
@@ -56,5 +64,14 @@ public class SaveReportCard implements Responder {
             }
         }
        return voteSidesByBillIdMap;
+    }
+
+    @Override
+    public List<NavLink> navLinks() {
+        return Arrays.asList(
+                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=$reportCard.Id"),
+                new NavLink("Calculate", "/legup/view_report_card_scores?report_card_id=$reportCard.Id")
+
+        );
     }
 }

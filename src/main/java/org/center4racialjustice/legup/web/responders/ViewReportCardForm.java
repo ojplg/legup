@@ -12,8 +12,12 @@ import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
+import org.center4racialjustice.legup.web.Util;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.SortedMap;
 
 public class ViewReportCardForm implements Responder {
@@ -58,4 +62,17 @@ public class ViewReportCardForm implements Responder {
         return response;
     }
 
+    @Override
+    public List<NavLink> navLinks() {
+        return Collections.singletonList(
+                new NavLink(
+                "Report Card Index",
+                "/legup/view_report_cards")
+        );
+    }
+
+    @Override
+    public String helpLink() {
+        return "/legup/help/" + Util.classNameToLowercaseWithUnderlines(ViewReportCardForm.class);
+    }
 }

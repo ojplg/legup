@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.web.ContinueLegupResponse;
@@ -31,7 +32,9 @@ public class SaveNewReportCard implements Responder {
         String name = submission.getParameter("name");
         long session = submission.getLongRequestParameter("session");
 
-        ReportCard card = reportCardPersistence.saveNewCard(name, session);
+        Organization organization = submission.getOrganization();
+
+        ReportCard card = reportCardPersistence.saveNewCard(name, session, organization);
 
         Long reportCardId = card.getId();
 
