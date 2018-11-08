@@ -48,4 +48,13 @@ public class User {
         random.nextBytes(bytes);
         return new String(bytes);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", organization=" + organization +
+                '}';
+    }
 }
