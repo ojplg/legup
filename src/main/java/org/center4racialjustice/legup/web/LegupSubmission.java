@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
-import org.eclipse.jetty.util.MultiMap;
 import org.hrorm.Converter;
 import org.eclipse.jetty.server.Request;
 
@@ -97,9 +96,7 @@ public class LegupSubmission {
     }
 
     private String internalGetParameter(String parameterName){
-        log.info("Looking for " + parameterName);
         String value = parameters.get(parameterName);
-        log.info(" FOUND " + value);
         return value;
     }
 
@@ -107,6 +104,8 @@ public class LegupSubmission {
     public void setLoggedInUser(User user){
         this.legupSession.setLoggedInUser(user);
     }
+
+    public User getLoggedInUser() { return this.legupSession.getLoggedInUser(); }
 
     public boolean isLoggedIn(){
         return legupSession.getLoggedInUser() != null;

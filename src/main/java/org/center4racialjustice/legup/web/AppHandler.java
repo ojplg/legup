@@ -149,6 +149,7 @@ public class AppHandler extends AbstractHandler {
             legupSubmission = legupSubmission.update(legupResponse.getParameters());
             legupResponse = nextResponder.handle(legupSubmission);
         }
+        legupResponse.setUser(legupSubmission.getLoggedInUser());
         processResponse(legupResponse, httpServletResponse);
         request.setHandled(true);
     }

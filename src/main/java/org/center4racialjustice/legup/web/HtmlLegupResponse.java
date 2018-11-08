@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.web;
 
 import org.apache.velocity.VelocityContext;
+import org.center4racialjustice.legup.domain.User;
 
 import java.util.Map;
 
@@ -55,5 +56,9 @@ public class HtmlLegupResponse implements LegupResponse {
     @Override
     public Map<String, String> getParameters() {
         throw new UnsupportedOperationException();
+    }
+
+    public void setUser(User user){
+        putVelocityData("user", user);
     }
 }
