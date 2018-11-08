@@ -48,7 +48,7 @@ public class ContinueLegupResponse implements LegupResponse {
         return false;
     }
 
-    public void setUser(User user){
+    public void setTopMatter(TopMatter topMatter){
             // does nothing
     }
 

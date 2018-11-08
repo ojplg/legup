@@ -58,7 +58,7 @@ public class HtmlLegupResponse implements LegupResponse {
         throw new UnsupportedOperationException();
     }
 
-    public void setUser(User user){
-        putVelocityData("user", user);
+    public void setTopMatter(TopMatter topMatter){
+        putVelocityData("topmatter", topMatter);
     }
 }

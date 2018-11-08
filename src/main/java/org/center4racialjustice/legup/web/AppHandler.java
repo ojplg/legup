@@ -45,6 +45,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/*
+   Every page should have
+   1. Title of app/link to home page
+   2. Stateful link for login/logout
+   3. Space for link to help page (and link if available)
+   4. Space for relevant navigations (and links if available)
+
+   Design principles
+   1. Page templates should have minimum necessary content
+   2. Nice borders for content
+   3. No borders for headers
+ */
+
 public class AppHandler extends AbstractHandler {
 
     private static final Logger log = LogManager.getLogger(AppHandler.class);
@@ -145,20 +159,22 @@ public class AppHandler extends AbstractHandler {
         while( ! legupResponse.shouldRender() ){
             String nextKey = legupResponse.actionKey();
             log.info("Forwarded response to " + nextKey);
-            Responder nextResponder = responderMap.get(nextKey);
+            responder = responderMap.get(nextKey);
             legupSubmission = legupSubmission.update(legupResponse.getParameters());
-            legupResponse = nextResponder.handle(legupSubmission);
+            legupResponse = responder.handle(legupSubmission);
         }
-        legupResponse.setUser(legupSubmission.getLoggedInUser());
-        processResponse(legupResponse, httpServletResponse);
-        request.setHandled(true);
-    }
 
-    private void processResponse(LegupResponse legupResponse, HttpServletResponse httpServletResponse)
-    throws IOException {
         String templatePath = "/templates/" + legupResponse.actionKey();
         log.info("Rendering response with template " + templatePath);
         httpServletResponse.setHeader("Content-Type", legupResponse.getContentType());
+
+        TopMatter topMatter = new TopMatter(
+                legupSubmission.getLoggedInUser(),
+                responder.navLinks(),
+                responder.helpLink()
+        );
+        legupResponse.setTopMatter(topMatter);
+
         Writer writer = httpServletResponse.getWriter();
         VelocityContext velocityContext = legupResponse.getVelocityContext();
         if (legupResponse.useContainer()) {
@@ -167,5 +183,6 @@ public class AppHandler extends AbstractHandler {
         } else {
             Velocity.mergeTemplate(templatePath, "ISO-8859-1", velocityContext, writer);
         }
+        request.setHandled(true);
     }
 }

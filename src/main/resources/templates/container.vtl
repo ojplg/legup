@@ -16,6 +16,19 @@
     &nbsp;&nbsp;<b><a href="/legup">LegUp</a></b>
 </div>
 
+<div class="nav_bar_2">
+    <span>&nbsp;</span>
+    <span>
+        #foreach ($link in $topmatter.links)
+            <a href="$link.href">$link.text</a>
+            &nbsp;
+        #end
+    </span>
+    #if ( $topmatter.helpLink )
+        <span style="float:right;"><a onclick="Legup.helpWindow('$topmatter.helpLink')" href="#">Help</a>&nbsp;&nbsp;</span>
+    #end
+</div>
+
 <div class="contents">
 
     #parse( "$contents" )

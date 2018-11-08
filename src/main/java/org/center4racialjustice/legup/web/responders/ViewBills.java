@@ -9,6 +9,7 @@ import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
+import org.center4racialjustice.legup.web.Util;
 
 import java.util.List;
 
@@ -36,5 +37,10 @@ public class ViewBills implements Responder {
             response.putVelocityData("senate_bills", dividedBills.getSecond());
             return response;
         });
+    }
+
+    @Override
+    public String helpLink() {
+        return "/legup/help/" + Util.classNameToLowercaseWithUnderlines(ViewBills.class);
     }
 }

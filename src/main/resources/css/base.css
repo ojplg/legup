@@ -8,6 +8,12 @@ div.nav_bar {
     background-color:LightGrey;
 }
 
+div.nav_bar_2 {
+    font-size: 80%;
+    background-color:PaleGreen;
+}
+
+
 div.contents {
     margin-right: 12px;
     margin-left: 12px;
