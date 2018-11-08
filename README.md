@@ -64,6 +64,10 @@ Technical Betterments
 
 Features/bugs to work on
 
+* USER FIXES
+  * Prevent users from seeing screens they do not have permission for
+  * Solve problem of links with templated content in nav bar
+
 * Write more help screens
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found
