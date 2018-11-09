@@ -21,12 +21,12 @@ public class HtmlLegupResponse implements LegupResponse {
         return legupResponse;
     }
 
-    public static HtmlLegupResponse withLinks(Class responderClass, List<NavLink> links){
-        return withLinks(responderClass, null, links);
+    public static HtmlLegupResponse withLinks(Class renderClass, List<NavLink> links){
+        return withLinks(renderClass, null, links);
     }
 
-    public static HtmlLegupResponse withLinks(Class responderClass, User user, List<NavLink> links){
-        HtmlLegupResponse response = new HtmlLegupResponse(responderClass);
+    public static HtmlLegupResponse withLinks(Class renderClass, User user, List<NavLink> links){
+        HtmlLegupResponse response = new HtmlLegupResponse(renderClass);
 
         TopMatter topMatter = new TopMatter(user, links, "");
         response.putVelocityData("topmatter", topMatter);
@@ -34,26 +34,26 @@ public class HtmlLegupResponse implements LegupResponse {
         return response;
     }
 
-    public static HtmlLegupResponse withHelpAndLinks(Class responderClass, User user, List<NavLink> links){
-        HtmlLegupResponse response = new HtmlLegupResponse(responderClass);
+    public static HtmlLegupResponse withHelpAndLinks(Class renderClass, User user, List<NavLink> links){
+        HtmlLegupResponse response = new HtmlLegupResponse(renderClass);
 
-        TopMatter topMatter = new TopMatter(user, links, "/legup/help/" + Util.classNameToLowercaseWithUnderlines(responderClass));
+        TopMatter topMatter = new TopMatter(user, links, "/legup/help/" + Util.classNameToLowercaseWithUnderlines(renderClass));
         response.putVelocityData("topmatter", topMatter);
 
         return response;
     }
 
-    public static HtmlLegupResponse withHelpAndLinks(Class responderClass, List<NavLink> links){
-        return withHelpAndLinks(responderClass, null, links);
+    public static HtmlLegupResponse withHelpAndLinks(Class renderClass, List<NavLink> links){
+        return withHelpAndLinks(renderClass, null, links);
     }
 
-    public static HtmlLegupResponse withHelp(Class responderClass){
-        return withHelpAndLinks(responderClass, null, Collections.emptyList());
+    public static HtmlLegupResponse withHelp(Class renderClass){
+        return withHelpAndLinks(renderClass, null, Collections.emptyList());
     }
 
-    public HtmlLegupResponse(Class responderClass){
+    public HtmlLegupResponse(Class renderClass){
         this.velocityContext = new VelocityContext();
-        this.templateName = Util.classNameToLowercaseWithUnderlines(responderClass) + ".vtl";
+        this.templateName = Util.classNameToLowercaseWithUnderlines(renderClass) + ".vtl";
     }
 
     public void putVelocityData(String key, Object value){
