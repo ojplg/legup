@@ -30,14 +30,13 @@ public class SaveSearchedBill implements Responder {
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         BillSaveResults billSaveResults = billPersistence.saveParsedData(billSearchResults);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), navLinks());
         response.putVelocityData("bill", billSaveResults.getBill());
         response.putVelocityData("sponsorSaveResults", billSaveResults.getSponsorSaveResults());
         response.putVelocityData("billSaveResults", billSaveResults);
         return response;
     }
 
-    @Override
     public List<NavLink> navLinks() {
         return Arrays.asList(
             new NavLink("Bill Search", "/legup/view_bill_search_form"),

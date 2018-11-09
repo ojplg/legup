@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.web;
 import org.apache.velocity.VelocityContext;
 import org.center4racialjustice.legup.domain.User;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class HtmlLegupResponse implements LegupResponse {
@@ -17,6 +19,36 @@ public class HtmlLegupResponse implements LegupResponse {
             legupResponse.putVelocityData(entry.getKey() + "Error", entry.getValue());
         }
         return legupResponse;
+    }
+
+    public static HtmlLegupResponse withLinks(Class responderClass, List<NavLink> links){
+        return withLinks(responderClass, null, links);
+    }
+
+    public static HtmlLegupResponse withLinks(Class responderClass, User user, List<NavLink> links){
+        HtmlLegupResponse response = new HtmlLegupResponse(responderClass);
+
+        TopMatter topMatter = new TopMatter(user, links, "");
+        response.putVelocityData("topmatter", topMatter);
+
+        return response;
+    }
+
+    public static HtmlLegupResponse withHelpAndLinks(Class responderClass, User user, List<NavLink> links){
+        HtmlLegupResponse response = new HtmlLegupResponse(responderClass);
+
+        TopMatter topMatter = new TopMatter(user, links, "/legup/help/" + Util.classNameToLowercaseWithUnderlines(responderClass));
+        response.putVelocityData("topmatter", topMatter);
+
+        return response;
+    }
+
+    public static HtmlLegupResponse withHelpAndLinks(Class responderClass, List<NavLink> links){
+        return withHelpAndLinks(responderClass, null, links);
+    }
+
+    public static HtmlLegupResponse withHelp(Class responderClass){
+        return withHelpAndLinks(responderClass, null, Collections.emptyList());
     }
 
     public HtmlLegupResponse(Class responderClass){

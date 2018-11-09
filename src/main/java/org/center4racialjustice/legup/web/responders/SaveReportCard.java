@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.responders;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
+import org.center4racialjustice.legup.domain.User;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
@@ -28,6 +29,7 @@ public class SaveReportCard implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
 
+        User user = submission.getLoggedInUser();
         Long id = submission.getLongRequestParameter( "id");
 
         if( id == null ){
@@ -43,7 +45,7 @@ public class SaveReportCard implements Responder {
         Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
         ReportCard card = reportCardPersistence.updateReportCard(id, organization, voteSideMap, legislatorIds);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), user, navLinks(id));
         response.putVelocityData("reportCard", card);
         return response;
     }
@@ -66,11 +68,10 @@ public class SaveReportCard implements Responder {
        return voteSidesByBillIdMap;
     }
 
-    @Override
-    public List<NavLink> navLinks() {
+    private List<NavLink> navLinks(long reportCardId) {
         return Arrays.asList(
-                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=$reportCard.Id"),
-                new NavLink("Calculate", "/legup/view_report_card_scores?report_card_id=$reportCard.Id")
+                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=" + reportCardId),
+                new NavLink("Calculate", "/legup/view_report_card_scores?report_card_id=" + reportCardId)
 
         );
     }

@@ -40,7 +40,8 @@ public class ViewReportCardScores implements Responder {
         LookupTable<Legislator, Bill, Integer> scores = reportCardGrades.getLookupTable();
         Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        List<NavLink> links = navLinks(oneTimeKey, reportCardId);
+        HtmlLegupResponse response = HtmlLegupResponse.withHelpAndLinks(this.getClass(), null, links);
 
         response.putVelocityData("oneTimeKey", oneTimeKey);
         response.putVelocityData("scores", scores);
@@ -54,19 +55,13 @@ public class ViewReportCardScores implements Responder {
         return response;
     }
 
-    @Override
-    public List<NavLink> navLinks() {
+    private List<NavLink> navLinks(String oneTimeKey, long reportCardId) {
         return Arrays.asList(
-                new NavLink("Bill Analysis","/legup/view_report_card_bills?one_time_key=$oneTimeKey"),
-                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=$reportCard.Id"),
-                new NavLink("CSV", "/legup/view_report_card_scores_csv?one_time_key=$oneTimeKey")
+                new NavLink("Bill Analysis","/legup/view_report_card_bills?one_time_key=" + oneTimeKey),
+                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=" + reportCardId),
+                new NavLink("CSV", "/legup/view_report_card_scores_csv?one_time_key=" + oneTimeKey)
 
         );
-    }
-
-    @Override
-    public String helpLink() {
-        return "/legup/help/" + Util.classNameToLowercaseWithUnderlines(ViewReportCardScores.class);
     }
 
 }

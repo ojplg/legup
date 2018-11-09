@@ -52,7 +52,8 @@ public class ViewReportCardForm implements Responder {
         Tuple<SortedMap<Legislator, Boolean>, SortedMap<Legislator, Boolean>> selectedLegislators =
                 reportCardPersistence.computeSelectedLegislators(reportCard);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.withHelpAndLinks(this.getClass(),
+                submission.getLoggedInUser(), navLinks());
 
         response.putVelocityData("report_card", reportCard);
         response.putVelocityData("factor_settings", factorSettings);
@@ -62,8 +63,7 @@ public class ViewReportCardForm implements Responder {
         return response;
     }
 
-    @Override
-    public List<NavLink> navLinks() {
+    private List<NavLink> navLinks() {
         return Collections.singletonList(
                 new NavLink(
                 "Report Card Index",
@@ -71,8 +71,4 @@ public class ViewReportCardForm implements Responder {
         );
     }
 
-    @Override
-    public String helpLink() {
-        return "/legup/help/" + Util.classNameToLowercaseWithUnderlines(ViewReportCardForm.class);
-    }
 }
