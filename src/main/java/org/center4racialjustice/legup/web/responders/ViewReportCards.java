@@ -24,7 +24,7 @@ public class ViewReportCards implements Responder {
             ReportCardDao reportCardDao = new ReportCardDao(connection);
             List<ReportCard> reportCards = reportCardDao.readAll();
 
-            HtmlLegupResponse response = HtmlLegupResponse.withHelp(this.getClass());
+            HtmlLegupResponse response = HtmlLegupResponse.withHelp(this.getClass(), submission.getLoggedInUser());
             response.putVelocityData("report_cards", reportCards);
             return response;
         });

@@ -43,12 +43,12 @@ public class HtmlLegupResponse implements LegupResponse {
         return response;
     }
 
-    public static HtmlLegupResponse withHelpAndLinks(Class renderClass, List<NavLink> links){
-        return withHelpAndLinks(renderClass, null, links);
-    }
+//    public static HtmlLegupResponse withHelpAndLinks(Class renderClass, List<NavLink> links){
+//        return withHelpAndLinks(renderClass, null, links);
+//    }
 
-    public static HtmlLegupResponse withHelp(Class renderClass){
-        return withHelpAndLinks(renderClass, null, Collections.emptyList());
+    public static HtmlLegupResponse withHelp(Class renderClass, User user){
+        return withHelpAndLinks(renderClass, user, Collections.emptyList());
     }
 
     public HtmlLegupResponse(Class renderClass){

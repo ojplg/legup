@@ -29,7 +29,7 @@ public class ViewBills implements Responder {
 
             Tuple<List<Bill>, List<Bill>> dividedBills = Bill.divideAndOrder(bills);
 
-            HtmlLegupResponse response = HtmlLegupResponse.withHelp(this.getClass());
+            HtmlLegupResponse response = HtmlLegupResponse.withHelp(this.getClass(), submission.getLoggedInUser());
             response.putVelocityData("house", Chamber.House);
             response.putVelocityData("senate", Chamber.Senate);
             response.putVelocityData("house_bills", dividedBills.getFirst());

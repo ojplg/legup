@@ -13,7 +13,7 @@ public class ViewBillSearchForm implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-        return HtmlLegupResponse.withHelpAndLinks(this.getClass(), navLinks());
+        return HtmlLegupResponse.withHelpAndLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
     }
 
     private List<NavLink> navLinks() {

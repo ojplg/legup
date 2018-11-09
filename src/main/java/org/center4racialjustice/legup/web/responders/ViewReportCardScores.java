@@ -14,7 +14,6 @@ import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
-import org.center4racialjustice.legup.web.Util;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +40,7 @@ public class ViewReportCardScores implements Responder {
         Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
         List<NavLink> links = navLinks(oneTimeKey, reportCardId);
-        HtmlLegupResponse response = HtmlLegupResponse.withHelpAndLinks(this.getClass(), null, links);
+        HtmlLegupResponse response = HtmlLegupResponse.withHelpAndLinks(this.getClass(), submission.getLoggedInUser(), links);
 
         response.putVelocityData("oneTimeKey", oneTimeKey);
         response.putVelocityData("scores", scores);
