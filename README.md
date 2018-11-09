@@ -67,6 +67,7 @@ Features/bugs to work on
 * USER FIXES
   * Prevent users from seeing screens they do not have permission for
   * Solve problem of links with templated content in nav bar
+  * Convert all old navbar stuff
 
 * Write more help screens
 * Legislator Persistence
