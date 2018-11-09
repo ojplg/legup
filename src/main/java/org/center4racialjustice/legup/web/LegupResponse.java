@@ -16,6 +16,4 @@ public interface LegupResponse {
     boolean shouldRender();
 
     Map<String,String> getParameters();
-
-    void setTopMatter(TopMatter topMatter);
 }

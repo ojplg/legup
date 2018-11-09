@@ -57,8 +57,4 @@ public class HtmlLegupResponse implements LegupResponse {
     public Map<String, String> getParameters() {
         throw new UnsupportedOperationException();
     }
-
-    public void setTopMatter(TopMatter topMatter){
-        putVelocityData("topmatter", topMatter);
-    }
 }
