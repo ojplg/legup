@@ -28,8 +28,8 @@
 <div class="nav_bar_2">
     <span>&nbsp;&nbsp;</span>
     <span>
-        #foreach ($link in $topmatter.links)
-            <a href="$link.href">$link.text</a>
+        #foreach ($link in $topmatter.renderedLinks)
+            $link
             &nbsp;
         #end
     </span>

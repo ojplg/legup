@@ -12,8 +12,12 @@ import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
+import org.center4racialjustice.legup.web.Util;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ViewReportCardScores implements Responder {
@@ -49,4 +53,20 @@ public class ViewReportCardScores implements Responder {
 
         return response;
     }
+
+    @Override
+    public List<NavLink> navLinks() {
+        return Arrays.asList(
+                new NavLink("Bill Analysis","/legup/view_report_card_bills?one_time_key=$oneTimeKey"),
+                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=$reportCard.Id"),
+                new NavLink("CSV", "/legup/view_report_card_scores_csv?one_time_key=$oneTimeKey")
+
+        );
+    }
+
+    @Override
+    public String helpLink() {
+        return "/legup/help/" + Util.classNameToLowercaseWithUnderlines(ViewReportCardScores.class);
+    }
+
 }

@@ -175,10 +175,14 @@ public class AppHandler extends AbstractHandler {
                 responder.navLinks(),
                 responder.helpLink()
         );
-        legupResponse.setTopMatter(topMatter);
+//        legupResponse.setTopMatter(topMatter);
 
         Writer writer = httpServletResponse.getWriter();
         VelocityContext velocityContext = legupResponse.getVelocityContext();
+
+        topMatter.renderLinks(velocityContext);
+
+        velocityContext.put("topmatter", topMatter);
         if (legupResponse.useContainer()) {
             velocityContext.put("contents", templatePath);
             Velocity.mergeTemplate("/templates/container.vtl", "ISO-8859-1", velocityContext, writer);
