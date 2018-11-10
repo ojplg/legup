@@ -37,7 +37,7 @@ public class ViewReportCardForm implements Responder {
 
         Long reportCardId = submission.getLongRequestParameter("report_card_id");
         if ( reportCardId == null ){
-            return new HtmlLegupResponse(this.getClass());
+            return HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
         }
 
         log.info("Request for form for " + reportCardId);

@@ -24,7 +24,7 @@ public class ViewBillDataTable implements Responder {
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         LookupTable<Legislator, String, String> billActionTable = billPersistence.generateBillActionSummary(billId);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
         response.putVelocityData("billActionTable", billActionTable);
         response.putVelocityData("legislators", billActionTable.sortedRowHeadings(Legislator::compareTo));
         return response;

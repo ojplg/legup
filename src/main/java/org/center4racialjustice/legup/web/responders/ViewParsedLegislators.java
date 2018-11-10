@@ -33,7 +33,7 @@ public class ViewParsedLegislators implements Responder {
 
         String oneTimeKey = submission.setObject(LegupSession.UnknownLegislatorsKey, unknownLegislators);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
         response.putVelocityData("legislators", unknownLegislators);
         response.putVelocityData("parsedLegislatorCount", legislators.size());
         response.putVelocityData("oneTimeKey", oneTimeKey);

@@ -50,7 +50,14 @@ public class HtmlLegupResponse implements LegupResponse {
         return withHelpAndLinks(renderClass, user, Collections.emptyList());
     }
 
-    public HtmlLegupResponse(Class renderClass){
+    public static HtmlLegupResponse simpleResponse(Class renderClass, User user){
+        HtmlLegupResponse htmlLegupResponse = new HtmlLegupResponse(renderClass);
+        TopMatter topMatter = new TopMatter(user, Collections.emptyList(), "");
+        htmlLegupResponse.putVelocityData("topmatter", topMatter);
+        return htmlLegupResponse;
+    }
+
+    private HtmlLegupResponse(Class renderClass){
         this.velocityContext = new VelocityContext();
         this.templateName = Util.classNameToLowercaseWithUnderlines(renderClass) + ".vtl";
     }

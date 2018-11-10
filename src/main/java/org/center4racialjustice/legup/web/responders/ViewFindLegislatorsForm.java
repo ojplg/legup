@@ -9,6 +9,6 @@ public class ViewFindLegislatorsForm implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-        return new HtmlLegupResponse(this.getClass());
+        return HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
     }
 }

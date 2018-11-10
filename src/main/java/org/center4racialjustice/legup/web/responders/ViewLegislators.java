@@ -26,7 +26,7 @@ public class ViewLegislators implements Responder {
             List<Legislator> legislators = dao.readAll();
             Collections.sort(legislators);
 
-            HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+            HtmlLegupResponse response = HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
             response.putVelocityData("legislators", legislators);
             return response;
         });

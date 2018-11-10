@@ -23,7 +23,7 @@ public class SaveLegislators implements Responder {
     public LegupResponse handle(LegupSubmission submission) {
         List<Legislator> unknownLegislators = (List<Legislator>) submission.getObject(LegupSession.UnknownLegislatorsKey);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
 
         int savedCount = legislatorPersistence.insertLegislators(unknownLegislators);
         response.putVelocityData("saved_legislator_count", savedCount);
