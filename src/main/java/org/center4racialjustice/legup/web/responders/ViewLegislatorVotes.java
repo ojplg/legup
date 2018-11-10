@@ -9,8 +9,11 @@ import org.center4racialjustice.legup.service.BillActionCollator;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ViewLegislatorVotes implements Responder {
@@ -35,7 +38,7 @@ public class ViewLegislatorVotes implements Responder {
             List<BillAction> billActions = billActionDao.readByLegislator(legislator);
             BillActionCollator collator = new BillActionCollator(billActions);
 
-            HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+            HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
             response.putVelocityData("votes", collator.getVotes());
             response.putVelocityData("sponsorships", collator.getSponsorships());
             response.putVelocityData("chiefSponsorships", collator.getChiefSponsorships());
@@ -44,4 +47,11 @@ public class ViewLegislatorVotes implements Responder {
             return response;
         });
     }
+
+    private List<NavLink> navLinks(){
+        return Collections.singletonList(
+                new NavLink("Legislators Index", "/legup/view_legislators")
+        );
+    }
+
 }
