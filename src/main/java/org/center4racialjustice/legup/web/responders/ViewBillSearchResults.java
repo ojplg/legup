@@ -14,9 +14,12 @@ import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class ViewBillSearchResults implements Responder {
 
@@ -53,7 +56,7 @@ public class ViewBillSearchResults implements Responder {
 
         String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
-        HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
 
         response.putVelocityData("billSearchResults", billSearchResults);
         response.putVelocityData("bill", billSearchResults.getParsedBill());
@@ -126,5 +129,12 @@ public class ViewBillSearchResults implements Responder {
         BillSearcherParser billSearcherParser = new BillSearcherParser(connectionPool, nameParser);
         BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
         return billSearchResults;
+    }
+
+    private List<NavLink> navLinks(){
+        return Arrays.asList(
+                new NavLink("Bill Search", "/legup/view_bill_search_form"),
+                new NavLink("Bills Index", "/legup/view_bills")
+        );
     }
 }

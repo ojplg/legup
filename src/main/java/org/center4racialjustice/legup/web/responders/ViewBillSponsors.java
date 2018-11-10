@@ -13,8 +13,10 @@ import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +62,8 @@ public class ViewBillSponsors implements Responder {
             List<Legislator> chiefHouseSponsors = chiefSponsorsTuple.getFirst();
             List<Legislator> chiefSenateSponsors = chiefSponsorsTuple.getSecond();
 
-            HtmlLegupResponse response = new HtmlLegupResponse(this.getClass());
+            HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(),
+                    submission.getLoggedInUser(), navLinks(billId));
 
             if( chiefHouseSponsors.size() > 0 ){
                 response.putVelocityData("chief_house_sponsor", chiefHouseSponsors.get(0));
@@ -76,4 +79,12 @@ public class ViewBillSponsors implements Responder {
             return response;
         });
     }
+
+    private List<NavLink> navLinks(long billId){
+        return Arrays.asList(
+                new NavLink("Bills Index", "/legup/view_bills"),
+                new NavLink("View Votes", "/legup/view_bill_votes?bill_id=" + billId)
+        );
+    }
+
 }

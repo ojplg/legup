@@ -11,8 +11,10 @@ import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
+import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ViewBillVotes implements Responder {
@@ -36,7 +38,8 @@ public class ViewBillVotes implements Responder {
             List<BillAction> billActions = billActionDao.readByBill(bill);
             BillActionSummary billActionSummary = new BillActionSummary(billActions);
 
-            HtmlLegupResponse legupResponse = new HtmlLegupResponse(this.getClass());
+            HtmlLegupResponse legupResponse = HtmlLegupResponse.withLinks(this.getClass(),
+                    submission.getLoggedInUser(), navLinks(billId));
 
             legupResponse.putVelocityData("billActionSummary", billActionSummary);
             legupResponse.putVelocityData("bill", bill);
@@ -54,4 +57,12 @@ public class ViewBillVotes implements Responder {
             return legupResponse;
         });
     }
+
+    private List<NavLink> navLinks(long billId){
+        return Arrays.asList(
+                new NavLink("Bills Index", "/legup/view_bills"),
+                new NavLink("View Sponsors", "/legup/view_bill_sponsors?bill_id=" + billId)
+        );
+    }
+
 }
