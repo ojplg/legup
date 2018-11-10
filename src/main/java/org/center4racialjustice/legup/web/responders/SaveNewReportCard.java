@@ -26,7 +26,10 @@ public class SaveNewReportCard implements Responder {
         Map<String, String> errors = validate(submission);
         if (errors.size() > 0) {
             return HtmlLegupResponse.forError(
-                    ViewNewReportCardForm.class, "Could not save report card. See error(s) below.", errors);
+                    ViewNewReportCardForm.class,
+                    submission.getLoggedInUser(),
+                    "Could not save report card. See error(s) below.",
+                    errors);
         }
 
         String name = submission.getParameter("name");

@@ -12,9 +12,12 @@ public class HtmlLegupResponse implements LegupResponse {
     private final VelocityContext velocityContext;
     private final String templateName;
 
-    public static LegupResponse forError(Class formClass, String errorMessage, Map<String, String> errors){
+    public static LegupResponse forError(Class formClass, User user, String errorMessage, Map<String, String> errors){
         HtmlLegupResponse legupResponse = new HtmlLegupResponse(formClass);
+        // TODO: Should accept links
+        TopMatter topMatter = new TopMatter(user, Collections.emptyList(), "");
         legupResponse.putVelocityData("errorMessage", errorMessage);
+        legupResponse.putVelocityData("topmatter", topMatter);
         for(Map.Entry<String, String> entry : errors.entrySet()){
             legupResponse.putVelocityData(entry.getKey() + "Error", entry.getValue());
         }

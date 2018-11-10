@@ -38,7 +38,9 @@ public class ViewBillSearchResults implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         if ( ! submission.isValidLongParameter("number") ){
-            return HtmlLegupResponse.forError(ViewBillSearchForm.class, "Problem parsing form input",
+            return HtmlLegupResponse.forError(ViewBillSearchForm.class,
+                    submission.getLoggedInUser(),
+                    "Problem parsing form input",
                     Collections.singletonMap("number","Could not parse bill number from input " + submission.getParameter("number")));
         }
 
