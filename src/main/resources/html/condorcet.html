@@ -1,0 +1,142 @@
+<html>
+
+<head>
+    <title>Ranked Choice Voting: IRV versus Condorcet</title>
+    <style>
+        td {
+            padding-right: 10px;
+            border-top: 1px solid #ddd;
+        }
+        th {
+            padding-right: 20px;
+        }
+        td.first {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h4>Illinois Bill</h4>
+
+<p>The system described in the Illinois Bill
+    (<a href="http://www.ilga.gov/legislation/BillStatus.asp?GA=100&DocTypeID=SB&DocNum=780&GAID=14&SessionID=91&LegID=102091">SB0780</a>)
+is the pernicious Instant Runoff Voting (IRV) form of ranked choice voting, not the much preferred Condorcet form.</p>
+
+<p>There are many varieties of all these systems, and I will not go into detail, but just give one example
+of why Condorcet is far superior.</p>
+
+<h4>Ranked Choice Voting</h4>
+
+<p>Both Condorcet and IRV are forms of Ranked Choice Voting. Instead of picking one of several candidates,
+a voter can rank all the candidates in order of preference from first to last. Though that is not required.
+A ballot can indicate preferences for as many or as few candidates as the voter wishes. Unranked candidates
+are all considered to be equally undesirable.</p>
+
+<p>Any election counting system (except for deliberately crazy ones: person with fewest votes wins) will
+lead to the same outcomes and incentives in the case of landslides. If large majorities of voters prefer
+a particular candidate over all others, even single vote, first-past-the-post systems work fine.</p>
+
+<p>When there are many candidates, and voters prefer them in idiosyncratic ways, problems arise. And
+when there is no clear majority first-place candidate, elections must be resolved according to some
+process.</p>
+
+<h4>Instant Runoff Voting</h4>
+
+<p>In IRV voting, such as the Illinois bill referenced above, ballots are counted in successive rounds,
+paring down the available candidates in each round.</p>
+
+<p>To interpret a ballot, you look for the highest ranked candidate who has not been eliminated. That counts
+for one vote for that candidate. In each round, at least one candidate (the one with the least votes) is
+eliminated from consideration, until only two candidates remain and a majority winner is determined.</p>
+
+<h4>Condorcet Voting</h4>
+
+<p>Condorcet voting (or really, Condorcet counting) works differently. Instead of successive rounds of eliminations, each ballot
+is interpreted as a collection of pairwise contests between candidates. The pairwise totals are added up
+across all ballots, and if a clear winner emerges (one candidate beats all the others), that
+person is the winner. If it emerges that there is a cycle (e.g. A beats B, B beats C, and C beats
+A), more sophisticated methods are used. There are a number of methods, but basically you drop the
+most marginal preferences until a winner remains.</p>
+
+<h4>Why prefer Condorcet?</h4>
+
+<p>The easiest way to see that Condorcet style systems are preferable is by example.
+Imagine an election between 4 candidates: A, B, C, and D, in a population of 100 voters.
+    The ballots are submitted as follows (recall that unmentioned candidates are considered
+    equally unpreferred):</p>
+
+<table>
+    <tr><th>Order of Candidates</th><th>Vote Total</th></tr>
+    <tr><td>A, D</td><td>31</td></tr>
+    <tr><td>B, D</td><td>30</td></tr>
+    <tr><td>C, D</td><td>29</td></tr>
+    <tr><td>D</td><td>10</td></tr>
+</table>
+
+<p>Who should be the winner of this election? Clearly, it is candidate D. Though few people
+preferred D over everyone in the field, everyone expressed a preference for D.</p>
+
+<p>How does IRV resolve this election? Well, in the first round the votes are counted.
+A has 31, B 30, C 29, and D 10. No one has a majority, so the lowest vote getter is eliminated.
+Goodbye to candidate D. In succesive rounds, C and B are eliminated, and A is the winner.</p>
+
+<p>How does Condorcet resolve this election? First we interpret all the ballots as pairwise
+preferences. A ballot that marks A as first choice and D as second choice is really saying:
+A > B, A > C, A > D, D > B, D > C and no preference between B and C. We could change the
+ballot to a chart that looks like this.</p>
+
+<table>
+    <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+    <tr><td class="first">A</td><td></td><td>1</td><td>1</td><td>1</td></tr>
+    <tr><td class="first">B</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="first">C</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="first">D</td><td></td><td>1</td><td>1</td><td></td></tr>
+</table>
+
+<p>To read this chart, read across the rows to see how many votes were cast that
+prefer the candidate starting that row to the candidate specified in the column.
+To interpret one ballot this way is a bit strange, but the point is that we can
+now add all the ballots up, and end up with this chart.</p>
+
+<table>
+    <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+    <tr><td class="first">A</td><td></td><td>31</td><td>31</td><td>31</td></tr>
+    <tr><td class="first">B</td><td>30</td><td></td><td>30</td><td>30</td></tr>
+    <tr><td class="first">C</td><td>29</td><td>29</td><td></td><td>29</td></tr>
+    <tr><td class="first">D</td><td>69</td><td>70</td><td>71</td><td></td></tr>
+</table>
+
+<p>Now we can simply determine who wins by comparing the votes cast in each
+contest in both directions. Did A beat B? Well, reading the chart indicates that
+A was preferred to B 31 times, and B to A 30 times. So, A beats B. Similarly,
+A beats C 31 to 29. But D beat A 69 to 31.</p>
+
+<p>In fact, D beats each of the other three candidates in pairwise contests, so
+D is the winner.</p>
+
+<p>IRV delivered the wrong result, Condorcet delivered the correct one.</p>
+
+<h4>Final Thoughts</h4>
+
+<p>The example above is a bit artificial, obviously. But the point remains:
+IRV systems tend to eliminate broadly acceptable candidates and elevate fringe
+    ones. And in the US, fringe means racist.</p>
+
+<p>IRV also suffers from another problem: the need to vote strategically. Every
+election system has circumstances where you have to balance your genuine preferences
+with the need for avoiding terrible outcomes. Condorcet is
+very good in this regard: generally you can express your preferences assured that
+they will not lead to a disaster. In IRV, you have exactly the same problem as
+in single-choice, first-past-the-post elections. If broadly acceptable (but moderate)
+candidate does not get enough first place votes, instead those votes are divided
+among the Green Party, the Racial Justice Party, the Feminist Party, etc, than
+the acceptable moderate gets dropped, and perhaps the end winner is the dreaded
+white nationalist. In fact, in some ways IRV might be even worse than our current
+system, since it gives you the illusion of safely expressing your true beliefs,
+but you cannot actually do so.</p>
+
+</body>
+
+</html>
