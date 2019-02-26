@@ -17,7 +17,7 @@ public class TestBillSearcher {
 
         String url = searcher.searchForBaseUrl(Chamber.Senate, 123L);
 
-        Assert.assertEquals("http://www.ilga.gov/legislation/BillStatus.asp?DocNum=123&GAID=14&DocTypeID=SB&LegId=100000&SessionID=91&GA=100", url);
+        Assert.assertEquals("http://www.ilga.gov/legislation/BillStatus.asp?DocNum=123&GAID=15&DocTypeID=SB&LegId=115219&SessionID=108&GA=101", url);
     }
 
 }
