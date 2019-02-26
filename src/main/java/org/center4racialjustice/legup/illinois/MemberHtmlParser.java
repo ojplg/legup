@@ -19,6 +19,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +144,11 @@ public class MemberHtmlParser {
         Element table = tables.get(number);
 
         Elements rows = table.select("tr");
+
+        if ( rows.get(0).html().contains("View Legislation and Laws")){
+            // we have the wrong table, perhaps because there are no former members
+            return Collections.emptyList();
+        }
 
         List<Legislator> members = new ArrayList<>();
 

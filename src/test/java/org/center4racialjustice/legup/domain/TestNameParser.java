@@ -75,6 +75,21 @@ public class TestNameParser {
     }
 
     @Test
+    public void fullNameRegularOrderWithMiddleAndSuffix(){
+//        "Maurice A. West II"
+
+
+
+        NameParser parser = new NameParser();
+        Name curtis = parser.fromRegularOrderString("Curtis J. Tarver II");
+        Assert.assertEquals("Curtis", curtis.getFirstName());
+        Assert.assertEquals("J", curtis.getMiddleInitial());
+        Assert.assertEquals("Tarver", curtis.getLastName());
+        Assert.assertEquals("II", curtis.getSuffix());
+
+    }
+
+    @Test
     public void fullNameRegularOrderWithFunnySuffix(){
         NameParser parser = new NameParser(loadOverrides());
         Name name = parser.fromRegularOrderString("Jerry Costello, II");

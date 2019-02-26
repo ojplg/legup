@@ -1,5 +1,8 @@
 # Name override file
 
+# Format is
+#  KEY=First|M|Last|F|Suffix
+
 C.D. Davidsmeyer=C.D.||Davidsmeyer||
 La Shawn K. Ford=La Shawn|K|Ford||
 Wm. Sam McCann=Wm.|Sam|McCann||

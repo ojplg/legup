@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.domain;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,8 +15,8 @@ public class NameParser {
     public static String firstAndLastRegularOrder = "([A-Z][A-Za-zé\\-']+) ([A-Z][A-Za-zéñ\\-']+)";
     public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
     public static String firstAndLastRegularOrderWithSuffix = firstAndLastRegularOrder + ", ([A-Z][A-Za-z]+)\\.?";
-    public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z]).? ([A-Z][A-Za-z']+)";
-    public static String fullNameRegularOrderWithSuffix = fullNameRegularOrder + ", ([A-Z][A-Za-zñ]+).";
+    public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z])\\.? ([A-Z][A-Za-z']+)";
+    public static String fullNameRegularOrderWithSuffix = fullNameRegularOrder + ",? ([A-Z][A-Za-zñ]+)\\.?";
 
     public static String unifiedRegex = String.join("|", simpleLastNameRegex, firstInitialRegex, fullNameRegex, fullNameWithSuffixRegex);
 
@@ -32,6 +33,10 @@ public class NameParser {
     public static Pattern firstAndLastRegularOrderWithSuffixPattern = Pattern.compile(firstAndLastRegularOrderWithSuffix);
 
     private final Map<String, Name> specialOverides;
+
+    public NameParser(){
+        this.specialOverides = Collections.emptyMap();
+    }
 
     public NameParser(Map<String, Name> specialOverides) {
         this.specialOverides = specialOverides;
