@@ -10,7 +10,7 @@ public class NameParser {
     public static String simpleLastNameRegex = "([A-Z][A-Za-zñ\\-' ]+)";
     public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z])\\.";
     public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
-    public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\., ([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
+    public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\.?,\\s?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
     public static String firstAndLastRegularOrder = "([A-Z][A-Za-zé\\-']+) ([A-Z][A-Za-zéñ\\-']+)";
     public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";

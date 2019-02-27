@@ -169,6 +169,17 @@ public class TestNameParser {
         Assert.assertNull(name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
         Assert.assertNull(name.getMiddleInitial());
-
     }
+
+    @Test
+    public void testNameWithoutSpaces(){
+        NameParser parser = new NameParser();
+        Name name = parser.fromLastNameFirstString("Tarver II,Curtis");
+
+        Assert.assertEquals("Curtis", name.getFirstName());
+        Assert.assertEquals("Tarver", name.getLastName());
+        Assert.assertEquals("II", name.getSuffix());
+    }
+
+
 }
