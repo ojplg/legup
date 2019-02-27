@@ -12,43 +12,56 @@
 <div class="contents">
 
     <div>
-        <div style="width: 40%; float:left;">
+        <div style="width: 40%; float:left; background-color: red;">
             <h4>Login</h4>
             <form action="/legup/user_login" id="user_login_form" class="pure-form pure-form-aligned" method="post">
-                <div class="pure-control-group">
-                    <label for="email">Email</label>
-                    <input type="text" id="email" name="email"/>
+                <fieldset>
+                    <div class="pure-control-group">
+                        <label for="email">Email</label>
+                        <input type="text" id="email" name="email"/>
+                    </div>
 
-                    <label for="password">Password</label>
-                    <input id="password" type="password" name="password"/>
+                    <div class="pure-control-group">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" name="password"/>
+                    </div>
 
-                    <label for="login"></label>
-                    <input id="login" type="submit" value="Login"/>
-                </div>
+                    <div class="pure-control-group">
+                        <label for="login"></label>
+                        <input id="login" type="submit" value="Login"/>
+                    </div>
+                </fieldset>
             </form>
         </div>
 
-        <div style="width: 40%; float:left;">
+        <div style="width: 40%; float:left; background-color: blue;">
             <h4>New User</h4>
             <form action="/legup/save_new_user" id="save_new_user_form" class="pure-form pure-form-aligned" method="post">
-                <div class="pure-control-group">
-                    <label for="new_user_email">Email</label>
-                    <input type="text" id="new_user_email" name="new_user_email"/>
+                <fieldset>
+                    <div class="pure-control-group">
+                        <label for="new_user_email">Email</label>
+                        <input type="text" id="new_user_email" name="new_user_email"/>
+                    </div>
 
-                    <label for="new_user_organization">Organization</label>
-                    <input type="text" id="new_user_organization" name="new_user_organization"/>
+                    <div class="pure-control-group">
+                        <label for="new_user_organization">Organization</label>
+                        <input type="text" id="new_user_organization" name="new_user_organization"/>
+                    </div>
 
-                    <label for="new_user_password">Password</label>
-                    <input id="new_user_password" type="password" name="new_user_password"/>
+                        <div class="pure-control-group">
+                        <label for="new_user_password">Password</label>
+                        <input id="new_user_password" type="password" name="new_user_password"/>
+                    </div>
 
-                    <label for="register"></label>
-                    <input id="register" type="submit" value="Register"/>
-                </div>
-
+                    <div class="pure-control-group">
+                        <label for="register"></label>
+                        <input id="register" type="submit" value="Register"/>
+                    </div>
+                </fieldset>
             </form>
         </div>
 
-        <br style="clear: left;" />
+        <div style="clear: left;"></div>
     </div>
 </div>
 </body>

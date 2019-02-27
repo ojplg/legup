@@ -58,6 +58,10 @@ public class UserService {
                     template.setEmail(email);
                     Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
                     User user = dao.selectByColumns(template, "EMAIL");
+                    if ( user == null ){
+                        log.info("no such user as " + email);
+                        return null;
+                    }
                     if ( user.correctPassword(password) ){
                         return user;
                     }
