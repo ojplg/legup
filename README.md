@@ -58,9 +58,6 @@ Technical Betterments
 * Also, need to look into [postgres backups](https://www.postgresql.org/docs/10/static/backup.html)
   I have set up pg_dump for cron on the aws instance.
 * Actually make a real connection pool and automated reclamation
-* Maybe throw out the whole of the DB access layer (hrorm) and replace with 
-  Hibernate/javax.persistence or Mybatis (there's a branch for this) or JDBI 
-  (proyal's favorite) 
 * Silent logging for unit tests (maybe)
 
 Features/bugs to work on
@@ -68,7 +65,6 @@ Features/bugs to work on
 * USER FIXES
   * Prevent users from seeing screens they do not have permission for
   * Convert home page to an application page
-  * Convert login page to an application page
   * Allow users to change their passwords
   * Allow users to invite others to their organizations
   * Allow organization names to be changed
