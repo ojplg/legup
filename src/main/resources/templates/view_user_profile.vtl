@@ -1,16 +1,41 @@
 
 <h3>User Profile</h3>
 
-Email: $topmatter.user.email
+Email: $user.email
 
 <br/>
 
-Organization: $topmatter.user.organization.name
+Organization: $organization.name
 
 <br/>
+<br/>
+<br/>
 
-<ul>
-    #foreach( $card in $topmatter.user.organization.reportCards )
-        <li>$card.name</li>
+<table class="pure-table">
+    <tr>
+        <th>Report Card</th>
+        <th>Calculate Scores</th>
+        <th>Edit</th>
+    </tr>
+
+    #foreach ($report_card in $organization.reportCards)
+        <tr>
+            <td>$report_card.Name</td>
+            <td>
+                #if ( ${report_card.hasFactors()} )
+                    <span class="tooltip">
+                        <span class="tooltiptext">See the results of applying a report card to known votes.</span>
+                        <a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a>
+                    </span>
+                #end
+            </td>
+            <td>
+                <span class="tooltip">
+                    <span class="tooltiptext">Change the configuration of this report card.</span>
+                    <a href="/legup/view_report_card_form?report_card_id=$report_card.Id">edit</a>
+                </span>
+            </td>
+        </tr>
     #end
-</ul>
+</table>
+

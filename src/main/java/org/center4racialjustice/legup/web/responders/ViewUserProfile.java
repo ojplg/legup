@@ -10,6 +10,10 @@ public class ViewUserProfile implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         HtmlLegupResponse response = HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
+
+        response.putVelocityData("user", submission.getLoggedInUser());
+        response.putVelocityData("organization", submission.getLoggedInUser().getOrganization());
+
         return response;
     }
 

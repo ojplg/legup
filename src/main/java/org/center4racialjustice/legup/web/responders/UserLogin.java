@@ -39,6 +39,6 @@ public class UserLogin implements Responder {
 
         submission.setLoggedInUser(user);
 
-        return new ContinueLegupResponse(ViewReportCards.class);
+        return new ContinueLegupResponse(ViewUserProfile.class);
     }
 }
