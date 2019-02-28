@@ -34,6 +34,7 @@ import org.center4racialjustice.legup.web.responders.ViewReportCardScoresCsv;
 import org.center4racialjustice.legup.web.responders.ViewReportCards;
 import org.center4racialjustice.legup.web.responders.ViewBillDataCsv;
 import org.center4racialjustice.legup.web.responders.ViewBillDataTable;
+import org.center4racialjustice.legup.web.responders.ViewUserProfile;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -99,6 +100,7 @@ public class AppHandler extends AbstractHandler {
         responders.add(new UserLogin(connectionPool));
         responders.add(new UserLogout());
         responders.add(new ViewLogin());
+        responders.add(new ViewUserProfile());
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());

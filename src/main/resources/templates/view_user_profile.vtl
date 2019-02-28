@@ -1,0 +1,16 @@
+
+<h3>User Profile</h3>
+
+Email: $topmatter.user.email
+
+<br/>
+
+Organization: $topmatter.user.organization.name
+
+<br/>
+
+<ul>
+    #foreach( $card in $topmatter.user.organization.reportCards )
+        <li>$card.name</li>
+    #end
+</ul>
