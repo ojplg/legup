@@ -167,6 +167,11 @@ public class AppHandler extends AbstractHandler {
             log.info("Forwarded response to " + nextKey);
             responder = responderMap.get(nextKey);
             legupSubmission = legupSubmission.update(legupResponse.getParameters());
+
+            // check for logged in if necessary and redirect if not
+            if ( responder.isSecured() && ! legupSubmission.isLoggedIn() ){
+                responder = responderMap.get("view_login");
+            }
             legupResponse = responder.handle(legupSubmission);
         }
 
