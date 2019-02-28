@@ -10,7 +10,7 @@
 
     #foreach ($report_card in $report_cards)
         <tr>
-            <td>$report_card.Name</td>
+            <td>$report_card.Name ($report_card.Organization.Name)</td>
             <td>
                 #if ( ${report_card.hasFactors()} )
                     <span class="tooltip">
