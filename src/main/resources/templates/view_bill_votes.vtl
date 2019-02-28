@@ -40,7 +40,9 @@
     <div class="pure-u-1-4">
         <b>$side.DisplayString</b><br/>
         #foreach ($vote in ${billActionSummary.getVotes($house, $side)})
-            <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">$vote.Legislator.Name.Display</a>
+            <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">
+                $vote.Legislator.Name.Display - $vote.Legislator.Party
+            </a>
             <br/>
         #end
     </div>
@@ -56,7 +58,9 @@
     <div class="pure-u-1-4">
         <b>$side.DisplayString</b><br/>
         #foreach ($vote in ${billActionSummary.getVotes($senate, $side)})
-            <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">$vote.Legislator.Name.Display</a>
+            <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">
+                $vote.Legislator.Name.Display- $vote.Legislator.Party
+            </a>
             <br/>
         #end
     </div>
