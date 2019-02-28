@@ -7,6 +7,10 @@ import org.center4racialjustice.legup.db.DaoBuilders;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.hrorm.Dao;
+import org.hrorm.Operator;
+import org.hrorm.Where;
+
+import java.util.List;
 
 public class UserService {
 
@@ -68,6 +72,14 @@ public class UserService {
                     return null;
                 }
         );
+    }
+
+    public List<User> findUsersInOrganization(Organization org){
+        return connectionPool.useConnection( connection ->
+        {
+            Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
+            return dao.select(new Where("organization_id", Operator.EQUALS, org.getId()));
+        });
     }
 
 }

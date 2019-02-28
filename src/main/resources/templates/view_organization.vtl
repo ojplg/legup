@@ -1,0 +1,48 @@
+
+<h3>Organization</h3>
+
+Organization: $organization.name
+
+<br/>
+<br/>
+
+<h5>Report Cards</h5>
+
+<br/>
+
+<table class="pure-table">
+    <tr>
+        <th>Report Card</th>
+        <th>Calculate Scores</th>
+        <th>Edit</th>
+    </tr>
+
+    #foreach ($report_card in $organization.reportCards)
+        <tr>
+            <td>$report_card.Name</td>
+            <td>
+                #if ( ${report_card.hasFactors()} )
+                    <span class="tooltip">
+                        <span class="tooltiptext">See the results of applying a report card to known votes.</span>
+                        <a href="/legup/view_report_card_scores?report_card_id=$report_card.Id">calculate</a>
+                    </span>
+                #end
+            </td>
+            <td>
+                <span class="tooltip">
+                    <span class="tooltiptext">Change the configuration of this report card.</span>
+                    <a href="/legup/view_report_card_form?report_card_id=$report_card.Id">edit</a>
+                </span>
+            </td>
+        </tr>
+    #end
+</table>
+
+<h5>Users</h5>
+
+<ul>
+    #foreach ($user in $users)
+        <li>$user.email</li>
+    #end
+</ul>
+
