@@ -6,4 +6,7 @@ public interface Responder {
     default boolean isSecured() {
         return false;
     }
+
+    default boolean permitted(LegupSubmission legupSubmission) { return true; }
+
 }

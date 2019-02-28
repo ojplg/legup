@@ -39,6 +39,10 @@ public class LegupSubmission {
         return new LegupSubmission(legupSession, parameters);
     }
 
+    public Map<String, String> getParameters(){
+        return parameters;
+    }
+
     public <T> T getConvertedParameter(String parameterName, Converter<T, String> converter){
         String parameterValueString = internalGetParameter(parameterName);
         if ( parameterValueString != null ){

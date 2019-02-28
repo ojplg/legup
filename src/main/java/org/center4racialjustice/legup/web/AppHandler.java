@@ -158,13 +158,15 @@ public class AppHandler extends AbstractHandler {
 
     private void runResponder(Request request, HttpServletResponse httpServletResponse)
     throws IOException {
+
         String appPath = request.getPathInfo();
         Responder responder = responderMap.get(appPath);
         LegupSubmission legupSubmission = instantiateSubmission(request);
 
-        log.info("Handling request to " + appPath + " with " + responder.getClass().getSimpleName());
-        LegupResponse legupResponse = responder.handle(legupSubmission);
+        LegupResponse legupResponse = new ContinueLegupResponse(responder.getClass(), legupSubmission.getParameters());
+
         while( ! legupResponse.shouldRender() ){
+            log.info("Handling request to " + appPath + " with " + responder.getClass().getSimpleName());
             String nextKey = legupResponse.actionKey();
             log.info("Forwarded response to " + nextKey);
             responder = responderMap.get(nextKey);
@@ -172,7 +174,12 @@ public class AppHandler extends AbstractHandler {
 
             // check for logged in if necessary and redirect if not
             if ( responder.isSecured() && ! legupSubmission.isLoggedIn() ){
-                responder = responderMap.get("view_login");
+                log.info("Request denied due to no logged in user");
+                responder = responderMap.get("/view_login");
+            } else if ( responder.isSecured() && ! responder.permitted(legupSubmission) ){
+                // TODO: Better to redirect to some page with an explanation
+                log.info("Request denied due lacking permission");
+                responder = responderMap.get("/view_user_profile");
             }
             legupResponse = responder.handle(legupSubmission);
         }

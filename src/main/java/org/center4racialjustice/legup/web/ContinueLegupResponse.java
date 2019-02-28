@@ -7,11 +7,17 @@ import java.util.Map;
 
 public class ContinueLegupResponse implements LegupResponse {
 
-    private final Map<String,String> parameters = new HashMap<>();
+    private final Map<String,String> parameters;
     private final String nextResponder;
 
     public ContinueLegupResponse(Class nextResponderClass){
         this.nextResponder = "/" + Util.classNameToLowercaseWithUnderlines(nextResponderClass);
+        this.parameters = new HashMap<>();
+    }
+
+    public ContinueLegupResponse(Class nextResponderClass, Map<String,String> parameters){
+        this.nextResponder = "/" + Util.classNameToLowercaseWithUnderlines(nextResponderClass);
+        this.parameters = parameters;
     }
 
     public void setParameter(String key, String value){

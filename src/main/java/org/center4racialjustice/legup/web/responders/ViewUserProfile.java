@@ -17,4 +17,9 @@ public class ViewUserProfile implements SecuredResponder {
         return response;
     }
 
+    @Override
+    public boolean permitted(LegupSubmission submission){
+        return submission.getLoggedInUser() != null;
+    }
+
 }

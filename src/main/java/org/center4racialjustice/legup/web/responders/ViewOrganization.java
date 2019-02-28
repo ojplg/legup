@@ -21,7 +21,6 @@ public class ViewOrganization implements SecuredResponder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-
         Organization organization = submission.getLoggedInUser().getOrganization();
         List<User> users = userService.findUsersInOrganization(organization);
 
@@ -31,6 +30,13 @@ public class ViewOrganization implements SecuredResponder {
         response.putVelocityData("users", users);
 
         return response;
+    }
+
+    @Override
+    public boolean permitted(LegupSubmission submission){
+        Long orgId = submission.getLongRequestParameter("organization_id");
+        Organization organization = submission.getLoggedInUser().getOrganization();
+        return organization.getId() == orgId;
     }
 
 }
