@@ -36,7 +36,7 @@ public class ViewOrganization implements SecuredResponder {
     public boolean permitted(LegupSubmission submission){
         Long orgId = submission.getLongRequestParameter("organization_id");
         Organization organization = submission.getLoggedInUser().getOrganization();
-        return organization.getId() == orgId;
+        return organization.getId().equals(orgId);
     }
 
 }
