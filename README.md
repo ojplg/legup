@@ -43,7 +43,7 @@ LegUp exposes its functionality via a simple web application.
   * PDFBox
   * JSoup
   * H2 (for tests)   
-  * [hrorm!](hrorm.org)
+  * [hrorm!](http://hrorm.org)
 
 # TODO list
 
