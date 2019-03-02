@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
-import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
