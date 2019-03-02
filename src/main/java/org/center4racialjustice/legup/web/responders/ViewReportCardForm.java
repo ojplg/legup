@@ -16,6 +16,7 @@ import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 import org.center4racialjustice.legup.web.Util;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
@@ -53,7 +54,7 @@ public class ViewReportCardForm implements Responder {
                 reportCardPersistence.computeSelectedLegislators(reportCard);
 
         HtmlLegupResponse response = HtmlLegupResponse.withHelpAndLinks(this.getClass(),
-                submission.getLoggedInUser(), navLinks());
+                submission.getLoggedInUser(), navLinks(reportCardId));
 
         response.putVelocityData("report_card", reportCard);
         response.putVelocityData("factor_settings", factorSettings);
@@ -63,11 +64,10 @@ public class ViewReportCardForm implements Responder {
         return response;
     }
 
-    private List<NavLink> navLinks() {
-        return Collections.singletonList(
-                new NavLink(
-                "Report Card Index",
-                "/legup/view_report_cards")
+    private List<NavLink> navLinks(long reportCardId) {
+        return Arrays.asList(
+                new NavLink("Report Card Index", "/legup/view_report_cards"),
+                new NavLink("Calculate Scores","/legup/view_report_card_scores?report_card_id=" + reportCardId)
         );
     }
 
