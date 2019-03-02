@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Grade;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.service.GradingService;
@@ -13,13 +14,13 @@ import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.NavLink;
-import org.center4racialjustice.legup.web.Responder;
+import org.center4racialjustice.legup.web.SecuredResponder;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ViewReportCardScores implements Responder {
+public class ViewReportCardScores implements SecuredResponder {
 
     private final GradingService gradingService;
 
@@ -53,6 +54,15 @@ public class ViewReportCardScores implements Responder {
 
         return response;
     }
+
+    @Override
+    public boolean permitted(LegupSubmission submission){
+        long reportCardId = submission.getLongRequestParameter( "report_card_id");
+        ReportCard reportCard = gradingService.loadCard(reportCardId);
+        Organization organization = submission.getLoggedInUser().getOrganization();
+        return organization.equals(reportCard.getOrganization());
+    }
+
 
     private List<NavLink> navLinks(String oneTimeKey, long reportCardId) {
         return Arrays.asList(

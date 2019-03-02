@@ -39,4 +39,11 @@ public class GradingService {
         });
     }
 
+    public ReportCard loadCard(long reportCardId){
+        return connectionPool.useConnection(connection -> {
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
+            return reportCardDao.read(reportCardId);
+        });
+    }
+
 }
