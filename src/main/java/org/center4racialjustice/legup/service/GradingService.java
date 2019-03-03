@@ -15,8 +15,10 @@ import java.util.List;
 public class GradingService {
 
     private final ConnectionPool connectionPool;
+    private final ReportCardPersistence reportCardPersistence;
 
     public GradingService(ConnectionPool connectionPool) {
+        this.reportCardPersistence = new ReportCardPersistence(connectionPool);
         this.connectionPool = connectionPool;
     }
 
@@ -39,11 +41,8 @@ public class GradingService {
         });
     }
 
-    public ReportCard loadCard(long reportCardId){
-        return connectionPool.useConnection(connection -> {
-            ReportCardDao reportCardDao = new ReportCardDao(connection);
-            return reportCardDao.read(reportCardId);
-        });
+    public ReportCard selectCard(long reportCardId){
+        return reportCardPersistence.selectCard(reportCardId);
     }
 
 }

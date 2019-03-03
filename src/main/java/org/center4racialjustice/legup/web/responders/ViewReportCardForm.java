@@ -3,9 +3,9 @@ package org.center4racialjustice.legup.web.responders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
 import org.center4racialjustice.legup.util.Tuple;
@@ -13,23 +13,19 @@ import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.NavLink;
-import org.center4racialjustice.legup.web.Responder;
-import org.center4racialjustice.legup.web.Util;
+import org.center4racialjustice.legup.web.SecuredResponder;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 
-public class ViewReportCardForm implements Responder {
+public class ViewReportCardForm implements SecuredResponder {
 
     private static final Logger log = LogManager.getLogger(ViewReportCardForm.class);
 
-    private final ConnectionPool connectionPool;
     private final ReportCardPersistence reportCardPersistence;
 
     public ViewReportCardForm(ConnectionPool connectionPool){
-        this.connectionPool = connectionPool;
         this.reportCardPersistence = new ReportCardPersistence(connectionPool);
     }
 
@@ -43,11 +39,7 @@ public class ViewReportCardForm implements Responder {
 
         log.info("Request for form for " + reportCardId);
 
-        ReportCard reportCard = connectionPool.useConnection(
-                connection -> {
-                    ReportCardDao reportCardDao = new ReportCardDao(connection);
-                    return reportCardDao.read(reportCardId);
-                });
+        ReportCard reportCard = reportCardPersistence.selectCard(reportCardId);
 
         SortedMap<Bill, String> factorSettings = reportCardPersistence.computeFactorSettings(reportCard);
         Tuple<SortedMap<Legislator, Boolean>, SortedMap<Legislator, Boolean>> selectedLegislators =
@@ -71,4 +63,11 @@ public class ViewReportCardForm implements Responder {
         );
     }
 
+    @Override
+    public boolean permitted(LegupSubmission legupSubmission) {
+        Long reportCardId = legupSubmission.getLongRequestParameter("report_card_id");
+        ReportCard reportCard = reportCardPersistence.selectCard(reportCardId);
+        Organization organization = legupSubmission.getOrganization();
+        return organization.equals(reportCard.getOrganization());
+    }
 }

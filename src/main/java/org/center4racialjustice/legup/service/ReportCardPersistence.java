@@ -28,6 +28,13 @@ public class ReportCardPersistence {
         this.connectionPool = connectionPool;
     }
 
+    public ReportCard selectCard(long reportCardId){
+        return connectionPool.useConnection(connection -> {
+            ReportCardDao reportCardDao = new ReportCardDao(connection);
+            return reportCardDao.read(reportCardId);
+        });
+    }
+
     public ReportCard saveNewCard(String name, long sessionNumber, Organization organization){
         ReportCard reportCard = new ReportCard();
         reportCard.setName(name);
