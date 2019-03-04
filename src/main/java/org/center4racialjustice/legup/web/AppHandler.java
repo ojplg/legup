@@ -19,6 +19,7 @@ import org.center4racialjustice.legup.web.responders.ViewBillSponsors;
 import org.center4racialjustice.legup.web.responders.ViewLegislatorVotes;
 import org.center4racialjustice.legup.web.responders.ViewLegislators;
 import org.center4racialjustice.legup.web.responders.ViewLogin;
+import org.center4racialjustice.legup.web.responders.ViewMain;
 import org.center4racialjustice.legup.web.responders.ViewNewReportCardForm;
 import org.center4racialjustice.legup.web.responders.ViewOrganization;
 import org.center4racialjustice.legup.web.responders.ViewParsedLegislators;
@@ -73,6 +74,7 @@ public class AppHandler extends AbstractHandler {
     AppHandler(ConnectionPool connectionPool, NameParser nameParser) {
         List<Responder> responders = new ArrayList<>();
 
+        responders.add(new ViewMain());
         responders.add(new ViewBillForm());
         responders.add(new ViewFindLegislatorsForm());
         responders.add(new ViewParsedLegislators(connectionPool, nameParser));
