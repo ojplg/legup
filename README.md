@@ -64,7 +64,6 @@ Features/bugs to work on
 
 * USER FIXES
   * Prevent users from seeing screens they do not have permission for
-  * Convert home page to an application page
   * Allow users to change their passwords
   * Allow users to invite others to their organizations
   * Allow organization names to be changed
