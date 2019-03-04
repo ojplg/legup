@@ -32,7 +32,7 @@ public class UserLogin implements Responder {
 
         if ( user == null ){
             log.info("User login failed");
-            return HtmlLegupResponse.simpleResponse(UserLogin.class, null);
+            return HtmlLegupResponse.simpleResponse(ViewLogin.class, null);
         }
 
         log.info("User " + email + " is logged in");
