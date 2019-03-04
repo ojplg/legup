@@ -90,6 +90,7 @@ public class UserService {
                     if ( user.correctPassword(password) ){
                         return user;
                     }
+                    log.info("incorrect password for " + email);
                     return null;
                 }
         );

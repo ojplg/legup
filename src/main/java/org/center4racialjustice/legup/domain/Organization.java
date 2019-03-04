@@ -17,4 +17,13 @@ public class Organization {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public boolean ownsCard(long reportCardId){
+        for( ReportCard card : reportCards ){
+            if ( card.getId().equals(reportCardId) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

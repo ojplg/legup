@@ -64,10 +64,9 @@ public class ViewReportCardForm implements SecuredResponder {
     }
 
     @Override
-    public boolean permitted(LegupSubmission legupSubmission) {
-        Long reportCardId = legupSubmission.getLongRequestParameter("report_card_id");
-        ReportCard reportCard = reportCardPersistence.selectCard(reportCardId);
-        Organization organization = legupSubmission.getOrganization();
-        return organization.equals(reportCard.getOrganization());
+    public boolean permitted(LegupSubmission submission) {
+        long reportCardId = submission.getLongRequestParameter( "report_card_id");
+        Organization organization = submission.getLoggedInUser().getOrganization();
+        return organization.ownsCard(reportCardId);
     }
 }

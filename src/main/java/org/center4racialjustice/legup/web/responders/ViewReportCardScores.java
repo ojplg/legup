@@ -63,13 +63,7 @@ public class ViewReportCardScores implements SecuredResponder {
     public boolean permitted(LegupSubmission submission){
         long reportCardId = submission.getLongRequestParameter( "report_card_id");
         Organization organization = submission.getLoggedInUser().getOrganization();
-
-        for( ReportCard card : organization.getReportCards() ){
-            if ( card.getId().equals(reportCardId) ) {
-                return true;
-            }
-        }
-        return false;
+        return organization.ownsCard(reportCardId);
     }
 
 
