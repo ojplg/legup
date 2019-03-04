@@ -20,12 +20,11 @@ public class SaveNewUser implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         String organizationName = submission.getParameter("new_user_organization");
-        Organization organization = userService.insertNewOrganization(organizationName);
-
         String email = submission.getParameter("new_user_email");
         String password = submission.getParameter("new_user_password");
 
-        User user = userService.insertNewUser(email, password, organization);
+        User user = userService.insertNewUserAndOrganization(organizationName, email, password);
+
         submission.setLoggedInUser(user);
 
         HtmlLegupResponse legupResponse = HtmlLegupResponse.simpleResponse(SaveNewUser.class, submission.getLoggedInUser());

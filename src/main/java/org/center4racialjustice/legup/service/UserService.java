@@ -22,6 +22,27 @@ public class UserService {
         this.connectionPool = connectionPool;
     }
 
+    public User insertNewUserAndOrganization(String organizationName, String email, String password){
+        log.info("Inserting new user + " + email + " with new organization " + organizationName);
+
+        return connectionPool.runAndCommit( connection ->
+            {
+                Organization organization = new Organization();
+                organization.setName(organizationName);
+
+                Dao<Organization> orgDao = DaoBuilders.ORGANIZATIONS.buildDao(connection);
+                orgDao.insert(organization);
+
+                User user = User.createNewUser(email, password);
+                user.setOrganization(organization);
+
+                Dao<User> userDao = DaoBuilders.USERS.buildDao(connection);
+                userDao.insert(user);
+
+                return user;
+            });
+    }
+
     public Organization insertNewOrganization(String name){
 
         log.info("Inserting new organization " + name);
