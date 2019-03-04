@@ -26,6 +26,7 @@ public class SaveNewUser implements Responder {
         String password = submission.getParameter("new_user_password");
 
         User user = userService.insertNewUser(email, password, organization);
+        submission.setLoggedInUser(user);
 
         HtmlLegupResponse legupResponse = HtmlLegupResponse.simpleResponse(SaveNewUser.class, submission.getLoggedInUser());
         legupResponse.putVelocityData("user", user);

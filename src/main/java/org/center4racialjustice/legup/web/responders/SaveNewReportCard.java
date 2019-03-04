@@ -11,6 +11,7 @@ import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SaveNewReportCard implements Responder {
@@ -40,6 +41,8 @@ public class SaveNewReportCard implements Responder {
         ReportCard card = reportCardPersistence.saveNewCard(name, session, organization);
 
         Long reportCardId = card.getId();
+
+        organization.getReportCards().add(card);
 
         ContinueLegupResponse response = new ContinueLegupResponse(ViewReportCardForm.class);
         response.setParameter("report_card_id", String.valueOf(reportCardId));
