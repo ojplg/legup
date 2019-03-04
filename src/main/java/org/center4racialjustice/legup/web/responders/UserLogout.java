@@ -19,7 +19,7 @@ public class UserLogout implements Responder {
         submission.logout();
 
         // TODO: this should go to the login page
-        return new ContinueLegupResponse(ViewReportCards.class);
+        return new ContinueLegupResponse(ViewLogin.class);
     }
 
 }

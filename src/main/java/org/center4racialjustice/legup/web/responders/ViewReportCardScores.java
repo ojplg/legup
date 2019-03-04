@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web.responders;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Grade;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ViewReportCardScores implements SecuredResponder {
+
+    private static final Logger log = LogManager.getLogger(ViewReportCardScores.class);
 
     private final GradingService gradingService;
 
@@ -58,9 +62,14 @@ public class ViewReportCardScores implements SecuredResponder {
     @Override
     public boolean permitted(LegupSubmission submission){
         long reportCardId = submission.getLongRequestParameter( "report_card_id");
-        ReportCard reportCard = gradingService.selectCard(reportCardId);
         Organization organization = submission.getLoggedInUser().getOrganization();
-        return organization.equals(reportCard.getOrganization());
+
+        for( ReportCard card : organization.getReportCards() ){
+            if ( card.getId().equals(reportCardId) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -16,7 +16,7 @@
     &nbsp;&nbsp;<b><a href="/legup/view_main">LegUp</a></b>
     <span style="float:right;">
         #if ( $topmatter.user )
-            $topmatter.user.email&nbsp;
+            <a href="/legup/view_user_profile">$topmatter.user.email&nbsp;-&nbsp;profile</a>
             <a href="/legup/user_logout">(logout)</a>
         #else
             <a href="/legup/view_login">Login</a>
