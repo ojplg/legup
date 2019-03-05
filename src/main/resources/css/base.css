@@ -51,3 +51,7 @@ body.helpscreen {
     visibility: visible;
 }
 
+span.error {
+    color: Red;
+    font-weight: bold;
+}

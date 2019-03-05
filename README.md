@@ -60,14 +60,15 @@ Technical Betterments
 * Actually make a real connection pool and automated reclamation
 * Silent logging for unit tests (maybe)
 
-Features/bugs to work on
+Features/bugs/ideas to work on
 
 * USER FIXES
-  * Prevent users from seeing screens they do not have permission for
   * Allow users to change their passwords
   * Allow users to invite others to their organizations
   * Allow organization names to be changed
-  
+
+  * Make sure submission of names handle spaces correctly
+  * Error messages on user/organization creation
 
 * Write more help screens
 * Legislator Persistence

@@ -32,7 +32,9 @@ public class UserLogin implements Responder {
 
         if ( user == null ){
             log.info("User login failed");
-            return HtmlLegupResponse.simpleResponse(ViewLogin.class, null);
+            HtmlLegupResponse response = HtmlLegupResponse.simpleResponse(ViewLogin.class, null);
+            response.putVelocityData("loginFailed", Boolean.TRUE);
+            return response;
         }
 
         log.info("User " + email + " is logged in");
