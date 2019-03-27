@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +58,7 @@ public class TestBillActionLoadDao {
         billActionLoad1.setBill(bill1);
         billActionLoad1.setUrl("url1");
         billActionLoad1.setCheckSum(8811L);
-        billActionLoad1.setLoadTime(LocalDateTime.now());
+        billActionLoad1.setLoadInstant(Instant.now());
 
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         billActionLoadDao.insert(billActionLoad1);
@@ -92,13 +92,13 @@ public class TestBillActionLoadDao {
         billActionLoad1.setBill(bill1);
         billActionLoad1.setUrl("url1");
         billActionLoad1.setCheckSum(8811L);
-        billActionLoad1.setLoadTime(LocalDateTime.now());
+        billActionLoad1.setLoadInstant(Instant.now());
 
         BillActionLoad billActionLoad2 = new BillActionLoad();
         billActionLoad2.setBill(bill2);
         billActionLoad2.setUrl("url2");
         billActionLoad2.setCheckSum(8822L);
-        billActionLoad2.setLoadTime(LocalDateTime.now());
+        billActionLoad2.setLoadInstant(Instant.now());
 
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         billActionLoadDao.insert(billActionLoad1);
@@ -137,13 +137,13 @@ public class TestBillActionLoadDao {
         billActionLoad1.setBill(bill1);
         billActionLoad1.setUrl("url1");
         billActionLoad1.setCheckSum(8811L);
-        billActionLoad1.setLoadTime(LocalDateTime.now());
+        billActionLoad1.setLoadInstant(Instant.now());
 
         BillActionLoad billActionLoad2 = new BillActionLoad();
         billActionLoad2.setBill(bill2);
         billActionLoad2.setUrl("url2");
         billActionLoad2.setCheckSum(8822L);
-        billActionLoad2.setLoadTime(LocalDateTime.now());
+        billActionLoad2.setLoadInstant(Instant.now());
 
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         billActionLoadDao.insert(billActionLoad1);

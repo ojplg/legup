@@ -23,7 +23,7 @@ import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.sql.Connection;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -119,7 +119,7 @@ public class BillPersistence {
 
         billDao.update(bill);
         oldLoad.setCheckSum(checkSum);
-        oldLoad.setLoadTime(LocalDateTime.now());
+        oldLoad.setLoadInstant(Instant.now());
         oldLoad.setUrl(url);
 
         billActionLoadDao.update(oldLoad);

@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +14,7 @@ public class BillActionLoad {
             DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss");
 
     private Long id;
-    private LocalDateTime loadTime;
+    private Instant loadInstant;
     private Bill bill;
     private String url;
     private long checkSum;
@@ -24,11 +25,15 @@ public class BillActionLoad {
 
     public static BillActionLoad create(Bill bill, String url, long checksum){
         BillActionLoad load = new BillActionLoad();
-        load.loadTime = LocalDateTime.now(ZoneId.of("America/Chicago"));
+        load.loadInstant = Instant.now();
         load.bill = bill;
         load.url = url;
         load.checkSum = checksum;
         return load;
+    }
+
+    public LocalDateTime getLoadTime(){
+        return LocalDateTime.ofInstant(loadInstant, ZoneId.systemDefault());
     }
 
 }

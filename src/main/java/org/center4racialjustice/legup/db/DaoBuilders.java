@@ -78,7 +78,7 @@ public class DaoBuilders {
     private static DaoBuilder<BillActionLoad> billActionLoadDaoBuilder(){
         return new DaoBuilder<>("BILL_ACTION_LOADS", BillActionLoad::new)
                 .withPrimaryKey("ID", "bill_action_load_seq", BillActionLoad::getId, BillActionLoad::setId)
-                .withLocalDateTimeColumn("LOAD_TIME", BillActionLoad::getLoadTime, BillActionLoad::setLoadTime)
+                .withInstantColumn("LOAD_TIME", BillActionLoad::getLoadInstant, BillActionLoad::setLoadInstant)
                 .withStringColumn("URL", BillActionLoad::getUrl, BillActionLoad::setUrl)
                 .withIntegerColumn("CHECK_SUM", BillActionLoad::getCheckSum, BillActionLoad::setCheckSum)
                 .withJoinColumn("BILL_ID", BillActionLoad::getBill, BillActionLoad::setBill, BILLS);

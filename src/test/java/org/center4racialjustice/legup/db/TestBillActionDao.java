@@ -13,10 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public class TestBillActionDao {
@@ -70,7 +69,7 @@ public class TestBillActionDao {
         billActionLoad.setBill(bill);
         billActionLoad.setUrl("url");
         billActionLoad.setCheckSum(88L);
-        billActionLoad.setLoadTime(LocalDateTime.now());
+        billActionLoad.setLoadInstant(Instant.now());
 
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         long voteLoadId = billActionLoadDao.insert(billActionLoad);
@@ -122,7 +121,7 @@ public class TestBillActionDao {
         billActionLoad.setBill(bill);
         billActionLoad.setUrl("url");
         billActionLoad.setCheckSum(88L);
-        billActionLoad.setLoadTime(LocalDateTime.now());
+        billActionLoad.setLoadInstant(Instant.now());
 
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         long voteLoadId = billActionLoadDao.insert(billActionLoad);
@@ -171,7 +170,7 @@ public class TestBillActionDao {
         billActionLoad.setBill(bill);
         billActionLoad.setUrl("url");
         billActionLoad.setCheckSum(88L);
-        billActionLoad.setLoadTime(LocalDateTime.now());
+        billActionLoad.setLoadInstant(Instant.now());
 
         BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
         long voteLoadId = billActionLoadDao.insert(billActionLoad);
