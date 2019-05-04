@@ -1,0 +1,12 @@
+
+<h3>Legislator Sessions</h3>
+
+<p>Choose session</p>
+
+<ul>
+
+#foreach( $sessionNumber in $sessionNumbers )
+    <li><a href="/legup/view_legislators?session_number=$sessionNumber">$sessionNumber</a></li>
+#end
+
+</ul>

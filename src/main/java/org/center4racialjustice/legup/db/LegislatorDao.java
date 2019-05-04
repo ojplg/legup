@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.db;
 
 import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.hrorm.Where;
 
 import java.sql.Connection;
 import java.util.List;
@@ -40,5 +41,9 @@ public class LegislatorDao {
         Legislator legislator = new Legislator();
         legislator.setMemberId(memberId);
         return innerDao.selectByColumns(legislator,"MEMBER_ID");
+    }
+
+    public List<Long> distinctSessions(){
+        return innerDao.selectDistinct("session_number", new Where());
     }
 }
