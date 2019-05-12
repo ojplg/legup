@@ -24,23 +24,23 @@ public class LegislatorDao {
     }
 
     public Legislator read(long id){
-        return innerDao.select(id);
+        return innerDao.selectOne(id);
     }
 
     public List<Legislator> readAll(){
-        return innerDao.selectAll();
+        return innerDao.select();
     }
 
     public List<Legislator> readBySession(long session){
         Legislator legislator = new Legislator();
         legislator.setSessionNumber(session);
-        return innerDao.selectManyByColumns(legislator, "SESSION_NUMBER");
+        return innerDao.select(legislator, "SESSION_NUMBER");
     }
 
     public Legislator readByMemberId(String memberId){
         Legislator legislator = new Legislator();
         legislator.setMemberId(memberId);
-        return innerDao.selectByColumns(legislator,"MEMBER_ID");
+        return innerDao.selectOne(legislator,"MEMBER_ID");
     }
 
     public List<Long> distinctSessions(){

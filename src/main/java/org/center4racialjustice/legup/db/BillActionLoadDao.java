@@ -27,19 +27,19 @@ public class BillActionLoadDao {
     public List<BillActionLoad> readByBill(Bill bill) {
         BillActionLoad billActionLoad = new BillActionLoad();
         billActionLoad.setBill(bill);
-        return innerDao.selectManyByColumns(billActionLoad, "BILL_ID");
+        return innerDao.select(billActionLoad, "BILL_ID");
     }
 
     public BillActionLoad select(Long id){
-        return innerDao.select(id);
+        return innerDao.selectOne(id);
     }
 
     public List<BillActionLoad> selectMany(List<Long> ids) {
-        return innerDao.selectMany(ids);
+        return innerDao.select(ids);
     }
 
     public List<BillActionLoad> selectAll() {
-        return innerDao.selectAll();
+        return innerDao.select();
     }
 }
 

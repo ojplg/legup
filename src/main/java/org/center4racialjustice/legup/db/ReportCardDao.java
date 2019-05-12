@@ -25,14 +25,14 @@ public class ReportCardDao {
     public ReportCard selectByName(String name){
         ReportCard reportCard = new ReportCard();
         reportCard.setName(name);
-        return innerDao.selectByColumns(reportCard, "NAME");
+        return innerDao.selectOne(reportCard, "NAME");
     }
 
     public List<ReportCard> readAll(){
-        return innerDao.selectAll();
+        return innerDao.select();
     }
 
     public ReportCard read(long id){
-        return innerDao.select(id);
+        return innerDao.selectOne(id);
     }
 }

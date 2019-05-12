@@ -25,25 +25,25 @@ public class BillActionDao {
         BillAction billAction = new BillAction();
         billAction.setLegislator(legislator);
 
-        return innerDao.selectManyByColumns(billAction, "LEGISLATOR_ID");
+        return innerDao.select(billAction, "LEGISLATOR_ID");
     }
 
     public List<BillAction> readByBill(Bill bill){
         BillAction billAction = new BillAction();
         billAction.setBill(bill);
 
-        return innerDao.selectManyByColumns(billAction, "BILL_ID");
+        return innerDao.select(billAction, "BILL_ID");
     }
 
     public List<BillAction> readByBillActionLoad(BillActionLoad billActionLoad){
         BillAction billAction = new BillAction();
         billAction.setBillActionLoad(billActionLoad);
 
-        return innerDao.selectManyByColumns(billAction, "BILL_ACTION_LOAD_ID");
+        return innerDao.select(billAction, "BILL_ACTION_LOAD_ID");
     }
 
     public BillAction read(long id){
-        return innerDao.select(id);
+        return innerDao.selectOne(id);
     }
 
     public void delete(BillAction billAction){

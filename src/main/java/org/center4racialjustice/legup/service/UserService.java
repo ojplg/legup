@@ -82,7 +82,7 @@ public class UserService {
                     User template = new User();
                     template.setEmail(email);
                     Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
-                    User user = dao.selectByColumns(template, "EMAIL");
+                    User user = dao.selectOne(template, "EMAIL");
                     if ( user == null ){
                         log.info("no such user as " + email);
                         return null;
