@@ -75,6 +75,8 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewLogin());
         responders.add(new ViewUserProfile());
         responders.add(new ViewOrganization(connectionPool));
+        responders.add(new ViewResetPassword(connectionPool));
+        responders.add(new SaveResetPassword(connectionPool));
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());

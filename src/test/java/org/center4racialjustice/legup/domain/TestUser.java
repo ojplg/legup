@@ -55,4 +55,19 @@ public class TestUser {
         Assert.assertFalse(user.correctPassword("password"));
     }
 
+    @Test
+    public void testForZeroes(){
+
+        String unencryptedPassword = "p@ssw0rd1!";
+
+        for(int idx=0; idx<100; idx++) {
+            User user = User.createNewUser("foo@bar.com", unencryptedPassword);
+
+            Assert.assertFalse(User.checkForZeroes(user.getEmail(), "email" + idx));
+            Assert.assertFalse(User.checkForZeroes(user.getSalt(), "salt" + idx));
+            Assert.assertFalse(User.checkForZeroes(user.getPassword(), "password" + idx));
+        }
+
+    }
+
 }

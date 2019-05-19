@@ -1,6 +1,9 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.web.responders.SaveResetPassword;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -12,6 +15,9 @@ import java.security.spec.KeySpec;
 
 @Data
 public class User {
+
+    private static final Logger log = LogManager.getLogger(SaveResetPassword.class);
+
     private Long id;
     private String email;
     private String password;
@@ -31,9 +37,8 @@ public class User {
 
     public static User createNewUser(String email, String unencryptedPassword){
         User user = new User();
-        user.salt = newSalt();
         user.email = email;
-        user.password = encrypt(unencryptedPassword, user.salt);
+        user.internalSetPassword(unencryptedPassword);
         return user;
     }
 
@@ -47,6 +52,34 @@ public class User {
         byte[] bytes = new byte[32];
         random.nextBytes(bytes);
         return new String(bytes);
+    }
+
+
+    public static boolean checkForZeroes(String s, String msg){
+        for(byte b : s.getBytes()){
+            if ( b == 0 ){
+                log.info("FOUND A ZERO BYTE! " + msg);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void resetPassword(String newUnencryptedPassword){
+        internalSetPassword(newUnencryptedPassword);
+    }
+
+    public void internalSetPassword(String unencryptedPassword){
+        String salt = newSalt();
+        String password = encrypt(unencryptedPassword, salt);
+
+        while ( checkForZeroes(salt, "salt") || checkForZeroes(password, "password") ){
+            salt = newSalt();
+            password = encrypt(unencryptedPassword, salt);
+        }
+
+        this.salt = salt;
+        this.password = password;
     }
 
     @Override

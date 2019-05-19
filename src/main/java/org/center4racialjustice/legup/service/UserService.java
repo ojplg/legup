@@ -74,6 +74,14 @@ public class UserService {
         });
     }
 
+    public void updateUser(User user){
+        connectionPool.runAndCommit(connection ->
+        {
+            Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
+            dao.update(user);
+        });
+    }
+
     public User login(String email, String password){
         log.info("Logging in new user " + email);
 
