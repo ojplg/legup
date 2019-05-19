@@ -63,7 +63,6 @@ Technical Betterments
 Features/bugs/ideas to work on
 
 * USER FIXES
-  * Allow users to change their passwords
   * Allow users to invite others to their organizations
   * Allow organization names to be changed
 
