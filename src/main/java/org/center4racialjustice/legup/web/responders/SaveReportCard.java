@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web.responders;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
@@ -20,6 +22,8 @@ import java.util.Map;
 
 public class SaveReportCard implements Responder {
 
+    private static final Logger log = LogManager.getLogger(SaveReportCard.class);
+
     private final ReportCardPersistence reportCardPersistence;
 
     public SaveReportCard(ConnectionPool connectionPool){
@@ -32,15 +36,7 @@ public class SaveReportCard implements Responder {
         User user = submission.getLoggedInUser();
         Long id = submission.getLongRequestParameter( "id");
 
-        if( id == null ){
-            // TODO handle error
-        }
-
         Organization organization = submission.getOrganization();
-        if( organization == null ){
-            // TODO handle error
-        }
-
         List<Long> legislatorIds = parseCheckedLegislators(submission);
         Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
         ReportCard card = reportCardPersistence.updateReportCard(id, organization, voteSideMap, legislatorIds);
@@ -66,6 +62,23 @@ public class SaveReportCard implements Responder {
             }
         }
        return voteSidesByBillIdMap;
+    }
+
+
+    @Override
+    public boolean isSecured() {
+        return true;
+    }
+
+    @Override
+    public boolean permitted(LegupSubmission legupSubmission) {
+        Long id = legupSubmission.getLongRequestParameter( "id");
+        Organization organization = legupSubmission.getOrganization();
+        boolean answer = organization.ownsCard(id);
+        log.info("User " + legupSubmission.getLoggedInUser() + " in organization " + organization.getName() +
+                " attempted to modify " + id  +
+                " permission was determined " + answer);
+        return answer;
     }
 
     private List<NavLink> navLinks(long reportCardId) {

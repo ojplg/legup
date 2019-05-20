@@ -88,7 +88,10 @@ public class ReportCard {
     }
 
     public boolean hasFactors(){
-        return reportFactors.size() > 0;
+
+        boolean answer =  reportFactors.size() > 0;
+        System.out.println("Checking for factors for " + getName() + " answer is " + answer);
+        return answer;
     }
 
     public SortedMap<Legislator, Boolean> findSelectedLegislators(List<Legislator> legislators){
