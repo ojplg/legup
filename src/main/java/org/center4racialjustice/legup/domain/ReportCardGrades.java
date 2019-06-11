@@ -24,7 +24,7 @@ public class ReportCardGrades {
         this.lookupTable = reportCard.calculateScores(actions);
 
         Map<Legislator, Integer> sums = sumScores();
-        this.grader = new Grader(sums.values());
+        this.grader = new Grader(reportCard.getGradeLevels(), sums.values());
         this.grades = assignGrades(sums);
     }
 

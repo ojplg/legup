@@ -9,7 +9,10 @@ public class Grader {
     private final int spread;
     private final int mean;
 
-    public Grader(Collection<Integer> scores){
+    private final GradeLevels gradeLevels;
+
+    public Grader(GradeLevels gradeLevels, Collection<Integer> scores){
+        this.gradeLevels = gradeLevels;
         Integer max = Integer.MIN_VALUE;
         Integer min = Integer.MAX_VALUE;
         int sum = 0;
@@ -30,7 +33,7 @@ public class Grader {
 
     public Grade assignGrade(int rawScore){
         int percent = (rawScore - lowScore) * 100 / spread;
-        return new Grade(percent);
+        return new Grade(percent, gradeLevels);
     }
 
     public int getLowScore() {

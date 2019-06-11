@@ -23,6 +23,7 @@ public class ReportCard {
     private List<ReportFactor> reportFactors = new ArrayList<>();
     private List<ReportCardLegislator> reportCardLegislators = new ArrayList<>();
     private Organization organization;
+    private List<GradeLevel> gradeLevelList;
 
     public void addReportFactor(ReportFactor factor){
         reportFactors.add(factor);
@@ -175,6 +176,10 @@ public class ReportCard {
 
         }
         return factorSettings;
+    }
+
+    public GradeLevels getGradeLevels(){
+        return new GradeLevels(gradeLevelList);
     }
 
 }
