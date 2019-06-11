@@ -19,7 +19,6 @@ public class TestGradeLevels {
 
         GradeLevels levels = new GradeLevels(levelList);
 
-        
         String aGrade = levels.getGrade(85);
         Assert.assertEquals("A", aGrade);
 
@@ -27,6 +26,36 @@ public class TestGradeLevels {
         Assert.assertEquals("D", dGrade);
 
     }
+
+    @Test
+    public void testValidation_MissingLevel(){
+        List<GradeLevel> levelList = new ArrayList<>();
+        levelList.add(newLevel("A", 80L));
+        levelList.add(newLevel("B", 60L));
+        levelList.add(newLevel("D", 20L));
+
+        try {
+            GradeLevels levels = new GradeLevels(levelList);
+            Assert.fail("Should not instantiate with missing level");
+        } catch (Exception expected){
+        }
+    }
+
+    @Test
+    public void testValidation_OutOfOrder(){
+        List<GradeLevel> levelList = new ArrayList<>();
+        levelList.add(newLevel("A", 80L));
+        levelList.add(newLevel("B", 40L));
+        levelList.add(newLevel("C", 60L));
+        levelList.add(newLevel("D", 20L));
+
+        try {
+            GradeLevels levels = new GradeLevels(levelList);
+            Assert.fail("Should not instantiate out of order");
+        } catch (Exception expected){
+        }
+    }
+
 
     private GradeLevel newLevel(String grade, Long percentage){
         GradeLevel level = new GradeLevel();
