@@ -162,3 +162,16 @@ alter table users add foreign key (organization_id) references organizations(id)
 alter table report_cards add organization_id integer not null;
 
 alter table report_cards add foreign key (organization_id) references organizations(id);
+
+--changeset ojplg:4
+
+create sequence grade_level_seq start 1;
+
+create table grade_levels (
+    id integer PRIMARY KEY,
+    report_card_id integer not null,
+    grade text not null,
+    percentage integer not null
+);
+
+alter table grade_levels add foreign key (report_card_id) references report_cards(id);

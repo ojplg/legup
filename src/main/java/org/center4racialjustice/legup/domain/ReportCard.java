@@ -89,9 +89,7 @@ public class ReportCard {
     }
 
     public boolean hasFactors(){
-
         boolean answer =  reportFactors.size() > 0;
-        System.out.println("Checking for factors for " + getName() + " answer is " + answer);
         return answer;
     }
 
@@ -157,6 +155,14 @@ public class ReportCard {
             ReportCardLegislator rcl = new ReportCardLegislator();
             rcl.setLegislator(legislator);
             addReportCardLegislator(rcl);
+        }
+    }
+
+    public void resetGradeLevels(List<GradeLevel> newGradeLevels){
+        GradeLevels newLevels = new GradeLevels(newGradeLevels);
+        for( GradeLevel existingLevel : gradeLevelList ){
+            long newPercentage = newLevels.getPercentage(existingLevel.getGrade());
+            existingLevel.setPercentage(newPercentage);
         }
     }
 

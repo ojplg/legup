@@ -7,6 +7,8 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.db.ReportCardDao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.GradeLevel;
+import org.center4racialjustice.legup.domain.GradeLevels;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
@@ -40,6 +42,7 @@ public class ReportCardPersistence {
         reportCard.setName(name);
         reportCard.setSessionNumber(sessionNumber);
         reportCard.setOrganization(organization);
+        reportCard.setGradeLevelList(GradeLevels.DEFAULTS);
 
         return connectionPool.runAndCommit(
                 connection -> {
@@ -53,7 +56,8 @@ public class ReportCardPersistence {
     public ReportCard updateReportCard(long id,
                                         Organization organization,
                                         Map<Long, VoteSide> voteSideByBillIdMap,
-                                        List<Long> selectedLegislatorIds){
+                                        List<Long> selectedLegislatorIds,
+                                        List<GradeLevel> gradeLevels){
         return connectionPool.runAndCommit(
                 connection -> {
                     ReportCardDao reportCardDao = new ReportCardDao(connection);
@@ -68,6 +72,8 @@ public class ReportCardPersistence {
                     LegislatorDao legislatorDao = new LegislatorDao(connection);
                     List<Legislator> legislators = legislatorDao.readBySession(sessionNumber);
                     reportCard.resetSelectedLegislators(legislators, selectedLegislatorIds);
+
+                    reportCard.resetGradeLevels(gradeLevels);
 
                     reportCardDao.save(reportCard);
 

@@ -16,6 +16,33 @@
     <fieldset>
         <input type="hidden" name="id" value="$report_card.Id"/>
 
+        <h5>Grade Levels</h5>
+        <table class="pure-table">
+            <tr>
+                <th>Grade</th>
+                <th>Percentage</th>
+            </tr>
+
+            <tr>
+                #set ( $gradeLevels = $report_card.GradeLevels )
+                <td>A</td>
+                <td><input type="text" name="grade_a" value='$gradeLevels.getPercentage("A")'/></td>
+            <tr>
+            </tr>
+                <td>B</td>
+                <td><input type="text" name="grade_b" value='$gradeLevels.getPercentage("B")'/></td>
+            <tr>
+            </tr>
+                <td>C</td>
+                <td><input type="text" name="grade_c" value='$gradeLevels.getPercentage("C")'/></td>
+            <tr>
+            </tr>
+                <td>D</td>
+                <td><input type="text" name="grade_d" value='$gradeLevels.getPercentage("D")'/></td>
+            </tr>
+
+        </table>
+
         <h5>Factors</h5>
         <table class="pure-table">
             <tr>

@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.web.responders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.GradeLevel;
+import org.center4racialjustice.legup.domain.GradeLevels;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.User;
@@ -39,7 +41,8 @@ public class SaveReportCard implements Responder {
         Organization organization = submission.getOrganization();
         List<Long> legislatorIds = parseCheckedLegislators(submission);
         Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
-        ReportCard card = reportCardPersistence.updateReportCard(id, organization, voteSideMap, legislatorIds);
+        List<GradeLevel> gradeLevels = parseGradeLevels(submission);
+        ReportCard card = reportCardPersistence.updateReportCard(id, organization, voteSideMap, legislatorIds, gradeLevels);
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), user, navLinks(id));
         response.putVelocityData("reportCard", card);
@@ -62,6 +65,16 @@ public class SaveReportCard implements Responder {
             }
         }
        return voteSidesByBillIdMap;
+    }
+
+    private List<GradeLevel> parseGradeLevels(LegupSubmission submission){
+        List<GradeLevel> gradeLevels = new ArrayList<>();
+        for( String grade : GradeLevels.REQUIRED_GRADES){
+            long percentage = submission.getLongRequestParameter("grade_" + grade.toLowerCase());
+            GradeLevel gradeLevel = new GradeLevel(grade, percentage);
+            gradeLevels.add(gradeLevel);
+        }
+        return gradeLevels;
     }
 
 

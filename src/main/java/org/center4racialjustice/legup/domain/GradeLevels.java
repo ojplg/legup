@@ -1,12 +1,20 @@
 package org.center4racialjustice.legup.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class GradeLevels {
 
-    private static final String[] REQUIRED_GRADES = { "A", "B", "C", "D" };
+    public static final String[] REQUIRED_GRADES = { "A", "B", "C", "D" };
+
+    public static final List<GradeLevel> DEFAULTS = Arrays.asList(
+            new GradeLevel( "A", 80),
+            new GradeLevel( "B", 80),
+            new GradeLevel( "C", 80),
+            new GradeLevel( "D", 80)
+    );
 
     private final List<GradeLevel> levels;
 
@@ -24,6 +32,15 @@ public class GradeLevels {
             }
         }
         return "F";
+    }
+
+    public long getPercentage(String grade){
+        for(GradeLevel level : levels){
+            if ( level.getGrade().equals(grade)){
+                return level.getPercentage();
+            }
+        }
+        throw new IllegalArgumentException("No percentage for " + grade);
     }
 
     private void validate(){

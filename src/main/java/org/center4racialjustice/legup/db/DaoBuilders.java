@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.GradeLevel;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.hrorm.DaoBuilder;
@@ -20,6 +21,7 @@ public class DaoBuilders {
     public static final DaoBuilder<Legislator> LEGISLATORS = legislatorDaoBuilder();
     public static final DaoBuilder<ReportFactor> REPORT_FACTORS = reportFactorDaoBuilder();
     public static final DaoBuilder<ReportCardLegislator> REPORT_CARD_LEGISLATORS = reportCardLegislatorDaoBuilder();
+    public static final DaoBuilder<GradeLevel> GRADE_LEVELS = gradeLevelDaoBuilder();
     public static final DaoBuilder<ReportCard> REPORT_CARDS = reportCardDaoBuilder();
     public static final DaoBuilder<BillActionLoad> BILL_ACTION_LOADS = billActionLoadDaoBuilder();
     public static final DaoBuilder<BillAction> BILL_ACTIONS = billActionDaoBuilder();
@@ -65,6 +67,14 @@ public class DaoBuilders {
                 .withJoinColumn("LEGISLATOR_ID", ReportCardLegislator::getLegislator, ReportCardLegislator::setLegislator, LEGISLATORS);
     }
 
+    private static DaoBuilder<GradeLevel> gradeLevelDaoBuilder(){
+        return new DaoBuilder<>("GRADE_LEVELS", GradeLevel::new)
+                .withPrimaryKey("ID", "grade_level_seq", GradeLevel::getId, GradeLevel::setId)
+                .withParentColumn("REPORT_CARD_ID")
+                .withStringColumn("GRADE", GradeLevel::getGrade, GradeLevel::setGrade)
+                .withLongColumn("PERCENTAGE", GradeLevel::getPercentage, GradeLevel::setPercentage);
+    }
+
     private static DaoBuilder<ReportCard> reportCardDaoBuilder(){
         return new DaoBuilder<>("REPORT_CARDS", ReportCard::new)
                 .withPrimaryKey("ID", "report_card_seq", ReportCard::getId, ReportCard::setId)
@@ -72,7 +82,8 @@ public class DaoBuilders {
                 .withLongColumn("SESSION_NUMBER", ReportCard::getSessionNumber, ReportCard::setSessionNumber)
                 .withParentColumn("ORGANIZATION_ID", ReportCard::getOrganization, ReportCard::setOrganization)
                 .withChildren(ReportCard::getReportFactors, ReportCard::setReportFactors, REPORT_FACTORS)
-                .withChildren(ReportCard::getReportCardLegislators, ReportCard::setReportCardLegislators, REPORT_CARD_LEGISLATORS);
+                .withChildren(ReportCard::getReportCardLegislators, ReportCard::setReportCardLegislators, REPORT_CARD_LEGISLATORS)
+                .withChildren(ReportCard::getGradeLevelList, ReportCard::setGradeLevelList, GRADE_LEVELS);
     }
 
     private static DaoBuilder<BillActionLoad> billActionLoadDaoBuilder(){
@@ -110,4 +121,5 @@ public class DaoBuilders {
                 .withStringColumn("PASSWORD", User::getPassword, User::setPassword)
                 .withJoinColumn("ORGANIZATION_ID", User::getOrganization, User::setOrganization, ORGANIZATIONS);
     }
+
 }
