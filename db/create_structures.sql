@@ -175,3 +175,5 @@ create table grade_levels (
 );
 
 alter table grade_levels add foreign key (report_card_id) references report_cards(id);
+
+alter table grade_levels add constraint uniq_grade_level unique (report_card_id, grade);
