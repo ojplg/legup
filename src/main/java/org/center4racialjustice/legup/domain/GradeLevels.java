@@ -11,9 +11,9 @@ public class GradeLevels {
 
     public static final List<GradeLevel> DEFAULTS = Arrays.asList(
             new GradeLevel( "A", 80),
-            new GradeLevel( "B", 80),
-            new GradeLevel( "C", 80),
-            new GradeLevel( "D", 80)
+            new GradeLevel( "B", 60),
+            new GradeLevel( "C", 40),
+            new GradeLevel( "D", 20)
     );
 
     private final List<GradeLevel> levels;

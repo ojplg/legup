@@ -177,3 +177,8 @@ create table grade_levels (
 alter table grade_levels add foreign key (report_card_id) references report_cards(id);
 
 alter table grade_levels add constraint uniq_grade_level unique (report_card_id, grade);
+
+-- changeset ojplg:5
+
+alter table report_cards drop constraint if exists uniq_report_card;
+alter table report_cards add constraint uniq_report_card unique (name, organization_id);
