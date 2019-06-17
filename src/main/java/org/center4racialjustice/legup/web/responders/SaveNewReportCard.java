@@ -42,7 +42,7 @@ public class SaveNewReportCard implements Responder {
 
         Long reportCardId = card.getId();
 
-        organization.getReportCards().add(card);
+        organization.addReportCard(card);
 
         ContinueLegupResponse response = new ContinueLegupResponse(ViewReportCardForm.class);
         response.setParameter("report_card_id", String.valueOf(reportCardId));

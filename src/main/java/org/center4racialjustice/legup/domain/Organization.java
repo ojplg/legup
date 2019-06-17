@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,5 +26,12 @@ public class Organization {
             }
         }
         return false;
+    }
+
+    public void addReportCard(ReportCard reportCard){
+        if( reportCards == null ){
+            reportCards = new ArrayList<>();
+        }
+        reportCards.add(reportCard);
     }
 }
