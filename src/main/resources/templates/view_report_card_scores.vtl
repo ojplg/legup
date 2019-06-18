@@ -17,6 +17,7 @@ Highest Score: $reportCardGrades.HighScore</span>
     <thead>
     <tr>
         <th>Name</th>
+        <th>Chamber</th>
         <th>Party</th>
         <th>Score</th>
         <th>Percentage</th>
@@ -31,6 +32,7 @@ Highest Score: $reportCardGrades.HighScore</span>
     #foreach ($legislator in $legislators)
         <tr>
             <td><a href="/legup/view_report_card_legislator?legislator_id=$legislator.Id&one_time_key=$oneTimeKey">$legislator.Display</a></td>
+            <td>$legislator.Chamber</td>
             <td>$legislator.Party</td>
             <td> ${scores.computeRowSummary($legislator, 0, $computer)}  </td>
             <td> ${grades.get($legislator).Percentage} </td>

@@ -1,6 +1,6 @@
-Name;Party;Score;Percentage;Grade;#foreach ($bill in $bills)$bill.Chamber-$bill.Number;#end
+Name;Chamber;Party;Score;Percentage;Grade;#foreach ($bill in $bills)$bill.Chamber-$bill.Number;#end
 
 #foreach ($legislator in $legislators)
-$legislator.Display;$legislator.Party;${scores.computeRowSummary($legislator, 0, $computer)};${grades.get($legislator).Percentage};${grades.get($legislator).Letter};#foreach ($bill in $bills)$!{scores.get($legislator, $bill)};#end
+$legislator.Display;$legislator.Chamber;$legislator.Party;${scores.computeRowSummary($legislator, 0, $computer)};${grades.get($legislator).Percentage};${grades.get($legislator).Letter};#foreach ($bill in $bills)$!{scores.get($legislator, $bill)};#end
 
 #end
