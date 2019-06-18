@@ -4,10 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.BillActionLoad;
-import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
+import org.center4racialjustice.legup.illinois.LegislationType;
 import org.center4racialjustice.legup.illinois.SponsorNames;
 import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
@@ -44,16 +44,16 @@ public class ViewBillSearchResults implements Responder {
                     Collections.singletonMap("number","Could not parse bill number from input " + submission.getParameter("number")));
         }
 
-        Chamber chamber = submission.getConvertedParameter("chamber", Chamber.Converter);
+        LegislationType legislationType = submission.getConvertedParameter("legislation_type", LegislationType.Converter);
         Long number = submission.getLongRequestParameter( "number");
 
-        BillSearchResults billSearchResults = doSearch(chamber, number);
+        BillSearchResults billSearchResults = doSearch(legislationType, number);
         if( BillSearchResults.MatchStatus.UnmatchedValues.equals(billSearchResults.getBillHtmlLoadStatus()) ){
             // Sometimes we get a mis-match that is erroneous.
             // I am not sure why. Perhaps the server is unreliable.
             // Perhaps there are problems with my local network or even
             // just the machine I am testing on. Very confusing.
-            billSearchResults = doReSearch(chamber, number, billSearchResults);
+            billSearchResults = doReSearch(legislationType, number, billSearchResults);
         }
 
         String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
@@ -90,12 +90,12 @@ public class ViewBillSearchResults implements Responder {
         return response;
     }
 
-    private BillSearchResults doReSearch(Chamber chamber, Long number, BillSearchResults billSearchResults){
+    private BillSearchResults doReSearch(LegislationType legislationType, Long number, BillSearchResults billSearchResults){
         BillActionLoad billActionLoad = billSearchResults.getBillHtmlLoad();
         StringBuilder buf = new StringBuilder();
         buf.append("Re-searching for bill html do to mismatch that could be erroneous. ");
         buf.append("Chamber: ");
-        buf.append(chamber);
+        buf.append(legislationType);
         buf.append(" Number: ");
         buf.append(number);
         buf.append(" Persisted checksum: ");
@@ -110,11 +110,11 @@ public class ViewBillSearchResults implements Responder {
         buf.append(billSearchResults.getChecksum());
         log.warn(buf.toString());
 
-        BillSearchResults retriedBillSearchResults = doSearch(chamber, number);
+        BillSearchResults retriedBillSearchResults = doSearch(legislationType, number);
 
         StringBuilder buf2 = new StringBuilder();
         buf2.append("Searched again for Chamber: ");
-        buf2.append(chamber);
+        buf2.append(legislationType);
         buf2.append(" Number: ");
         buf2.append(number);
         buf2.append(" URL: ");
@@ -127,9 +127,9 @@ public class ViewBillSearchResults implements Responder {
         return retriedBillSearchResults;
     }
 
-    private BillSearchResults doSearch(Chamber chamber, Long number){
+    private BillSearchResults doSearch(LegislationType legislationType, Long number){
         BillSearcherParser billSearcherParser = new BillSearcherParser(connectionPool, nameParser);
-        BillSearchResults billSearchResults = billSearcherParser.doFullSearch(chamber, number);
+        BillSearchResults billSearchResults = billSearcherParser.doFullSearch(legislationType, number);
         return billSearchResults;
     }
 

@@ -96,7 +96,7 @@ public class BillHtmlParser {
 
     private Tuple<Chamber, Long> parseBillIdentity(){
 
-        String regex = "Bill Status of ([H|S]B)(\\d+)";
+        String regex = "Bill Status of ([H|S][A-Z]+)(\\d+)";
         Pattern pattern = Pattern.compile(regex);
 
         Elements spans = document.select("span").attr("class", "heading");
@@ -112,6 +112,9 @@ public class BillHtmlParser {
                         chamber = Chamber.House;
                         break;
                     case "SB" :
+                        chamber = Chamber.Senate;
+                        break;
+                    case "SJRCA" :
                         chamber = Chamber.Senate;
                         break;
                     default:

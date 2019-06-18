@@ -20,7 +20,7 @@ public class TestBillIndexPageParser {
         BillIndexPageParser parser = new BillIndexPageParser(inputStream,
                 "http://www.ilga.gov/legislation/default.asp");
 
-        String url = parser.findSubIndexUrl(Chamber.Senate, 3622L);
+        String url = parser.findSubIndexUrl(LegislationType.SENATE_BILL, 3622L);
 
         Assert.assertEquals("http://www.ilga.gov/legislation/grplist.asp?num1=3601&num2=3627&DocTypeID=SB&GA=100&SessionId=91", url);
     }
@@ -33,7 +33,7 @@ public class TestBillIndexPageParser {
         BillIndexPageParser parser = new BillIndexPageParser(inputStream,
                 "http://www.ilga.gov/legislation/default.asp");
 
-        String url = parser.findSubIndexUrl(Chamber.House, 155L);
+        String url = parser.findSubIndexUrl(LegislationType.HOUSE_BILL, 155L);
 
         Assert.assertEquals("http://www.ilga.gov/legislation/grplist.asp?num1=101&num2=200&DocTypeID=HB&GA=100&SessionId=91", url);
     }

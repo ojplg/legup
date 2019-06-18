@@ -2,7 +2,6 @@ package org.center4racialjustice.legup.illinois;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -48,12 +47,12 @@ public class BillIndexPageParser {
         }
     }
 
-    public String findSubIndexUrl(Chamber chamber, Long number){
+    public String findSubIndexUrl(LegislationType legislationType, Long number){
         Elements tables = document.select("table");
         Element table = tables.get(3);
         Elements subTables = table.select("table");
 
-        int subTableIndex = Chamber.Senate.equals(chamber) ? 1 : 2;
+        int subTableIndex = legislationType.getHtmlPageTableIndex();
 
         Element chamberTable = subTables.get(subTableIndex);
         Elements tds = chamberTable.select("td");

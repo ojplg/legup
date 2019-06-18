@@ -15,14 +15,14 @@ public class BillSearcher {
         return billHomePage.replace("/BillStatus.asp?","/votehistory.asp?");
     }
 
-    public String searchForBaseUrl(Chamber chamber, Long number){
-        String indexUrl = subIndexPageUrl(chamber, number);
+    public String searchForBaseUrl(LegislationType legislationType, Long number){
+        String indexUrl = subIndexPageUrl(legislationType, number);
         BillSubIndexPageParser parser = new BillSubIndexPageParser(indexUrl);
         return parser.parseOutBillUrl(number.intValue());
     }
 
-    public String subIndexPageUrl(Chamber chamber, Long number) {
+    public String subIndexPageUrl(LegislationType legislationType, Long number) {
         BillIndexPageParser billIndexPageParser = new BillIndexPageParser();
-        return billIndexPageParser.findSubIndexUrl(chamber, number);
+        return billIndexPageParser.findSubIndexUrl(legislationType, number);
     }
 }

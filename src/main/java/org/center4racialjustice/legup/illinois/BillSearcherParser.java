@@ -28,12 +28,12 @@ public class BillSearcherParser {
         this.nameParser = nameParser;
     }
 
-    public BillSearchResults doFullSearch(Chamber chamber, Long billNumber){
-        log.info("Doing search for " + chamber + "." + billNumber);
+    public BillSearchResults doFullSearch(LegislationType legislationType, Long billNumber){
+        log.info("Doing search for " + legislationType + "." + billNumber);
 
         BillSearcher searcher = new BillSearcher();
 
-        String billHomePageUrl = searcher.searchForBaseUrl(chamber, billNumber);
+        String billHomePageUrl = searcher.searchForBaseUrl(legislationType, billNumber);
         String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
 
         BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
@@ -52,7 +52,7 @@ public class BillSearcherParser {
 
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         Tuple<Bill,List<BillActionLoad>> savedBillInfo = billPersistence.checkForPriorLoads(billHtmlParser.getBill());
-        log.info("Found prior loads for: " + chamber + "." + billNumber + ": " + savedBillInfo);
+        log.info("Found prior loads for: " + legislationType + "." + billNumber + ": " + savedBillInfo);
 
         return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults, savedBillInfo);
 
