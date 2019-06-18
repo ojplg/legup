@@ -34,7 +34,12 @@ public class BillAction {
     public int score(VoteSide preferredSide){
         int scoreValue = BillActionType.scoreValue(billActionType);
         if( BillActionType.VOTE.equals(billActionType)){
-            return preferredSide.getCode().equals(billActionDetail) ? scoreValue : - scoreValue;
+            VoteSide recordedSide = VoteSide.fromCode(billActionDetail);
+            if( recordedSide == VoteSide.NotVoting || recordedSide == VoteSide.Present ){
+                return 0;
+            } else {
+                return preferredSide == recordedSide ? scoreValue : -scoreValue;
+            }
         } else if (BillActionType.SPONSOR.equals(billActionType)
                 || BillActionType.CHIEF_SPONSOR.equals(billActionType)){
             return VoteSide.Yea.equals(preferredSide) ? scoreValue : -scoreValue;
