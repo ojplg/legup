@@ -48,8 +48,8 @@
                 <div class="pure-u-1-2">
                     <h5>House</h5>
                     <ul>
-                        #foreach ($name in $uncollatedHouseVotes)
-                            <li>$name</li>
+                        #foreach ($legislator in $uncollatedHouseVotes)
+                            <li>$legislator.Display</li>
                         #end
                     </ul>
                 </div>
@@ -57,8 +57,8 @@
                 <div class="pure-u-1-2">
                     <h5>Senate</h5>
                     <ul>
-                        #foreach ($name in $uncollatedSenateVotes)
-                            <li>$name</li>
+                        #foreach ($legislator in $uncollatedSenateVotes)
+                            <li>$legislator.Display</li>
                         #end
                     </ul>
                 </div>

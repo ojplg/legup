@@ -41,11 +41,20 @@ public class BillSubIndexPageParser {
     }
 
     public String parseOutBillUrl(int number){
+
+        log.info("Searching for number " + number);
+
         Elements lists = document.select("ul");
         Element list = lists.get(0);
 
         Elements listItems = list.select("li");
-        int idx = number % 100 - 1;
+
+        int idx;
+        if( number % 100 == 0 ){
+            idx = 99;
+        } else {
+            idx = number % 100 - 1;
+        }
         Element item = listItems.get(idx);
 
         Element anchor = item.selectFirst("a");
