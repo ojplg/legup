@@ -69,6 +69,10 @@ Features/bugs/ideas to work on
   * Make sure submission of names handle spaces correctly
   * Error messages on user/organization creation
 
+* roll call votes are not parsed, just third readings, should that change?
+* force renewal of legislator name if necessary - or just update overrides?
+* force renewal of a bill - need a way to do that if legislators have been updated
+
 * Write more help screens
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found

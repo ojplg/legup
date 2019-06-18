@@ -23,6 +23,8 @@ public class TestBillVotesParser {
     private final String houseBill4324FileName =  "/pdfs/10000HB4324_04272018_065000T.pdf";
     private final String senateBill1781FileName = "/pdfs/10000SB1781_05302017_032000T.pdf";
 
+    private final String senateBillOne = "/pdfs/10100SB0001_02142019_003000T.pdf";
+
     private static NameParser loadNameParser(){
         NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
         return new NameParser(nameOverrides.getOverrides());
@@ -106,6 +108,14 @@ public class TestBillVotesParser {
         Assert.assertEquals("Unmatched expected yeas", expected.getExpectedYeas(), tested.getExpectedYeas());
         Assert.assertEquals("Unmatched expected nays", expected.getExpectedNays(), tested.getExpectedNays());
         Assert.assertEquals("Unmatched expected present", expected.getExpectedPresent(), tested.getExpectedPresent());
+    }
+
+    @Test
+    public void testHouseVotesOnConstitutionalAmendment(){
+        BillVotes billVotes = BillVotesParser.parseFile(senateBillOne, loadNameParser());
+        billVotes.checkVoteCounts();
+        Assert.assertEquals(69, billVotes.getYeas().size());
+        Assert.assertEquals(47, billVotes.getNays().size());
     }
 
     @Test

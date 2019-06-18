@@ -66,6 +66,15 @@ public class BillSearcherParser {
                 votePdfUrl = urlPair.getValue();
                 break;
             }
+            // FIXME
+            // This is a one-off hack to support the senate joint resolution for
+            // the constitutional amendment
+            if( urlPair.getKey().contains("SJRCA0001 - Amendments - ")
+                    && urlPair.getValue().contains(chamber.getName().toLowerCase())){
+                votePdfUrl = urlPair.getValue();
+                break;
+            }
+
         }
         if( votePdfUrl == null ){
             log.info("No votes found in chamber " + chamber);
