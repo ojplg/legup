@@ -2,6 +2,7 @@
     <thead>
     <tr>
         <th>Name</th>
+        <th>Chamber</th>
         <th>Party</th>
         <th>Vote</th>
         <th>Sponsor</th>
@@ -13,6 +14,7 @@
     #foreach ($legislator in $legislators)
         <tr>
             <td>$legislator.Display</td>
+            <td>$legislator.Chamber</td>
             <td>$legislator.Party</td>
             <td> $!{billActionTable.get($legislator, "Vote")} </td>
             <td> $!{billActionTable.get($legislator, "Sponsor")} </td>
