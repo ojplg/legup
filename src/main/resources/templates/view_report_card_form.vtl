@@ -78,13 +78,15 @@
 
             <div class="pure-u-1-2">
                 <h5>House</h5>
+                <button type="button" onclick="Legup.setCheckedByClassName('houseCheckBox')">Select All</button>
+                <button type="button" onclick="Legup.setUncheckedByClassName('houseCheckBox')">Select None</button>
                 <table>
                     #foreach ( $pair in ${selectedHouse.entrySet()})
                         #set ( $legislator = $pair.Key )
                         <tr>
                             <td>$legislator.Display</td>
                             <td>
-                                <input type="checkbox" name="legislator_$legislator.id" #if ( $pair.Value ) checked #end >
+                                <input type="checkbox" class="houseCheckBox" name="legislator_$legislator.id" #if ( $pair.Value ) checked #end >
                             </td>
                         </tr>
                     #end
@@ -93,13 +95,15 @@
 
             <div class="pure-u-1-2">
                 <h5>Senate</h5>
+                <button type="button" onclick="Legup.setCheckedByClassName('senateCheckBox')">Select All</button>
+                <button type="button" onclick="Legup.setUncheckedByClassName('senateCheckBox')">Select None</button>
                 <table>
                     #foreach ( $pair in ${selectedSenate.entrySet()})
                         #set ( $legislator = $pair.Key )
                         <tr>
                             <td>$legislator.Display</td>
                             <td>
-                                <input type="checkbox" name="legislator_$legislator.id" #if ( $pair.Value ) checked #end >
+                                <input type="checkbox" class="senateCheckBox" name="legislator_$legislator.id" #if ( $pair.Value ) checked #end >
                             </td>
                         </tr>
                     #end
