@@ -150,12 +150,13 @@ public class AppHandler extends AbstractHandler {
             if ( responder.isSecured() && ! legupSubmission.isLoggedIn() ){
                 log.info("Request denied due to no logged in user");
                 responder = responderMap.get("/view_login");
-            } else if ( responder.isSecured() && ! responder.permitted(legupSubmission) ){
+            } else if ( responder.isSecured() && (!responder.permitted(legupSubmission)) && (!legupSubmission.isSuperUserRequest()) ){
                 // TODO: Better to redirect to some page with an explanation
                 log.info("Request denied due lacking permission");
                 responder = responderMap.get("/view_user_profile");
+            } else {
+                legupResponse = responder.handle(legupSubmission);
             }
-            legupResponse = responder.handle(legupSubmission);
         }
 
         String templatePath = "/templates/" + legupResponse.actionKey();

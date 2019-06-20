@@ -56,6 +56,10 @@ public class LegupSession {
         return this.loggedInUser;
     }
 
+    public boolean isLoggedInSuperUser() {
+        return this.loggedInUser != null ? loggedInUser.isSuperUser() : false;
+    }
+
     public void logout(){
         this.loggedInUser = null;
     }

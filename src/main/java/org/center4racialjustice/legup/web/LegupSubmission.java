@@ -111,6 +111,8 @@ public class LegupSubmission {
 
     public User getLoggedInUser() { return this.legupSession.getLoggedInUser(); }
 
+    public boolean isSuperUserRequest() { return this.legupSession.isLoggedInSuperUser(); }
+
     public boolean isLoggedIn() {
         return legupSession.getLoggedInUser() != null;
     }

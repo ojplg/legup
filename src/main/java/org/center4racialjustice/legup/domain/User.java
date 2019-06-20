@@ -82,6 +82,11 @@ public class User {
         this.password = password;
     }
 
+    public boolean isSuperUser(){
+        // TODO: This should be a variable on the DB table
+        return email.equals("lees@ripco.com");
+    }
+
     @Override
     public String toString() {
         return "User{" +
