@@ -1,31 +1,43 @@
 package org.center4racialjustice.legup.domain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GradeLevels {
 
     public static final String[] REQUIRED_GRADES = { "A", "B", "C", "D" };
 
     public static final List<GradeLevel> DEFAULTS = Arrays.asList(
-            new GradeLevel( "A", 80),
-            new GradeLevel( "B", 60),
-            new GradeLevel( "C", 40),
-            new GradeLevel( "D", 20)
+            new GradeLevel(Chamber.House, "A", 80),
+            new GradeLevel(Chamber.House, "B", 60),
+            new GradeLevel(Chamber.House, "C", 40),
+            new GradeLevel(Chamber.House, "D", 20),
+            new GradeLevel(Chamber.Senate, "A", 80),
+            new GradeLevel(Chamber.Senate, "B", 60),
+            new GradeLevel(Chamber.Senate, "C", 40),
+            new GradeLevel(Chamber.Senate, "D", 20)
     );
 
-    private final List<GradeLevel> levels;
+    private final List<GradeLevel> houseLevels;
+    private final List<GradeLevel> senateLevels;
 
     public GradeLevels(List<GradeLevel> levelList){
-        ArrayList<GradeLevel> list = new ArrayList<>(levelList);
-        Collections.sort(list);
-        levels = Collections.unmodifiableList(list);
-        validate();
+        houseLevels = orderedLevels(levelList, Chamber.House);
+        senateLevels = orderedLevels(levelList, Chamber.Senate);
+        validate(houseLevels);
+        validate(senateLevels);
     }
 
-    public String getGrade(int percentage){
+    private List<GradeLevel> orderedLevels(List<GradeLevel> levelList, Chamber chamber){
+        List<GradeLevel> list = levelList.stream().filter(gl->gl.getChamber().equals(chamber)).collect(Collectors.toList());
+        Collections.sort(list);
+        return Collections.unmodifiableList(list);
+    }
+
+    public String getGrade(Chamber chamber, int percentage){
+        List<GradeLevel> levels = chamber.equals(Chamber.House) ? houseLevels : senateLevels;
         for( GradeLevel level : levels ){
             if ( percentage > level.getPercentage() ){
                 return level.getGrade();
@@ -34,7 +46,8 @@ public class GradeLevels {
         return "F";
     }
 
-    public long getPercentage(String grade){
+    public long getPercentage(Chamber chamber, String grade){
+        List<GradeLevel> levels = chamber.equals(Chamber.House) ? houseLevels : senateLevels;
         for(GradeLevel level : levels){
             if ( level.getGrade().equals(grade)){
                 return level.getPercentage();
@@ -43,7 +56,11 @@ public class GradeLevels {
         throw new IllegalArgumentException("No percentage for " + grade);
     }
 
-    private void validate(){
+    public long getPercentage(String chamberString, String grade){
+        return getPercentage(Chamber.fromString(chamberString), grade);
+    }
+
+    private void validate(List<GradeLevel> levels){
         if (levels.size() != REQUIRED_GRADES.length ){
             throw new RuntimeException("Wrong number of grade levels " + levels);
         }
@@ -56,5 +73,6 @@ public class GradeLevels {
             }
         }
     }
+
 
 }

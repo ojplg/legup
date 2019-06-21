@@ -63,7 +63,7 @@ public class ReportCardGrades {
     private Map<Legislator, Grade> assignGrades(Map<Legislator, Integer> sums, Grader grader){
         Map<Legislator, Grade> grades = new HashMap<>();
         for( Map.Entry<Legislator, Integer> entry : sums.entrySet()){
-            Grade grade = grader.assignGrade(entry.getValue());
+            Grade grade = grader.assignGrade(entry.getKey().getChamber(), entry.getValue());
             grades.put(entry.getKey(), grade);
         }
         return grades;

@@ -161,7 +161,7 @@ public class ReportCard {
     public void resetGradeLevels(List<GradeLevel> newGradeLevels){
         GradeLevels newLevels = new GradeLevels(newGradeLevels);
         for( GradeLevel existingLevel : gradeLevelList ){
-            long newPercentage = newLevels.getPercentage(existingLevel.getGrade());
+            long newPercentage = newLevels.getPercentage(existingLevel.getChamber(), existingLevel.getGrade());
             existingLevel.setPercentage(newPercentage);
         }
     }

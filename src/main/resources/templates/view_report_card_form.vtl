@@ -17,31 +17,75 @@
         <input type="hidden" name="id" value="$report_card.Id"/>
 
         <h5>Grade Levels</h5>
-        <table class="pure-table">
-            <tr>
-                <th>Grade</th>
-                <th>Percentage</th>
-            </tr>
 
-            <tr>
-                #set ( $gradeLevels = $report_card.GradeLevels )
-                <td>A</td>
-                <td><input type="text" name="grade_a" value='$gradeLevels.getPercentage("A")'/></td>
-            <tr>
-            </tr>
-                <td>B</td>
-                <td><input type="text" name="grade_b" value='$gradeLevels.getPercentage("B")'/></td>
-            <tr>
-            </tr>
-                <td>C</td>
-                <td><input type="text" name="grade_c" value='$gradeLevels.getPercentage("C")'/></td>
-            <tr>
-            </tr>
-                <td>D</td>
-                <td><input type="text" name="grade_d" value='$gradeLevels.getPercentage("D")'/></td>
-            </tr>
+        <div class="pure-g">
 
-        </table>
+            <div class="pure-u-1-2">
+
+                <h5>House</h5>
+
+                <table class="pure-table">
+                    <tr>
+                        <th>Grade</th>
+                        <th>Percentage</th>
+                    </tr>
+
+                    <tr>
+                        #set ( $gradeLevels = $report_card.GradeLevels )
+                        <td>A</td>
+                        <td><input type="text" name="house_grade_a" value='$gradeLevels.getPercentage("House", "A")'/></td>
+                    <tr>
+                    </tr>
+                        <td>B</td>
+                        <td><input type="text" name="house_grade_b" value='$gradeLevels.getPercentage("House","B")'/></td>
+                    <tr>
+                    </tr>
+                        <td>C</td>
+                        <td><input type="text" name="house_grade_c" value='$gradeLevels.getPercentage("House","C")'/></td>
+                    <tr>
+                    </tr>
+                        <td>D</td>
+                        <td><input type="text" name="house_grade_d" value='$gradeLevels.getPercentage("House", "D")'/></td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            <div class="pure-u-1-2">
+
+                <h5>Senate</h5>
+
+                <table class="pure-table">
+                    <tr>
+                        <th>Grade</th>
+                        <th>Percentage</th>
+                    </tr>
+
+                    <tr>
+                        #set ( $gradeLevels = $report_card.GradeLevels )
+                        <td>A</td>
+                        <td><input type="text" name="senate_grade_a" value='$gradeLevels.getPercentage("Senate", "A")'/></td>
+                    <tr>
+                    </tr>
+                        <td>B</td>
+                        <td><input type="text" name="senate_grade_b" value='$gradeLevels.getPercentage("Senate","B")'/></td>
+                    <tr>
+                    </tr>
+                        <td>C</td>
+                        <td><input type="text" name="senate_grade_c" value='$gradeLevels.getPercentage("Senate","C")'/></td>
+                    <tr>
+                    </tr>
+                        <td>D</td>
+                        <td><input type="text" name="senate_grade_d" value='$gradeLevels.getPercentage("Senate", "D")'/></td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+
+        </div>
 
         <h5>Factors</h5>
         <table class="pure-table">

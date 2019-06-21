@@ -72,7 +72,8 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "grade_level_seq", GradeLevel::getId, GradeLevel::setId)
                 .withParentColumn("REPORT_CARD_ID")
                 .withStringColumn("GRADE", GradeLevel::getGrade, GradeLevel::setGrade)
-                .withLongColumn("PERCENTAGE", GradeLevel::getPercentage, GradeLevel::setPercentage);
+                .withLongColumn("PERCENTAGE", GradeLevel::getPercentage, GradeLevel::setPercentage)
+                .withConvertingStringColumn("CHAMBER", GradeLevel::getChamber, GradeLevel::setChamber, Chamber.Converter);
     }
 
     private static DaoBuilder<ReportCard> reportCardDaoBuilder(){

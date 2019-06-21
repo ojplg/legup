@@ -31,9 +31,9 @@ public class Grader {
         this.mean = sum / scores.size();
     }
 
-    public Grade assignGrade(int rawScore){
+    public Grade assignGrade(Chamber chamber, int rawScore){
         int percent = (rawScore - lowScore) * 100 / spread;
-        return new Grade(percent, gradeLevels);
+        return new Grade(percent, chamber, gradeLevels);
     }
 
     public int getLowScore() {

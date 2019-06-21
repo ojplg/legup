@@ -182,3 +182,11 @@ alter table grade_levels add constraint uniq_grade_level unique (report_card_id,
 
 alter table report_cards drop constraint if exists uniq_report_card;
 alter table report_cards add constraint uniq_report_card unique (name, organization_id);
+
+-- changeset ojplg:6
+
+alter table grade_levels drop constraint uniq_grade_level;
+
+alter table grade_levels add chamber text;
+
+alter table grade_levels add constraint uniq_grade_level unique (report_card_id, chamber, grade);

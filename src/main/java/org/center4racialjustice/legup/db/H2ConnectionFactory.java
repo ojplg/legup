@@ -57,7 +57,8 @@ public class H2ConnectionFactory implements ConnectionFactory {
                 if(line.startsWith("begin;")
                         || line.startsWith("grant all")
                         || line.startsWith("end;")
-                        || line.matches("alter table \\w+ add constraint \\w+ unique.*")){
+                        || line.matches("alter table \\w+ add constraint \\w+ unique.*")
+                        || line.matches("alter table \\w+ drop constraint \\w+;")){
                     continue;
                 }
                 wholeFileBuffer.append(line);

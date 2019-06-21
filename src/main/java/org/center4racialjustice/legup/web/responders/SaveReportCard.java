@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.responders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.GradeLevel;
 import org.center4racialjustice.legup.domain.GradeLevels;
 import org.center4racialjustice.legup.domain.Organization;
@@ -70,9 +71,12 @@ public class SaveReportCard implements Responder {
     private List<GradeLevel> parseGradeLevels(LegupSubmission submission){
         List<GradeLevel> gradeLevels = new ArrayList<>();
         for( String grade : GradeLevels.REQUIRED_GRADES){
-            long percentage = submission.getLongRequestParameter("grade_" + grade.toLowerCase());
-            GradeLevel gradeLevel = new GradeLevel(grade, percentage);
-            gradeLevels.add(gradeLevel);
+            long housePctg = submission.getLongRequestParameter("house_grade_" + grade.toLowerCase());
+            GradeLevel houseLevel = new GradeLevel(Chamber.House, grade, housePctg);
+            gradeLevels.add(houseLevel);
+            long senatePctg = submission.getLongRequestParameter("senate_grade_" + grade.toLowerCase());
+            GradeLevel senateLevel = new GradeLevel(Chamber.Senate, grade, senatePctg);
+            gradeLevels.add(senateLevel);
         }
         return gradeLevels;
     }

@@ -37,6 +37,7 @@ public class TestReportCardDao {
         statement.execute("delete from bill_actions");
         statement.execute("delete from bill_action_loads");
         statement.execute("delete from report_factors");
+        statement.execute("delete from grade_levels");
         statement.execute("delete from report_card_legislators");
         statement.execute("delete from bills");
         statement.execute("delete from report_cards");

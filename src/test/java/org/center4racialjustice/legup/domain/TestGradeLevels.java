@@ -12,17 +12,21 @@ public class TestGradeLevels {
     @Test
     public void testGradeCalculation(){
         List<GradeLevel> levelList = new ArrayList<>();
-        levelList.add(newLevel("A", 80L));
-        levelList.add(newLevel("B", 60L));
-        levelList.add(newLevel("C", 40L));
-        levelList.add(newLevel("D", 20L));
+        levelList.add(newLevel(Chamber.House,"A", 80L));
+        levelList.add(newLevel(Chamber.House,"B", 60L));
+        levelList.add(newLevel(Chamber.House,"C", 40L));
+        levelList.add(newLevel(Chamber.House,"D", 20L));
+        levelList.add(newLevel(Chamber.Senate,"A", 80L));
+        levelList.add(newLevel(Chamber.Senate,"B", 60L));
+        levelList.add(newLevel(Chamber.Senate,"C", 40L));
+        levelList.add(newLevel(Chamber.Senate,"D", 20L));
 
         GradeLevels levels = new GradeLevels(levelList);
 
-        String aGrade = levels.getGrade(85);
+        String aGrade = levels.getGrade(Chamber.House, 85);
         Assert.assertEquals("A", aGrade);
 
-        String dGrade = levels.getGrade(22);
+        String dGrade = levels.getGrade(Chamber.House, 22);
         Assert.assertEquals("D", dGrade);
 
     }
@@ -30,9 +34,13 @@ public class TestGradeLevels {
     @Test
     public void testValidation_MissingLevel(){
         List<GradeLevel> levelList = new ArrayList<>();
-        levelList.add(newLevel("A", 80L));
-        levelList.add(newLevel("B", 60L));
-        levelList.add(newLevel("D", 20L));
+        levelList.add(newLevel(Chamber.House,"A", 80L));
+        levelList.add(newLevel(Chamber.House,"B", 60L));
+        levelList.add(newLevel(Chamber.House,"D", 20L));
+        levelList.add(newLevel(Chamber.Senate,"A", 80L));
+        levelList.add(newLevel(Chamber.Senate,"B", 60L));
+        levelList.add(newLevel(Chamber.Senate,"C", 40L));
+        levelList.add(newLevel(Chamber.Senate,"D", 20L));
 
         try {
             GradeLevels levels = new GradeLevels(levelList);
@@ -44,10 +52,14 @@ public class TestGradeLevels {
     @Test
     public void testValidation_OutOfOrder(){
         List<GradeLevel> levelList = new ArrayList<>();
-        levelList.add(newLevel("A", 80L));
-        levelList.add(newLevel("B", 40L));
-        levelList.add(newLevel("C", 60L));
-        levelList.add(newLevel("D", 20L));
+        levelList.add(newLevel(Chamber.House,"A", 80L));
+        levelList.add(newLevel(Chamber.House,"B", 40L));
+        levelList.add(newLevel(Chamber.House,"C", 60L));
+        levelList.add(newLevel(Chamber.House,"D", 20L));
+        levelList.add(newLevel(Chamber.Senate,"A", 80L));
+        levelList.add(newLevel(Chamber.Senate,"B", 60L));
+        levelList.add(newLevel(Chamber.Senate,"C", 40L));
+        levelList.add(newLevel(Chamber.Senate,"D", 20L));
 
         try {
             GradeLevels levels = new GradeLevels(levelList);
@@ -57,10 +69,11 @@ public class TestGradeLevels {
     }
 
 
-    private GradeLevel newLevel(String grade, Long percentage){
+    private GradeLevel newLevel(Chamber chamber, String grade, Long percentage){
         GradeLevel level = new GradeLevel();
         level.setGrade(grade);
         level.setPercentage(percentage);
+        level.setChamber(chamber);
         return level;
     }
 
