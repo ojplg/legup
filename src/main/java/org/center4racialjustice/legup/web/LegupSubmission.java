@@ -59,6 +59,11 @@ public class LegupSubmission {
         return null;
     }
 
+    public boolean getBooleanRequestParameter(String parameterName){
+        String parameterValueString = internalGetParameter(parameterName);
+        return parameterValueString != null && parameterValueString.equalsIgnoreCase("true");
+    }
+
     public boolean isNonEmptyStringParameter(String parameterName){
         String parameterValue = internalGetParameter(parameterName);
         return parameterValue != null && parameterValue.trim().length() > 0;

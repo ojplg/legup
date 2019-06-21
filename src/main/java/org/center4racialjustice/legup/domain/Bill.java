@@ -32,4 +32,8 @@ public class Bill implements Comparable<Bill> {
         Collections.sort(dividedBills.getSecond());
         return dividedBills;
     }
+
+    public String getShortBillId(){
+        return chamber + "." + number;
+    }
 }

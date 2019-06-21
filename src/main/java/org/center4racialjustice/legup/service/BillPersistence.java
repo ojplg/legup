@@ -53,33 +53,41 @@ public class BillPersistence {
         });
     }
 
-    public BillSaveResults saveParsedData(BillSearchResults billSearchResults) {
+    public BillSaveResults saveParsedData(BillSearchResults billSearchResults, boolean forceSave) {
         return connectionPool.runAndCommit(connection -> {
+
+            log.info("Doing save of " + billSearchResults.getParsedBill().getShortBillId() + " with force flag " + forceSave);
+
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
 
             Bill bill;
             BillActionLoad billActionLoad;
+
+            SponsorSaveResults sponsorsSaved;
 
             if( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ){
                 Tuple<Bill, BillActionLoad> billSaveTuple = insertNewBill( connection,
                     billSearchResults.getParsedBill(), billSearchResults.getUrl(), billSearchResults.getChecksum() );
                 bill = billSaveTuple.getFirst();
                 billActionLoad = billSaveTuple.getSecond();
+                sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
+                log.info("Saved sponsors: " + sponsorsSaved);
             } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.MatchedValues ){
                 bill = billSearchResults.getSavedBill();
                 billActionLoad = billSearchResults.getBillHtmlLoad();
-            } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues ){
+                sponsorsSaved = SponsorSaveResults.EMPTY;
+            } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
+                        || forceSave ){
                 Tuple<Bill, BillActionLoad> billSaveTuple = updateBill( connection,
                         billSearchResults.getUpdatedBill(),  billSearchResults.getBillHtmlLoad(),
                         billSearchResults.getUrl(), billSearchResults.getChecksum() );
                 bill = billSaveTuple.getFirst();
                 billActionLoad = billSaveTuple.getSecond();
+                sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
+                log.info("Saved sponsors: " + sponsorsSaved);
             } else {
                 throw new RuntimeException("Cannot persist match status " + billSearchResults.getBillHtmlLoadStatus());
             }
-
-            SponsorSaveResults sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
-            log.info("Saved sponsors: " + sponsorsSaved);
 
             int houseVotesSaved = 0;
             BillActionLoad houseLoad = billSearchResults.getHouseVotesLoad();
@@ -87,7 +95,8 @@ public class BillPersistence {
                 houseLoad = billSearchResults.createHouseBillActionLoad(bill);
                 billActionLoadDao.insert(houseLoad);
                 houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
-            } else if ( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues ){
+            } else if ( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
+                        || forceSave ){
                 houseLoad = billSearchResults.updateHouseBillActionLoad();
                 billActionLoadDao.update(houseLoad);
                 houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
@@ -101,7 +110,8 @@ public class BillPersistence {
                 senateLoad = billSearchResults.createSenateBillActionLoad(bill);
                 billActionLoadDao.insert(senateLoad);
                 senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
-            } else if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues){
+            } else if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
+                        || forceSave ){
                senateLoad = billSearchResults.updateSenateBillActionLoad();
                billActionLoadDao.update(senateLoad);
                senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());

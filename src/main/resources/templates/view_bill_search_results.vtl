@@ -124,5 +124,11 @@
 
     </form>
 #else
-    <span>No new data found. Nothing to save.</span>
+    <div>No new data found. Nothing to save.</div>
+    <div>
+        <form action="/legup/save_searched_bill">
+        <input type="hidden" name="force_save" value="true"/>
+        <input type="hidden" name="one_time_key" value="$oneTimeKey"/>
+        <input type="submit" value="Force Save"/>
+    </div>
 #end

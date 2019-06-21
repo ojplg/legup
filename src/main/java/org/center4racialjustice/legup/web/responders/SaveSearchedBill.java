@@ -27,8 +27,10 @@ public class SaveSearchedBill implements Responder {
         BillSearchResults billSearchResults = (BillSearchResults) submission
                 .getObject(LegupSession.BillSearchResultsKey);
 
+        boolean forceSave = submission.getBooleanRequestParameter("force_save");
+
         BillPersistence billPersistence = new BillPersistence(connectionPool);
-        BillSaveResults billSaveResults = billPersistence.saveParsedData(billSearchResults);
+        BillSaveResults billSaveResults = billPersistence.saveParsedData(billSearchResults, forceSave);
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), navLinks());
         response.putVelocityData("bill", billSaveResults.getBill());
