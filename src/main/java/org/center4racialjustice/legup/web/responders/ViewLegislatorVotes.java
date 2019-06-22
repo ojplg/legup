@@ -38,7 +38,7 @@ public class ViewLegislatorVotes implements Responder {
             List<BillAction> billActions = billActionDao.readByLegislator(legislator);
             BillActionCollator collator = new BillActionCollator(billActions);
 
-            HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
+            HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks(legislator.getSessionNumber()));
             response.putVelocityData("votes", collator.getVotes());
             response.putVelocityData("sponsorships", collator.getSponsorships());
             response.putVelocityData("chiefSponsorships", collator.getChiefSponsorships());
@@ -48,9 +48,9 @@ public class ViewLegislatorVotes implements Responder {
         });
     }
 
-    private List<NavLink> navLinks(){
+    private List<NavLink> navLinks(long sessionNumber){
         return Collections.singletonList(
-                new NavLink("Legislators Index", "/legup/view_legislators")
+                new NavLink("Legislators Index", "/legup/view_legislators?session_number=" + sessionNumber)
         );
     }
 
