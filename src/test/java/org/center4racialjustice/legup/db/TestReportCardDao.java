@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.domain.ReportFactor;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.illinois.LegislationType;
 import org.hrorm.Dao;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -74,6 +75,7 @@ public class TestReportCardDao {
             bill.setNumber(6);
             bill.setChamber(Chamber.House);
             bill.setShortDescription("BILLBILL");
+            bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
             BillDao billDao = new BillDao(connection);
             billDao.insert(bill);
@@ -158,6 +160,7 @@ public class TestReportCardDao {
             bill.setSession(123);
             bill.setNumber(61);
             bill.setChamber(Chamber.House);
+            bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
             BillDao billDao = new BillDao(connection);
 
@@ -204,11 +207,13 @@ public class TestReportCardDao {
             bill1.setSession(123);
             bill1.setNumber(1);
             bill1.setChamber(Chamber.House);
+            bill1.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
             bill2 = new Bill();
             bill2.setSession(123);
             bill2.setNumber(2);
             bill2.setChamber(Chamber.House);
+            bill2.setLegislationSubType(LegislationType.JRCA_SUB_TYPE);
 
 
             Connection connection = DbTestConfigs.connect();
@@ -285,6 +290,7 @@ public class TestReportCardDao {
         bill.setSession(123);
         bill.setNumber(62);
         bill.setChamber(Chamber.House);
+        bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
 
@@ -335,6 +341,7 @@ public class TestReportCardDao {
         bill.setSession(123);
         bill.setNumber(63);
         bill.setChamber(Chamber.House);
+        bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
 

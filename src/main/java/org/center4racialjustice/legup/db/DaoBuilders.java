@@ -34,7 +34,8 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "bill_seq", Bill::getId, Bill::setId)
                 .withLongColumn("BILL_NUMBER", Bill::getNumber, Bill::setNumber)
                 .withLongColumn("SESSION_NUMBER", Bill::getSession, Bill::setSession)
-                .withStringColumn("SHORT_DESCRIPTION", Bill::getShortDescription, Bill::setShortDescription);
+                .withStringColumn("SHORT_DESCRIPTION", Bill::getShortDescription, Bill::setShortDescription)
+                .withStringColumn("SUB_TYPE", Bill::getLegislationSubType, Bill::setLegislationSubType);
     }
 
     private static DaoBuilder<Legislator> legislatorDaoBuilder(){

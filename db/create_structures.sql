@@ -190,3 +190,14 @@ alter table grade_levels drop constraint uniq_grade_level;
 alter table grade_levels add chamber text;
 
 alter table grade_levels add constraint uniq_grade_level unique (report_card_id, chamber, grade);
+
+-- changeset ojplg:7
+
+alter table bills add sub_type text;
+
+update bills set sub_type = 'Bill';
+
+alter table bills alter column sub_type text not null;
+alter table bills drop constraint uniq_bill;
+alter table bills add constraint uniq_bill unique (session_number, bill_number, chamber, sub_type);
+

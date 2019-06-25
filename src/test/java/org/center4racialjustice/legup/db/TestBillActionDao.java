@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.illinois.LegislationType;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,6 +61,7 @@ public class TestBillActionDao {
         Bill bill = new Bill();
         bill.setChamber(Chamber.House);
         bill.setNumber(123);
+        bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
         long billId = billDao.insert(bill);
@@ -112,6 +114,7 @@ public class TestBillActionDao {
         Bill bill = new Bill();
         bill.setChamber(Chamber.House);
         bill.setNumber(123);
+        bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
         long billId = billDao.insert(bill);
@@ -161,6 +164,7 @@ public class TestBillActionDao {
         Bill bill = new Bill();
         bill.setChamber(Chamber.House);
         bill.setNumber(123);
+        bill.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
         long billId = billDao.insert(bill);

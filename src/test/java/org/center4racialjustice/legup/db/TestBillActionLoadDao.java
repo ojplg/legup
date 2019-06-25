@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.db;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.illinois.LegislationType;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,6 +51,7 @@ public class TestBillActionLoadDao {
         Bill bill1 = new Bill();
         bill1.setChamber(Chamber.House);
         bill1.setNumber(1);
+        bill1.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
         billDao.insert(bill1);
@@ -79,10 +81,12 @@ public class TestBillActionLoadDao {
         Bill bill1 = new Bill();
         bill1.setChamber(Chamber.House);
         bill1.setNumber(1);
+        bill1.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         Bill bill2 = new Bill();
         bill2.setChamber(Chamber.House);
         bill2.setNumber(2);
+        bill2.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
         billDao.insert(bill1);
@@ -124,10 +128,12 @@ public class TestBillActionLoadDao {
         Bill bill1 = new Bill();
         bill1.setChamber(Chamber.House);
         bill1.setNumber(1);
+        bill1.setLegislationSubType(LegislationType.BILL_SUB_TYPE);
 
         Bill bill2 = new Bill();
         bill2.setChamber(Chamber.House);
         bill2.setNumber(2);
+        bill2.setLegislationSubType(LegislationType.JOINT_RESOLUTION_SUB_TYPE);
 
         BillDao billDao = new BillDao(connection);
         billDao.insert(bill1);
