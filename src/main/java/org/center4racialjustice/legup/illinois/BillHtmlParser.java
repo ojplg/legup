@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.LegislationIdentity;
 import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,17 +24,14 @@ public class BillHtmlParser {
 
     private final String url;
     private final Document document;
-    private final Chamber chamber;
-    private final Long number;
+    private LegislationIdentity legislationIdentity;
 
     public BillHtmlParser(String url){
         try {
             this.url = url;
             log.info("Searching " + url);
             this.document = Jsoup.connect(url).get();
-            Tuple<Chamber, Long> tuple = parseBillIdentity();
-            chamber = tuple.getFirst();
-            number = tuple.getSecond();
+            legislationIdentity = parseBillIdentity();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -43,9 +41,7 @@ public class BillHtmlParser {
         try {
             this.url = url;
             this.document = Jsoup.parse(htmlStream, null, url);
-            Tuple<Chamber, Long> tuple = parseBillIdentity();
-            chamber = tuple.getFirst();
-            number = tuple.getSecond();
+            legislationIdentity = parseBillIdentity();
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
@@ -58,8 +54,7 @@ public class BillHtmlParser {
     public Bill getBill(){
         Bill bill = new Bill();
 
-        bill.setChamber(chamber);
-        bill.setNumber(number);
+        bill.setLegislationIdentity(legislationIdentity);
         bill.setSession(getSession());
         bill.setShortDescription(getShortDescription());
 
@@ -94,9 +89,9 @@ public class BillHtmlParser {
         throw new RuntimeException("Could not determine session");
     }
 
-    private Tuple<Chamber, Long> parseBillIdentity(){
+    private LegislationIdentity parseBillIdentity(){
 
-        String regex = "Bill Status of ([H|S][A-Z]+)(\\d+)";
+        String regex = "Bill Status of ([H|S])([A-Z]+)(\\d+)";
         Pattern pattern = Pattern.compile(regex);
 
         Elements spans = document.select("span").attr("class", "heading");
@@ -105,34 +100,38 @@ public class BillHtmlParser {
             Matcher matcher = pattern.matcher(content);
             if( matcher.matches() ){
                 String chamberString = matcher.group(1);
-                String numberString = matcher.group(2);
+                String subtypeString = matcher.group(2);
+                String numberString = matcher.group(3);
                 Chamber chamber;
                 switch (chamberString){
-                    case "HB" :
+                    case "H" :
                         chamber = Chamber.House;
                         break;
-                    case "SB" :
-                        chamber = Chamber.Senate;
-                        break;
-                    case "SJRCA" :
+                    case "S" :
                         chamber = Chamber.Senate;
                         break;
                     default:
                         throw new RuntimeException("Chamber String Unrecognized " + chamberString);
                 }
+                String legislationSubType = LegislationType.subTypeStringFromCode(subtypeString);
+                LegislationType legislationType = LegislationType.fromChamberAndSubType(chamber, legislationSubType);
                 Long number = Long.parseLong(numberString);
-                return new Tuple<>(chamber, number);
+
+                LegislationIdentity legislationIdentity = new LegislationIdentity();
+                legislationIdentity.setLegislationType(legislationType);
+                legislationIdentity.setNumber(number);
+                return legislationIdentity;
             }
         }
         throw new RuntimeException("Could not determine chamber and number");
     }
 
     public long getNumber(){
-        return number;
+        return legislationIdentity.getNumber();
     }
 
     public Chamber getChamber(){
-        return chamber;
+        return legislationIdentity.getChamber();
     }
 
     public String getShortDescription(){

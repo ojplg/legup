@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
@@ -44,7 +45,10 @@ public class ViewBillSearchResults implements Responder {
                     Collections.singletonMap("number","Could not parse bill number from input " + submission.getParameter("number")));
         }
 
-        LegislationType legislationType = submission.getConvertedParameter("legislation_type", LegislationType.Converter);
+        String legislationSubType = submission.getParameter("legislation_sub_type");
+        Chamber chamber = submission.getConvertedParameter("chamber", Chamber.Converter);
+
+        LegislationType legislationType = LegislationType.fromChamberAndSubType(chamber, legislationSubType);
         Long number = submission.getLongRequestParameter( "number");
 
         BillSearchResults billSearchResults = doSearch(legislationType, number);

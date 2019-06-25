@@ -7,7 +7,7 @@
 
     <div class="pure-u-1-2">
         <h4>House Sponsors</h4>
-        <b>Chief: <a href="/legup/view_legislator_votes?legislator_id=$chief_house_sponsor.Id">$chief_house_sponsor.Name.Display - $chief_house_sponsor.Party</a></b>
+        <b>Chief: <a href="/legup/view_legislator_votes?legislator_id=$!chief_house_sponsor.Id">$!chief_house_sponsor.Name.Display - $!chief_house_sponsor.Party</a></b>
         <br/>
         <br/>
         #foreach ($legislator in $house_sponsors)
@@ -18,7 +18,7 @@
 
     <div class="pure-u-1-2">
         <h4>Senate Sponsors</h4>
-        <b>Chief: <a href="/legup/view_legislator_votes?legislator_id=$chief_senate_sponsor.Id">$chief_senate_sponsor.Name.Display - $chief_senate_sponsor.Party</a></b>
+        <b>Chief: <a href="/legup/view_legislator_votes?legislator_id=$!chief_senate_sponsor.Id">$!chief_senate_sponsor.Name.Display - $!chief_senate_sponsor.Party</a></b>
         <br/>
         <br/>
         #foreach ($legislator in $senate_sponsors)

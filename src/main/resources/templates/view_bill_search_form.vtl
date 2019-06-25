@@ -4,12 +4,22 @@
 <form action="/legup/view_bill_search_results" id="bill_search_form"  class="pure-form pure-form-aligned">
 
     <fieldset>
+
         <div class="pure-control-group">
-            <label for="legislation_type">Legislation Type</label>
-            <select name="legislation_type" form_id="bill_search_form">
-                <option>House Bill</option>
-                <option>Senate Bill</option>
-                <option>Senate Joint Resolution Constitutional Amendments</option>
+            <label for="chamber">Chamber</label>
+            <select name="chamber" form_id="bill_search_form">
+                #foreach ($chamber in $chambers)
+                    <option>$chamber</option>
+                #end
+            </select>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="legislation_sub_type">Legislation Type</label>
+            <select name="legislation_sub_type" form_id="bill_search_form">
+                #foreach ($sub_type in $sub_types)
+                    <option>$sub_type</option>
+                #end
             </select>
         </div>
 

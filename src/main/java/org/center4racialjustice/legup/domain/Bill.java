@@ -47,4 +47,10 @@ public class Bill implements Comparable<Bill> {
         this.chamber = legislationType.getChamber();
         this.legislationSubType = legislationType.getSubType();
     }
+
+    public void setLegislationIdentity(LegislationIdentity legislationIdentity){
+        this.chamber = legislationIdentity.getChamber();
+        this.legislationSubType = legislationIdentity.getLegislationSubType();
+        this.number = legislationIdentity.getNumber();
+    }
 }

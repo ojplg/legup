@@ -197,7 +197,7 @@ alter table bills add sub_type text;
 
 update bills set sub_type = 'Bill';
 
-alter table bills alter column sub_type text not null;
+alter table bills alter column sub_type set not null;
 alter table bills drop constraint uniq_bill;
 alter table bills add constraint uniq_bill unique (session_number, bill_number, chamber, sub_type);
 

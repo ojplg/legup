@@ -21,7 +21,7 @@ public class LegislationType {
     public static final LegislationType SENATE_JRCA = new LegislationType(Chamber.Senate,JRCA_SUB_TYPE, 7);
     public static final LegislationType HOUSE_JRCA = new LegislationType(Chamber.House,JRCA_SUB_TYPE, 8);
 
-    public static LegislationType[] ALL_TYPES = {
+    public static final LegislationType[] ALL_TYPES = {
             SENATE_BILL,
             HOUSE_BILL,
             SENATE_RESOLUTION,
@@ -31,6 +31,23 @@ public class LegislationType {
             SENATE_JRCA,
             HOUSE_JRCA
     };
+
+    public static final String[] ALL_SUB_TYPES = {
+        BILL_SUB_TYPE,
+        RESOLUTION_SUB_TYPE,
+        JOINT_RESOLUTION_SUB_TYPE,
+        JRCA_SUB_TYPE
+    };
+
+    public static String subTypeStringFromCode(String code){
+        switch( code ){
+            case "B" : return BILL_SUB_TYPE;
+            case "R" : return RESOLUTION_SUB_TYPE;
+            case "JR" : return JOINT_RESOLUTION_SUB_TYPE;
+            case "JRCA" : return JRCA_SUB_TYPE;
+            default : throw new IllegalArgumentException("Cannot recognize: " + code);
+        }
+    }
 
     public static LegislationType fromString(String name){
         for(LegislationType legType : ALL_TYPES){

@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web.responders;
 
+import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.illinois.LegislationType;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -13,7 +15,10 @@ public class ViewBillSearchForm implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-        return HtmlLegupResponse.withHelpAndLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
+        HtmlLegupResponse htmlLegupResponse =  HtmlLegupResponse.withHelpAndLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
+        htmlLegupResponse.putVelocityData("sub_types", LegislationType.ALL_SUB_TYPES);
+        htmlLegupResponse.putVelocityData("chambers", Chamber.ALL_CHAMBER_NAMES);
+        return htmlLegupResponse;
     }
 
     private List<NavLink> navLinks() {
