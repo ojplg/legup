@@ -1,6 +1,7 @@
 # LegUp
 
-Experimental project to read PDFs and extract votes from the Illinois legislature.
+LegUp is a web application for building legislative scorecards. LegUp
+is pretty Illinois specific.
 
 LegUp tries to do the following:
 * Load information about legislators/bills/votes into its database by scraping the legislature's web page.
@@ -44,34 +45,24 @@ LegUp exposes its functionality via a simple web application.
   * JSoup
   * H2 (for tests)   
   * [hrorm!](http://hrorm.org)
+* Other
+  * LegUp uses [liquibase](http://www.liquibase.org/) for managing
+  migrations. There is mark-up in the SQL structures creation script
+  that indicates what has been applied. There is a shell script for
+  running liquibase under the scripts directory.
+  * The AWS instance I run has [postgres backups](https://www.postgresql.org/docs/10/static/backup.html)
+  via the postgres pg_dump tool running under cron.
 
 # TODO list
 
 Do not forget to grep the code for TODO and FIXME. There are always things there.
 
-Technical Betterments
-
-* Frank recommends http://www.liquibase.org/ for managing migrations. This
-  could become a concern, once Legup is being used and the database cannot
-  simply be nuked. I have included liquibase mark-ups in the sql scripts
-  and a short script for using liquibase to build the schema.
-* Also, need to look into [postgres backups](https://www.postgresql.org/docs/10/static/backup.html)
-  I have set up pg_dump for cron on the aws instance.
-* Actually make a real connection pool and automated reclamation
-* Silent logging for unit tests (maybe)
-
-Features/bugs/ideas to work on
-
-* USER FIXES
+* User Fixes
   * Allow users to invite others to their organizations
   * Allow organization names to be changed
-
   * Make sure submission of names handle spaces correctly
   * Error messages on user/organization creation
-
-* roll call votes are not parsed, just third readings, should that change?
-* different grade levels between house and senate - grading should just be completely separate
-
+  * Many-to-many relations between users and organizations
 * Write more help screens
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found
@@ -80,14 +71,15 @@ Features/bugs/ideas to work on
 * Bill Persistence
   * Perhaps four (or 5) upload chunks, separating sponsors from bill itself
 * Scoring/Grading
-  * Need different grading scales for different chambers
   * Allow configuration for score options, either in config files or report cards: something
   other than 1 point for voting, 2 for sponsoring, and 3 for chief sponsors
   * Allow configuartion of grading options: absolute grades versus grading on a curve
 * Add legislator tracking for veto session, etc (Louisa must define)
-* Load things other than "Third Reading" Vote PDFs: Committee votes
+* Load things other than "Third Reading" Vote PDFs: Committee votes, roll call votes
+* Actually make a real DB connection pool and automated reclamation
+* Silent logging for unit tests (maybe)
 
-# Better Option
+# Another Option
 
 See: [https://openstates.org/](https://openstates.org/)
 
