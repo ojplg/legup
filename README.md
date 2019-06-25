@@ -70,7 +70,6 @@ Features/bugs/ideas to work on
   * Error messages on user/organization creation
 
 * roll call votes are not parsed, just third readings, should that change?
-* force renewal of legislator name if necessary - or just update overrides?
 * different grade levels between house and senate - grading should just be completely separate
 * bills should include bill type in persistence, not just chamber
 
