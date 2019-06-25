@@ -1,0 +1,38 @@
+
+<h3>Edit Legislator Form</h3>
+
+<p>Use this form to edit the name of a legislator.</p>
+
+<form action="/legup/save_legislator" method="post" class="pure-form pure-form-aligned">
+
+    <input type="hidden" id="legislator_id" name="legislator_id" value="$legislator.id"/>
+
+    <fieldset>
+
+        <div class="pure-control-group">
+            <label for="firstname">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="$!legislator.firstName"/>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="middle_initial_or_name">Middle Initial or Name</label>
+            <input type="text" id="middle_initial_or_name" name="middle_initial_or_name" value="$!legislator.middleInitialOrName"/>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="lastname">Last Name</label>
+            <input type="text" id="last_name" name="last_name" value="$!legislator.lastName"/>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="suffix">Suffix</label>
+            <input type="text" id="suffix" name="suffix" value="$!legislator.suffix"/>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="save"></label>
+            <input id="save" type="submit" value="Save"/>
+        </div>
+    </fieldset>
+
+</form>
