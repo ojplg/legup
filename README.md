@@ -71,7 +71,6 @@ Features/bugs/ideas to work on
 
 * roll call votes are not parsed, just third readings, should that change?
 * different grade levels between house and senate - grading should just be completely separate
-* bills should include bill type in persistence, not just chamber
 
 * Write more help screens
 * Legislator Persistence
