@@ -126,6 +126,12 @@ public class UserService {
         if (user == null) {
             return Collections.emptyList();
         }
+        if( user.isSuperUser() ){
+            return connectionPool.useConnection(connection -> {
+                Dao<Organization> organizationDao = DaoBuilders.ORGANIZATIONS.buildDao(connection);
+                return organizationDao.select();
+            });
+        }
         return connectionPool.useConnection(connection ->
         {
             AssociationDao<User, Organization> associations = DaoBuilders.USER_ORGANIZATION_ASSOCIATIONS.buildDao(connection);
