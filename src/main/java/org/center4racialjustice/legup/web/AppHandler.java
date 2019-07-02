@@ -67,13 +67,13 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewBillDataTable(connectionPool));
         responders.add(new ViewBillDataCsv(connectionPool));
         responders.add(new ViewReportCardScoresCsv());
-        responders.add(new ViewNewReportCardForm());
+        responders.add(new ViewNewReportCardForm(connectionPool));
         responders.add(new SaveNewReportCard(connectionPool));
         responders.add(new SaveNewUser(connectionPool));
         responders.add(new UserLogin(connectionPool));
         responders.add(new UserLogout());
         responders.add(new ViewLogin());
-        responders.add(new ViewUserProfile());
+        responders.add(new ViewUserProfile(connectionPool));
         responders.add(new ViewOrganization(connectionPool));
         responders.add(new ViewResetPassword(connectionPool));
         responders.add(new SaveResetPassword(connectionPool));

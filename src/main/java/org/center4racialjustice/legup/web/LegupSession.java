@@ -2,10 +2,12 @@ package org.center4racialjustice.legup.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ public class LegupSession {
     private int count = 1;
     private final Map<String, Tuple<String, Object>> storage = new HashMap<>();
     private User loggedInUser;
+    private List<Organization> organizations;
 
     public int increment(){
         return count++;
@@ -48,8 +51,9 @@ public class LegupSession {
         return null;
     }
 
-    public void setLoggedInUser(User user){
+    public void setLoggedInUser(User user, List<Organization> organizations){
         this.loggedInUser = user;
+        this.organizations = organizations;
     }
 
     public User getLoggedInUser(){
@@ -62,5 +66,9 @@ public class LegupSession {
 
     public void logout(){
         this.loggedInUser = null;
+    }
+
+    public List<Organization> getLoggedInUsersOrganizations(){
+        return organizations;
     }
 }

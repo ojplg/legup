@@ -40,7 +40,7 @@ public class SaveResetPassword implements Responder {
 
         userService.updateUser(user);
 
-        submission.setLoggedInUser(user);
+        submission.setLoggedInUser(user, userService.findOrganizationsOfUser(user));
 
         return new ContinueLegupResponse(ViewUserProfile.class);
     }

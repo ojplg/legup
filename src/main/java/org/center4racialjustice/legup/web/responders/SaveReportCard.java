@@ -37,15 +37,16 @@ public class SaveReportCard implements Responder {
     public LegupResponse handle(LegupSubmission submission) {
 
         User user = submission.getLoggedInUser();
-        Long id = submission.getLongRequestParameter( "id");
+        Long reportCardId = submission.getLongRequestParameter( "report_card_id");
+        Long organizationId = submission.getLongRequestParameter( "organization_id");
 
-        Organization organization = submission.getOrganization();
+        Organization organization = submission.getLoggedInUserOrganization(organizationId);
         List<Long> legislatorIds = parseCheckedLegislators(submission);
         Map<Long, VoteSide> voteSideMap = parseVoteSidesByBillIdMap(submission);
         List<GradeLevel> gradeLevels = parseGradeLevels(submission);
-        ReportCard card = reportCardPersistence.updateReportCard(id, organization, voteSideMap, legislatorIds, gradeLevels);
+        ReportCard card = reportCardPersistence.updateReportCard(reportCardId, organization, voteSideMap, legislatorIds, gradeLevels);
 
-        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), user, navLinks(id));
+        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), user, navLinks(reportCardId, organizationId));
         response.putVelocityData("reportCard", card);
         return response;
     }
@@ -89,18 +90,19 @@ public class SaveReportCard implements Responder {
 
     @Override
     public boolean permitted(LegupSubmission legupSubmission) {
-        Long id = legupSubmission.getLongRequestParameter( "id");
-        Organization organization = legupSubmission.getOrganization();
-        boolean answer = organization.ownsCard(id);
+        Long reportCardId = legupSubmission.getLongRequestParameter( "report_card_id");
+        Long organizationId = legupSubmission.getLongRequestParameter("organization_id");
+        Organization organization = legupSubmission.getLoggedInUserOrganization(organizationId);
+        boolean answer = organization.ownsCard(reportCardId);
         log.info("User " + legupSubmission.getLoggedInUser() + " in organization " + organization.getName() +
-                " attempted to modify " + id  +
+                " attempted to modify " + reportCardId  +
                 " permission was determined " + answer);
         return answer;
     }
 
-    private List<NavLink> navLinks(long reportCardId) {
+    private List<NavLink> navLinks(long reportCardId, long organizationId) {
         return Arrays.asList(
-                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=" + reportCardId),
+                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=" + reportCardId + "&organization_id=" + organizationId),
                 new NavLink("Calculate", "/legup/view_report_card_scores?report_card_id=" + reportCardId)
 
         );

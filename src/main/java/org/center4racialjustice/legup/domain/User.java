@@ -22,7 +22,7 @@ public class User {
     private String email;
     private String password;
     private String salt;
-    private Organization organization;
+//    private Organization organization;
 
     private static String encrypt(String password, String salt) {
         try {
@@ -92,7 +92,6 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", organization=" + organization +
                 '}';
     }
 }

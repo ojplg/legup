@@ -9,6 +9,8 @@ import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
 
+import java.util.List;
+
 public class SaveNewUser implements Responder {
 
     private final UserService userService;
@@ -25,7 +27,8 @@ public class SaveNewUser implements Responder {
 
         User user = userService.insertNewUserAndOrganization(organizationName, email, password);
 
-        submission.setLoggedInUser(user);
+        List<Organization> organizations = userService.findOrganizationsOfUser(user);
+        submission.setLoggedInUser(user, organizations);
 
         HtmlLegupResponse legupResponse = HtmlLegupResponse.simpleResponse(SaveNewUser.class, submission.getLoggedInUser());
         legupResponse.putVelocityData("user", user);

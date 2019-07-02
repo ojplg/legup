@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.ReportCard;
 import org.center4racialjustice.legup.service.ReportCardPersistence;
+import org.center4racialjustice.legup.service.UserService;
 import org.center4racialjustice.legup.web.ContinueLegupResponse;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
@@ -17,9 +18,11 @@ import java.util.Map;
 public class SaveNewReportCard implements Responder {
 
     private final ReportCardPersistence reportCardPersistence;
+    private final UserService userService;
 
     public SaveNewReportCard(ConnectionPool connectionPool){
         this.reportCardPersistence = new ReportCardPersistence(connectionPool);
+        this.userService = new UserService(connectionPool);
     }
 
     @Override
@@ -35,8 +38,9 @@ public class SaveNewReportCard implements Responder {
 
         String name = submission.getParameter("name");
         long session = submission.getLongRequestParameter("session");
+        long organizationId = submission.getLongRequestParameter("organization");
 
-        Organization organization = submission.getOrganization();
+        Organization organization = userService.findUserOrganization(submission.getLoggedInUser(), organizationId);
 
         ReportCard card = reportCardPersistence.saveNewCard(name, session, organization);
 

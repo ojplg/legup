@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,5 +34,13 @@ public class Organization {
             reportCards = new ArrayList<>();
         }
         reportCards.add(reportCard);
+    }
+
+    public static boolean anyOwnCard(List<Organization> organizations, long reportCardId){
+        return findReportCardOwner(organizations, reportCardId) != null;
+    }
+
+    public static Organization findReportCardOwner(List<Organization> organizations, long reportCardId){
+        return Lists.findfirst(organizations, org -> org.ownsCard(reportCardId));
     }
 }

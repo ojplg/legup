@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.web.responders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.center4racialjustice.legup.service.UserService;
 import org.center4racialjustice.legup.web.ContinueLegupResponse;
@@ -10,6 +11,8 @@ import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.Responder;
+
+import java.util.List;
 
 public class UserLogin implements Responder {
 
@@ -39,7 +42,9 @@ public class UserLogin implements Responder {
 
         log.info("User " + email + " is logged in");
 
-        submission.setLoggedInUser(user);
+        List<Organization> organizations = userService.findOrganizationsOfUser(user);
+        submission.setLoggedInUser(user, organizations);
+
 
         return new ContinueLegupResponse(ViewUserProfile.class);
     }

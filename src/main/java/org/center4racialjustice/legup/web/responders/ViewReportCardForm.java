@@ -33,6 +33,7 @@ public class ViewReportCardForm implements SecuredResponder {
     public LegupResponse handle(LegupSubmission submission) {
 
         Long reportCardId = submission.getLongRequestParameter("report_card_id");
+        Long organizationId = submission.getLongRequestParameter("organization_id");
         if ( reportCardId == null ){
             return HtmlLegupResponse.simpleResponse(this.getClass(), submission.getLoggedInUser());
         }
@@ -52,6 +53,7 @@ public class ViewReportCardForm implements SecuredResponder {
         response.putVelocityData("factor_settings", factorSettings);
         response.putVelocityData("selectedHouse", selectedLegislators.getFirst());
         response.putVelocityData("selectedSenate", selectedLegislators.getSecond());
+        response.putVelocityData("organization_id", organizationId);
 
         return response;
     }
@@ -66,7 +68,7 @@ public class ViewReportCardForm implements SecuredResponder {
     @Override
     public boolean permitted(LegupSubmission submission) {
         long reportCardId = submission.getLongRequestParameter( "report_card_id");
-        Organization organization = submission.getLoggedInUser().getOrganization();
-        return organization.ownsCard(reportCardId);
+        List<Organization> organizations = submission.getLoggedInUsersOrganizations();
+        return organizations.stream().anyMatch(org -> org.ownsCard(reportCardId));
     }
 }

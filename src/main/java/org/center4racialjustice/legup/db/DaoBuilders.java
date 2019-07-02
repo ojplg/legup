@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.db;
 import org.center4racialjustice.legup.domain.GradeLevel;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
+import org.hrorm.AssociationDaoBuilder;
 import org.hrorm.DaoBuilder;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
@@ -27,6 +28,7 @@ public class DaoBuilders {
     public static final DaoBuilder<BillAction> BILL_ACTIONS = billActionDaoBuilder();
     public static final DaoBuilder<Organization> ORGANIZATIONS = organizationDaoBuilder();
     public static final DaoBuilder<User> USERS = userDaoBuilder();
+    public static final AssociationDaoBuilder<User, Organization> USER_ORGANIZATION_ASSOCIATIONS = userOrganizationAssociationDaoBuilder();
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
@@ -120,8 +122,15 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "user_seq", User::getId, User::setId)
                 .withStringColumn("EMAIL", User::getEmail, User::setEmail)
                 .withStringColumn("SALT", User::getSalt, User::setSalt)
-                .withStringColumn("PASSWORD", User::getPassword, User::setPassword)
-                .withJoinColumn("ORGANIZATION_ID", User::getOrganization, User::setOrganization, ORGANIZATIONS);
+                .withStringColumn("PASSWORD", User::getPassword, User::setPassword);
     }
 
+    private static AssociationDaoBuilder<User, Organization> userOrganizationAssociationDaoBuilder(){
+        return new AssociationDaoBuilder<>(USERS, ORGANIZATIONS)
+                .withPrimaryKeyName("id")
+                .withSequenceName("user_organization_association_seq")
+                .withTableName("user_organization_associations")
+                .withLeftColumnName("user_id")
+                .withRightColumnName("organization_id");
+    }
 }

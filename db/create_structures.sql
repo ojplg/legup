@@ -201,3 +201,20 @@ alter table bills alter column sub_type set not null;
 alter table bills drop constraint uniq_bill;
 alter table bills add constraint uniq_bill unique (session_number, bill_number, chamber, sub_type);
 
+-- changeset ojplg:8
+
+alter table users drop column organization_id;
+
+create table user_organization_associations (
+    id integer primary key,
+    user_id integer not null,
+    organization_id integer not null
+);
+
+create sequence user_organization_association_seq start 1;
+
+-- changeset ojplg:9
+
+alter table user_organization_associations add foreign key (organization_id) references organizations(id);
+alter table user_organization_associations add foreign key (user_id) references users(id);
+

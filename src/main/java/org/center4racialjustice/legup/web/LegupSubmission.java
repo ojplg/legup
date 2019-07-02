@@ -4,11 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
+import org.center4racialjustice.legup.util.Lists;
 import org.hrorm.Converter;
 import org.eclipse.jetty.server.Request;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LegupSubmission {
@@ -110,8 +112,8 @@ public class LegupSubmission {
     }
 
 
-    public void setLoggedInUser(User user){
-        this.legupSession.setLoggedInUser(user);
+    public void setLoggedInUser(User user, List<Organization> organizations){
+        this.legupSession.setLoggedInUser(user, organizations);
     }
 
     public User getLoggedInUser() { return this.legupSession.getLoggedInUser(); }
@@ -126,7 +128,13 @@ public class LegupSubmission {
         legupSession.logout();
     }
 
-    public Organization getOrganization(){
-        return legupSession.getLoggedInUser().getOrganization();
+    public List<Organization> getLoggedInUsersOrganizations(){
+        return legupSession.getLoggedInUsersOrganizations();
     }
+
+    public Organization getLoggedInUserOrganization(long organizationId){
+        return Lists.findfirst(getLoggedInUsersOrganizations(),
+                org -> org.getId().equals(organizationId));
+    }
+
 }

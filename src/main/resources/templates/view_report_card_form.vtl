@@ -14,7 +14,8 @@
 <form action="/legup/save_report_card" id="save_report_card_form" class="pure-form pure-form-aligned" method="post">
 
     <fieldset>
-        <input type="hidden" name="id" value="$report_card.Id"/>
+        <input type="hidden" name="report_card_id" value="$report_card.Id"/>
+        <input type="hidden" name="organization_id" value="$organization_id"/>
 
         <h5>Grade Levels</h5>
 

@@ -6,10 +6,13 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.DaoBuilders;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
+import org.center4racialjustice.legup.util.Lists;
+import org.hrorm.AssociationDao;
 import org.hrorm.Dao;
 import org.hrorm.Operator;
 import org.hrorm.Where;
 
+import java.util.Collections;
 import java.util.List;
 
 public class UserService {
@@ -34,10 +37,12 @@ public class UserService {
                 orgDao.insert(organization);
 
                 User user = User.createNewUser(email, password);
-                user.setOrganization(organization);
 
                 Dao<User> userDao = DaoBuilders.USERS.buildDao(connection);
                 userDao.insert(user);
+
+                AssociationDao<User,Organization> associationDao = DaoBuilders.USER_ORGANIZATION_ASSOCIATIONS.buildDao(connection);
+                associationDao.insertAssociation(user, organization);
 
                 return user;
             });
@@ -65,10 +70,12 @@ public class UserService {
         return connectionPool.runAndCommit( connection ->
         {
             User user = User.createNewUser(email, password);
-            user.setOrganization(organization);
 
             Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
             dao.insert(user);
+
+            AssociationDao<User,Organization> associationDao = DaoBuilders.USER_ORGANIZATION_ASSOCIATIONS.buildDao(connection);
+            associationDao.insertAssociation(user, organization);
 
             return user;
         });
@@ -105,11 +112,31 @@ public class UserService {
     }
 
     public List<User> findUsersInOrganization(Organization org){
+        if ( org == null ){
+            return Collections.emptyList();
+        }
         return connectionPool.useConnection( connection ->
         {
-            Dao<User> dao = DaoBuilders.USERS.buildDao(connection);
-            return dao.select(new Where("organization_id", Operator.EQUALS, org.getId()));
+            AssociationDao<User, Organization> associations = DaoBuilders.USER_ORGANIZATION_ASSOCIATIONS.buildDao(connection);
+            return associations.selectLeftAssociates(org);
         });
+    }
+
+    public List<Organization> findOrganizationsOfUser(User user) {
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        return connectionPool.useConnection(connection ->
+        {
+            AssociationDao<User, Organization> associations = DaoBuilders.USER_ORGANIZATION_ASSOCIATIONS.buildDao(connection);
+            return associations.selectRightAssociates(user);
+        });
+
+    }
+
+    public Organization findUserOrganization(User user, long organizationId){
+        List<Organization> organizations = findOrganizationsOfUser(user);
+        return Lists.findfirst(organizations, org -> org.getId().equals(organizationId));
     }
 
 }

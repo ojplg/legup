@@ -44,7 +44,10 @@ public class ViewReportCardScores implements SecuredResponder {
         LookupTable<Legislator, Bill, Integer> scores = reportCardGrades.getLookupTable();
         Map<Legislator, Grade> grades = reportCardGrades.getGrades();
 
-        List<NavLink> links = navLinks(oneTimeKey, reportCardId);
+        List<Organization> organizations = submission.getLoggedInUsersOrganizations();
+        Organization organization = Organization.findReportCardOwner(organizations, reportCardId);
+
+        List<NavLink> links = navLinks(oneTimeKey, reportCardId, organization.getId());
         HtmlLegupResponse response = HtmlLegupResponse.withHelpAndLinks(this.getClass(), submission.getLoggedInUser(), links);
 
         response.putVelocityData("oneTimeKey", oneTimeKey);
@@ -62,15 +65,15 @@ public class ViewReportCardScores implements SecuredResponder {
     @Override
     public boolean permitted(LegupSubmission submission){
         long reportCardId = submission.getLongRequestParameter( "report_card_id");
-        Organization organization = submission.getLoggedInUser().getOrganization();
-        return organization.ownsCard(reportCardId);
+        List<Organization> organizations = submission.getLoggedInUsersOrganizations();
+        return Organization.anyOwnCard(organizations, reportCardId);
     }
 
 
-    private List<NavLink> navLinks(String oneTimeKey, long reportCardId) {
+    private List<NavLink> navLinks(String oneTimeKey, long reportCardId, long organizationId) {
         return Arrays.asList(
                 new NavLink("Bill Analysis","/legup/view_report_card_bills?one_time_key=" + oneTimeKey),
-                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=" + reportCardId),
+                new NavLink("Edit", "/legup/view_report_card_form?report_card_id=" + reportCardId + "&organization_id=" + organizationId),
                 new NavLink("CSV", "/legup/view_report_card_scores_csv?one_time_key=" + oneTimeKey)
 
         );

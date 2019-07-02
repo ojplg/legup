@@ -1,7 +1,7 @@
 
 <h4>New Report Card</h4>
 
-<form action="/legup/save_new_report_card" id="save_new_eport_card_form" class="pure-form pure-form-aligned" method="post">
+<form action="/legup/save_new_report_card" id="save_new_report_card_form" class="pure-form pure-form-aligned" method="post">
 
     <fieldset>
 
@@ -11,6 +11,15 @@
             #if ( $nameError )
                 <span class="pure-form-message-inline">$nameError</span>
             #end
+        </div>
+
+        <div class="pure-control-group">
+            <label for="organization">Organization</label>
+            <select name="organization" form_id="save_new_report_card_form">
+                #foreach ($organization in $organizations)
+                    <option value="$organization.Id">$organization.Name</option>
+                #end
+            </select>
         </div>
 
         <div class="pure-control-group">
