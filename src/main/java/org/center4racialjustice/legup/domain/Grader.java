@@ -28,7 +28,11 @@ public class Grader {
         this.lowScore = min;
         this.highScore = max;
         this.spread = highScore - lowScore;
-        this.mean = sum / scores.size();
+        if( scores.isEmpty()){
+            this.mean = 0;
+        } else {
+            this.mean = sum / scores.size();
+        }
     }
 
     public Grade assignGrade(Chamber chamber, int rawScore){
