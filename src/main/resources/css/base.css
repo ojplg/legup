@@ -55,3 +55,8 @@ span.error {
     color: Red;
     font-weight: bold;
 }
+
+ul {
+    margin-top: 1px;
+    margin-bottom: 3px;
+}
