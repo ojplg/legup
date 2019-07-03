@@ -12,10 +12,21 @@
 <hr/>
 
     <div>
-
         <div style="width: 33%; float:left;">
             <h4>View LegUp Data</h4>
-            <div><span class="tooltip"><span class="tooltiptext">Browse legislator data within LegUp</span><a href="/legup/view_legislator_sessions">Legislators</a></span></div>
+            <div>
+                Legislators
+                <ul>
+                    #foreach ($legislatorSession in $legislatorSessions)
+                        <li>
+                            <span class="tooltip">
+                                <span class="tooltiptext">Browse legislator data within LegUp for session $legislatorSession</span>
+                                <a href="/legup/view_legislators?session_number=$legislatorSession">$legislatorSession</a>
+                            </span>
+                        </li>
+                    #end
+                </ul>
+            </div>
             <div>
                 Bills
                 <ul>

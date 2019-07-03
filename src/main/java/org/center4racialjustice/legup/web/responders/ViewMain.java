@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.web.responders;
 
 import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -22,8 +23,13 @@ public class ViewMain implements Responder {
         return connectionPool.useConnection(connection ->  {
             BillDao billDao = new BillDao(connection);
             List<Long> billSessions = billDao.uniqueSessions();
+
+            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            List<Long> legislatorSessions = legislatorDao.distinctSessions();
+
             HtmlLegupResponse response = HtmlLegupResponse.withHelp(this.getClass(), submission.getLoggedInUser());
             response.putVelocityData("billSessions", billSessions);
+            response.putVelocityData("legislatorSessions", legislatorSessions);
             return response;
         });
     }
