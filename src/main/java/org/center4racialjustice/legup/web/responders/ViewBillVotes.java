@@ -39,7 +39,7 @@ public class ViewBillVotes implements Responder {
             BillActionSummary billActionSummary = new BillActionSummary(billActions);
 
             HtmlLegupResponse legupResponse = HtmlLegupResponse.withLinks(this.getClass(),
-                    submission.getLoggedInUser(), navLinks(billId));
+                    submission.getLoggedInUser(), navLinks(billId, bill.getSession()));
 
             legupResponse.putVelocityData("billActionSummary", billActionSummary);
             legupResponse.putVelocityData("bill", bill);
@@ -58,9 +58,9 @@ public class ViewBillVotes implements Responder {
         });
     }
 
-    private List<NavLink> navLinks(long billId){
+    private List<NavLink> navLinks(long billId, long sessionNumber){
         return Arrays.asList(
-                new NavLink("Bills Index", "/legup/view_bills"),
+                new NavLink("Bills Index", "/legup/view_bills?session_number=" +sessionNumber),
                 new NavLink("View Sponsors", "/legup/view_bill_sponsors?bill_id=" + billId)
         );
     }

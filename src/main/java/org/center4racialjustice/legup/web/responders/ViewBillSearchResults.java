@@ -10,7 +10,6 @@ import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.LegislationType;
 import org.center4racialjustice.legup.illinois.SponsorNames;
-import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
@@ -27,12 +26,10 @@ public class ViewBillSearchResults implements Responder {
     private static final Logger log = LogManager.getLogger(ViewBillSearchResults.class);
 
     private final ConnectionPool connectionPool;
-    private final BillPersistence billPersistence;
     private final NameParser nameParser;
 
     public ViewBillSearchResults(ConnectionPool connectionPool, NameParser nameParser) {
         this.connectionPool = connectionPool;
-        this.billPersistence = new BillPersistence(connectionPool);
         this.nameParser =  nameParser;
     }
 
@@ -139,8 +136,7 @@ public class ViewBillSearchResults implements Responder {
 
     private List<NavLink> navLinks(){
         return Arrays.asList(
-                new NavLink("Bill Search", "/legup/view_bill_search_form"),
-                new NavLink("Bills Index", "/legup/view_bills")
+                new NavLink("Bill Search", "/legup/view_bill_search_form")
         );
     }
 }

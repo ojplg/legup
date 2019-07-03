@@ -23,13 +23,15 @@ public class ViewBills implements Responder {
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         return connectionPool.useConnection(connection -> {
+            long sessionNumber = submission.getLongRequestParameter("session_number");
 
             BillDao dao = new BillDao(connection);
-            List<Bill> bills = dao.readAll();
+            List<Bill> bills = dao.readBySession(sessionNumber);
 
             Tuple<List<Bill>, List<Bill>> dividedBills = Bill.divideAndOrder(bills);
 
             HtmlLegupResponse response = HtmlLegupResponse.withHelp(this.getClass(), submission.getLoggedInUser());
+            response.putVelocityData("sessionNumber", sessionNumber);
             response.putVelocityData("house", Chamber.House);
             response.putVelocityData("senate", Chamber.Senate);
             response.putVelocityData("house_bills", dividedBills.getFirst());

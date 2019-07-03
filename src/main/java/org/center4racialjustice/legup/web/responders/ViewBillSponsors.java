@@ -63,7 +63,7 @@ public class ViewBillSponsors implements Responder {
             List<Legislator> chiefSenateSponsors = chiefSponsorsTuple.getSecond();
 
             HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(),
-                    submission.getLoggedInUser(), navLinks(billId));
+                    submission.getLoggedInUser(), navLinks(billId, bill.getSession()));
 
             if( chiefHouseSponsors.size() > 0 ){
                 response.putVelocityData("chief_house_sponsor", chiefHouseSponsors.get(0));
@@ -80,9 +80,9 @@ public class ViewBillSponsors implements Responder {
         });
     }
 
-    private List<NavLink> navLinks(long billId){
+    private List<NavLink> navLinks(long billId, long sessionNumber){
         return Arrays.asList(
-                new NavLink("Bills Index", "/legup/view_bills"),
+                new NavLink("Bills Index", "/legup/view_bills?session_number=" + sessionNumber),
                 new NavLink("View Votes", "/legup/view_bill_votes?bill_id=" + billId)
         );
     }

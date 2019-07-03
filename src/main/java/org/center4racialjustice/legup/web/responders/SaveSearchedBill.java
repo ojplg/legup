@@ -32,17 +32,19 @@ public class SaveSearchedBill implements Responder {
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         BillSaveResults billSaveResults = billPersistence.saveParsedData(billSearchResults, forceSave);
 
-        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), navLinks());
+        long sessionNumber = billSaveResults.getBill().getSession();
+
+        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), navLinks(sessionNumber));
         response.putVelocityData("bill", billSaveResults.getBill());
         response.putVelocityData("sponsorSaveResults", billSaveResults.getSponsorSaveResults());
         response.putVelocityData("billSaveResults", billSaveResults);
         return response;
     }
 
-    public List<NavLink> navLinks() {
+    public List<NavLink> navLinks(long sessionNumber) {
         return Arrays.asList(
             new NavLink("Bill Search", "/legup/view_bill_search_form"),
-            new NavLink("Bills Index", "/legup/view_bills")
+            new NavLink("Bills Index", "/legup/view_bills?session_number=" + sessionNumber)
         );
     }
 }

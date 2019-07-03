@@ -2,8 +2,10 @@ package org.center4racialjustice.legup.db;
 
 import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
+import org.hrorm.Where;
 
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 
 public class BillDao {
@@ -39,5 +41,11 @@ public class BillDao {
 
     public List<Bill> readAll() {
         return innerDao.select();
+    }
+
+    public List<Long> uniqueSessions(){
+        List<Long> sessionNumbers = innerDao.selectDistinct("SESSION_NUMBER", new Where());
+        Collections.sort(sessionNumbers);
+        return sessionNumbers;
     }
 }

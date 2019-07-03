@@ -15,16 +15,10 @@ public class ViewBillSearchForm implements Responder {
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
-        HtmlLegupResponse htmlLegupResponse =  HtmlLegupResponse.withHelpAndLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
+        HtmlLegupResponse htmlLegupResponse =  HtmlLegupResponse.withHelp(this.getClass(), submission.getLoggedInUser());
         htmlLegupResponse.putVelocityData("sub_types", LegislationType.ALL_SUB_TYPES);
         htmlLegupResponse.putVelocityData("chambers", Chamber.ALL_CHAMBER_NAMES);
         return htmlLegupResponse;
-    }
-
-    private List<NavLink> navLinks() {
-        return Collections.singletonList(
-                new NavLink("Bills Index", "/legup/view_bills")
-        );
     }
 
 }

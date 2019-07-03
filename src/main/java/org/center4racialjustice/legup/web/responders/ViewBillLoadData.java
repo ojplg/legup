@@ -34,7 +34,7 @@ public class ViewBillLoadData implements Responder {
             List<BillActionLoad> loads = loadDao.readByBill(bill);
 
             HtmlLegupResponse legupResponse = HtmlLegupResponse.withLinks(this.getClass(),
-                    submission.getLoggedInUser(), navLinks(billId));
+                    submission.getLoggedInUser(), navLinks(billId, bill.getSession()));
 
             legupResponse.putVelocityData("bill", bill);
             legupResponse.putVelocityData("loads", loads);
@@ -43,9 +43,9 @@ public class ViewBillLoadData implements Responder {
         });
     }
 
-    private List<NavLink> navLinks(long billId){
+    private List<NavLink> navLinks(long billId, long sessionNumber){
         return Arrays.asList(
-                new NavLink("Bills Index", "/legup/view_bills"),
+                new NavLink("Bills Index", "/legup/view_bills?session_number=" + sessionNumber),
                 new NavLink("View Votes", "/legup/view_bill_votes?bill_id=" + billId),
                 new NavLink("View Sponsors", "/legup/view_bill_sponsors?bill_id=" + billId)
         );

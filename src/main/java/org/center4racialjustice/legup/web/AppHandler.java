@@ -44,7 +44,7 @@ public class AppHandler extends AbstractHandler {
     AppHandler(ConnectionPool connectionPool, NameParser nameParser) {
         List<Responder> responders = new ArrayList<>();
 
-        responders.add(new ViewMain());
+        responders.add(new ViewMain(connectionPool));
         responders.add(new ViewBillForm());
         responders.add(new ViewFindLegislatorsForm());
         responders.add(new ViewParsedLegislators(connectionPool, nameParser));

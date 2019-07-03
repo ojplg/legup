@@ -15,14 +15,26 @@
 
         <div style="width: 33%; float:left;">
             <h4>View LegUp Data</h4>
-            <p><span class="tooltip"><span class="tooltiptext">Browse legislator data within LegUp</span><a href="/legup/view_legislator_sessions">Legislators</a></span></p>
-            <p><span class="tooltip"><span class="tooltiptext">Browse bill data within LegUp</span><a href="/legup/view_bills">Bills</a></span></p>
+            <div><span class="tooltip"><span class="tooltiptext">Browse legislator data within LegUp</span><a href="/legup/view_legislator_sessions">Legislators</a></span></div>
+            <div>
+                Bills
+                <ul>
+                    #foreach ($billSession in $billSessions)
+                        <li>
+                            <span class="tooltip">
+                                <span class="tooltiptext">Browse bill data within LegUp for session $billSession</span>
+                                <a href="/legup/view_bills?session_number=$billSession">$billSession</a>
+                            </span>
+                        </li>
+                    #end
+                </ul>
+            </div>
         </div>
 
         <div style="width: 33%; float:left;">
             <h4>Import Data</h4>
-            <p><span class="tooltip"><span class="tooltiptext">Import members of the General Assembly into LegUp</span><a href="/legup/view_find_legislators_form">Legislators</a></span></p>
-            <p><span class="tooltip"><span class="tooltiptext">Search for and import bills from the General Assembly's web site</span><a href="/legup/view_bill_search_form">Bills</a></span></p>
+            <div><span class="tooltip"><span class="tooltiptext">Import members of the General Assembly into LegUp</span><a href="/legup/view_find_legislators_form">Legislators</a></span></div>
+            <div><span class="tooltip"><span class="tooltiptext">Search for and import bills from the General Assembly's web site</span><a href="/legup/view_bill_search_form">Bills</a></span></div>
         </div>
 
         <br style="clear: left;" />
