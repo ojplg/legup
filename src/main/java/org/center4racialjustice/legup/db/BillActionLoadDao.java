@@ -7,6 +7,9 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import java.sql.Connection;
 import java.util.List;
 
+import static org.hrorm.Operator.EQUALS;
+import static org.hrorm.Where.where;
+
 public class BillActionLoadDao {
 
     private final Dao<BillActionLoad> innerDao;
@@ -25,9 +28,11 @@ public class BillActionLoadDao {
 
 
     public List<BillActionLoad> readByBill(Bill bill) {
-        BillActionLoad billActionLoad = new BillActionLoad();
-        billActionLoad.setBill(bill);
-        return innerDao.select(billActionLoad, "BILL_ID");
+        return readByBillId(bill.getId());
+    }
+
+    public List<BillActionLoad> readByBillId(long billId){
+        return innerDao.select(where("BILL_ID", EQUALS, billId));
     }
 
     public BillActionLoad select(Long id){

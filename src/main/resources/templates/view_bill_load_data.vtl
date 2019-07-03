@@ -1,0 +1,22 @@
+#parse( "/templates/insert_bill_identification.vtl" )
+
+<br/>
+
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Load Time</th><th>URL</th><th>Check Sum</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        #foreach ($load in $loads)
+            <tr>
+                <td>$load.FormattedLoadTime</td>
+                <td><a href="$load.Url">$load.Url</a></td>
+                <td>$load.CheckSum</td>
+            </tr>
+        #end
+    </tbody>
+
+</table>

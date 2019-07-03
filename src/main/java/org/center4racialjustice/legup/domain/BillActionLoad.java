@@ -36,4 +36,8 @@ public class BillActionLoad {
         return LocalDateTime.ofInstant(loadInstant, ZoneId.systemDefault());
     }
 
+    public String getFormattedLoadTime() {
+        return Formatter.format(getLoadTime());
+    }
+
 }
