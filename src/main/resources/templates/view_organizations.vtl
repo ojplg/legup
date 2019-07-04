@@ -1,0 +1,15 @@
+
+<h4>Organizations</h4>
+
+<div>
+    <table class="pure-table">
+        <tbody>
+            #foreach ($org in $organizations)
+            <tr>
+                <td>$org.Id</td>
+                <td><a href="/legup/view_organization?organization_id=$org.Id">$org.Name</a></td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
