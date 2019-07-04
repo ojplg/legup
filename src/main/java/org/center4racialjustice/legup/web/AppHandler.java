@@ -80,6 +80,7 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewLegislatorForm(connectionPool));
         responders.add(new SaveLegislator(connectionPool));
         responders.add(new ViewBillLoadData(connectionPool));
+        responders.add(new ViewUsers(connectionPool));
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());
@@ -168,6 +169,11 @@ public class AppHandler extends AbstractHandler {
 
         Writer writer = httpServletResponse.getWriter();
         VelocityContext velocityContext = legupResponse.getVelocityContext();
+
+        if( legupSubmission.isSuperUserRequest() ){
+            log.info("Super user: " + legupSubmission.getLoggedInUser());
+            velocityContext.put("isSuperUser", true);
+        }
 
         if (legupResponse.useContainer()) {
             velocityContext.put("contents", templatePath);

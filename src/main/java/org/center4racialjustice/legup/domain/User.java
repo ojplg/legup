@@ -12,9 +12,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Comparator;
 
 @Data
-public class User {
+public class User implements Comparable<User> {
 
     private static final Logger log = LogManager.getLogger(SaveResetPassword.class);
 
@@ -84,6 +85,11 @@ public class User {
     public boolean isSuperUser(){
         // TODO: This should be a variable on the DB table
         return email.equals("lees@ripco.com");
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return Comparator.comparing(User::getEmail).compare(this, o);
     }
 
     @Override

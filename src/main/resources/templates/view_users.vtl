@@ -1,0 +1,15 @@
+
+<h4>Users</h4>
+
+<div>
+    <table class="pure-table">
+        <tbody>
+            #foreach ($user in $users)
+            <tr>
+                <td>$user.Id</td>
+                <td>$user.Email</td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>

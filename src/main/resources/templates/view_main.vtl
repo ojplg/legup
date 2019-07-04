@@ -11,8 +11,8 @@
 
 <hr/>
 
-    <div>
-        <div style="width: 33%; float:left;">
+    <div class="pure-g">
+        <div class="pure-u-1-3">
             <h4>View LegUp Data</h4>
             <div>
                 Legislators
@@ -42,13 +42,19 @@
             </div>
         </div>
 
-        <div style="width: 33%; float:left;">
+        <div class="pure-u-1-3">
             <h4>Import Data</h4>
             <div><span class="tooltip"><span class="tooltiptext">Import members of the General Assembly into LegUp</span><a href="/legup/view_find_legislators_form">Legislators</a></span></div>
             <div><span class="tooltip"><span class="tooltiptext">Search for and import bills from the General Assembly's web site</span><a href="/legup/view_bill_search_form">Bills</a></span></div>
         </div>
 
-        <br style="clear: left;" />
+        #if ( $isSuperUser )
+            <div class="pure-u-1-3">
+                <h4>Admin</h4>
+                <div><a href="/legup/view_users">Users</a></div>
+            </div>
+        #end
+
     </div>
 
     <div class="footer">

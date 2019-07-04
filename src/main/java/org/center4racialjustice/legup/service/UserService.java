@@ -122,6 +122,15 @@ public class UserService {
         });
     }
 
+    public List<User> allUsers(){
+        return connectionPool.useConnection(connection -> {
+            Dao<User> userDao = DaoBuilders.USERS.buildDao(connection);
+            List<User> all = userDao.select();
+            Collections.sort(all);
+            return all;
+        });
+    }
+
     public List<Organization> findOrganizationsOfUser(User user) {
         if (user == null) {
             return Collections.emptyList();
