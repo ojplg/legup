@@ -62,6 +62,8 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
   * Allow organization names to be changed
   * Make sure submission of names handle spaces correctly
   * Error messages on user/organization creation
+* Super User
+  * Make an attribute on the USERS table
 * Write more help screens
 * Legislator Persistence
   * Perhaps check for and perform updates when changes to legislator data are found

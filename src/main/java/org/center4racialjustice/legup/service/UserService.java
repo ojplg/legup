@@ -9,8 +9,6 @@ import org.center4racialjustice.legup.domain.User;
 import org.center4racialjustice.legup.util.Lists;
 import org.hrorm.AssociationDao;
 import org.hrorm.Dao;
-import org.hrorm.Operator;
-import org.hrorm.Where;
 
 import java.util.Collections;
 import java.util.List;
@@ -144,12 +142,6 @@ public class UserService {
     public List<Organization> findOrganizationsOfUser(User user) {
         if (user == null) {
             return Collections.emptyList();
-        }
-        if( user.isSuperUser() ){
-            return connectionPool.useConnection(connection -> {
-                Dao<Organization> organizationDao = DaoBuilders.ORGANIZATIONS.buildDao(connection);
-                return organizationDao.select();
-            });
         }
         return connectionPool.useConnection(connection ->
         {

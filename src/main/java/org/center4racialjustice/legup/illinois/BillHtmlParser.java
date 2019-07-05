@@ -3,17 +3,23 @@ package org.center4racialjustice.legup.illinois;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.LegislationIdentity;
 import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -191,6 +197,40 @@ public class BillHtmlParser {
         }
 
         return sponsorNames;
+    }
 
+    private static final DateTimeFormatter BILL_EVENT_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
+
+    public List<BillEvent> getBillEvents(){
+        Elements tables = document.select("table")
+                .select("[width=600]")
+                .select("[cellspacing=0]")
+                .select("[cellpadding=2]")
+                .select("[border=1]");
+
+        Element table = tables.last();
+
+        Elements rows = table.select("tr").next();
+
+        List<BillEvent> events = new ArrayList<>();
+
+        for(Element row : rows){
+            Elements cells = row.select("td");
+            Element dateCell = cells.get(0);
+            String dateString = Parser.unescapeEntities(dateCell.text(), false);
+            LocalDate date = LocalDate.parse(dateString, BILL_EVENT_DATE_FORMAT);
+
+            Element chamberCell = cells.get(1);
+            String chamberString = Parser.unescapeEntities(chamberCell.text(), false);
+            Chamber chamber = Chamber.fromString(chamberString);
+
+            Element contentCell = cells.get(2);
+            String contentString = contentCell.text();
+
+            BillEvent billEvent = new BillEvent(date, chamber, contentString);
+            events.add(billEvent);
+        }
+
+        return events;
     }
 }

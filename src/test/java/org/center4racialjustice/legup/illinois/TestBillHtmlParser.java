@@ -1,6 +1,8 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.junit.Assert;
 import org.junit.Test;
@@ -89,6 +91,31 @@ public class TestBillHtmlParser {
         Assert.assertEquals("Iris Y. Martinez", sponsors.get(0));
         Assert.assertTrue(sponsors.contains("Daniel Biss"));
         Assert.assertEquals("Cristina Castro", sponsors.get(18));
+    }
+
+    @Test
+    public void testFindBillEvents(){
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_house_bill_2771.html");
+        BillHtmlParser parser = new BillHtmlParser(inputStream, HouseBill2771BaseUrl);
+
+        List<BillEvent> events = parser.getBillEvents();
+
+        Assert.assertEquals(137, events.size());
+
+        int uncategorizedCount = 0;
+
+        for(BillEvent event : events){
+            BillEventParser billEventParser = new BillEventParser();
+            BillActionType actionType = billEventParser.readActionType(event);
+
+            if( actionType == null ){
+                System.out.println("   " + event.getRawContents() );
+                uncategorizedCount++;
+            }
+
+        }
+
+        System.out.println("UNCATEGORIZED " + uncategorizedCount);
     }
 
     @Test
