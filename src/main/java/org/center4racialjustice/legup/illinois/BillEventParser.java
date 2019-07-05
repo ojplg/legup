@@ -10,7 +10,8 @@ public class BillEventParser implements BillEventInterpreter {
     public BillActionType readActionType(BillEvent billEvent) {
         String contents = billEvent.getRawContents();
 
-        if( contents.startsWith("Filed with the Clerk")){
+        if( contents.startsWith("Filed with the Clerk")
+                || contents.startsWith("Filed with Secretary ")){
             return BillActionType.CHIEF_SPONSOR;
         }
 
@@ -26,25 +27,38 @@ public class BillEventParser implements BillEventInterpreter {
             return BillActionType.COMMITTEE_ASSIGNMENT;
         }
 
+        if ( contents.startsWith("Postponed ") ){
+            return BillActionType.POSTPONED;
+        }
+
         if( contents.startsWith("Added Chief Co-Sponsor ")
-            || contents.startsWith("Added as Alternate Chief Co-Sponsor ")
-            || contents.startsWith("Chief Senate Sponsor ")
-            || contents.startsWith("Chief House Sponsor ")){
+                || contents.startsWith("Added as Chief Co-Sponsor ")
+                || contents.startsWith("Added as Alternate Chief Co-Sponsor ")
+                || contents.startsWith("Added Alternate Chief Co-Sponsor ")
+                || contents.startsWith("Chief Senate Sponsor ")
+                || contents.startsWith("Chief House Sponsor ")){
             return BillActionType.CHIEF_SPONSOR;
         }
 
         if ( contents.startsWith("Placed on Calendar ") ){
             return BillActionType.CALENDAR_SCHEDULING;
-        } 
+        }
 
         if( contents.startsWith("Added Co-Sponsor ")
-            || contents.startsWith("Added as Alternate Co-Sponsor ")){
+                || contents.startsWith("Added as Co-Sponsor ")
+                || contents.startsWith("Added Alternate Co-Sponsor ")
+                || contents.startsWith("Added as Alternate Co-Sponsor ")){
             return BillActionType.SPONSOR;
         }
 
         if( contents.contains("Amendment") ){
             return BillActionType.AMENDMENT;
         }
+
+        if( contents.contains("Deadline Established") ){
+            return BillActionType.DEADLINE_ESTABLISHED;
+        }
+
 
         return null;
     }

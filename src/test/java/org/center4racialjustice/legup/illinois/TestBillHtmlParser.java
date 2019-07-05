@@ -94,7 +94,7 @@ public class TestBillHtmlParser {
     }
 
     @Test
-    public void testFindBillEvents(){
+    public void testFindBillEvents_HouseBill2771(){
         InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_house_bill_2771.html");
         BillHtmlParser parser = new BillHtmlParser(inputStream, HouseBill2771BaseUrl);
 
@@ -117,6 +117,32 @@ public class TestBillHtmlParser {
 
         System.out.println("UNCATEGORIZED " + uncategorizedCount);
     }
+
+    @Test
+    public void testFindBillEvents_SenateBill889(){
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_senate_bill_889.html");
+        BillHtmlParser parser = new BillHtmlParser(inputStream, SenateBill889BaseUrl);
+
+        List<BillEvent> events = parser.getBillEvents();
+
+        Assert.assertEquals(59, events.size());
+
+        int uncategorizedCount = 0;
+
+        for(BillEvent event : events){
+            BillEventParser billEventParser = new BillEventParser();
+            BillActionType actionType = billEventParser.readActionType(event);
+
+            if( actionType == null ){
+                System.out.println("   " + event.getRawContents() );
+                uncategorizedCount++;
+            }
+
+        }
+
+        System.out.println("UNCATEGORIZED " + uncategorizedCount);
+    }
+
 
     @Test
     public void testHouseBill2771Parsing(){

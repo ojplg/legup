@@ -14,6 +14,8 @@ public class BillActionType {
     public static final String CommitteeAssignment = "Committee Assignment";
     public static final String Amendment = "Amendment";
     public static final String CalendarScheduling = "CalendarScheduling";
+    public static final String Postponed = "Postponed";
+    public static final String DeadlineEstablished = "Deadline Established";
 
     public final static BillActionType VOTE = new BillActionType(VoteCode);
     public final static BillActionType SPONSOR = new BillActionType(SponsorCode);
@@ -23,6 +25,8 @@ public class BillActionType {
     public final static BillActionType COMMITTEE_ASSIGNMENT = new BillActionType(CommitteeAssignment);
     public final static BillActionType AMENDMENT = new BillActionType(Amendment);
     public final static BillActionType CALENDAR_SCHEDULING = new BillActionType(CalendarScheduling);
+    public final static BillActionType POSTPONED = new BillActionType(Postponed);
+    public final static BillActionType DEADLINE_ESTABLISHED = new BillActionType(DeadlineEstablished);
 
     public final static BillActionTypeConverter CONVERTER = new BillActionTypeConverter();
 
