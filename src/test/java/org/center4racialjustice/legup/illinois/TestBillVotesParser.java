@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Test;
 import org.junit.Assert;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class TestBillVotesParser {
     private final String houseBill2771FileName =  "/pdfs/10000HB2771_04272017_028000T.pdf";
     private final String houseBill4324FileName =  "/pdfs/10000HB4324_04272018_065000T.pdf";
     private final String senateBill1781FileName = "/pdfs/10000SB1781_05302017_032000T.pdf";
+
+    private final String house101Bill3704SenateCommitteeFileName = "/pdfs/10100HB3704_25968.pdf";
 
     private final String senateBillOne = "/pdfs/10100SB0001_02142019_003000T.pdf";
 
@@ -108,6 +111,7 @@ public class TestBillVotesParser {
         Assert.assertEquals("Unmatched expected yeas", expected.getExpectedYeas(), tested.getExpectedYeas());
         Assert.assertEquals("Unmatched expected nays", expected.getExpectedNays(), tested.getExpectedNays());
         Assert.assertEquals("Unmatched expected present", expected.getExpectedPresent(), tested.getExpectedPresent());
+        tested.checkVoteCounts();
     }
 
     @Test
@@ -186,7 +190,8 @@ public class TestBillVotesParser {
 
         BillVotesParser parser = new BillVotesParser(loadNameParser());
 
-        List<VoteRecord> records = parser.parseVoteRecordLine(input);
+        List<Integer> dividers = BillVotesParser.findPossibleDividingPoints(input);
+        List<VoteRecord> records = parser.parseVoteRecordLine(input, dividers);
         VoteRecord[] expectedRecords = new VoteRecord[]{expected1, expected2};
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
@@ -199,7 +204,9 @@ public class TestBillVotesParser {
         VoteRecord v1 = new VoteRecord(chris, VoteSide.Yea);
         VoteRecord v2 = new VoteRecord(jim, VoteSide.Yea);
         BillVotesParser parser = new BillVotesParser(loadNameParser());
-        List<VoteRecord> records = parser.parseVoteRecordLine(input);
+        List<Integer> dividers = BillVotesParser.findPossibleDividingPoints(input);
+        Assert.assertEquals(Arrays.asList(0, 14), dividers);
+        List<VoteRecord> records = parser.parseVoteRecordLine(input, dividers);
         VoteRecord[] expectedRecords = new VoteRecord[] { v1, v2 };
         Assert.assertArrayEquals(expectedRecords, records.toArray());
     }
@@ -219,8 +226,46 @@ public class TestBillVotesParser {
                 new VoteRecord(vanpelt, VoteSide.Yea)
         };
         BillVotesParser parser = new BillVotesParser(loadNameParser());
-        List<VoteRecord> records = parser.parseVoteRecordLine(input);
+        List<Integer> dividers = BillVotesParser.findPossibleDividingPoints(input);
+        List<VoteRecord> records = parser.parseVoteRecordLine(input, dividers);
         Assert.assertArrayEquals(expectedRecords, records.toArray());
+    }
+
+    @Test
+    public void parse101House3704Bill_Committee(){
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser());
+        billVotes.checkVoteCounts();
+    }
+
+
+    @Test
+    public void testFindPossibleDividingPoints(){
+        //              012345678901234567890123456789012345678901234567890123456789
+        String input = "Y  Clayborne       Y  Landek     P  Oberweis     Y  Van Pelt";
+        List<Integer> calculatedDividingPoints = BillVotesParser.findPossibleDividingPoints(input);
+        List<Integer> expectedDividingPoints = Arrays.asList(0, 19, 33, 49);
+        Assert.assertEquals(expectedDividingPoints, calculatedDividingPoints);
+    }
+
+
+    @Test
+    public void testFindPossibleDividingPoints_MultiLine(){
+        //              012345678901234567890123456789012345678901234567890123456789
+        String input1 = "Y  Clayborne       Y  Landek     P  Oberweis     Y  Van Pelt";
+        String input2 = "Y  Clayborne N     Y  Landek     P  Oberweis     Y  Van Pelt";
+        String input3 = "Y  Clayborne       Y  Landek A   P  Oberweis";
+        List<Integer> expectedDividingPoints = Arrays.asList(0, 19, 33, 49);
+
+        List<Integer> calculatedDividingPoints = BillVotesParser.findVoteLineDividingPoints(
+                Arrays.asList(input1, input2, input3));
+        Assert.assertEquals(expectedDividingPoints, calculatedDividingPoints);
+    }
+
+    @Test
+    public void testDivideVoteLineIntoChunks(){
+        String line = "Y  Ammons         Y  Didech          Y  Martwick      N  Sommer";
+        List<String> chunks = BillVotesParser.splitVotingLine(line);
+        Assert.assertEquals(4, chunks.size());
     }
 
 }

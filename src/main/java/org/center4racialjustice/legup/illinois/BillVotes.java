@@ -24,6 +24,8 @@ public class BillVotes {
     private List<Name> yeas = new ArrayList<>();
     private List<Name> presents = new ArrayList<>();
     private List<Name> notVotings = new ArrayList<>();
+    private List<Name> excuseds = new ArrayList<>();
+    private List<Name> absents = new ArrayList<>();
 
     public BillVotes(){
         this.content = "";
@@ -41,6 +43,12 @@ public class BillVotes {
         return (long) content.hashCode();
     }
 
+    public void addVoteRecords(List<VoteRecord> voteRecords){
+        for(VoteRecord vr : voteRecords){
+            addVoteRecord(vr);
+        }
+    }
+
     public void addVoteRecord(VoteRecord voteRecord){
         switch (voteRecord.getVote().getCode()){
             case VoteSide.PresentCode :
@@ -55,8 +63,14 @@ public class BillVotes {
             case VoteSide.NotVotingCode :
                 notVotings.add(voteRecord.getName());
                 break;
+            case VoteSide.AbsentCode :
+                absents.add(voteRecord.getName());
+                break;
+            case VoteSide.ExcusedCode :
+                excuseds.add(voteRecord.getName());
+                break;
             default :
-                throw new RuntimeException("Unrecognized vote type");
+                throw new RuntimeException("Unrecognized vote type in " + voteRecord);
         }
     }
 

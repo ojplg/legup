@@ -9,14 +9,21 @@ public final class VoteSide {
     public static final String NayCode = "N";
     public static final String NotVotingCode = "NV";
     public static final String PresentCode = "P";
+    public static final String ExcusedCode = "E";
+    public static final String AbsentCode = "A";
 
     public static final VoteSide Yea = new VoteSide(YeaCode);
     public static final VoteSide Nay = new VoteSide(NayCode);
     public static final VoteSide NotVoting = new VoteSide(NotVotingCode);
     public static final VoteSide Present = new VoteSide(PresentCode);
+    public static final VoteSide Excused = new VoteSide(ExcusedCode);
+    public static final VoteSide Absent = new VoteSide(AbsentCode);
 
     public static final List<VoteSide> AllSides =
-            Arrays.asList(Yea, Nay, Present, NotVoting);
+            Arrays.asList(Yea, Nay, Present, NotVoting, Excused, Absent);
+
+    public static final List<String> AllCodes =
+            Arrays.asList(YeaCode, NayCode, PresentCode, NotVotingCode, ExcusedCode, AbsentCode);
 
     public static final VoteSide fromCode(String code){
         switch (code){
@@ -24,9 +31,9 @@ public final class VoteSide {
             case "N" : return Nay;
             case "NV" : return NotVoting;
             case "P" : return Present;
-            case "E" : return NotVoting;
-            case "A" : return NotVoting;
-            default : throw new RuntimeException("No such code " + code);
+            case "E" : return Excused;
+            case "A" : return Absent;
+            default : throw new RuntimeException("No such code '" + code + "'");
         }
     }
 
@@ -66,6 +73,8 @@ public final class VoteSide {
             case "N" : return "Nay";
             case "NV" : return "Not Voting";
             case "P" : return "Present";
+            case "E" : return "Excused";
+            case "A" : return "Absent";
             default : throw new RuntimeException("No such code " + code);
         }
     }

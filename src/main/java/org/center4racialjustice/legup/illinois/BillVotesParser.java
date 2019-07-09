@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.util.Lists;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,27 +130,111 @@ public class BillVotesParser {
         }
     }
 
-    public List<VoteRecord> parseVoteRecordLine(String input){
-        String remainder = input.trim();
-        List<VoteRecord> records = new ArrayList<>();
-        while (remainder.length() > 0){
-            int firstSpace = remainder.indexOf(' ');
-            String prefix = remainder.substring(0, firstSpace);
-            VoteSide vote = VoteSide.fromCode(prefix);
-            String end = remainder.substring(firstSpace);
-            int divider = findNextPossibleRecordIndex(end);
-            if( divider == -1 ){
-                Name name = nameParser.fromLastNameFirstString(end);
-                VoteRecord record = new VoteRecord(name, vote);
-                remainder = "";
-                records.add(record);
-            } else {
-                String nameString = end.substring(0, divider);
-                remainder = end.substring(divider);
-                Name name = nameParser.fromLastNameFirstString(nameString);
-                VoteRecord record = new VoteRecord(name, vote);
-                records.add(record);
+    public static List<Integer> findPossibleDividingPoints(String voteLine){
+        String[] markers = { "N ", "Y ", "P ", "NV ", "E ", "A "};
+        List<Integer> points = new ArrayList<>();
+        int point = 0;
+        while( point < voteLine.length() ){
+            for(String marker : markers) {
+                if( voteLine.startsWith(marker, point) ){
+                    points.add(point);
+                }
             }
+            point++;
+        }
+        return points;
+    }
+
+    public static List<Integer> findVoteLineDividingPoints(List<String> voteLines){
+        if( voteLines.size() == 0 ){
+            return Collections.emptyList();
+        }
+        List<Integer> intersection = null;
+        for( int idx=0 ; idx<voteLines.size() - 1 ; idx++ ){
+            System.out.println("vote line " + voteLines.get(idx));
+            List<Integer> possibleDividingPoints = findPossibleDividingPoints(voteLines.get(idx));
+            //System.out.println("        Possible dividers " + possibleDividingPoints);
+            if( idx == 0 ) {
+                intersection = possibleDividingPoints;
+            } else {
+                intersection.retainAll(possibleDividingPoints);
+            }
+        }
+        return intersection;
+    }
+
+    private VoteRecord parseVoteRecordChunk(String chunk){
+        int spaceIndex = chunk.indexOf(' ');
+        String prefix = chunk.substring(0, spaceIndex);
+        VoteSide vote = VoteSide.fromCode(prefix);
+        String nameString = chunk.substring(spaceIndex);
+        Name name = nameParser.fromLastNameFirstString(nameString);
+        VoteRecord voteRecord = new VoteRecord(name, vote);
+        return voteRecord;
+    }
+
+    private static boolean isPossibleSplitPoint(String input, int point){
+        if( point > input.length() ){
+            return false;
+        }
+        for(String marker : VoteSide.AllCodes){
+            if( input.startsWith(marker + " ", point) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<String> splitVotingLine(String input){
+        List<String> chunks = new ArrayList<>();
+        int recordStart = 0;
+        for(int idx=0; idx<input.length(); idx++){
+            if( isPossibleSplitPoint(input, idx) ){
+                System.out.println("POSSIBLE SPLIT POINT AT " + idx + " IN " + input);
+                // check for names ending with an initial that matches a vote code
+                if( ! isPossibleSplitPoint(input, idx+2) ){
+                    System.out.println(" Looking to chunk " + recordStart + ", " + idx);
+                    String chunk = input.substring(recordStart, idx);
+                    if( chunk.length() > 0 ){
+                        chunks.add(chunk);
+                    }
+                    recordStart = idx;
+                }
+            }
+        }
+        chunks.add(input.substring(recordStart));
+        return chunks;
+    }
+
+    public List<VoteRecord> parseVoteRecordLine(String input, List<Integer> dividers){
+        List<VoteRecord> records = new ArrayList<>();
+        List<String> chunks = new ArrayList<>();
+        if( dividers.size() == 0 ){
+            chunks.add(input);
+        } else {
+            int startPoint = dividers.get(0);
+            int endPoint;
+            for (int idx = 1; idx < dividers.size(); idx++) {
+                endPoint = dividers.get(idx);
+                if( endPoint > input.length()){
+                    break;
+                }
+                chunks.add(input.substring(startPoint, endPoint));
+                startPoint = endPoint;
+            }
+            String remainder = input.substring(startPoint).trim();
+            if( remainder.length() > 0 ) {
+                chunks.add(remainder);
+            }
+        }
+        for(String chunk : chunks){
+            int spaceIndex = chunk.indexOf(' ');
+            String prefix = chunk.substring(0, spaceIndex);
+            VoteSide vote = VoteSide.fromCode(prefix);
+            String nameString = chunk.substring(spaceIndex);
+            Name name = nameParser.fromLastNameFirstString(nameString);
+            VoteRecord voteRecord = new VoteRecord(name, vote);
+            records.add(voteRecord);
         }
         return records;
     }
@@ -188,6 +274,9 @@ public class BillVotesParser {
     public BillVotes parseFileContents(String url, String content){
         String[] lines = content.split("\n");
         BillVotes bv = new BillVotes(url, content);
+
+        List<String> voteLines = new ArrayList<>();
+
         for(int idx=0; idx<lines.length; idx++){
             String line = lines[idx];
 
@@ -272,15 +361,16 @@ public class BillVotesParser {
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
             if( voteLineMatcher.matches() ){
-                List<VoteRecord> records = parseVoteRecordLine(line);
-                for(VoteRecord record : records ){
-                    bv.addVoteRecord(record);
-                }
+                System.out.println("VOTE LINE: " + line);
+                List<String> chunks = splitVotingLine(line);
+                System.out.println("  CHUNKS:  " + chunks);
+                List<VoteRecord> records = Lists.map(chunks, this::parseVoteRecordChunk);
+                System.out.println("  RECORDS:  " + records);
+                bv.addVoteRecords(records);
             }
         }
 
         return bv;
     }
-
 
 }
