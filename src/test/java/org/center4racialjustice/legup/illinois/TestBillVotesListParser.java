@@ -39,4 +39,19 @@ public class TestBillVotesListParser {
         Assert.assertNotNull(votePdfsUrls);
         Assert.assertTrue(votePdfsUrls.isEmpty());
     }
+
+    @Test
+    public void findBillVotesUrls_House_2771_Committee() {
+
+        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_house_bill_2771_votes_list.html");
+        String votesPageUrl = "http://www.ilga.gov/legislation/votehistory.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
+
+        BillVotesListParser billVotesListParser = new BillVotesListParser(inputStream, votesPageUrl);
+
+        Map<String, String> votePdfsUrls = billVotesListParser.grabCommitteeVotesUrls();
+
+        Assert.assertEquals(4, votePdfsUrls.size());
+        Assert.assertTrue(votePdfsUrls.containsValue("http://www.ilga.gov/legislation/votehistory/100/senate/committeevotes/10000HB2771SFA2_19093.pdf"));
+    }
+
 }

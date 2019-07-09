@@ -235,6 +235,7 @@ public class TestBillVotesParser {
     public void parse101House3704Bill_Committee(){
         BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser());
         billVotes.checkVoteCounts();
+        Assert.assertEquals(10, billVotes.getYeas().size());
     }
 
 

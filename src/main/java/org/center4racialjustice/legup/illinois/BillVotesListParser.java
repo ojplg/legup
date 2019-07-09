@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,11 +43,19 @@ public class BillVotesListParser {
         }
     }
 
-    public Map<String, String> grabVotesUrls(){
+    public Map<String, String> grabCommitteeVotesUrls(){
+        Elements tables = document.select("table");
+        Element voteLinkTable = tables.get(7);
+        return parseVotesTable(voteLinkTable);
+    }
 
+    public Map<String, String> grabVotesUrls(){
         Elements tables = document.select("table");
         Element voteLinkTable = tables.get(6);
+        return parseVotesTable(voteLinkTable);
+    }
 
+    private Map<String, String> parseVotesTable(Element voteLinkTable){
         Elements rows = voteLinkTable.select("tr");
 
         Map<String, String> urls = new HashMap<>();
@@ -68,6 +77,7 @@ public class BillVotesListParser {
         }
 
         return urls;
+
     }
 
 }
