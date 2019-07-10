@@ -59,6 +59,10 @@ public final class Name {
     }
 
     public boolean matches(Name that){
+        if( this.equals(that) ){
+            return true;
+        }
+
         if( that == null || this.lastName == null ){
             return false;
         }

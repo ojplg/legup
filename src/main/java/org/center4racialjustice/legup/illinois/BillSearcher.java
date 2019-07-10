@@ -1,14 +1,12 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.center4racialjustice.legup.domain.Chamber;
-
 import java.util.Map;
 
 public class BillSearcher {
 
     public Map<String, String> searchForVotesUrls(String votesPageUrl){
         BillVotesListParser billVotesListParser = new BillVotesListParser(votesPageUrl);
-        return billVotesListParser.grabVotesUrls();
+        return billVotesListParser.grabAllVotesUrls();
     }
 
     public String convertToVotesPage(String billHomePage){

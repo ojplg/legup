@@ -6,8 +6,10 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BillSearchResults {
@@ -23,23 +25,20 @@ public class BillSearchResults {
     private final SponsorNames sponsorNames;
     private final long checksum;
     private final String url;
-    private final BillVotesResults houseVoteResults;
-    private final BillVotesResults senateVoteResults;
+    private final List<BillVotesResults> votesResults;
 
     private final BillActionLoads billActionLoads;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              List<Legislator> legislators,
-                             BillVotesResults houseVoteResults,
-                             BillVotesResults senateVoteResults,
+                             List<BillVotesResults> votesResults,
                              Tuple<Bill,List<BillActionLoad>> savedBillInformation){
         this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislators);
         this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
-        this.houseVoteResults = houseVoteResults;
-        this.senateVoteResults = senateVoteResults;
+        this.votesResults = votesResults;
         this.billActionLoads = new BillActionLoads(savedBillInformation.getSecond());
         this.savedBill = savedBillInformation.getFirst();
     }
@@ -57,38 +56,42 @@ public class BillSearchResults {
         }
     }
 
-    public MatchStatus getHouseVotesLoadStatus(){
-        BillActionLoad houseVotesLoad = billActionLoads.getHouseVotesLoad();
-        if ( houseVotesLoad == null ){
-            return MatchStatus.NoPriorValues;
-        } else if ( houseVotesLoad.matches(houseVoteResults.getUrl(), houseVoteResults.getChecksum()) ){
-            return MatchStatus.MatchedValues;
+    public List<String> generateSearchedVoteLoadKeys(){
+        return Lists.map(votesResults, r -> r.generateKey(parsedBill));
+    }
+
+    public List<String> getPriorVoteLoadKeys(){
+        return billActionLoads.getVoteLoadKeys();
+    }
+
+    public List<BillActionLoad> getPriorVoteLoads(){
+        return billActionLoads.getVoteLoads();
+    }
+
+    public BillVotesResults getSearchedResults(String key){
+        return Lists.findfirst(votesResults, res -> res.generateKey(parsedBill).equals(key));
+    }
+
+    public MatchStatus getVoteMatchStatus(String key){
+        if( getPriorVoteLoadKeys().contains(key) ){
+            BillActionLoad load = billActionLoads.getByKey(key);
+            BillVotesResults results = getSearchedResults(key);
+            if ( load.matches(results.getUrl(), results.getChecksum()) ){
+                return MatchStatus.MatchedValues;
+            } else {
+                return MatchStatus.UnmatchedValues;
+            }
         } else {
-            return MatchStatus.UnmatchedValues;
+            return MatchStatus.NoPriorValues;
         }
     }
 
-    public MatchStatus getSenateVotesLoadStatus(){
-        BillActionLoad senateVotesLoad = billActionLoads.getSenateVotesLoad();
-        if ( senateVotesLoad == null ){
-            return MatchStatus.NoPriorValues;
-        } else if ( senateVotesLoad.matches(senateVoteResults.getUrl(), senateVoteResults.getChecksum()) ){
-            return MatchStatus.MatchedValues;
-        } else {
-            return MatchStatus.UnmatchedValues;
-        }
+    public List<MatchStatus> allVoteMatchStatuses(){
+        return Lists.map(generateSearchedVoteLoadKeys(), this::getVoteMatchStatus);
     }
 
     public BillActionLoad getBillHtmlLoad(){
         return billActionLoads.getBillHtmlLoad();
-    }
-
-    public BillActionLoad getHouseVotesLoad(){
-        return billActionLoads.getHouseVotesLoad();
-    }
-
-    public BillActionLoad getSenateVotesLoad(){
-        return billActionLoads.getSenateVotesLoad();
     }
 
     public Bill getParsedBill(){
@@ -116,48 +119,26 @@ public class BillSearchResults {
         return url;
     }
 
-    public BillActionLoad createHouseBillActionLoad(Bill bill){
-        return BillActionLoad.create(bill, houseVoteResults.getUrl(), houseVoteResults.getChecksum());
+    public BillActionLoad createVoteBillActionLoad(Bill bill, String key){
+        BillVotesResults results = getSearchedResults(key);
+        return BillActionLoad.create(bill, results.getUrl(), results.getChecksum());
     }
 
-    public BillActionLoad createSenateBillActionLoad(Bill bill){
-        return BillActionLoad.create(bill, senateVoteResults.getUrl(), senateVoteResults.getChecksum());
+    public List<CollatedVote> getCollatedVotes(String key){
+        BillVotesResults results = getSearchedResults(key);
+        return results.getCollatedVotes();
     }
 
-    public BillActionLoad updateHouseBillActionLoad(){
-        BillActionLoad existingLoad = getHouseVotesLoad();
-        existingLoad.setUrl(houseVoteResults.getUrl());
-        existingLoad.setCheckSum(houseVoteResults.getChecksum());
-        return existingLoad;
-    }
-
-    public BillActionLoad updateSenateBillActionLoad(){
-        BillActionLoad existingLoad = getSenateVotesLoad();
-        existingLoad.setUrl(senateVoteResults.getUrl());
-        existingLoad.setCheckSum(senateVoteResults.getChecksum());
-        return existingLoad;
-    }
-
-
-    public List<CollatedVote> getHouseVotes() {
-        return houseVoteResults.getCollatedVotes();
-    }
-
-    public List<Name> getUncollatedHouseVotes() {
-        return houseVoteResults.getUncollatedNames();
-    }
-
-    public List<CollatedVote> getSenateVotes() {
-        return senateVoteResults.getCollatedVotes();
-    }
-
-    public List<Name> getUncollatedSenateVotes() {
-        return senateVoteResults.getUncollatedNames();
+    public List<Name> getUncollatedVotes(){
+        List<Name> uncollatedVotes = new ArrayList<>();
+        for(BillVotesResults results : votesResults){
+            uncollatedVotes.addAll(results.getUncollatedNames());
+        }
+        return uncollatedVotes;
     }
 
     public boolean hasDataToSave(){
-        return ! (MatchStatus.MatchedValues.equals(getBillHtmlLoadStatus())
-                    && MatchStatus.MatchedValues.equals(getHouseVotesLoadStatus())
-                    && MatchStatus.MatchedValues.equals(getSenateVotesLoadStatus()));
+        return getBillHtmlLoadStatus() != MatchStatus.MatchedValues
+                || (! allVoteMatchStatuses().contains(MatchStatus.MatchedValues) );
     }
 }

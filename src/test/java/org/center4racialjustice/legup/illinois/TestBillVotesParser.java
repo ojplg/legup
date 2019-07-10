@@ -23,10 +23,9 @@ public class TestBillVotesParser {
     private final String houseBill2771FileName =  "/pdfs/10000HB2771_04272017_028000T.pdf";
     private final String houseBill4324FileName =  "/pdfs/10000HB4324_04272018_065000T.pdf";
     private final String senateBill1781FileName = "/pdfs/10000SB1781_05302017_032000T.pdf";
-
     private final String house101Bill3704SenateCommitteeFileName = "/pdfs/10100HB3704_25968.pdf";
-
     private final String senateBillOne = "/pdfs/10100SB0001_02142019_003000T.pdf";
+    private final String house101Bill2045CommitteeFileName = "/pdfs/10100HB2045_23584.pdf";
 
     private static NameParser loadNameParser(){
         NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
@@ -238,6 +237,13 @@ public class TestBillVotesParser {
         Assert.assertEquals(10, billVotes.getYeas().size());
     }
 
+    @Test
+    public void parse101House2045Bill_Committee(){
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2045CommitteeFileName, loadNameParser());
+        billVotes.checkVoteCounts();
+        Assert.assertEquals(6, billVotes.getYeas().size());
+        Assert.assertEquals(Chamber.House, billVotes.getVotingChamber());
+    }
 
     @Test
     public void testFindPossibleDividingPoints(){

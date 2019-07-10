@@ -10,9 +10,11 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.domain.VoteType;
 import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.Tuple;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,46 +44,38 @@ public class BillSearcherParser {
 
         Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
 
-        List<Legislator> legislators = connectionPool.useConnection(connection -> {
-                    LegislatorDao legislatorDao = new LegislatorDao(connection);
-                    return legislatorDao.readBySession(billHtmlParser.getSession());
-                });
+        List<Legislator> legislators = legislatorsBySession(billHtmlParser.getSession());
 
-        BillVotesResults houseVoteResults = findVotes(votesUrlsMap, legislators, Chamber.House);
-        BillVotesResults senateVoteResults = findVotes(votesUrlsMap, legislators, Chamber.Senate);
+        List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators);
 
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         Tuple<Bill,List<BillActionLoad>> savedBillInfo = billPersistence.checkForPriorLoads(billHtmlParser.getBill());
         log.info("Found prior loads for: " + legislationType + "." + billNumber + ": " + savedBillInfo);
 
-        return new BillSearchResults(billHtmlParser, legislators, houseVoteResults, senateVoteResults, savedBillInfo);
+        return new BillSearchResults(billHtmlParser, legislators, votesResults, savedBillInfo);
 
     }
 
-    private BillVotesResults findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, Chamber chamber) {
-        String votePdfUrl = null;
-        for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet()){
-            if( urlPair.getKey().contains("Third Reading")
-                    && urlPair.getValue().contains(chamber.getName().toLowerCase())){
-                votePdfUrl = urlPair.getValue();
-                break;
-            }
-            // FIXME
-            // This is a one-off hack to support the senate joint resolution for
-            // the constitutional amendment
-            if( urlPair.getKey().contains("SJRCA0001 - Amendments - ")
-                    && urlPair.getValue().contains(chamber.getName().toLowerCase())){
-                votePdfUrl = urlPair.getValue();
-                break;
-            }
+    private List<Legislator> legislatorsBySession(long sessionNumber){
+        return connectionPool.useConnection(connection -> {
+            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            return legislatorDao.readBySession(sessionNumber);
+        });
+    }
 
+    private List<BillVotesResults> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators) {
+        List<BillVotesResults> votesList = new ArrayList<>();
+        for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet() ){
+            BillVotesResults results = findVoteResults(urlPair.getKey(), urlPair.getValue(), legislators);
+            votesList.add(results);
         }
-        if( votePdfUrl == null ){
-            log.info("No votes found in chamber " + chamber);
-            return BillVotesResults.NO_RESULTS;
-        }
+        return votesList;
+    }
 
-        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(votePdfUrl, nameParser);
+    private BillVotesResults findVoteResults(String linkText, String linkUrl, List<Legislator> legislators){
+        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(linkUrl, nameParser);
+        Chamber votingChamber = billVotes.getVotingChamber();
+        VoteType voteType = new VoteType(linkText);
 
         VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
         collator.collate();
@@ -89,8 +83,8 @@ public class BillSearcherParser {
         List<CollatedVote> collatedVotes = collator.getAllCollatedVotes();
         List<Name> uncollatedVotes = collator.getUncollated();
 
-        log.info("Chamber " + chamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
+        log.info("Chamber " + votingChamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
 
-        return new BillVotesResults(collatedVotes, uncollatedVotes, votePdfUrl, billVotes.getChecksum());
+        return new BillVotesResults(collatedVotes, uncollatedVotes, linkUrl, billVotes.getChecksum(), votingChamber, voteType);
     }
 }

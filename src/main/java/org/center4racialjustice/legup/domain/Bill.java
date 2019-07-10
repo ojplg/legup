@@ -27,6 +27,10 @@ public class Bill implements Comparable<Bill> {
         return (int) this.number - (int) o.number;
     }
 
+    public static String formKey(long session, Chamber chamber, long number){
+        return session + "." + chamber + "." + number;
+    }
+
     public static Tuple<List<Bill>, List<Bill>> divideAndOrder(List<Bill> bills){
         Tuple<List<Bill>, List<Bill>> dividedBills =
                 Lists.divide(bills, b -> b.getChamber().equals(Chamber.House));
@@ -52,5 +56,9 @@ public class Bill implements Comparable<Bill> {
         this.chamber = legislationIdentity.getChamber();
         this.legislationSubType = legislationIdentity.getLegislationSubType();
         this.number = legislationIdentity.getNumber();
+    }
+
+    public String getKey(){
+        return formKey(this.session, this.chamber, this.number);
     }
 }

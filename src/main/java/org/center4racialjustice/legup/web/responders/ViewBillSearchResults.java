@@ -63,17 +63,17 @@ public class ViewBillSearchResults implements Responder {
 
         response.putVelocityData("billSearchResults", billSearchResults);
         response.putVelocityData("bill", billSearchResults.getParsedBill());
+        response.putVelocityData("priorVoteLoads", billSearchResults.getPriorVoteLoads());
 
-        boolean hasUncollatedVotes = billSearchResults.getUncollatedHouseVotes().size() > 0
-                || billSearchResults.getUncollatedSenateVotes().size() > 0;
-        response.putVelocityData("hasUncollatedVotes", hasUncollatedVotes);
-        response.putVelocityData("uncollatedHouseVotes", billSearchResults.getUncollatedHouseVotes());
-        response.putVelocityData("uncollatedSenateVotes", billSearchResults.getUncollatedSenateVotes());
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
         response.putVelocityData("uncollatedSponsors", sponsorNames.getUncollated());
         response.putVelocityData("hasUncollatedSponsors", sponsorNames.getUncollated().size() > 0);
+
+        response.putVelocityData("uncollatedVotes", billSearchResults.getUncollatedVotes());
+        response.putVelocityData("hasUncollatedVotes", billSearchResults.getUncollatedVotes().size() > 0);
+
 
         response.putVelocityData("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
         response.putVelocityData("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
@@ -81,8 +81,7 @@ public class ViewBillSearchResults implements Responder {
         response.putVelocityData("houseSponsorCount", sponsorNames.getHouseSponsors().size());
         response.putVelocityData("senateSponsorCount", sponsorNames.getSenateSponsors().size());
 
-        response.putVelocityData("houseVoteCount", billSearchResults.getHouseVotes().size());
-        response.putVelocityData("senateVoteCount", billSearchResults.getSenateVotes().size());
+        response.putVelocityData("voteLoadKeys", billSearchResults.generateSearchedVoteLoadKeys());
 
         response.putVelocityData("DateTimeFormatter", BillActionLoad.Formatter);
 

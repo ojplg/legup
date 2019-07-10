@@ -97,6 +97,7 @@ public class BillVotesParser {
         }
     }
 
+    private static Pattern committeeChamberPattern = Pattern.compile("(HOUSE|SENATE) COMMITTEE ROLL CALL");
     private static Pattern billAssemblyAndNumberPattern = Pattern.compile("(Senate|House) Bill No. (\\d+) *");
     private static Pattern alternateBillAssemblyAndNumberPattern = Pattern.compile("(HOUSE|SENATE) BILL (\\d+) *");
     private static Pattern summaryPattern1 =
@@ -190,10 +191,8 @@ public class BillVotesParser {
         int recordStart = 0;
         for(int idx=0; idx<input.length(); idx++){
             if( isPossibleSplitPoint(input, idx) ){
-                System.out.println("POSSIBLE SPLIT POINT AT " + idx + " IN " + input);
                 // check for names ending with an initial that matches a vote code
                 if( ! isPossibleSplitPoint(input, idx+2) ){
-                    System.out.println(" Looking to chunk " + recordStart + ", " + idx);
                     String chunk = input.substring(recordStart, idx);
                     if( chunk.length() > 0 ){
                         chunks.add(chunk);
@@ -358,6 +357,12 @@ public class BillVotesParser {
                 continue;
             }
 
+            Matcher committeeChamberMatcher = committeeChamberPattern.matcher(line);
+            if( committeeChamberMatcher.matches()){
+                String assemblyString = committeeChamberMatcher.group(1);
+                Chamber chamber = Chamber.fromString(assemblyString);
+                bv.setVotingChamber(chamber);
+            }
 
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
             if( voteLineMatcher.matches() ){

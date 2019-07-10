@@ -24,6 +24,7 @@ import org.center4racialjustice.legup.util.Tuple;
 
 import java.sql.Connection;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -90,35 +91,50 @@ public class BillPersistence {
             }
 
             int houseVotesSaved = 0;
-            BillActionLoad houseLoad = billSearchResults.getHouseVotesLoad();
-            if( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ) {
-                houseLoad = billSearchResults.createHouseBillActionLoad(bill);
-                billActionLoadDao.insert(houseLoad);
-                houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
-            } else if ( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
-                        || forceSave ){
-                houseLoad = billSearchResults.updateHouseBillActionLoad();
-                billActionLoadDao.update(houseLoad);
-                houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
-            }
-            log.info("Saved " + houseVotesSaved + " house votes");
+//            BillActionLoad houseLoad = billSearchResults.getHouseVotesLoad();
+//            if( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ) {
+//                houseLoad = billSearchResults.createHouseBillActionLoad(bill);
+//                billActionLoadDao.insert(houseLoad);
+//                houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
+//            } else if ( billSearchResults.getHouseVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
+//                        || forceSave ){
+//                houseLoad = billSearchResults.updateHouseBillActionLoad();
+//                billActionLoadDao.update(houseLoad);
+//                houseVotesSaved = saveVotes(connection, houseLoad, billSearchResults.getHouseVotes());
+//            }
+//            log.info("Saved " + houseVotesSaved + " house votes");
 
             int senateVotesSaved = 0;
-            BillActionLoad senateLoad = billSearchResults.getSenateVotesLoad();
+//            BillActionLoad senateLoad = billSearchResults.getSenateVotesLoad();
+//
+//            if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ) {
+//                senateLoad = billSearchResults.createSenateBillActionLoad(bill);
+//                billActionLoadDao.insert(senateLoad);
+//                senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+//            } else if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
+//                        || forceSave ){
+//               senateLoad = billSearchResults.updateSenateBillActionLoad();
+//               billActionLoadDao.update(senateLoad);
+//               senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+//            }
+//            log.info("Saved " + senateVotesSaved + " senate votes");
 
-            if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ) {
-                senateLoad = billSearchResults.createSenateBillActionLoad(bill);
-                billActionLoadDao.insert(senateLoad);
-                senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
-            } else if ( billSearchResults.getSenateVotesLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
-                        || forceSave ){
-               senateLoad = billSearchResults.updateSenateBillActionLoad();
-               billActionLoadDao.update(senateLoad);
-               senateVotesSaved = saveVotes(connection, senateLoad, billSearchResults.getSenateVotes());
+            List<BillActionLoad> loads = new ArrayList<>();
+            loads.add(billActionLoad);
+            for(String key : billSearchResults.generateSearchedVoteLoadKeys()){
+                BillSearchResults.MatchStatus matchStatus = billSearchResults.getVoteMatchStatus(key);
+                if( matchStatus == BillSearchResults.MatchStatus.NoPriorValues){
+                    BillActionLoad load = billSearchResults.createVoteBillActionLoad(bill, key);
+                    List<CollatedVote> votes = billSearchResults.getCollatedVotes(key);
+                    billActionLoadDao.insert(load);
+                    saveVotes(connection, load, votes);
+                } else if ( matchStatus == BillSearchResults.MatchStatus.UnmatchedValues || forceSave ){
+                    log.warn("Need to resave: " + key);
+                }
             }
-            log.info("Saved " + senateVotesSaved + " senate votes");
 
-            BillActionLoads billActionLoads = new BillActionLoads(billActionLoad, houseLoad, senateLoad);
+            BillActionLoads billActionLoads = new BillActionLoads(loads);
+            // TODO: counts are all goofed up
             return new BillSaveResults(bill, houseVotesSaved, senateVotesSaved, sponsorsSaved, billActionLoads);
         });
     }

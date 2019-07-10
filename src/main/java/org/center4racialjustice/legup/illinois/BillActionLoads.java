@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class BillActionLoads {
 
@@ -22,22 +21,19 @@ public class BillActionLoads {
     }
 
     public BillActionLoad getBillHtmlLoad(){
-        return findMatchingUrl( url -> url.contains("http://www.ilga.gov/legislation/BillStatus.asp"));
+        return Lists.findfirst(loads, BillActionLoad::isBillLoad);
     }
 
-    public BillActionLoad getHouseVotesLoad(){
-        return findMatchingUrl( url ->
-                url.contains("http://www.ilga.gov/legislation/votehistory")
-                    && url.contains("house"));
+    public List<String> getVoteLoadKeys(){
+        return Lists.map(loads, BillActionLoad::getKey);
     }
 
-    public BillActionLoad getSenateVotesLoad(){
-        return findMatchingUrl( url ->
-                url.contains("http://www.ilga.gov/legislation/votehistory")
-                        && url.contains("senate"));
+    public BillActionLoad getByKey(String key){
+        return Lists.findfirst(loads, load -> load.getKey().equals(key));
     }
 
-    private BillActionLoad findMatchingUrl(Predicate<String> predicate){
-        return Lists.findfirst(loads, load ->  predicate.test(load.getUrl()));
+    public List<BillActionLoad> getVoteLoads(){
+        return Lists.filter(loads, BillActionLoad::isVoteLoad);
     }
+
 }

@@ -32,6 +32,18 @@ public class BillActionLoad {
         return load;
     }
 
+    public static String formKey(Bill bill, String url, boolean isVoteLoad){
+        String ext;
+        if ( isVoteLoad ){
+            int start = url.lastIndexOf('/') + 1;
+            int end = url.lastIndexOf('.');
+            ext = url.substring(start, end);
+        } else {
+            ext = "main";
+        }
+        return bill.getKey() + "." + ext;
+    }
+
     public LocalDateTime getLoadTime(){
         return LocalDateTime.ofInstant(loadInstant, ZoneId.systemDefault());
     }
@@ -40,4 +52,17 @@ public class BillActionLoad {
         return Formatter.format(getLoadTime());
     }
 
+    public boolean isVoteLoad(){
+        // TODO: Should be added to the model and written to the table
+        return url.contains("http://www.ilga.gov/legislation/votehistory");
+    }
+
+    public boolean isBillLoad(){
+        // TODO: See above
+        return url.contains("http://www.ilga.gov/legislation/BillStatus.asp");
+    }
+
+    public String getKey(){
+        return formKey(this.bill, this.url, isVoteLoad());
+    }
 }

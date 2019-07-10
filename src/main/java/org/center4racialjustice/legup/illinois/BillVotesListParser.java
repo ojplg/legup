@@ -55,6 +55,12 @@ public class BillVotesListParser {
         return parseVotesTable(voteLinkTable);
     }
 
+    public Map<String, String> grabAllVotesUrls(){
+        Map<String,String> map = grabVotesUrls();
+        map.putAll(grabCommitteeVotesUrls());
+        return map;
+    }
+
     private Map<String, String> parseVotesTable(Element voteLinkTable){
         Elements rows = voteLinkTable.select("tr");
 

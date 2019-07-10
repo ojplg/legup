@@ -47,6 +47,11 @@ public class Lists {
         return null;
     }
 
+    public static <T> List<T> filter(List<T> items, Predicate<T> predicate){
+        return items.stream().filter(predicate).collect(Collectors.toList());
+    }
+
+
     public static <T,M> List<M> map(List<T> items, Function<T,M> mapper){
         return items.stream().map(mapper).collect(Collectors.toList());
     }
