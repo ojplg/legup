@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.domain.VoteType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class BillVotes {
     private List<Name> notVotings = new ArrayList<>();
     private List<Name> excuseds = new ArrayList<>();
     private List<Name> absents = new ArrayList<>();
+    private VoteType voteType;
 
     public BillVotes(){
         this.content = "";
@@ -172,5 +174,13 @@ public class BillVotes {
 
     public void setSession(long session) {
         this.session = session;
+    }
+
+    public VoteType getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(VoteType voteType) {
+        this.voteType = voteType;
     }
 }

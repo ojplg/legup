@@ -15,6 +15,7 @@ public class Vote {
     private Legislator legislator;
     private VoteSide voteSide;
     private BillActionLoad billActionLoad;
+    private VoteType voteType;
 
     public boolean matches(Chamber chamber, VoteSide voteSide){
         return voteSide.equals(this.voteSide) && chamber.equals(legislator.getChamber());

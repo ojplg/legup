@@ -218,3 +218,10 @@ create sequence user_organization_association_seq start 1;
 alter table user_organization_associations add foreign key (organization_id) references organizations(id);
 alter table user_organization_associations add foreign key (user_id) references users(id);
 
+-- changeset ojplg:10
+
+--alter table bill_actions add column action_date timestamp;
+--alter table bill_actions add column bill_action_type_detail text;
+
+--alter table bill_actions drop constraint uniq_bill_action;
+--alter table bill_actions add constraint uniq_bill_action unique (bill_id, legislator_id, bill_action_type, bill_action_type_detail);

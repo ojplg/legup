@@ -5,7 +5,7 @@ is pretty Illinois specific.
 
 LegUp tries to do the following:
 * Load information about legislators/bills/votes into its database by scraping the legislature's web page.
-* Allow the user to create report cards, which include a collection of bills and whether or not the bill 
+* Allow the user to create report cards, which include a collection of bills and whether or not the bill
   should be supported or opposed.
 * Score the legislators against the report cards by checking their voting records.
 
@@ -14,10 +14,10 @@ LegUp exposes its functionality via a simple web application.
 # Technical
 
 * The build is done using maven just
-   ```` 
+   ````
    mvn compile
    mvn test
-   ````   
+   ````
 * Assuming mvn builds things, then you can do:
    ````
    ./dev.sh
@@ -31,7 +31,7 @@ LegUp exposes its functionality via a simple web application.
     cd db/
     ./db_setup.sh
     ````
-    to get that working. It should ask for a password several times. (Of course, 
+    to get that working. It should ask for a password several times. (Of course,
     if you think running random shell scripts that ask for your password several times
     is nuts, just do what it says in the script and check the contents of the SQL files
     referenced to make sure nothing crazy is happening.)
@@ -43,7 +43,7 @@ LegUp exposes its functionality via a simple web application.
   * Velocity
   * PDFBox
   * JSoup
-  * H2 (for tests)   
+  * H2 (for tests)
   * [hrorm!](http://hrorm.org)
 * Other
   * LegUp uses [liquibase](http://www.liquibase.org/) for managing
@@ -56,6 +56,17 @@ LegUp exposes its functionality via a simple web application.
 # TODO list
 
 Do not forget to grep the code for TODO and FIXME. There are always things there.
+s
+* Persist all legislative maneuvers
+  * Need to track vote type: cannot just be enumerated
+    * Committee versus chamber votes
+    * Name of committee
+    * Type of vote (third reading, etc)
+  * Some bill actions do not have a legislator associated with them
+  * Should always be additive: do not delete old data
+  * Persist both action date and load date
+  * There is more than one chief sponsor
+  * Sponsors can be removed, upgraded, and downgraded
 
 * User Fixes
   * Allow users to invite others to their organizations
