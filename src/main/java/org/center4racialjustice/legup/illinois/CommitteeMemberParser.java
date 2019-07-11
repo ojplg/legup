@@ -1,5 +1,10 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.util.Triple;
@@ -35,12 +40,38 @@ public class CommitteeMemberParser {
         }
     }
 
-    public List<Triple<String, Name, Long>> parseMembers(){
+    public static CommitteeMemberParser load(String url, NameParser nameParser) {
+        CloseableHttpResponse httpResponse = null;
+        try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(url);
+            httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+
+            Document doc = Jsoup.parse(httpEntity.getContent(), "windows-1252", url);
+            return new CommitteeMemberParser(doc, nameParser);
+        } catch (IOException ex){
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                if (httpResponse != null) {
+                    httpResponse.close();
+                }
+            } catch (IOException ex){
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    /**
+     * Generates a tuple of title, name, and member id
+     */
+    public List<Triple<String, Name, String>> parseMembers(){
         Elements tables = document.select("table");
         Element table = tables.get(5);
         Elements rows = table.select("tr");
 
-        List<Triple<String, Name, Long>> memberData = new ArrayList<>();
+        List<Triple<String, Name, String>> memberData = new ArrayList<>();
 
         for(int idx=1; idx<rows.size(); idx++){
             Element row = rows.get(idx);
@@ -61,8 +92,7 @@ public class CommitteeMemberParser {
             Matcher matcher = MemberLinkPattern.matcher(link);
             matcher.matches();
             String memberIdString = matcher.group(1);
-            Long memberId = Long.parseLong(memberIdString);
-            memberData.add(new Triple<>(title, name, memberId));
+            memberData.add(new Triple<>(title, name, memberIdString));
         }
 
         return memberData;

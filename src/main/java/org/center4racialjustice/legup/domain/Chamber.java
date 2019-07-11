@@ -42,6 +42,8 @@ public class Chamber implements Comparable<Chamber> {
 
     public String getName() { return name; }
 
+    public String lowerCaseName() { return name.toLowerCase(); }
+
     public String toString(){
         return name;
     }

@@ -26,18 +26,18 @@ public class TestCommitteeMemberParser {
     @Test
     public void testParseMembers_Size(){
         CommitteeMemberParser parser = parserFromResourceFile();
-        List<Triple<String, Name, Long>> links = parser.parseMembers();
+        List<Triple<String, Name, String>> links = parser.parseMembers();
         Assert.assertEquals(13, links.size());
     }
 
     @Test
     public void testParseMembers_FirstMember(){
         CommitteeMemberParser parser = parserFromResourceFile();
-        Triple<String, Name, Long> member = parser.parseMembers().get(0);
+        Triple<String, Name, String> member = parser.parseMembers().get(0);
         Assert.assertEquals("Chairperson", member.getFirst());
         Assert.assertEquals("Feigenholtz", member.getSecond().getLastName());
         Assert.assertEquals("Sara", member.getSecond().getFirstName());
-        Assert.assertEquals(2525L, (long) member.getThird());
+        Assert.assertEquals("2525",  member.getThird());
     }
 
 }
