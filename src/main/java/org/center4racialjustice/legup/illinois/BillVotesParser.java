@@ -118,23 +118,7 @@ public class BillVotesParser {
         Matcher voteLineMatcher = voteLinePattern.matcher(line);
         return voteLineMatcher.matches();
     }
-
-    public static int findNextPossibleRecordIndex(String input){
-        String[] markers = { "N ", "Y ", "P ", "NV ", "E ", "A "};
-        int earliestIndex = input.length();
-        for(String marker : markers){
-            int idx = input.indexOf(marker);
-            if ( idx >= 0 && idx < earliestIndex ){
-                earliestIndex = idx;
-            }
-        }
-        if (earliestIndex == input.length()){
-            return -1;
-        } else {
-            return earliestIndex;
-        }
-    }
-
+    
     public static List<Integer> findPossibleDividingPoints(String voteLine){
         String[] markers = { "N ", "Y ", "P ", "NV ", "E ", "A "};
         List<Integer> points = new ArrayList<>();
@@ -174,8 +158,7 @@ public class BillVotesParser {
         VoteSide vote = VoteSide.fromCode(prefix);
         String nameString = chunk.substring(spaceIndex);
         Name name = nameParser.fromLastNameFirstString(nameString);
-        VoteRecord voteRecord = new VoteRecord(name, vote);
-        return voteRecord;
+        return new VoteRecord(name, vote);
     }
 
     private static boolean isPossibleSplitPoint(String input, int point){
@@ -304,7 +287,6 @@ public class BillVotesParser {
                 String billNumberString = alternateBillNumberMatcher.group(2);
                 number = Integer.parseInt(billNumberString);
                 chamber = Chamber.fromString(assemblyString);
-                continue;
             }
         }
 
@@ -364,8 +346,7 @@ public class BillVotesParser {
             Matcher committeeChamberMatcher = committeeChamberPattern.matcher(line);
             if( committeeChamberMatcher.matches()){
                 String assemblyString = committeeChamberMatcher.group(1);
-                Chamber chamber = Chamber.fromString(assemblyString);
-                return chamber;
+                return Chamber.fromString(assemblyString);
             }
         }
         return null;
