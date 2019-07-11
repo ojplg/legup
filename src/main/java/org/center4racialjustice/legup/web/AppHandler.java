@@ -82,6 +82,7 @@ public class AppHandler extends AbstractHandler {
         responders.add(new ViewBillLoadData(connectionPool));
         responders.add(new ViewUsers(connectionPool));
         responders.add(new ViewOrganizations(connectionPool));
+        responders.add(new ViewParsedCommittees(connectionPool, nameParser));
 
         for (Responder responder : responders) {
             String routeName = "/" + Util.classNameToLowercaseWithUnderlines(responder.getClass());

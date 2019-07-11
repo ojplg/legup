@@ -1,11 +1,16 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.Chamber;
 import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.hrorm.Where;
 
 import java.sql.Connection;
 import java.util.List;
+
+import static org.hrorm.Where.where;;
+import static org.hrorm.Operator.EQUALS;
+
 
 public class LegislatorDao {
 
@@ -35,6 +40,12 @@ public class LegislatorDao {
         Legislator legislator = new Legislator();
         legislator.setSessionNumber(session);
         return innerDao.select(legislator, "SESSION_NUMBER");
+    }
+
+    public List<Legislator> readByChamberAndSession(Chamber chamber, Long session){
+        return innerDao.select(
+                where("SESSION_NUMBER", EQUALS, session)
+                .and("CHAMBER", EQUALS, chamber.getName()));
     }
 
     public Legislator readByMemberId(String memberId){

@@ -1,14 +1,46 @@
 
-<h3>Legislator Load Form</h3>
+<h3>Legislator Load Forms</h3>
 
-<form action="/legup/view_parsed_legislators" method="post">
+<hr/>
 
-    <p>Use this form to search for legislators and add them to the DB.</p>
+<form action="/legup/view_parsed_legislators" method="post"  id="legislator_search_form" method="post" class="pure-form pure-form-stacked">
 
-    <label>URL of listing</label>
-    <input size="80" type="text" name="url" value="http://www.ilga.gov/house/default.asp"/>
+    <div>Use this form to search for legislators and add them to the DB.</div>
 
-    <br/>
+    <fieldset>
 
-    <input type="submit" value="Load Members"/>
+        <label for="url" class="pure-input">
+            URL of Members List
+            <input size="80" type="text" name="url" value="http://www.ilga.gov/house/default.asp"/>
+        </label>
+
+        <button type="submit" class="pure-button pure-button-primary">Search</button>
+
+    </fieldset>
+</form>
+
+
+<hr/>
+
+<form action="/legup/view_parsed_committees" method="post"  id="committee_search_form" class="pure-form pure-form-stacked" >
+
+    <div>Use this form to search for committees and add them to the DB.</div>
+
+    <fieldset>
+        <label for="house_option" class="pure-radio">
+            <input id="house_option" type="radio" name="chamber_radios" value="house">
+            House
+        </label>
+
+        <label for="senate_option" class="pure-radio">
+            <input id="senate_option" type="radio" name="chamber_radios" value="senate">
+            Senate
+        </label>
+
+        <label for="session_number">Session</label>
+        <input id="session_number" name="session_number" value="101"/>
+
+        <button type="submit" class="pure-button pure-button-primary">Search</button>
+    </fieldset>
+
 </form>

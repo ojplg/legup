@@ -18,6 +18,7 @@ public class LegupSession {
     public static String UnknownLegislatorsKey = "UnknownLegislatorsKey";
     public static String BillSearchResultsKey = "BillSearchResultsKey";
     public static String ReportCardGradesKey = "ReportCardGradesKey";
+    public static String CommitteeDataKey = "CommiteeDataKey";
 
     private int count = 1;
     private final Map<String, Tuple<String, Object>> storage = new HashMap<>();

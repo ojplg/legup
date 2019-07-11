@@ -16,6 +16,8 @@ import java.util.List;
 
 public class CommitteeSearcher {
 
+    private static final String BASE_URL = "http://www.ilga.gov/house/committees/";
+
     private static final Logger log = LogManager.getLogger(CommitteeSearcher.class);
 
     private final Chamber chamber;
@@ -40,8 +42,12 @@ public class CommitteeSearcher {
         List<Committee> committeeList = new ArrayList<>();
         for(Triple<String, String, String> committeeTriplet : committeeData){
             log.info("Working on committee " + committeeTriplet);
+            // FIXME: What a hack
+            if( committeeTriplet.getFirst().equals("Committee of the Whole")){
+                continue;
+            }
             String memberUrl = committeeTriplet.getThird();
-            CommitteeMemberParser committeeMemberParser = CommitteeMemberParser.load(memberUrl, nameParser);
+            CommitteeMemberParser committeeMemberParser = CommitteeMemberParser.load(BASE_URL + memberUrl, nameParser);
             List<Triple<String, Name, String>> members = committeeMemberParser.parseMembers();
             List<CommitteeMember> memberList = new ArrayList<>();
             for(Triple<String, Name, String> memberData : members){
@@ -52,7 +58,7 @@ public class CommitteeSearcher {
                 member.setLegislator(legislator);
                 memberList.add(member);
             }
-            Long committeeId = CommitteeListHtmlParser.getCommitteeId(committeeTriplet);
+            String committeeId = CommitteeListHtmlParser.getCommitteeId(committeeTriplet);
             Committee committee = new Committee();
             committee.setChamber(chamber);
             committee.setMembers(memberList);

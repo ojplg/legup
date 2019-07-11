@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.util.Triple;
+import org.center4racialjustice.legup.util.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,6 +34,14 @@ public class TestCommitteeListHtmlParser {
         Assert.assertEquals("Adoption & Child Welfare", firstCommittee.getFirst());
         Assert.assertEquals("HACW", firstCommittee.getSecond());
         Assert.assertEquals("http://www.ilga.gov/house/committees/members.asp?CommitteeID=2549&GA=101", firstCommittee.getThird());
+    }
+
+    @Test
+    public void testGetCommitteeId(){
+        String link = "members.asp?CommitteeID=2315&GA=101";
+        Triple<String, String, String> triple = new Triple<>("","", link);
+        String committeeId = CommitteeListHtmlParser.getCommitteeId(triple);
+        Assert.assertEquals("2315", committeeId);
     }
 
 }

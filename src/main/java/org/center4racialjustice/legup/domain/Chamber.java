@@ -31,11 +31,10 @@ public class Chamber implements Comparable<Chamber> {
     }
 
     public static Chamber fromString(String name){
-        switch(name){
-            case "House" : return House;
-            case "Senate" : return Senate;
-            case "HOUSE" : return House;
-            case "SENATE" : return Senate;
+        String lowerCaseName = name.toLowerCase();
+        switch(lowerCaseName){
+            case "house" : return House;
+            case "senate" : return Senate;
             default : throw new RuntimeException("Cannot recognize chamber named " + name);
         }
     }

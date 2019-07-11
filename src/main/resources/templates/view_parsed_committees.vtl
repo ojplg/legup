@@ -1,0 +1,43 @@
+
+#if ( $committeeCount == 0 )
+
+    <p>No committees to save.</p>
+
+#else
+
+    <p>Parsed $committeeCount committees. Newly discovered shown below. Click Save to persist.</p>
+
+    <form action="/legup/save_committees">
+
+    <input type="hidden" name="one_time_key" value="$oneTimeKey"/>
+
+    <input type="submit" value="Save"/>
+
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th>Committee Name</th>
+                <th>Committee Code</th>
+                <th>Committee ID</th>
+                <th>Member Count</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            #foreach( $committee in $committees )
+                <tr>
+                    <td>$committee.Name</td>
+                    <td>$committee.Code</td>
+                    <td>$committee.CommitteeId</td>
+                    <td>$committee.MemberCount</td>
+                </tr>
+            #end
+        </tbody>
+
+    </table>
+
+    <input type="submit" value="Save"/>
+
+    </form>
+
+#end

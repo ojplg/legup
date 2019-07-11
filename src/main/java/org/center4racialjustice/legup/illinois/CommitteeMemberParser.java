@@ -16,6 +16,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,9 +70,14 @@ public class CommitteeMemberParser {
     public List<Triple<String, Name, String>> parseMembers(){
         Elements tables = document.select("table");
         Element table = tables.get(5);
+
         Elements rows = table.select("tr");
 
         List<Triple<String, Name, String>> memberData = new ArrayList<>();
+
+        if( rows.size() <= 1 ){
+            return Collections.emptyList();
+        }
 
         for(int idx=1; idx<rows.size(); idx++){
             Element row = rows.get(idx);

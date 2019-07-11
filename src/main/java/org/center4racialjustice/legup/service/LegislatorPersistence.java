@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
+import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 
 import java.util.ArrayList;
@@ -51,5 +52,12 @@ public class LegislatorPersistence {
             return unknownLegislators;
         });
         return results;
+    }
+
+    public List<Legislator> readLegislators(Chamber chamber, Long sessionNumber){
+        return connectionPool.useConnection(connection -> {
+                    LegislatorDao legislatorDao = new LegislatorDao(connection);
+                    return legislatorDao.readByChamberAndSession(chamber, sessionNumber);
+                });
     }
 }

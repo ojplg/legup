@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class CommitteeListHtmlParser {
 
-    private final static Pattern LinkPattern = Pattern.compile("http://www.ilga.gov/house/committees/members.asp?CommitteeID=(\\d+)&GA=\\d+");
+    private final static Pattern LinkPattern = Pattern.compile(".*\\?CommitteeID=(\\d+)&GA=\\d+");
 
     private final Document document;
 
@@ -92,12 +92,12 @@ public class CommitteeListHtmlParser {
         return committeeData;
     }
 
-    public static Long getCommitteeId(Triple<String, String, String> triplet){
+    public static String getCommitteeId(Triple<String, String, String> triplet){
         String link = triplet.getThird();
         Matcher matcher = LinkPattern.matcher(link);
         if( matcher.matches() ){
             String captured = matcher.group(1);
-            return Long.parseLong(captured);
+            return captured;
         }
         return null;
     }
