@@ -56,7 +56,6 @@ LegUp exposes its functionality via a simple web application.
 # TODO list
 
 Do not forget to grep the code for TODO and FIXME. There are always things there.
-s
 * Persist all legislative maneuvers
   * Need to track vote type: cannot just be enumerated
     * Committee versus chamber votes
