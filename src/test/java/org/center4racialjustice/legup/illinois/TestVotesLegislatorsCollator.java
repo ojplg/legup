@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.domain.VoteType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,11 +19,13 @@ public class TestVotesLegislatorsCollator {
 
     @Test
     public void correctlyMatchesByLastName(){
-        BillVotes bv = new BillVotes();
-        bv.addVoteRecord(
+        BillWebData billWebData = new BillWebData("url", "contents", new VoteType("Third Reading"));
+
+        VoteLists voteLists = new VoteLists();
+        voteLists.addVoteRecord(
                 new VoteRecord(new Name(null, null, "McGee","H", null), VoteSide.Nay)
         );
-        bv.setVotingChamber(Chamber.Senate);
+        BillVotes bv = new BillVotes(null, billWebData, null, voteLists, Chamber.Senate);
 
         Legislator legislator = new Legislator();
         legislator.setFirstName("Herbie");
@@ -40,14 +43,18 @@ public class TestVotesLegislatorsCollator {
 
     @Test
     public void reportsUncollatedVotes(){
-        BillVotes bv = new BillVotes();
-        bv.addVoteRecord(
+        BillWebData billWebData = new BillWebData("url", "contents", new VoteType("Third Reading"));
+        VoteLists voteLists = new VoteLists();
+        voteLists.addVoteRecord(
                 new VoteRecord(new Name(null, null, "McGee","H", null), VoteSide.Nay)
         );
-        bv.addVoteRecord(
+        voteLists.addVoteRecord(
+                new VoteRecord(new Name(null, null, "McGee","H", null), VoteSide.Nay)
+        );
+        voteLists.addVoteRecord(
                 new VoteRecord(new Name(null, null, "Henry","B", null), VoteSide.Nay)
         );
-        bv.setVotingChamber(Chamber.Senate);
+        BillVotes bv = new BillVotes(null, billWebData, null, voteLists, Chamber.Senate);
 
         Legislator legislator = new Legislator();
         legislator.setFirstName("Herbie");

@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.domain.VoteType;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.io.IOException;
@@ -31,16 +32,19 @@ public class BillVotesParser {
     private static final List<String> hundredthLines =
             Arrays.asList("ONE HUNDREDTH", "100th General Assembly");
 
+    private static final List<String> hundredFirstLines =
+            Arrays.asList("101TH GENERAL ASSEMBLY", "101th General Assembly");
+
     private final NameParser nameParser;
 
     public BillVotesParser(NameParser nameParser){
         this.nameParser = nameParser;
     }
 
-    public static BillVotes readFromUrlAndParse(String url, NameParser nameParser) {
+    public static BillVotes readFromUrlAndParse(String url, NameParser nameParser, VoteType voteType) {
         String contents = BillVotesParser.readFileFromUrl(url);
         BillVotesParser parser = new BillVotesParser(nameParser);
-        return  parser.parseFileContents(url, contents);
+        return parser.parseFileContents(url, contents, voteType);
     }
 
     public static String readFileFromUrl(String url) {
@@ -238,10 +242,10 @@ public class BillVotesParser {
         return records;
     }
 
-    public static BillVotes parseFile(String filename, NameParser nameParser) {
+    public static BillVotes parseFile(String filename, NameParser nameParser, VoteType voteType) {
         String content = readFileToString(filename);
         BillVotesParser parser = new BillVotesParser(nameParser);
-        return parser.parseFileContents("",content);
+        return parser.parseFileContents("",content, voteType);
     }
 
     private static String[] houseVoteStrings = new String[]{ "HOUSE ROLL CALL" };
@@ -267,115 +271,147 @@ public class BillVotesParser {
                 return 100L;
             }
         }
+        for(String hundredFirstLine : hundredFirstLines){
+            if( line.contains(hundredFirstLine)){
+                return 101L;
+            }
+        }
         return null;
     }
 
-    public BillVotes parseFileContents(String url, String content){
-        String[] lines = content.split("\n");
-        BillVotes bv = new BillVotes(url, content);
+    private BillIdentity parseBillIdentity(List<String> lines){
+        long session = 0;
+        Chamber chamber = null;
+        long number = 0;
 
-        List<String> voteLines = new ArrayList<>();
-
-        for(int idx=0; idx<lines.length; idx++){
-            String line = lines[idx];
-
-            boolean ignore = false;
-            for(String ignoreLine : ignoreLines){
-                if(line.contains(ignoreLine)){
-                    ignore = true;
-                }
-            }
-            if ( ignore ) {
+        for( String line : lines ) {
+            Long sessionNumber = extractSession(line);
+            if (sessionNumber != null) {
+                session = sessionNumber;
                 continue;
             }
-
-            Long session = extractSession(line);
-            if( session != null ){
-                bv.setSession(session);
-                continue;
-            }
-
-            Chamber votingChamber = determineVotingChamber(line);
-            if( votingChamber != null ){
-                bv.setVotingChamber(votingChamber);
-                continue;
-            }
-
             Matcher billNumberMatcher = billAssemblyAndNumberPattern.matcher(line);
-            if( billNumberMatcher.matches() ){
+            if (billNumberMatcher.matches()) {
                 String assemblyString = billNumberMatcher.group(1);
                 String billNumberString = billNumberMatcher.group(2);
-                int billNumber = Integer.parseInt(billNumberString);
-                Chamber chamber = Chamber.fromString(assemblyString);
-                bv.setBillNumber(billNumber);
-                bv.setBillChamber(chamber);
+                number = Integer.parseInt(billNumberString);
+                chamber = Chamber.fromString(assemblyString);
                 continue;
             }
             Matcher alternateBillNumberMatcher = alternateBillAssemblyAndNumberPattern.matcher(line);
             if( alternateBillNumberMatcher.matches() ){
                 String assemblyString = alternateBillNumberMatcher.group(1);
                 String billNumberString = alternateBillNumberMatcher.group(2);
-                int billNumber = Integer.parseInt(billNumberString);
-                Chamber chamber = Chamber.fromString(assemblyString);
-                bv.setBillNumber(billNumber);
-                bv.setBillChamber(chamber);
+                number = Integer.parseInt(billNumberString);
+                chamber = Chamber.fromString(assemblyString);
                 continue;
             }
+        }
 
+        return new BillIdentity(chamber, session, number);
+    }
+
+    private ExpectedVoteCounts parseExpectedVoteCounts(List<String> lines){
+        for(String line : lines){
             Matcher summaryMatcher1 = summaryPattern1.matcher(line);
             if (summaryMatcher1.matches()){
                 String yeas = summaryMatcher1.group(1);
-                bv.setExpectedYeas(Integer.parseInt(yeas));
                 String nays = summaryMatcher1.group(2);
-                bv.setExpectedNays(Integer.parseInt(nays));
                 String presents = summaryMatcher1.group(3);
-                bv.setExpectedPresent(Integer.parseInt(presents));
-                continue;
+                return ExpectedVoteCounts.builder()
+                        .expectedYeas(Integer.parseInt(yeas))
+                        .expectedNays(Integer.parseInt(nays))
+                        .expectedPresent(Integer.parseInt(presents))
+                        .build();
             }
 
             Matcher summaryMatcher2 = summaryPattern2.matcher(line);
             if(summaryMatcher2.matches()){
                 String yeas = summaryMatcher2.group(1);
-                bv.setExpectedYeas( Integer.parseInt(yeas));
                 String nays = summaryMatcher2.group(2);
-                bv.setExpectedNays(Integer.parseInt(nays));
                 String presents = summaryMatcher2.group(3);
-                bv.setExpectedPresent(Integer.parseInt(presents));
                 String notVotings = summaryMatcher2.group(4);
-                bv.setExpectedNotVoting(Integer.parseInt(notVotings));
-                continue;
+                return ExpectedVoteCounts.builder()
+                        .expectedYeas(Integer.parseInt(yeas))
+                        .expectedNays(Integer.parseInt(nays))
+                        .expectedPresent(Integer.parseInt(presents))
+                        .expectedNotVoting(Integer.parseInt(notVotings))
+                        .build();
             }
 
             Matcher summaryMatcher3 = summaryPattern3.matcher(line);
             if (summaryMatcher3.matches()){
                 String yeas = summaryMatcher3.group(1);
-                bv.setExpectedYeas(Integer.parseInt(yeas));
                 String presents = summaryMatcher3.group(2);
-                bv.setExpectedPresent(Integer.parseInt(presents));
                 String nays = summaryMatcher3.group(3);
-                bv.setExpectedNays(Integer.parseInt(nays));
-                continue;
+                return ExpectedVoteCounts.builder()
+                        .expectedYeas(Integer.parseInt(yeas))
+                        .expectedNays(Integer.parseInt(nays))
+                        .expectedPresent(Integer.parseInt(presents))
+                        .build();
+            }
+        }
+        throw new RuntimeException("Could not find expected counts");
+    }
+
+    private Chamber parseVotingChamber(List<String> lines) {
+        for (String line : lines) {
+            Chamber votingChamber = determineVotingChamber(line);
+            if( votingChamber != null ){
+                return votingChamber;
             }
 
             Matcher committeeChamberMatcher = committeeChamberPattern.matcher(line);
             if( committeeChamberMatcher.matches()){
                 String assemblyString = committeeChamberMatcher.group(1);
                 Chamber chamber = Chamber.fromString(assemblyString);
-                bv.setVotingChamber(chamber);
+                return chamber;
             }
+        }
+        return null;
+    }
 
+    private VoteLists parseVoteLists(List<String> lines){
+        VoteLists voteLists = new VoteLists();
+        for(String line : lines) {
             Matcher voteLineMatcher = voteLinePattern.matcher(line);
-            if( voteLineMatcher.matches() ){
-                System.out.println("VOTE LINE: " + line);
+            if (voteLineMatcher.matches()) {
+                log.debug("VOTE LINE: " + line);
                 List<String> chunks = splitVotingLine(line);
-                System.out.println("  CHUNKS:  " + chunks);
+                log.debug("  CHUNKS:  " + chunks);
                 List<VoteRecord> records = Lists.map(chunks, this::parseVoteRecordChunk);
-                System.out.println("  RECORDS:  " + records);
-                bv.addVoteRecords(records);
+                log.debug("  RECORDS:  " + records);
+                voteLists.addVoteRecords(records);
+            }
+        }
+        return voteLists;
+    }
+
+
+    public BillVotes parseFileContents(String url, String content, VoteType voteType){
+        String[] lines = content.split("\n");
+        List<String> usefulLines = new ArrayList<>();
+        for(int idx=0; idx<lines.length; idx++) {
+            String line = lines[idx];
+
+            boolean ignore = false;
+            for (String ignoreLine : ignoreLines) {
+                if (line.contains(ignoreLine)) {
+                    ignore = true;
+                }
+            }
+            if (!ignore) {
+                usefulLines.add(line);
             }
         }
 
-        return bv;
+        BillIdentity billIdentity = parseBillIdentity(usefulLines);
+        BillWebData billWebData = new BillWebData(url, content, voteType);
+        ExpectedVoteCounts expectedVoteCounts = parseExpectedVoteCounts(usefulLines);
+        Chamber votingChamber = parseVotingChamber(usefulLines);
+        VoteLists voteLists = parseVoteLists(usefulLines);
+
+        return new BillVotes(billIdentity, billWebData, expectedVoteCounts, voteLists, votingChamber);
     }
 
 }

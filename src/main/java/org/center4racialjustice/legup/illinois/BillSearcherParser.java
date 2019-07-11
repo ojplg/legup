@@ -74,9 +74,8 @@ public class BillSearcherParser {
 
     private BillVotesResults findVoteResults(String linkText, String linkUrl, List<Legislator> legislators){
         VoteType voteType = new VoteType(linkText);
-        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(linkUrl, nameParser);
+        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(linkUrl, nameParser, voteType);
         Chamber votingChamber = billVotes.getVotingChamber();
-        billVotes.setVoteType(voteType);
 
         VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
         collator.collate();

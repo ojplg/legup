@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameOverrides;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.domain.VoteType;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -33,73 +34,62 @@ public class TestBillVotesParser {
     }
 
     private static BillVotes houseBill4324(){
-        BillVotes billVotes = new BillVotes();
+        BillIdentity  billIdentity = new BillIdentity(Chamber.House, 100L, 4324L);
+        ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
+                .expectedYeas(88)
+                .expectedNays(3)
+                .expectedPresent(0)
+                .build();
 
-        billVotes.setSession(100);
-        billVotes.setVotingChamber(Chamber.House);
-        billVotes.setBillChamber(Chamber.House);
-        billVotes.setBillNumber(4324);
-        billVotes.setExpectedYeas(88);
-        billVotes.setExpectedNays(3);
-        billVotes.setExpectedPresent(0);
-
+        BillVotes billVotes = new BillVotes(billIdentity, null, expectedVoteCounts, null, Chamber.House);
         return billVotes;
     }
 
     private BillVotes senateBill8(){
-        BillVotes billVotes = new BillVotes();
+        BillIdentity  billIdentity = new BillIdentity(Chamber.Senate, 100L, 8L);
+        ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
+                .expectedYeas(34)
+                .expectedNays(14)
+                .expectedPresent(11)
+                .build();
 
-        billVotes.setSession(100);
-        billVotes.setVotingChamber(Chamber.Senate);
-        billVotes.setBillChamber(Chamber.Senate);
-        billVotes.setBillNumber(8);
-        billVotes.setExpectedYeas(34);
-        billVotes.setExpectedNays(14);
-        billVotes.setExpectedPresent(11);
-
+        BillVotes billVotes = new BillVotes(billIdentity, null, expectedVoteCounts, null, Chamber.Senate);
         return billVotes;
     }
 
     private BillVotes houseBill3179(){
-        BillVotes billVotes = new BillVotes();
+        BillIdentity  billIdentity = new BillIdentity(Chamber.House, 100L, 3179L);
+        ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
+                .expectedYeas(48)
+                .expectedNays(0)
+                .expectedPresent(0)
+                .build();
 
-        billVotes.setSession(100);
-        billVotes.setVotingChamber(Chamber.Senate);
-        billVotes.setBillChamber(Chamber.House);
-        billVotes.setBillNumber(3179);
-        billVotes.setExpectedYeas(48);
-        billVotes.setExpectedNays(0);
-        billVotes.setExpectedPresent(0);
-
+        BillVotes billVotes = new BillVotes(billIdentity, null, expectedVoteCounts, null, Chamber.Senate);
         return billVotes;
-
     }
 
     private BillVotes houseBill2771(){
-        BillVotes billVotes = new BillVotes();
+        BillIdentity  billIdentity = new BillIdentity(Chamber.House, 100L, 2771L);
+        ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
+                .expectedYeas(66)
+                .expectedNays(51)
+                .expectedPresent(0)
+                .build();
 
-        billVotes.setSession(100);
-        billVotes.setVotingChamber(Chamber.House);
-        billVotes.setBillChamber(Chamber.House);
-        billVotes.setBillNumber(2771);
-        billVotes.setExpectedYeas(66);
-        billVotes.setExpectedNays(51);
-        billVotes.setExpectedPresent(0);
-
+        BillVotes billVotes = new BillVotes(billIdentity, null, expectedVoteCounts, null, Chamber.House);
         return billVotes;
     }
 
     private BillVotes senateBill1781(){
-        BillVotes billVotes = new BillVotes();
+        BillIdentity  billIdentity = new BillIdentity(Chamber.Senate, 100L, 1781L);
+        ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
+                .expectedYeas(61)
+                .expectedNays(55)
+                .expectedPresent(0)
+                .build();
 
-        billVotes.setSession(100);
-        billVotes.setVotingChamber(Chamber.House);
-        billVotes.setBillChamber(Chamber.Senate);
-        billVotes.setBillNumber(1781);
-        billVotes.setExpectedYeas(61);
-        billVotes.setExpectedNays(55);
-        billVotes.setExpectedPresent(0);
-
+        BillVotes billVotes = new BillVotes(billIdentity, null, expectedVoteCounts, null, Chamber.House);
         return billVotes;
     }
 
@@ -115,7 +105,7 @@ public class TestBillVotesParser {
 
     @Test
     public void testHouseVotesOnConstitutionalAmendment(){
-        BillVotes billVotes = BillVotesParser.parseFile(senateBillOne, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(senateBillOne, loadNameParser(), new VoteType("Third Reading"));
         billVotes.checkVoteCounts();
         Assert.assertEquals(69, billVotes.getYeas().size());
         Assert.assertEquals(47, billVotes.getNays().size());
@@ -123,31 +113,31 @@ public class TestBillVotesParser {
 
     @Test
     public void testBill4234(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName, loadNameParser(), new VoteType("Third Reading"));
         checkNonListFields(houseBill4324(), billVotes);
     }
 
     @Test
     public void testBill8(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName, loadNameParser(), new VoteType("Third Reading"));
         checkNonListFields(senateBill8(), billVotes);
     }
 
     @Test
     public void testBill3179(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName, loadNameParser(), new VoteType("Third Reading"));
         checkNonListFields(houseBill3179(), billVotes);
     }
 
     @Test
     public void testBill2771(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName, loadNameParser(), new VoteType("Third Reading"));
         checkNonListFields(houseBill2771(), billVotes);
     }
 
     @Test
     public void testBill1781(){
-        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName, loadNameParser(), new VoteType("Third Reading"));
         checkNonListFields(senateBill1781(), billVotes);
     }
 
@@ -232,14 +222,14 @@ public class TestBillVotesParser {
 
     @Test
     public void parse101House3704Bill_Committee(){
-        BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser(), new VoteType("Third Reading"));
         billVotes.checkVoteCounts();
         Assert.assertEquals(10, billVotes.getYeas().size());
     }
 
     @Test
     public void parse101House2045Bill_Committee(){
-        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2045CommitteeFileName, loadNameParser());
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2045CommitteeFileName, loadNameParser(), new VoteType("Third Reading"));
         billVotes.checkVoteCounts();
         Assert.assertEquals(6, billVotes.getYeas().size());
         Assert.assertEquals(Chamber.House, billVotes.getVotingChamber());

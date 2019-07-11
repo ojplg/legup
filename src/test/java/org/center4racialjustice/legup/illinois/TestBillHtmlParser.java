@@ -136,6 +136,8 @@ public class TestBillHtmlParser {
             if( actionType == null ){
                 System.out.println("   " + event.getRawContents() );
                 uncategorizedCount++;
+            } else {
+                System.out.println("CATEGORIZED " + event.getRawContents() + " AS " + actionType.getCode());
             }
 
         }
