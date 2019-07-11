@@ -33,7 +33,7 @@ public class BillVotesParser {
             Arrays.asList("ONE HUNDREDTH", "100th General Assembly");
 
     private static final List<String> hundredFirstLines =
-            Arrays.asList("101TH GENERAL ASSEMBLY", "101th General Assembly");
+            Arrays.asList("101", "101th General Assembly");
 
     private final NameParser nameParser;
 
@@ -118,7 +118,7 @@ public class BillVotesParser {
         Matcher voteLineMatcher = voteLinePattern.matcher(line);
         return voteLineMatcher.matches();
     }
-    
+
     public static List<Integer> findPossibleDividingPoints(String voteLine){
         String[] markers = { "N ", "Y ", "P ", "NV ", "E ", "A "};
         List<Integer> points = new ArrayList<>();
@@ -374,6 +374,8 @@ public class BillVotesParser {
         List<String> usefulLines = new ArrayList<>();
         for(int idx=0; idx<lines.length; idx++) {
             String line = lines[idx];
+
+//            System.out.println("LINE " + line);
 
             boolean ignore = false;
             for (String ignoreLine : ignoreLines) {

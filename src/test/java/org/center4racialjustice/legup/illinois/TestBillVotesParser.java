@@ -225,6 +225,10 @@ public class TestBillVotesParser {
         BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser(), new VoteType("Third Reading"));
         billVotes.checkVoteCounts();
         Assert.assertEquals(10, billVotes.getYeas().size());
+        Assert.assertEquals(Chamber.Senate, billVotes.getVotingChamber());
+        Assert.assertEquals(Chamber.House, billVotes.getBillChamber());
+        Assert.assertEquals(3704L, billVotes.getBillNumber());
+        Assert.assertEquals(101L, billVotes.getSession());
     }
 
     @Test
@@ -233,6 +237,8 @@ public class TestBillVotesParser {
         billVotes.checkVoteCounts();
         Assert.assertEquals(6, billVotes.getYeas().size());
         Assert.assertEquals(Chamber.House, billVotes.getVotingChamber());
+        Assert.assertEquals(2045L, billVotes.getBillNumber());
+        Assert.assertEquals(101L, billVotes.getSession());
     }
 
     @Test
