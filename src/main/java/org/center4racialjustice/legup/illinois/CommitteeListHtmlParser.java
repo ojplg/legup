@@ -78,7 +78,14 @@ public class CommitteeListHtmlParser {
             Elements cells = row.select("td");
             Element linkCell = cells.get(0);
 
-            String name = linkCell.text();
+            String rawName = linkCell.text();
+            // FIXME: this is a hack
+            if ( rawName.startsWith("Rules")){
+                rawName = "Rules";
+            }
+            String name = rawName.replace("-", "").trim();
+
+
             Element anchor = linkCell.selectFirst("a");
             String link = anchor.attr("href");
 
