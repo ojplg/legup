@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.util.Lists;
 
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class Committee {
 
     public int getMemberCount(){
         return members.size();
+    }
+
+    public CommitteeMember getMembership(Legislator legislator) {
+        return Lists.findfirst(members, member -> member.getLegislator().equals(legislator));
     }
 
 }

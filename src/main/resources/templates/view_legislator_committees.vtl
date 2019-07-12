@@ -1,0 +1,28 @@
+
+#parse( "/templates/insert_legislator_identification.vtl" )
+
+<h4>Committees</h4>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Name</th>
+            <th>Code</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        #foreach ($committee in $committees)
+            <tr>
+                <td>${committee.getMembership($legislator).getTitle()}</td>
+                <td>$committee.Name</td>
+                <td>$committee.Code</td>
+            </tr>
+        #end
+
+    </tbody>
+
+</table>
+
