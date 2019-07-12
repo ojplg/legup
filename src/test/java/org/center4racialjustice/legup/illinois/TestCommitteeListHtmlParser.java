@@ -44,4 +44,13 @@ public class TestCommitteeListHtmlParser {
         Assert.assertEquals("2315", committeeId);
     }
 
+
+    @Test
+    public void testGetCommitteeId_Senate(){
+        String link = "members.asp?CommitteeID=2583";
+        Triple<String, String, String> triple = new Triple<>("","", link);
+        String committeeId = CommitteeListHtmlParser.getCommitteeId(triple);
+        Assert.assertEquals("2583", committeeId);
+    }
+
 }

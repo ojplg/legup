@@ -5,6 +5,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.util.Triple;
@@ -22,6 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommitteeMemberParser {
+
+    private static final Logger log = LogManager.getLogger(CommitteeMemberParser.class);
 
     private final static Pattern MemberLinkPattern = Pattern.compile(".*\\?MemberID=(\\d+)$");
     private final Document document;
@@ -68,6 +72,12 @@ public class CommitteeMemberParser {
      * Generates a tuple of title, name, and member id
      */
     public List<Triple<String, Name, String>> parseMembers(){
+
+        if( document.html().contains("No members added at this time.") ){
+            log.info("No members indicator detected.");
+            return Collections.emptyList();
+        }
+
         Elements tables = document.select("table");
         Element table = tables.get(5);
 
@@ -82,7 +92,13 @@ public class CommitteeMemberParser {
         for(int idx=1; idx<rows.size(); idx++){
             Element row = rows.get(idx);
 
+            log.trace("PARSING " + row);
+
             Elements cells = row.select("td");
+
+            if( cells.size() != 3){
+                return Collections.emptyList();
+            }
 
             Element titleCell = cells.get(0);
             String rawTitle = titleCell.text();

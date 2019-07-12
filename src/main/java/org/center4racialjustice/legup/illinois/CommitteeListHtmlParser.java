@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class CommitteeListHtmlParser {
 
-    private final static Pattern LinkPattern = Pattern.compile(".*\\?CommitteeID=(\\d+)&GA=\\d+");
+    private final static Pattern LinkPattern = Pattern.compile(".*\\?CommitteeID=(\\d+).*");
 
     private final Document document;
 

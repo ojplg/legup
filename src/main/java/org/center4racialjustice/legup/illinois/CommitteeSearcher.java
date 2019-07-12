@@ -12,9 +12,14 @@ import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Triple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommitteeSearcher {
+
+    private static final List<String> COMMITTEES_TO_SKIP = Arrays.asList(
+            "Committee of the Whole"
+    );
 
     private static final String BASE_URL = "http://www.ilga.gov/house/committees/";
 
@@ -43,7 +48,8 @@ public class CommitteeSearcher {
         for(Triple<String, String, String> committeeTriplet : committeeData){
             log.info("Working on committee " + committeeTriplet);
             // FIXME: What a hack
-            if( committeeTriplet.getFirst().equals("Committee of the Whole")){
+            if( COMMITTEES_TO_SKIP.contains(committeeTriplet.getFirst())){
+                log.info("Skipping " + committeeTriplet);
                 continue;
             }
             String memberUrl = committeeTriplet.getThird();
