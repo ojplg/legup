@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.Committee;
+import org.center4racialjustice.legup.domain.CommitteeMember;
 import org.center4racialjustice.legup.domain.GradeLevel;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
@@ -29,6 +31,8 @@ public class DaoBuilders {
     public static final DaoBuilder<Organization> ORGANIZATIONS = organizationDaoBuilder();
     public static final DaoBuilder<User> USERS = userDaoBuilder();
     public static final AssociationDaoBuilder<User, Organization> USER_ORGANIZATION_ASSOCIATIONS = userOrganizationAssociationDaoBuilder();
+    public static final DaoBuilder<CommitteeMember> COMMITTEE_MEMBERS = committeeMemberDaoBuilder();
+    public static final DaoBuilder<Committee> COMMITTEE = committeeDaoBuilder();
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
@@ -132,5 +136,23 @@ public class DaoBuilders {
                 .withTableName("user_organization_associations")
                 .withLeftColumnName("user_id")
                 .withRightColumnName("organization_id");
+    }
+
+    private static DaoBuilder<CommitteeMember> committeeMemberDaoBuilder(){
+        return new DaoBuilder<>("COMMITTEE_MEMBERS", CommitteeMember::new)
+                .withPrimaryKey("ID", "COMMITTEE_MEMBER_SEQ", CommitteeMember::getId, CommitteeMember::setId)
+                .withParentColumn("COMMITTEE_ID")
+                .withStringColumn("TITLE", CommitteeMember::getTitle, CommitteeMember::setTitle).notNull()
+                .withJoinColumn("LEGISLATOR_ID", CommitteeMember::getLegislator, CommitteeMember::setLegislator, LEGISLATORS).notNull();
+    }
+
+    private static DaoBuilder<Committee> committeeDaoBuilder(){
+        return new DaoBuilder<>("COMMITTEE", Committee::new)
+                .withPrimaryKey("ID", "COMMITTEE_SEQ", Committee::getId, Committee::setId)
+                .withChildren(Committee::getMembers, Committee::setMembers, COMMITTEE_MEMBERS)
+                .withStringColumn("NAME", Committee::getName, Committee::setName).notNull()
+                .withStringColumn("CODE", Committee::getCode, Committee::setCode).notNull()
+                .withStringColumn("COMMITTEE_ID", Committee::getCommitteeId, Committee::setCommitteeId).notNull()
+                .withConvertingStringColumn("CHAMBER", Committee::getChamber, Committee::setChamber, Chamber.Converter).notNull();
     }
 }

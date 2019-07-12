@@ -220,6 +220,27 @@ alter table user_organization_associations add foreign key (user_id) references 
 
 -- changeset ojplg:10
 
+create sequence COMMITTEE_MEMBER_SEQ;
+
+create table COMMITTEE_MEMBERS (
+ID integer primary key,
+COMMITTEE_ID integer not null,
+TITLE text not null,
+LEGISLATOR_ID integer not null);
+
+alter table COMMITTEE_MEMBERS add foreign key (LEGISLATOR_ID)  references LEGISLATORS(ID);
+
+create sequence COMMITTEE_SEQ;
+
+create table COMMITTEE (
+ID integer primary key,
+NAME text not null,
+CODE text not null,
+COMMITTEE_ID text not null,
+CHAMBER text not null);
+
+alter table COMMITTEE_MEMBERS add foreign key (COMMITTEE_ID)  references COMMITTEE(ID);
+
 --alter table bill_actions add column action_date timestamp;
 --alter table bill_actions add column bill_action_type_detail text;
 
