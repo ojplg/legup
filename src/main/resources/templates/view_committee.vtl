@@ -1,0 +1,28 @@
+
+<h4>Committee</h4>
+
+<div>
+<table class="pure-table">
+    <tr><td>$committee.Name</td></tr>
+    <tr><td>$committee.Code</td></tr>
+    <tr><td>$committee.Chamber</td></tr>
+    <tr><td>$committee.SessionNumber</td></tr>
+</table>
+</div>
+
+<br/>
+
+<div>
+<table class="pure-table">
+#foreach ($member in $committee.Members)
+    <tr>
+        <td>
+            $member.Title
+        </td>
+        <td>
+            <a href="/legup/view_legislator_votes?legislator_id=$member.Legislator.Id">$member.Legislator.Display</a>
+        </td>
+    </tr>
+#end
+</table>
+</div>
