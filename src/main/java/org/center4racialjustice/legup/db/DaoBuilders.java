@@ -147,11 +147,12 @@ public class DaoBuilders {
     }
 
     private static DaoBuilder<Committee> committeeDaoBuilder(){
-        return new DaoBuilder<>("COMMITTEE", Committee::new)
+        return new DaoBuilder<>("COMMITTEES", Committee::new)
                 .withPrimaryKey("ID", "COMMITTEE_SEQ", Committee::getId, Committee::setId)
                 .withChildren(Committee::getMembers, Committee::setMembers, COMMITTEE_MEMBERS)
                 .withStringColumn("NAME", Committee::getName, Committee::setName).notNull()
                 .withStringColumn("CODE", Committee::getCode, Committee::setCode).notNull()
+                .withLongColumn("SESSION_NUMBER", Committee::getSessionNumber, Committee::setSessionNumber).notNull()
                 .withStringColumn("COMMITTEE_ID", Committee::getCommitteeId, Committee::setCommitteeId).notNull()
                 .withConvertingStringColumn("CHAMBER", Committee::getChamber, Committee::setChamber, Chamber.Converter).notNull();
     }

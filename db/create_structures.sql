@@ -232,14 +232,15 @@ alter table COMMITTEE_MEMBERS add foreign key (LEGISLATOR_ID)  references LEGISL
 
 create sequence COMMITTEE_SEQ;
 
-create table COMMITTEE (
+create table COMMITTEES (
 ID integer primary key,
 NAME text not null,
 CODE text not null,
 COMMITTEE_ID text not null,
+SESSION_NUMBER integer not null,
 CHAMBER text not null);
 
-alter table COMMITTEE_MEMBERS add foreign key (COMMITTEE_ID)  references COMMITTEE(ID);
+alter table COMMITTEE_MEMBERS add foreign key (COMMITTEE_ID)  references COMMITTEES(ID);
 
 --alter table bill_actions add column action_date timestamp;
 --alter table bill_actions add column bill_action_type_detail text;

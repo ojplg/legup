@@ -1,0 +1,16 @@
+
+<h4>$chamber Committees</h4>
+
+<div>
+    <table class="pure-table">
+        <tbody>
+            #foreach ($committee in $committees)
+            <tr>
+                <td>$committee.Id</td>
+                <td><a href="/legup/view_committee?committee_id=$committee.Id">$committee.Name</a></td>
+                <td>$committee.Code</td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>

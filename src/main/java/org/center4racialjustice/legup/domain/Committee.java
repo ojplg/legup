@@ -13,6 +13,7 @@ public class Committee {
     private Chamber chamber;
     private String code;
     private String committeeId;
+    private Long sessionNumber;
     private List<CommitteeMember> members;
 
     public int getMemberCount(){

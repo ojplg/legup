@@ -40,6 +40,16 @@
                     #end
                 </ul>
             </div>
+            <div>
+                Committees
+                <ul>
+                    #foreach ($committee in $committees)
+                        <li>
+                            <a href="/legup/view_committees?session_number=$committee.First&chamber=$committee.Second">$committee.First - $committee.Second</a>
+                        </li>
+                    #end
+                </ul>
+            </div>
         </div>
 
         <div class="pure-u-1-3">

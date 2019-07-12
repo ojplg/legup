@@ -28,11 +28,13 @@ public class CommitteeSearcher {
     private final Chamber chamber;
     private final NameParser nameParser;
     private final List<Legislator> legislators;
+    private long sessionNumber;
 
-    public CommitteeSearcher(Chamber chamber, NameParser nameParser, List<Legislator> legislators) {
+    public CommitteeSearcher(Chamber chamber, NameParser nameParser, List<Legislator> legislators, long sessionNumber) {
         this.chamber = chamber;
         this.nameParser = nameParser;
         this.legislators = legislators;
+        this.sessionNumber = sessionNumber;
     }
 
     private String formUrl(){
@@ -72,6 +74,7 @@ public class CommitteeSearcher {
             committee.setName(committeeTriplet.getFirst());
             committee.setCode(committeeTriplet.getSecond());
             committeeList.add(committee);
+            committee.setSessionNumber(sessionNumber);
         }
         return committeeList;
     }

@@ -33,7 +33,7 @@ public class ViewParsedCommittees implements Responder {
 
         List<Legislator> legislators = legislatorPersistence.readLegislators(chamber, sessionNumber);
 
-        CommitteeSearcher searcher = new CommitteeSearcher(chamber, nameParser, legislators);
+        CommitteeSearcher searcher = new CommitteeSearcher(chamber, nameParser, legislators, sessionNumber);
         List<Committee> found = searcher.search();
 
         String oneTimeKey = submission.setObject(LegupSession.CommitteeDataKey, found);
