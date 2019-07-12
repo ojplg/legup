@@ -17,7 +17,7 @@
         #foreach ($committee in $committees)
             <tr>
                 <td>${committee.getMembership($legislator).getTitle()}</td>
-                <td>$committee.Name</td>
+                <td><a href="/legup/view_committee?committee_id=$committee.Id">$committee.Name</a></td>
                 <td>$committee.Code</td>
             </tr>
         #end
