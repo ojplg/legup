@@ -1,23 +1,30 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.util.Lists;
 
+import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 public class BillAction {
 
-    public static final Comparator<BillAction> ByLegislatorComparator = Comparator.comparing(BillAction::getLegislator);
+//    public static final Comparator<BillAction> ByLegislatorComparator = Comparator.comparing(BillAction::getLegislator);
     public static final Comparator<BillAction> ByBillComparator = Comparator.comparing(BillAction::getBill);
 
     private Long id;
     private Bill bill;
-    private Legislator legislator;
+//    private Legislator legislator;
     private BillActionType billActionType;
-    private String billActionDetail;
+//    private String billActionDetail;
+    private String rawActionData;
+    private LocalDate actionDate;
     private BillActionLoad billActionLoad;
+
+    private List<LegislatorBillAction> legislatorBillActions;
 
     public boolean isVote(){
         return BillActionType.VOTE.equals(billActionType);
@@ -32,18 +39,18 @@ public class BillAction {
     }
 
     public int score(VoteSide preferredSide){
-        int scoreValue = BillActionType.scoreValue(billActionType);
-        if( BillActionType.VOTE.equals(billActionType)){
-            VoteSide recordedSide = VoteSide.fromCode(billActionDetail);
-            if( recordedSide == VoteSide.NotVoting || recordedSide == VoteSide.Present ){
-                return 0;
-            } else {
-                return preferredSide == recordedSide ? scoreValue : -scoreValue;
-            }
-        } else if (BillActionType.SPONSOR.equals(billActionType)
-                || BillActionType.CHIEF_SPONSOR.equals(billActionType)){
-            return VoteSide.Yea.equals(preferredSide) ? scoreValue : -scoreValue;
-        }
+//        int scoreValue = BillActionType.scoreValue(billActionType);
+//        if( BillActionType.VOTE.equals(billActionType)){
+//            VoteSide recordedSide = VoteSide.fromCode(billActionDetail);
+//            if( recordedSide == VoteSide.NotVoting || recordedSide == VoteSide.Present ){
+//                return 0;
+//            } else {
+//                return preferredSide == recordedSide ? scoreValue : -scoreValue;
+//            }
+//        } else if (BillActionType.SPONSOR.equals(billActionType)
+//                || BillActionType.CHIEF_SPONSOR.equals(billActionType)){
+//            return VoteSide.Yea.equals(preferredSide) ? scoreValue : -scoreValue;
+//        }
         throw new RuntimeException("No way to score " + billActionType);
     }
 
@@ -51,9 +58,9 @@ public class BillAction {
         BillAction billAction = new BillAction();
         billAction.setId(vote.getId());
         billAction.setBill(vote.getBill());
-        billAction.setLegislator(vote.getLegislator());
+//        billAction.setLegislator(vote.getLegislator());
         billAction.setBillActionType(BillActionType.VOTE);
-        billAction.setBillActionDetail(vote.getVoteSide().getCode());
+//        billAction.setBillActionDetail(vote.getVoteSide().getCode());
         billAction.setBillActionLoad(vote.getBillActionLoad());
         return billAction;
     }
@@ -65,10 +72,14 @@ public class BillAction {
         Vote vote = new Vote();
         vote.setId(id);
         vote.setBill(bill);
-        vote.setLegislator(legislator);
-        vote.setVoteSide(VoteSide.fromCode(billActionDetail));
+//        vote.setLegislator(legislator);
+//        vote.setVoteSide(VoteSide.fromCode(billActionDetail));
         vote.setBillActionLoad(billActionLoad);
         return vote;
+    }
+
+    public LegislatorBillAction getLegislatorAction(Legislator legislator){
+        return Lists.findfirst(legislatorBillActions, legislatorBillAction -> legislator.equals(legislatorBillAction.getLegislator()));
     }
 
     public static List<Vote> filterAndConvertToVotes(List<BillAction> actions){

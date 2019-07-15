@@ -1,19 +1,29 @@
 package org.center4racialjustice.legup.db;
 
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.hrorm.Operator;
 
 import java.sql.Connection;
 import java.util.List;
 
+import static org.hrorm.Operator.EQUALS;
+import static org.hrorm.Where.inLong;
+import static org.hrorm.Where.where;
+
 public class BillActionDao {
     private final Dao<BillAction> innerDao;
+    // FIXME: this kind of sucks
+    private final Dao<LegislatorBillAction> legislatorBillActionDao;
 
     public BillActionDao(Connection connection) {
+
         this.innerDao = DaoBuilders.BILL_ACTIONS.buildDao(connection);
+        this.legislatorBillActionDao = DaoBuilders.LEGISLATOR_BILL_ACTIONS.buildDao(connection);
     }
 
     public long insert(BillAction billAction){
@@ -21,11 +31,10 @@ public class BillActionDao {
     }
 
     public List<BillAction> readByLegislator(Legislator legislator){
+        List<Long> billActionIds = legislatorBillActionDao.selectDistinct("bill_action_id",
+            where("legislator_id", EQUALS, legislator.getId()));
 
-        BillAction billAction = new BillAction();
-        billAction.setLegislator(legislator);
-
-        return innerDao.select(billAction, "LEGISLATOR_ID");
+        return innerDao.select(inLong("ID", billActionIds));
     }
 
     public List<BillAction> readByBill(Bill bill){

@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
@@ -43,7 +44,8 @@ public class ViewBillSponsors implements Responder {
             List<BillAction> billActions =  billActionDao.readByBill(bill);
             List<Legislator> sponsors = billActions.stream()
                     .filter(act -> act.getBillActionType().equals(BillActionType.SPONSOR))
-                    .map(BillAction::getLegislator)
+                    .flatMap(act -> act.getLegislatorBillActions().stream())
+                    .map(LegislatorBillAction::getLegislator)
                     .collect(Collectors.toList());
 
             Tuple<List<Legislator>, List<Legislator>> sponsorsTuple =
@@ -55,7 +57,8 @@ public class ViewBillSponsors implements Responder {
 
             List<Legislator> chiefSponsors = billActions.stream()
                     .filter(act -> act.getBillActionType().equals(BillActionType.CHIEF_SPONSOR))
-                    .map(BillAction::getLegislator)
+                    .flatMap(act -> act.getLegislatorBillActions().stream())
+                    .map(LegislatorBillAction::getLegislator)
                     .collect(Collectors.toList());
             Tuple<List<Legislator>, List<Legislator>> chiefSponsorsTuple =
                     Lists.divide(chiefSponsors, leg -> leg.getChamber().equals(Chamber.House));

@@ -23,7 +23,8 @@ public class BillActionSummary {
     public List<Legislator> getSponsors(Chamber chamber){
         return billActions.stream()
             .filter(action -> action.getBillActionType().equals(BillActionType.SPONSOR))
-            .map(action -> action.getLegislator())
+            .flatMap(action -> action.getLegislatorBillActions().stream())
+            .map(LegislatorBillAction::getLegislator)
             .filter(legislator -> legislator.getChamber().equals(chamber))
             .collect(Collectors.toList());
     }
@@ -31,7 +32,8 @@ public class BillActionSummary {
     public Legislator getChiefSponsor(Chamber chamber){
         List<Legislator> chiefs = billActions.stream()
                 .filter(action -> action.getBillActionType().equals(BillActionType.CHIEF_SPONSOR))
-                .map(action -> action.getLegislator())
+                .flatMap(action -> action.getLegislatorBillActions().stream())
+                .map(LegislatorBillAction::getLegislator)
                 .collect(Collectors.toList());
         return Lists.findfirst(chiefs, legislator -> legislator.getChamber().equals(chamber));
     }

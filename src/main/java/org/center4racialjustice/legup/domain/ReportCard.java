@@ -58,8 +58,10 @@ public class ReportCard {
             }
 
             int score = action.score(factor.getVoteSide());
-            if ( isIncludedLegislator(action.getLegislator())) {
-                scoreTable.merge(action.getLegislator(), bill, score, ScoreComputer);
+            for( LegislatorBillAction legislatorBillAction : action.getLegislatorBillActions() ) {
+                if (isIncludedLegislator(legislatorBillAction.getLegislator())) {
+                    scoreTable.merge(legislatorBillAction.getLegislator(), bill, score, ScoreComputer);
+                }
             }
         }
 

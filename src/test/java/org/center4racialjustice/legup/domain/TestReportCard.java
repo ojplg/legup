@@ -198,29 +198,42 @@ public class TestReportCard {
     private static long id = 1;
 
     private static BillAction newSponsor(Bill bill, Legislator legislator){
+        LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+        legislatorBillAction.setLegislator(legislator);
+        legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.SPONSOR);
+
         BillAction action = new BillAction();
         action.setBillActionType(BillActionType.SPONSOR);
         action.setBill(bill);
-        action.setLegislator(legislator);
         action.setId(nextId());
+        action.setLegislatorBillActions(Arrays.asList(legislatorBillAction));
+
         return action;
     }
 
     private static BillAction newChiefSponsor(Bill bill, Legislator legislator){
+        LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+        legislatorBillAction.setLegislator(legislator);
+        legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.CHIEF_SPONSOR);
+
         BillAction action = new BillAction();
         action.setBillActionType(BillActionType.CHIEF_SPONSOR);
         action.setBill(bill);
-        action.setLegislator(legislator);
+        action.setLegislatorBillActions(Arrays.asList(legislatorBillAction));
         action.setId(nextId());
         return action;
     }
 
     private static BillAction newVote(Bill bill, Legislator legislator, VoteSide voteSide){
+        LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+        legislatorBillAction.setLegislator(legislator);
+        legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.VOTE);
+        legislatorBillAction.setVoteSide(voteSide);
+
         BillAction action = new BillAction();
         action.setBillActionType(BillActionType.VOTE);
         action.setBill(bill);
-        action.setLegislator(legislator);
-        action.setBillActionDetail(voteSide.getCode());
+        action.setLegislatorBillActions(Arrays.asList(legislatorBillAction));
         action.setId(nextId());
         return action;
     }

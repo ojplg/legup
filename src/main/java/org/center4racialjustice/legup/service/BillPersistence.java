@@ -12,6 +12,7 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.SponsorSaveResults;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillActionLoads;
@@ -178,12 +179,14 @@ public class BillPersistence {
             LookupTable<Legislator, String, String> billActionTable = new LookupTable<>();
 
             for (BillAction billAction : billActions) {
-                Legislator leg = billAction.getLegislator();
-                if (billAction.isVote()) {
-                    Vote vote = billAction.asVote();
-                    billActionTable.put(leg, "Vote", vote.getVoteSide().getDisplayString());
-                } else {
-                    billActionTable.put(leg, billAction.getBillActionType().getCode(), "Check");
+                for (LegislatorBillAction legislatorBillAction : billAction.getLegislatorBillActions()) {
+                    Legislator leg = legislatorBillAction.getLegislator();
+                    if (billAction.isVote()) {
+                        Vote vote = billAction.asVote();
+                        billActionTable.put(leg, "Vote", vote.getVoteSide().getDisplayString());
+                    } else {
+                        billActionTable.put(leg, billAction.getBillActionType().getCode(), "Check");
+                    }
                 }
             }
             return billActionTable;
@@ -251,7 +254,6 @@ public class BillPersistence {
                                 BillActionLoad billActionLoad, BillActionType billActionType){
         BillAction billAction = new BillAction();
         billAction.setBill(billActionLoad.getBill());
-        billAction.setLegislator(legislator);
         billAction.setBillActionLoad(billActionLoad);
         billAction.setBillActionType(billActionType);
 

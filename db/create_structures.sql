@@ -242,8 +242,25 @@ CHAMBER text not null);
 
 alter table COMMITTEE_MEMBERS add foreign key (COMMITTEE_ID)  references COMMITTEES(ID);
 
---alter table bill_actions add column action_date timestamp;
---alter table bill_actions add column bill_action_type_detail text;
+-- changeset ojplg:11
 
---alter table bill_actions drop constraint uniq_bill_action;
---alter table bill_actions add constraint uniq_bill_action unique (bill_id, legislator_id, bill_action_type, bill_action_type_detail);
+alter table bill_actions add column action_date timestamp;
+alter table bill_actions add column raw_action_data text;
+
+create sequence legislator_bill_action_seq start 1;
+
+create table legislator_bill_actions (
+id integer primary key,
+bill_action_id integer not null,
+legislator_id integer not null,
+legislator_bill_action_type text not null,
+vote_side text
+);
+
+insert into legislator_bill_actions
+(id, bill_action_id, legislator_id, legislator_bill_action_type, vote_direction)
+select nextval('legislator_bill_action_seq'), id, legislator_id, bill_action_type, bill_action_detail from bill_actions;
+
+alter table bill_actions drop constraint uniq_bill_action;
+alter table bill_actions drop column legislator_id;
+alter table bill_actions drop column bill_action_detail;

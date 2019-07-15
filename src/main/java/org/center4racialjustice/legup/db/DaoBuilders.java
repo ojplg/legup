@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.db;
 import org.center4racialjustice.legup.domain.Committee;
 import org.center4racialjustice.legup.domain.CommitteeMember;
 import org.center4racialjustice.legup.domain.GradeLevel;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.hrorm.AssociationDaoBuilder;
@@ -33,6 +34,7 @@ public class DaoBuilders {
     public static final AssociationDaoBuilder<User, Organization> USER_ORGANIZATION_ASSOCIATIONS = userOrganizationAssociationDaoBuilder();
     public static final DaoBuilder<CommitteeMember> COMMITTEE_MEMBERS = committeeMemberDaoBuilder();
     public static final DaoBuilder<Committee> COMMITTEE = committeeDaoBuilder();
+    public static final DaoBuilder<LegislatorBillAction> LEGISLATOR_BILL_ACTIONS = legislatorBillActionDaoBuilder();
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
@@ -107,9 +109,7 @@ public class DaoBuilders {
         return new DaoBuilder<>("BILL_ACTIONS", BillAction::new)
                 .withPrimaryKey("ID", "bill_action_seq", BillAction::getId, BillAction::setId)
                 .withConvertingStringColumn("BILL_ACTION_TYPE", BillAction::getBillActionType, BillAction::setBillActionType, BillActionType.CONVERTER)
-                .withStringColumn("BILL_ACTION_DETAIL", BillAction::getBillActionDetail, BillAction::setBillActionDetail)
                 .withJoinColumn("BILL_ID", BillAction::getBill, BillAction::setBill, BILLS)
-                .withJoinColumn("LEGISLATOR_ID", BillAction::getLegislator, BillAction::setLegislator, LEGISLATORS)
                 .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS);
 
     }
@@ -155,5 +155,12 @@ public class DaoBuilders {
                 .withLongColumn("SESSION_NUMBER", Committee::getSessionNumber, Committee::setSessionNumber).notNull()
                 .withStringColumn("COMMITTEE_ID", Committee::getCommitteeId, Committee::setCommitteeId).notNull()
                 .withConvertingStringColumn("CHAMBER", Committee::getChamber, Committee::setChamber, Chamber.Converter).notNull();
+    }
+
+    private static DaoBuilder<LegislatorBillAction> legislatorBillActionDaoBuilder(){
+        return new DaoBuilder<>("legislator_bill_action", LegislatorBillAction::new)
+                .withPrimaryKey("ID", "legislator_bill_action_seq", LegislatorBillAction::getId, LegislatorBillAction::setId)
+                .withParentColumn("bill_action_id")
+                .withJoinColumn("legislator_id", LegislatorBillAction::getLegislator, LegislatorBillAction::setLegislator, LEGISLATORS);
     }
 }

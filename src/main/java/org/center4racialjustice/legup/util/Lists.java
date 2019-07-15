@@ -56,4 +56,15 @@ public class Lists {
         return items.stream().map(mapper).collect(Collectors.toList());
     }
 
+    public static <T,M> List<M> mapWithoutNulls(List<T> items, Function<T,M> mapper){
+        List<M> mapped = new ArrayList<>();
+        for(T item : items){
+            M m = mapper.apply(item);
+            if ( m != null ){
+                mapped.add(m);
+            }
+        }
+        return mapped;
+    }
+
 }

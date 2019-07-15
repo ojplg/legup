@@ -1,17 +1,19 @@
 package org.center4racialjustice.legup.domain;
 
+import com.google.common.collect.Multimap;
 import org.center4racialjustice.legup.util.LookupTable;
 
 import java.util.List;
+import java.util.Map;
 
 public class ReportCardLegislatorAnalysis {
 
     private final ReportCard card;
     private final Legislator legislator;
     private final Grade grade;
-    private final List<BillAction> actions;
+    private final Multimap<Bill,LegislatorBillAction> actions;
 
-    public ReportCardLegislatorAnalysis(ReportCard card, Legislator legislator, Grade grade, List<BillAction> actions) {
+    public ReportCardLegislatorAnalysis(ReportCard card, Legislator legislator, Grade grade, Multimap<Bill,LegislatorBillAction> actions) {
         this.card = card;
         this.legislator = legislator;
         this.grade = grade;
@@ -26,19 +28,17 @@ public class ReportCardLegislatorAnalysis {
         return grade;
     }
 
-    public LookupTable<Bill, BillActionType, String> supportedBillDetails(){
-        LookupTable<Bill, BillActionType, String> table = new LookupTable<>();
+    public LookupTable<Bill, LegislatorBillActionType, String> supportedBillDetails(){
+        LookupTable<Bill, LegislatorBillActionType, String> table = new LookupTable<>();
 
         for(Bill bill : card.supportedBills()){
-            for(BillAction action : actions){
-                if( action.getBill().equals(bill)){
-                    if( action.isVote() ){
-                        String voteNote = action.getBillActionDetail().equals(VoteSide.YeaCode) ?
-                                "Good" : "Bad";
-                        table.put(bill, BillActionType.VOTE, voteNote);
-                    } else {
-                        table.put(bill, action.getBillActionType(), "Good");
-                    }
+            for(LegislatorBillAction action : actions.get(bill)){
+                if( action.isVote() ){
+                    String voteNote = action.getVoteSide().equals(VoteSide.YeaCode) ?
+                            "Good" : "Bad";
+                    table.put(bill, LegislatorBillActionType.VOTE, voteNote);
+                } else {
+                    table.put(bill, action.getLegislatorBillActionType(), "Good");
                 }
             }
         }
@@ -46,20 +46,18 @@ public class ReportCardLegislatorAnalysis {
         return table;
     }
 
-    public LookupTable<Bill, BillActionType, String> opposedBillDetails(){
-        LookupTable<Bill, BillActionType, String> table = new LookupTable<>();
+    public LookupTable<Bill, LegislatorBillActionType, String> opposedBillDetails(){
+        LookupTable<Bill, LegislatorBillActionType, String> table = new LookupTable<>();
 
         for(Bill bill : card.opposedBills()){
-            for(BillAction action : actions){
-                if( action.getBill().equals(bill)){
+            for(LegislatorBillAction action : actions.get(bill)){
                     if( action.isVote() ){
-                        String voteNote = action.getBillActionDetail().equals(VoteSide.NayCode) ?
+                        String voteNote = action.getVoteSide().equals(VoteSide.NayCode) ?
                                 "Good" : "Bad";
-                        table.put(bill, BillActionType.VOTE, voteNote);
+                        table.put(bill, LegislatorBillActionType.VOTE, voteNote);
                     } else {
-                        table.put(bill, action.getBillActionType(), "Bad");
+                        table.put(bill, action.getLegislatorBillActionType(), "Bad");
                     }
-                }
             }
         }
 

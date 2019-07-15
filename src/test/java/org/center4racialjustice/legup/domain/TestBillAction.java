@@ -8,7 +8,7 @@ public class TestBillAction {
     @Test
     public void testScoreCorrectVote(){
         BillAction action = new BillAction();
-        action.setBillActionDetail(VoteSide.Yea.getCode());
+//        action.setBillActionDetail(VoteSide.Yea.getCode());
         action.setBillActionType(BillActionType.VOTE);
 
         int score = action.score(VoteSide.Yea);
@@ -19,7 +19,7 @@ public class TestBillAction {
     @Test
     public void testScoreCorrectVoteNo(){
         BillAction action = new BillAction();
-        action.setBillActionDetail(VoteSide.Nay.getCode());
+//        action.setBillActionDetail(VoteSide.Nay.getCode());
         action.setBillActionType(BillActionType.VOTE);
 
         int score = action.score(VoteSide.Nay);
@@ -31,7 +31,7 @@ public class TestBillAction {
     @Test
     public void testScoreWrongVote(){
         BillAction action = new BillAction();
-        action.setBillActionDetail(VoteSide.Yea.getCode());
+//        action.setBillActionDetail(VoteSide.Yea.getCode());
         action.setBillActionType(BillActionType.VOTE);
 
         int score = action.score(VoteSide.Nay);
@@ -42,7 +42,7 @@ public class TestBillAction {
     @Test
     public void testScoreWrongVote_Yea(){
         BillAction action = new BillAction();
-        action.setBillActionDetail(VoteSide.Nay.getCode());
+//        action.setBillActionDetail(VoteSide.Nay.getCode());
         action.setBillActionType(BillActionType.VOTE);
 
         int score = action.score(VoteSide.Yea);
@@ -53,7 +53,7 @@ public class TestBillAction {
     @Test
     public void testScoreNotVoting(){
         BillAction action = new BillAction();
-        action.setBillActionDetail(VoteSide.NotVoting.getCode());
+//        action.setBillActionDetail(VoteSide.NotVoting.getCode());
         action.setBillActionType(BillActionType.VOTE);
 
         int score = action.score(VoteSide.Yea);
@@ -64,7 +64,7 @@ public class TestBillAction {
     @Test
     public void testScorePresent(){
         BillAction action = new BillAction();
-        action.setBillActionDetail(VoteSide.Present.getCode());
+//        action.setBillActionDetail(VoteSide.Present.getCode());
         action.setBillActionType(BillActionType.VOTE);
 
         int score = action.score(VoteSide.Yea);
