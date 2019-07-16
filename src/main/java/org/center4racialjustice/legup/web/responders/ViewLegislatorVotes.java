@@ -36,7 +36,7 @@ public class ViewLegislatorVotes implements Responder {
             BillActionDao billActionDao = new BillActionDao(connection);
 
             List<BillAction> billActions = billActionDao.readByLegislator(legislator);
-            BillActionCollator collator = new BillActionCollator(billActions);
+            BillActionCollator collator = new BillActionCollator(billActions, legislator);
 
             HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks(legislator.getSessionNumber()));
             response.putVelocityData("votes", collator.getVotes());

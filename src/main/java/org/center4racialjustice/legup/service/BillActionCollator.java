@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.DisplayAction;
+import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.Vote;
@@ -12,27 +14,36 @@ import java.util.List;
 
 public class BillActionCollator {
 
-    private final List<LegislatorBillAction> votes;
-    private final List<LegislatorBillAction> sponsorships;
-    private final List<LegislatorBillAction> chiefSponsorships;
+    private final List<DisplayAction> votes;
+    private final List<DisplayAction> sponsorships;
+    private final List<DisplayAction> chiefSponsorships;
 
     public BillActionCollator(List<BillAction> actions){
+        this(actions, null);
+    }
 
-        List<LegislatorBillAction> votes = new ArrayList<>();
-        List<LegislatorBillAction> sponsorships = new ArrayList<>();
-        List<LegislatorBillAction> chiefSponsorships = new ArrayList<>();
+    public BillActionCollator(List<BillAction> actions, Legislator legislator){
+        List<DisplayAction> votes = new ArrayList<>();
+        List<DisplayAction> sponsorships = new ArrayList<>();
+        List<DisplayAction> chiefSponsorships = new ArrayList<>();
 
         for(BillAction action : actions){
             for( LegislatorBillAction legislatorBillAction : action.getLegislatorBillActions()) {
+                if( legislator != null ){
+                    if ( ! legislator.equals(legislatorBillAction.getLegislator()) ){
+                        continue;
+                    }
+                }
+                DisplayAction displayAction = new DisplayAction(action, legislatorBillAction);
                 switch (legislatorBillAction.getLegislatorBillActionType().getCode()) {
                     case LegislatorBillActionType.VoteCode:
-                        votes.add(legislatorBillAction);
+                        votes.add(displayAction);
                         break;
                     case LegislatorBillActionType.SponsorCode:
-                        sponsorships.add(legislatorBillAction);
+                        sponsorships.add(displayAction);
                         break;
                     case LegislatorBillActionType.ChiefSponsorCode:
-                        chiefSponsorships.add(legislatorBillAction);
+                        chiefSponsorships.add(displayAction);
                         break;
                     default:
                         throw new RuntimeException("Unknown bill action type " + action.getBillActionType());
@@ -40,25 +51,25 @@ public class BillActionCollator {
             }
         }
 
-        // FIXME: Sorting was probably good ...
-//        votes.sort(Vote.ByBillComparator);
-//        sponsorships.sort(BillAction.ByBillComparator);
-//        chiefSponsorships.sort(BillAction.ByBillComparator);
+        votes.sort(DisplayAction.ByBillComparator);
+        sponsorships.sort(DisplayAction.ByBillComparator);
+        chiefSponsorships.sort(DisplayAction.ByBillComparator);
 
         this.votes = Collections.unmodifiableList(votes);
         this.sponsorships = Collections.unmodifiableList(sponsorships);
         this.chiefSponsorships = Collections.unmodifiableList(chiefSponsorships);
+
     }
 
-    public List<LegislatorBillAction> getVotes() {
+    public List<DisplayAction> getVotes() {
         return votes;
     }
 
-    public List<LegislatorBillAction> getSponsorships() {
+    public List<DisplayAction> getSponsorships() {
         return sponsorships;
     }
 
-    public List<LegislatorBillAction> getChiefSponsorships() {
+    public List<DisplayAction> getChiefSponsorships() {
         return chiefSponsorships;
     }
 }
