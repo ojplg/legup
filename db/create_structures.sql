@@ -258,7 +258,7 @@ vote_side text
 );
 
 insert into legislator_bill_actions
-(id, bill_action_id, legislator_id, legislator_bill_action_type, vote_direction)
+(id, bill_action_id, legislator_id, legislator_bill_action_type, vote_side)
 select nextval('legislator_bill_action_seq'), id, legislator_id, bill_action_type, bill_action_detail from bill_actions;
 
 alter table bill_actions drop constraint uniq_bill_action;

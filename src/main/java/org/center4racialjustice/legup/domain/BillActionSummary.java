@@ -13,11 +13,12 @@ public class BillActionSummary {
         this.billActions = billActions;
     }
 
-    public List<Vote> getVotes(Chamber chamber, VoteSide voteSide){
-        List<Vote> votes = BillAction.filterAndConvertToVotes(billActions);
-        List<Vote> filtered = votes.stream().filter(v -> v.matches(chamber, voteSide)).collect(Collectors.toList());
-        filtered.sort(Vote.ByLegislatorComparator);
-        return filtered;
+    public List<Legislator> getVotes(Chamber chamber, VoteSide voteSide){
+        return billActions.stream()
+                .filter(action -> action.getBillActionType().equals(BillActionType.VOTE))
+                .flatMap(action -> action.getLegislatorBillActions().stream())
+                .map(LegislatorBillAction::getLegislator)
+                .collect(Collectors.toList());
     }
 
     public List<Legislator> getSponsors(Chamber chamber){

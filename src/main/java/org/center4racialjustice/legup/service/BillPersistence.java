@@ -13,6 +13,7 @@ import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
+import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.SponsorSaveResults;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillActionLoads;
@@ -181,9 +182,9 @@ public class BillPersistence {
             for (BillAction billAction : billActions) {
                 for (LegislatorBillAction legislatorBillAction : billAction.getLegislatorBillActions()) {
                     Legislator leg = legislatorBillAction.getLegislator();
+                    // FIXME: Need to do the write thing with votes here
                     if (billAction.isVote()) {
-                        Vote vote = billAction.asVote();
-                        billActionTable.put(leg, "Vote", vote.getVoteSide().getDisplayString());
+                        billActionTable.put(leg, "Vote",legislatorBillAction.getVoteSide().getDisplayString());
                     } else {
                         billActionTable.put(leg, billAction.getBillActionType().getCode(), "Check");
                     }
@@ -199,12 +200,20 @@ public class BillPersistence {
         deleteOldActionRecords(billActionDao, billActionLoad);
 
         int savedCount = 0;
+
+        List<LegislatorBillAction> legislatorBillActions = new ArrayList<>();
         for (CollatedVote collatedVote : votes) {
-            Vote vote = collatedVote.asVote(billActionLoad);
-            BillAction billAction = BillAction.fromVote(vote);
-            billActionDao.insert(billAction);
-            savedCount++;
+            LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+            legislatorBillAction.setLegislator(collatedVote.getLegislator());
+            legislatorBillAction.setVoteSide(collatedVote.getVoteSide());
+            legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.VOTE);
+            legislatorBillActions.add(legislatorBillAction);
         }
+        // TODO: Fill out the rest of the BillAction ... somehow
+        BillAction billAction = new BillAction();
+        billAction.setLegislatorBillActions(legislatorBillActions);
+        billActionDao.insert(billAction);
+
         return savedCount;
     }
 

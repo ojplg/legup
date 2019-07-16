@@ -110,7 +110,9 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "bill_action_seq", BillAction::getId, BillAction::setId)
                 .withConvertingStringColumn("BILL_ACTION_TYPE", BillAction::getBillActionType, BillAction::setBillActionType, BillActionType.CONVERTER)
                 .withJoinColumn("BILL_ID", BillAction::getBill, BillAction::setBill, BILLS)
-                .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS);
+                .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS)
+                .withInstantColumn("ACTION_DATE", BillAction::getActionDate, BillAction::setActionDate)
+                .withStringColumn("RAW_ACTION_DATA", BillAction::getRawActionData, BillAction::setRawActionData);
 
     }
 
@@ -161,6 +163,7 @@ public class DaoBuilders {
         return new DaoBuilder<>("legislator_bill_action", LegislatorBillAction::new)
                 .withPrimaryKey("ID", "legislator_bill_action_seq", LegislatorBillAction::getId, LegislatorBillAction::setId)
                 .withParentColumn("bill_action_id")
-                .withJoinColumn("legislator_id", LegislatorBillAction::getLegislator, LegislatorBillAction::setLegislator, LEGISLATORS);
+                .withJoinColumn("legislator_id", LegislatorBillAction::getLegislator, LegislatorBillAction::setLegislator, LEGISLATORS)
+                .withConvertingStringColumn("vote_side", LegislatorBillAction::getVoteSide, LegislatorBillAction::setVoteSide, new VoteSideConverter());
     }
 }

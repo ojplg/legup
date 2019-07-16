@@ -36,10 +36,9 @@ public class ReportCardBillAnalysis {
     }
 
     public List<Tuple<Grade, Legislator>> getGradedLegislators(Chamber chamber, VoteSide voteSide){
-        List<Vote> votes = billActionSummary.getVotes(chamber, voteSide);
+        List<Legislator> votes = billActionSummary.getVotes(chamber, voteSide);
         List<Tuple<Grade, Legislator>> gradedLegislators = new ArrayList<>();
-        for(Vote vote : votes){
-            Legislator legislator = vote.getLegislator();
+        for(Legislator legislator : votes){
             Grade grade = legislatorScores.get(legislator);
             // small report cards may not have a grade for every legislator
             if (grade != null) {
