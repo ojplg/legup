@@ -15,9 +15,9 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.SponsorSaveResults;
-import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
+import org.center4racialjustice.legup.illinois.BillVotesResults;
 import org.center4racialjustice.legup.illinois.CollatedVote;
 import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.SponsorNames;
@@ -127,9 +127,9 @@ public class BillPersistence {
                 BillSearchResults.MatchStatus matchStatus = billSearchResults.getVoteMatchStatus(key);
                 if( matchStatus == BillSearchResults.MatchStatus.NoPriorValues){
                     BillActionLoad load = billSearchResults.createVoteBillActionLoad(bill, key);
-                    List<CollatedVote> votes = billSearchResults.getCollatedVotes(key);
+                    BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(key);
                     billActionLoadDao.insert(load);
-                    saveVotes(connection, load, votes);
+                    saveVotes(connection, load, billVotesResults);
                 } else if ( matchStatus == BillSearchResults.MatchStatus.UnmatchedValues || forceSave ){
                     log.warn("Need to resave: " + key);
                 }
@@ -194,10 +194,12 @@ public class BillPersistence {
         });
     }
 
-    private int saveVotes(Connection connection, BillActionLoad billActionLoad, List<CollatedVote> votes) {
+    private int saveVotes(Connection connection, BillActionLoad billActionLoad, BillVotesResults billVotesResults) {
         BillActionDao billActionDao = new BillActionDao(connection);
 
         deleteOldActionRecords(billActionDao, billActionLoad);
+
+        List<CollatedVote> votes = billVotesResults.getCollatedVotes();
 
         int savedCount = 0;
 
@@ -209,9 +211,14 @@ public class BillPersistence {
             legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.VOTE);
             legislatorBillActions.add(legislatorBillAction);
         }
-        // TODO: Fill out the rest of the BillAction ... somehow
+
         BillAction billAction = new BillAction();
+        billAction.setBillActionType(BillActionType.VOTE);
+        billAction.setBill(billActionLoad.getBill());
         billAction.setLegislatorBillActions(legislatorBillActions);
+        billAction.setRawActionData(billVotesResults.getRawData());
+        billAction.setActionDate(billVotesResults.getActionDate());
+
         billActionDao.insert(billAction);
 
         return savedCount;

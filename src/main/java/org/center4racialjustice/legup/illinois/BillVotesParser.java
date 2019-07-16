@@ -375,8 +375,6 @@ public class BillVotesParser {
         for(int idx=0; idx<lines.length; idx++) {
             String line = lines[idx];
 
-//            System.out.println("LINE " + line);
-
             boolean ignore = false;
             for (String ignoreLine : ignoreLines) {
                 if (line.contains(ignoreLine)) {

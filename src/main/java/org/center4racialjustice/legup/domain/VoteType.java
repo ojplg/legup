@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public class VoteType {
 
-    private final String description;
+    private final String rawData;
 
     public boolean isThirdReading(){
-        return description.contains("Third Reading");
+        return rawData.contains("Third Reading");
     }
 
     public String getSummarizedType(){
-        return description;
+        return rawData;
     }
 
 }

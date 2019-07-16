@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteType;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -18,6 +19,7 @@ public class BillVotesResults {
     private final long checksum;
     private final Chamber chamber;
     private final VoteType voteType;
+    private final Instant actionDate;
 
     public String generateKey(Bill bill){
         return BillActionLoad.formKey(bill, url, true);
@@ -29,5 +31,9 @@ public class BillVotesResults {
 
     public String getVoteTypeSummary(){
         return voteType.getSummarizedType();
+    }
+
+    public String getRawData(){
+        return voteType.getRawData();
     }
 }

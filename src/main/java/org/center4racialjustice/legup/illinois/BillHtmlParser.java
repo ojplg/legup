@@ -227,7 +227,13 @@ public class BillHtmlParser {
             Element contentCell = cells.get(2);
             String contentString = contentCell.text();
 
-            BillEvent billEvent = new BillEvent(date, chamber, contentString);
+            Element anchor = contentCell.selectFirst("a");
+            String link = "";
+            if( anchor != null ){
+                link = anchor.attr("href");
+            }
+
+            BillEvent billEvent = new BillEvent(date, chamber, contentString, link);
             events.add(billEvent);
         }
 

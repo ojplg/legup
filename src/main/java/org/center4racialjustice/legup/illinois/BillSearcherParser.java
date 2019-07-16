@@ -6,12 +6,14 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteType;
 import org.center4racialjustice.legup.service.BillPersistence;
+import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.ArrayList;
@@ -46,7 +48,9 @@ public class BillSearcherParser {
 
         List<Legislator> legislators = legislatorsBySession(billHtmlParser.getSession());
 
-        List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators);
+        List<BillEvent> billEvents = billHtmlParser.getBillEvents();
+
+        List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators, billEvents);
 
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         Tuple<Bill,List<BillActionLoad>> savedBillInfo = billPersistence.checkForPriorLoads(billHtmlParser.getBill());
@@ -63,16 +67,17 @@ public class BillSearcherParser {
         });
     }
 
-    private List<BillVotesResults> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators) {
+    private List<BillVotesResults> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, List<BillEvent> billEvents) {
         List<BillVotesResults> votesList = new ArrayList<>();
         for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet() ){
-            BillVotesResults results = findVoteResults(urlPair.getKey(), urlPair.getValue(), legislators);
+            BillEvent billEvent = Lists.findfirst(billEvents, event -> urlPair.getValue().equals(event.getLink()));
+            BillVotesResults results = findVoteResults(urlPair.getKey(), urlPair.getValue(), legislators, billEvent);
             votesList.add(results);
         }
         return votesList;
     }
 
-    private BillVotesResults findVoteResults(String linkText, String linkUrl, List<Legislator> legislators){
+    private BillVotesResults findVoteResults(String linkText, String linkUrl, List<Legislator> legislators, BillEvent billEvent){
         VoteType voteType = new VoteType(linkText);
         BillVotes billVotes = BillVotesParser.readFromUrlAndParse(linkUrl, nameParser, voteType);
         Chamber votingChamber = billVotes.getVotingChamber();
@@ -85,6 +90,6 @@ public class BillSearcherParser {
 
         log.info("Chamber " + votingChamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
 
-        return new BillVotesResults(collatedVotes, uncollatedVotes, linkUrl, billVotes.getChecksum(), votingChamber, voteType);
+        return new BillVotesResults(collatedVotes, uncollatedVotes, linkUrl, billVotes.getChecksum(), votingChamber, voteType, billEvent.getDateAsInstant());
     }
 }

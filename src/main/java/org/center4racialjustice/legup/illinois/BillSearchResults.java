@@ -129,6 +129,10 @@ public class BillSearchResults {
         return results.getCollatedVotes();
     }
 
+    public BillVotesResults getBillVotesResults(String key){
+        return getSearchedResults(key);
+    }
+
     public List<Name> getUncollatedVotes(){
         List<Name> uncollatedVotes = new ArrayList<>();
         for(BillVotesResults results : votesResults){
