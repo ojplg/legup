@@ -6,27 +6,29 @@
 <table class="pure-table pure-table-bordered">
     <thead>
         <tr>
-            <th>Chamber</th><th>Yea</th><th>Nay</th><th>Present</th><th>Not Voting</th><th>Yea Percentage</th>
+            <th></th>
+            <th colspan=2>House</th>
+            <th colspan=2>Senate</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Count</th>
+            <th>Percentage</th>
+            <th>Count</th>
+            <th>Percentage</th>
         </tr>
     </thead>
 
     <tbody>
-        <tr>
-            <td>House</td>
-            <td>${billActionSummary.yeaCount($house)}</td>
-            <td>${billActionSummary.nayCount($house)}</td>
-            <td>${billActionSummary.presentCount($house)}</td>
-            <td>${billActionSummary.notVotingCount($house)}</td>
-            <td>${billActionSummary.yeaPercentage($house)}</td>
-         </tr>
-        <tr>
-            <td>Senate</td>
-            <td>${billActionSummary.yeaCount($senate)}</td>
-            <td>${billActionSummary.nayCount($senate)}</td>
-            <td>${billActionSummary.presentCount($senate)}</td>
-            <td>${billActionSummary.notVotingCount($senate)}</td>
-            <td>${billActionSummary.yeaPercentage($senate)}</td>
-        </tr>
+        #foreach ( $side in $sides )
+            <tr>
+                <td>$side.DisplayString</td>
+                <td>${billHistory.getVoteCount($house, $side)}</td>
+                <td>${billHistory.getVotePercentage($house, $side)}</td>
+                <td>${billHistory.getVoteCount($senate, $side)}</td>
+                <td>${billHistory.getVotePercentage($senate, $side)}</td>
+            </tr>
+        #end
     </tbody>
 </table>
 
@@ -39,9 +41,9 @@
     #foreach ($side in $sides)
     <div class="pure-u-1-6">
         <b>$side.DisplayString</b><br/>
-        #foreach ($vote in ${billActionSummary.getVotes($house, $side)})
+        #foreach ($vote in ${billHistory.getVotes($house, $side)})
             <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
-                $vote.Name.Display - $vote.Party
+                $vote.legislatorDisplayName - $vote.LegislatorParty
             </a>
             <br/>
         #end
@@ -57,9 +59,9 @@
     #foreach ($side in $sides)
     <div class="pure-u-1-6">
         <b>$side.DisplayString</b><br/>
-        #foreach ($vote in ${billActionSummary.getVotes($senate, $side)})
+        #foreach ($vote in ${billHistory.getVotes($senate, $side)})
             <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
-                $vote.Name.Display- $vote.Party
+                $vote.LegislatorDisplayName- $vote.LegislatorParty
             </a>
             <br/>
         #end

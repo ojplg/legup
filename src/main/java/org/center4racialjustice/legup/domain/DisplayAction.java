@@ -35,6 +35,10 @@ public class DisplayAction {
         return getLegislator().getDisplay();
     }
 
+    public String getLegislatorParty(){
+        return getLegislator().getParty();
+    }
+
     public Chamber getBillChamber(){
         return getBill().getChamber();
     }

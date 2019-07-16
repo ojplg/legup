@@ -10,6 +10,7 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
@@ -39,6 +40,24 @@ public class BillPersistence {
     public BillPersistence(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
+
+    public BillHistory loadBillHistory(long billId){
+        return connectionPool.useConnection( connection -> {
+            log.info("Loading bill history for " + billId);
+
+            BillDao billDao = new BillDao(connection);
+            Bill bill = billDao.read(billId);
+
+            BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+            List<BillActionLoad> loads = billActionLoadDao.readByBillId(billId);
+
+            BillActionDao billActionDao = new BillActionDao(connection);
+            List<BillAction> actions = billActionDao.readByBill(bill);
+
+            return new BillHistory(bill, loads, actions);
+        });
+    }
+
 
     public Tuple<Bill,List<BillActionLoad>> checkForPriorLoads(Bill parsedBill){
         return connectionPool.useConnection( connection -> {

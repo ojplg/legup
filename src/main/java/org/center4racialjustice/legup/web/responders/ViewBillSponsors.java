@@ -6,9 +6,11 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
+import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
@@ -24,63 +26,41 @@ import java.util.stream.Collectors;
 
 public class ViewBillSponsors implements Responder {
 
-    private final ConnectionPool connectionPool;
+    private final BillPersistence billPersistence;
 
     public ViewBillSponsors(ConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
+        this.billPersistence = new BillPersistence(connectionPool);
     }
 
     @Override
     public LegupResponse handle(LegupSubmission submission) {
         long billId = submission.getLongRequestParameter("bill_id");
 
-        return connectionPool.useConnection(connection -> {
-            BillDao billDao = new BillDao(connection);
+        BillHistory billHistory = billPersistence.loadBillHistory(billId);
 
-            Bill bill = billDao.read(billId);
+        Bill bill = billHistory.getBill();
 
-            BillActionDao billActionDao = new BillActionDao(connection);
+        List<Legislator> houseSponsors = billHistory.getSponsors(Chamber.House);
+        List<Legislator> senateSponsors = billHistory.getSponsors(Chamber.Senate);
 
-            List<BillAction> billActions =  billActionDao.readByBill(bill);
-            List<Legislator> sponsors = billActions.stream()
-                    .filter(act -> act.getBillActionType().equals(BillActionType.SPONSOR))
-                    .flatMap(act -> act.getLegislatorBillActions().stream())
-                    .map(LegislatorBillAction::getLegislator)
-                    .collect(Collectors.toList());
+        List<Legislator> houseChiefSponsors = billHistory.getChiefSponsors(Chamber.House);
+        List<Legislator> senateChiefSponsors = billHistory.getChiefSponsors(Chamber.Senate);
 
-            Tuple<List<Legislator>, List<Legislator>> sponsorsTuple =
-                    Lists.divide(sponsors, leg -> leg.getChamber().equals(Chamber.House));
-            List<Legislator> houseSponsors = sponsorsTuple.getFirst();
-            List<Legislator> senateSponsors = sponsorsTuple.getSecond();
-            Collections.sort(houseSponsors);
-            Collections.sort(senateSponsors);
+        HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(),
+                submission.getLoggedInUser(), navLinks(billId, bill.getSession()));
 
-            List<Legislator> chiefSponsors = billActions.stream()
-                    .filter(act -> act.getBillActionType().equals(BillActionType.CHIEF_SPONSOR))
-                    .flatMap(act -> act.getLegislatorBillActions().stream())
-                    .map(LegislatorBillAction::getLegislator)
-                    .collect(Collectors.toList());
-            Tuple<List<Legislator>, List<Legislator>> chiefSponsorsTuple =
-                    Lists.divide(chiefSponsors, leg -> leg.getChamber().equals(Chamber.House));
-            List<Legislator> chiefHouseSponsors = chiefSponsorsTuple.getFirst();
-            List<Legislator> chiefSenateSponsors = chiefSponsorsTuple.getSecond();
+        if( houseChiefSponsors.size() > 0 ){
+            response.putVelocityData("chief_house_sponsor", houseChiefSponsors.get(0));
+        }
+        if( senateChiefSponsors.size() > 0 ){
+            response.putVelocityData("chief_senate_sponsor", senateChiefSponsors.get(0));
+        }
 
-            HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(),
-                    submission.getLoggedInUser(), navLinks(billId, bill.getSession()));
+        response.putVelocityData("house_sponsors", houseSponsors);
+        response.putVelocityData("senate_sponsors", senateSponsors);
+        response.putVelocityData("bill", bill);
 
-            if( chiefHouseSponsors.size() > 0 ){
-                response.putVelocityData("chief_house_sponsor", chiefHouseSponsors.get(0));
-            }
-            if( chiefSenateSponsors.size() > 0 ){
-                response.putVelocityData("chief_senate_sponsor", chiefSenateSponsors.get(0));
-            }
-
-            response.putVelocityData("house_sponsors", houseSponsors);
-            response.putVelocityData("senate_sponsors", senateSponsors);
-            response.putVelocityData("bill", bill);
-
-            return response;
-        });
+        return response;
     }
 
     private List<NavLink> navLinks(long billId, long sessionNumber){
