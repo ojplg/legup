@@ -12,22 +12,22 @@ public final class Name {
     private final String firstName;
     private final String firstInitial;
     private final String lastName;
-    private final String middleInitial;
+    private final String middle;
     private final String suffix;
 
     public static Name fromFirstLast(String firstName, String lastName){
         return new Name(firstName, null, lastName, null, null);
     }
 
-    public Name(String firstName, String middleInitial, String lastName, String firstInitial, String suffix) {
-        this(null, firstName, middleInitial, lastName, firstInitial, suffix);
+    public Name(String firstName, String middle, String lastName, String firstInitial, String suffix) {
+        this(null, firstName, middle, lastName, firstInitial, suffix);
     }
 
-    public Name(String unparsedName, String firstName, String middleInitial, String lastName, String firstInitial, String suffix){
+    public Name(String unparsedName, String firstName, String middle, String lastName, String firstInitial, String suffix){
         this.unparsedName = unparsedName;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.middleInitial = middleInitial;
+        this.middle = middle;
         this.firstInitial = firstInitial;
         this.suffix = suffix;
     }
@@ -42,9 +42,9 @@ public final class Name {
         }
         buf.append(", ");
         buf.append(firstName);
-        if ( middleInitial != null) {
+        if ( middle != null) {
             buf.append(" ");
-            buf.append(middleInitial);
+            buf.append(middle);
         }
 
         return buf.toString();
@@ -96,12 +96,12 @@ public final class Name {
         return Objects.equals(firstName, name.firstName) &&
                 Objects.equals(firstInitial, name.firstInitial) &&
                 Objects.equals(lastName, name.lastName) &&
-                Objects.equals(middleInitial, name.middleInitial) &&
+                Objects.equals(middle, name.middle) &&
                 Objects.equals(suffix, name.suffix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, firstInitial, lastName, middleInitial, suffix);
+        return Objects.hash(firstName, firstInitial, lastName, middle, suffix);
     }
 }

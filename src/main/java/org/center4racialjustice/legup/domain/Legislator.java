@@ -28,7 +28,7 @@ public class Legislator implements Comparable<Legislator> {
         this.lastName = name.getLastName();
         this.firstName = name.getFirstName();
         this.suffix = name.getSuffix();
-        this.middleInitialOrName = name.getMiddleInitial();
+        this.middleInitialOrName = name.getMiddle();
     }
 
     public Name getName(){

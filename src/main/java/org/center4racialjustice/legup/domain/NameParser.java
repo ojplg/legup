@@ -7,10 +7,11 @@ import java.util.regex.Pattern;
 
 public class NameParser {
 
-    public static String simpleLastNameRegex = "([A-Z][A-Za-zñ\\-' ]+)";
-    public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-]+), ([A-Z])\\.";
-    public static String fullNameRegex = "([A-Z][A-Za-zñ\\-]+), ?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
-    public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zñ\\-]+) ([A-Z][A-Za-zñ\\-])\\.?,\\s?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
+    public static String simpleLastNameRegex = "([A-Z][A-Za-zéñ\\-' ]+)";
+    public static String firstInitialRegex = "([A-Z][A-Za-zñ\\- ]+), ([A-Z])\\.";
+    public static String fullNameRegex = "([A-Z][A-Za-zéñ\\- ]+), ?([A-Z][A-Za-zéñ\\-]+)\\s?([A-Z])?";
+    public static String fullNameWithMiddleRegex = "([A-Z][A-Za-zéñ\\-]+), ([A-Z][A-Za-zéñ\\-]+) ([A-Z][A-Za-zéñ\\-]+)";
+    public static String fullNameWithSuffixRegex = "([A-Z][A-Za-zéñ\\-]+) ([A-Z][A-Za-zéñ\\-])\\.?,\\s?([A-Z][A-Za-zñ\\-]+)\\s?([A-Z])?";
 
     public static String firstAndLastRegularOrder = "([A-Z][A-Za-zé\\-']+) ([A-Z][A-Za-zéñ\\-']+)";
     public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
@@ -23,6 +24,7 @@ public class NameParser {
     public static Pattern simpleLastNamePattern = Pattern.compile(simpleLastNameRegex);
     public static Pattern firstInitialPattern = Pattern.compile(firstInitialRegex);
     public static Pattern fullNamePattern = Pattern.compile(fullNameRegex);
+    public static Pattern fullNameWithMiddlePattern = Pattern.compile(fullNameWithMiddleRegex);
     public static Pattern fullNameWithSuffixPattern = Pattern.compile(fullNameWithSuffixRegex);
     public static Pattern threePartNameRegularOrderPattern = Pattern.compile(threePartNameRegularOrder);
 
@@ -125,6 +127,13 @@ public class NameParser {
             String firstName = fullNameWithSuffixMatcher.group(3);
             String middleInitial = fullNameWithSuffixMatcher.group(4);
             return new Name(trimmedInput, firstName, middleInitial, lastName, null, suffix);
+        }
+        Matcher fullNameWithMiddleMatcher = fullNameWithMiddlePattern.matcher(trimmedInput);
+        if( fullNameWithMiddleMatcher.matches() ){
+            String lastName = fullNameWithMiddleMatcher.group(1);
+            String firstName = fullNameWithMiddleMatcher.group(2);
+            String middleInitial = fullNameWithMiddleMatcher.group(3);
+            return new Name(trimmedInput, firstName, middleInitial, lastName, null, null);
         }
         throw new RuntimeException("Could not figure out this name: '" + trimmedInput + "'");
     }

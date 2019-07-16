@@ -25,7 +25,7 @@ public class TestNameParser {
         Assert.assertEquals("Jones", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
-        Assert.assertNull(name.getMiddleInitial());
+        Assert.assertNull(name.getMiddle());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class TestNameParser {
         Assert.assertEquals("Brown", name.getLastName());
         Assert.assertEquals("E", name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
-        Assert.assertNull(name.getMiddleInitial());
+        Assert.assertNull(name.getMiddle());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class TestNameParser {
         Assert.assertEquals("Barickman", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("Jason", name.getFirstName());
-        Assert.assertEquals("A", name.getMiddleInitial());
+        Assert.assertEquals("A", name.getMiddle());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class TestNameParser {
         NameParser parser = new NameParser(loadOverrides());
         Name name = parser.fromRegularOrderString("Steven A. Andersson");
         Assert.assertEquals("Steven", name.getFirstName());
-        Assert.assertEquals("A", name.getMiddleInitial());
+        Assert.assertEquals("A", name.getMiddle());
         Assert.assertEquals("Andersson", name.getLastName());
     }
 
@@ -69,7 +69,7 @@ public class TestNameParser {
         NameParser parser = new NameParser(loadOverrides());
         Name name = parser.fromRegularOrderString("Jaime M. Andrade, Jr.");
         Assert.assertEquals("Jaime", name.getFirstName());
-        Assert.assertEquals("M", name.getMiddleInitial());
+        Assert.assertEquals("M", name.getMiddle());
         Assert.assertEquals("Andrade", name.getLastName());
         Assert.assertEquals("Jr", name.getSuffix());
     }
@@ -83,7 +83,7 @@ public class TestNameParser {
         NameParser parser = new NameParser();
         Name curtis = parser.fromRegularOrderString("Curtis J. Tarver II");
         Assert.assertEquals("Curtis", curtis.getFirstName());
-        Assert.assertEquals("J", curtis.getMiddleInitial());
+        Assert.assertEquals("J", curtis.getMiddle());
         Assert.assertEquals("Tarver", curtis.getLastName());
         Assert.assertEquals("II", curtis.getSuffix());
 
@@ -111,7 +111,7 @@ public class TestNameParser {
         NameParser parser = new NameParser(loadOverrides());
         Name name = parser.fromRegularOrderString("John C. D'Amico");
         Assert.assertEquals("John", name.getFirstName());
-        Assert.assertEquals("C", name.getMiddleInitial());
+        Assert.assertEquals("C", name.getMiddle());
         Assert.assertEquals("D'Amico", name.getLastName());
 
     }
@@ -131,7 +131,7 @@ public class TestNameParser {
         Assert.assertEquals("Nybo", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("Chris", name.getFirstName());
-        Assert.assertNull(name.getMiddleInitial());
+        Assert.assertNull(name.getMiddle());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class TestNameParser {
         Assert.assertEquals("Clayborne", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("James", name.getFirstName());
-        Assert.assertEquals("F", name.getMiddleInitial());
+        Assert.assertEquals("F", name.getMiddle());
         Assert.assertEquals("Jr", name.getSuffix());
     }
 
@@ -168,18 +168,36 @@ public class TestNameParser {
         Assert.assertEquals("Van Pelt", name.getLastName());
         Assert.assertNull(name.getFirstInitial());
         Assert.assertNull(name.getFirstName());
-        Assert.assertNull(name.getMiddleInitial());
+        Assert.assertNull(name.getMiddle());
     }
 
     @Test
     public void testNameWithoutSpaces(){
-        NameParser parser = new NameParser();
-        Name name = parser.fromLastNameFirstString("Tarver II,Curtis");
+        NameParser parser = new NameParser(loadOverrides());
+        Name name = parser.fromLastNameFirstString("Tarver II, Curtis");
 
         Assert.assertEquals("Curtis", name.getFirstName());
         Assert.assertEquals("Tarver", name.getLastName());
         Assert.assertEquals("II", name.getSuffix());
     }
 
+    @Test
+    public void testLastNameFirstFullMiddleName(){
+        NameParser parser = new NameParser();
+        Name name = parser.fromLastNameFirstString("Welch, Emanuel Chris");
+
+        Assert.assertEquals("Emanuel", name.getFirstName());
+        Assert.assertEquals("Welch", name.getLastName());
+        Assert.assertEquals("Chris", name.getMiddle());
+
+    }
+
+    @Test
+    public void testLastNameFirstTwoPartLastName(){
+        NameParser parser = new NameParser();
+        Name name = parser.fromLastNameFirstString("Costa Howard, Terra");
+        Assert.assertEquals("Terra", name.getFirstName());
+        Assert.assertEquals("Costa Howard", name.getLastName());
+    }
 
 }
