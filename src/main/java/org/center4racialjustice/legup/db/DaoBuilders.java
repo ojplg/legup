@@ -28,13 +28,13 @@ public class DaoBuilders {
     public static final DaoBuilder<GradeLevel> GRADE_LEVELS = gradeLevelDaoBuilder();
     public static final DaoBuilder<ReportCard> REPORT_CARDS = reportCardDaoBuilder();
     public static final DaoBuilder<BillActionLoad> BILL_ACTION_LOADS = billActionLoadDaoBuilder();
-    public static final DaoBuilder<BillAction> BILL_ACTIONS = billActionDaoBuilder();
     public static final DaoBuilder<Organization> ORGANIZATIONS = organizationDaoBuilder();
     public static final DaoBuilder<User> USERS = userDaoBuilder();
     public static final AssociationDaoBuilder<User, Organization> USER_ORGANIZATION_ASSOCIATIONS = userOrganizationAssociationDaoBuilder();
     public static final DaoBuilder<CommitteeMember> COMMITTEE_MEMBERS = committeeMemberDaoBuilder();
     public static final DaoBuilder<Committee> COMMITTEE = committeeDaoBuilder();
     public static final DaoBuilder<LegislatorBillAction> LEGISLATOR_BILL_ACTIONS = legislatorBillActionDaoBuilder();
+    public static final DaoBuilder<BillAction> BILL_ACTIONS = billActionDaoBuilder();
 
     private static DaoBuilder<Bill> billDaoBuilder(){
         return new DaoBuilder<>("BILLS", Bill::new)
@@ -105,17 +105,6 @@ public class DaoBuilders {
                 .withJoinColumn("BILL_ID", BillActionLoad::getBill, BillActionLoad::setBill, BILLS);
     }
 
-    private static DaoBuilder<BillAction> billActionDaoBuilder(){
-        return new DaoBuilder<>("BILL_ACTIONS", BillAction::new)
-                .withPrimaryKey("ID", "bill_action_seq", BillAction::getId, BillAction::setId)
-                .withConvertingStringColumn("BILL_ACTION_TYPE", BillAction::getBillActionType, BillAction::setBillActionType, BillActionType.CONVERTER)
-                .withJoinColumn("BILL_ID", BillAction::getBill, BillAction::setBill, BILLS)
-                .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS)
-                .withInstantColumn("ACTION_DATE", BillAction::getActionDate, BillAction::setActionDate)
-                .withStringColumn("RAW_ACTION_DATA", BillAction::getRawActionData, BillAction::setRawActionData);
-
-    }
-
     private static DaoBuilder<Organization> organizationDaoBuilder(){
         return new DaoBuilder<>("ORGANIZATIONS", Organization::new)
                 .withPrimaryKey("ID", "organization_seq", Organization::getId, Organization::setId)
@@ -160,10 +149,23 @@ public class DaoBuilders {
     }
 
     private static DaoBuilder<LegislatorBillAction> legislatorBillActionDaoBuilder(){
-        return new DaoBuilder<>("legislator_bill_action", LegislatorBillAction::new)
+        return new DaoBuilder<>("legislator_bill_actions", LegislatorBillAction::new)
                 .withPrimaryKey("ID", "legislator_bill_action_seq", LegislatorBillAction::getId, LegislatorBillAction::setId)
                 .withParentColumn("bill_action_id")
                 .withJoinColumn("legislator_id", LegislatorBillAction::getLegislator, LegislatorBillAction::setLegislator, LEGISLATORS)
                 .withConvertingStringColumn("vote_side", LegislatorBillAction::getVoteSide, LegislatorBillAction::setVoteSide, new VoteSideConverter());
     }
+
+    private static DaoBuilder<BillAction> billActionDaoBuilder(){
+        return new DaoBuilder<>("BILL_ACTIONS", BillAction::new)
+                .withPrimaryKey("ID", "bill_action_seq", BillAction::getId, BillAction::setId)
+                .withConvertingStringColumn("BILL_ACTION_TYPE", BillAction::getBillActionType, BillAction::setBillActionType, BillActionType.CONVERTER)
+                .withJoinColumn("BILL_ID", BillAction::getBill, BillAction::setBill, BILLS)
+                .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS)
+                .withInstantColumn("ACTION_DATE", BillAction::getActionDate, BillAction::setActionDate)
+                .withStringColumn("RAW_ACTION_DATA", BillAction::getRawActionData, BillAction::setRawActionData)
+                .withChildren(BillAction::getLegislatorBillActions, BillAction::setLegislatorBillActions, LEGISLATOR_BILL_ACTIONS);
+
+    }
+
 }
