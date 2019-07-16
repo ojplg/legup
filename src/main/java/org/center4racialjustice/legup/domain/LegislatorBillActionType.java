@@ -14,7 +14,7 @@ public class LegislatorBillActionType {
     public final static LegislatorBillActionType SPONSOR = new LegislatorBillActionType(SponsorCode);
     public final static LegislatorBillActionType CHIEF_SPONSOR = new LegislatorBillActionType(ChiefSponsorCode);
 
-    public final static BillActionTypeConverter CONVERTER = new BillActionTypeConverter();
+    public final static LegislatorBillActionTypeConverter CONVERTER = new LegislatorBillActionTypeConverter();
 
     private final String code;
 
@@ -65,7 +65,7 @@ public class LegislatorBillActionType {
         return code;
     }
 
-    static class BillActionTypeConverter implements Converter<LegislatorBillActionType, String> {
+    static class LegislatorBillActionTypeConverter implements Converter<LegislatorBillActionType, String> {
         @Override
         public String from(LegislatorBillActionType billActionType) {
             return billActionType.getCode();

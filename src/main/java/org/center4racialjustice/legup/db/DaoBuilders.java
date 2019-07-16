@@ -4,6 +4,7 @@ import org.center4racialjustice.legup.domain.Committee;
 import org.center4racialjustice.legup.domain.CommitteeMember;
 import org.center4racialjustice.legup.domain.GradeLevel;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
+import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.hrorm.AssociationDaoBuilder;
@@ -153,7 +154,9 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "legislator_bill_action_seq", LegislatorBillAction::getId, LegislatorBillAction::setId)
                 .withParentColumn("bill_action_id")
                 .withJoinColumn("legislator_id", LegislatorBillAction::getLegislator, LegislatorBillAction::setLegislator, LEGISLATORS)
-                .withConvertingStringColumn("vote_side", LegislatorBillAction::getVoteSide, LegislatorBillAction::setVoteSide, new VoteSideConverter());
+                .withConvertingStringColumn("vote_side", LegislatorBillAction::getVoteSide, LegislatorBillAction::setVoteSide, new VoteSideConverter())
+                .withConvertingStringColumn("legislator_bill_action_type", LegislatorBillAction::getLegislatorBillActionType,
+                        LegislatorBillAction::setLegislatorBillActionType, LegislatorBillActionType.CONVERTER);
     }
 
     private static DaoBuilder<BillAction> billActionDaoBuilder(){
