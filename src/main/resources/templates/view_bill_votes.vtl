@@ -37,11 +37,11 @@
 <div class="pure-g">
 
     #foreach ($side in $sides)
-    <div class="pure-u-1-4">
+    <div class="pure-u-1-6">
         <b>$side.DisplayString</b><br/>
         #foreach ($vote in ${billActionSummary.getVotes($house, $side)})
-            <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">
-                $vote.Legislator.Name.Display - $vote.Legislator.Party
+            <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
+                $vote.Name.Display - $vote.Party
             </a>
             <br/>
         #end
@@ -55,11 +55,11 @@
 <div class="pure-g">
 
     #foreach ($side in $sides)
-    <div class="pure-u-1-4">
+    <div class="pure-u-1-6">
         <b>$side.DisplayString</b><br/>
         #foreach ($vote in ${billActionSummary.getVotes($senate, $side)})
-            <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">
-                $vote.Legislator.Name.Display- $vote.Legislator.Party
+            <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
+                $vote.Name.Display- $vote.Party
             </a>
             <br/>
         #end

@@ -17,6 +17,8 @@ public class BillActionSummary {
         return billActions.stream()
                 .filter(action -> action.getBillActionType().equals(BillActionType.VOTE))
                 .flatMap(action -> action.getLegislatorBillActions().stream())
+                .filter(action->action.getVoteSide().equals(voteSide))
+                .filter(legAction -> legAction.getLegislator().getChamber().equals(chamber))
                 .map(LegislatorBillAction::getLegislator)
                 .collect(Collectors.toList());
     }
