@@ -30,6 +30,15 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern AddedAlternateChiefCoSponsorPattern =
             Pattern.compile("Added (?:as )?Alternate Chief Co-Sponsor (?:Sen|Rep). (.*)");
 
+    private static final Pattern CommitteeReferralPattern =
+            Pattern.compile("Referred to ([\\w\\s]+)");
+
+    private static final Pattern CommitteeAssignmentPattern =
+            Pattern.compile("Assigned to ([\\w\\s]+)");
+
+    private static final Pattern CommitteePostponementPattern =
+            Pattern.compile("Postponed - ([\\w\\s]+)");
+
     private static final Map<Pattern, BiFunction<String, String, BillEventData>> NameGrabbingPatterns;
 
     static {
@@ -52,6 +61,16 @@ public class BillEventParser implements BillEventInterpreter {
         NameGrabbingPatterns.put(
                 AddedAlternateChiefCoSponsorPattern,
                 (raw, grab) -> new ChiefSponsorshipBillEvent(raw, grab));
+        NameGrabbingPatterns.put(
+                CommitteeReferralPattern,
+                (raw, grab) -> CommitteeBillEvent.referral(raw, grab));
+        NameGrabbingPatterns.put(
+                CommitteeAssignmentPattern,
+                (raw, grab) -> CommitteeBillEvent.assignment(raw, grab));
+        NameGrabbingPatterns.put(
+                CommitteePostponementPattern,
+                (raw, grab) -> CommitteeBillEvent.postponement(raw, grab));
+
     }
 
     @Override

@@ -12,4 +12,6 @@ public interface BillEventData {
     boolean isChiefSponsorship();
     boolean isVote();
 
+    boolean hasCommittee();
+    String getRawCommitteeName();
 }

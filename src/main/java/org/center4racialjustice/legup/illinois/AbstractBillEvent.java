@@ -35,4 +35,19 @@ public abstract class AbstractBillEvent implements BillEventData {
     public boolean isVote() {
         return BillActionType.VOTE.equals(getBillActionType());
     }
+
+    @Override
+    public boolean hasCommittee() {
+        return getRawCommitteeName() != null;
+    }
+
+    @Override
+    public String getRawCommitteeName() {
+        return null;
+    }
+
+    @Override
+    public String getRawLegislatorName() {
+        return null;
+    }
 }

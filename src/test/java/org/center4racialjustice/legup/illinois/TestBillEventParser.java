@@ -15,7 +15,7 @@ import java.util.List;
 public class TestBillEventParser {
 
     @Test
-    public void testEventsFound(){
+    public void testEventsFound_Senate889(){
         InputStream inputStream = this.getClass().getResourceAsStream(TestBillHtmlParser.SenateBill889BaseFileName);
         BillHtmlParser parser = new BillHtmlParser(inputStream, TestBillHtmlParser.SenateBill889BaseUrl);
 
@@ -23,14 +23,39 @@ public class TestBillEventParser {
 
         Assert.assertEquals(59, events.size());
 
+        int missing = 0;
         BillEventParser billEventParser = new BillEventParser();
         for(BillEvent billEvent : events){
             BillEventData billEventData = billEventParser.parse(billEvent);
             if( billEventData.getBillActionType().equals(BillActionType.UNCLASSIFIED)) {
                 System.out.println(billEvent.getRawContents());
+                missing++;
             }
         }
+        Assert.assertTrue(missing < 36);
     }
+
+    @Test
+    public void testEventsFound_House2771(){
+        InputStream inputStream = this.getClass().getResourceAsStream(TestBillHtmlParser.HouseBill2771FileName);
+        BillHtmlParser parser = new BillHtmlParser(inputStream, TestBillHtmlParser.HouseBill2771BaseUrl);
+
+        List<BillEvent> events = parser.getBillEvents();
+
+        Assert.assertEquals(137, events.size());
+
+        int missing = 0;
+        BillEventParser billEventParser = new BillEventParser();
+        for(BillEvent billEvent : events){
+            BillEventData billEventData = billEventParser.parse(billEvent);
+            if( billEventData.getBillActionType().equals(BillActionType.UNCLASSIFIED)) {
+                System.out.println(billEvent.getRawContents());
+                missing++;
+            }
+        }
+        Assert.assertTrue(missing < 75);
+    }
+
 
     @Test
     public void testAllSponsorEventsFound_HouseBill2771(){
@@ -87,6 +112,18 @@ public class TestBillEventParser {
         }
     }
 
+    @Test
+    public void testParsesCommitteeReferral(){
+        BillEvent billEvent = newBillEvent("Referred to Assignments");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEventData billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertTrue(billEventData.hasCommittee());
+        Assert.assertEquals("Assignments", billEventData.getRawCommitteeName());
+        Assert.assertEquals(BillActionType.COMMITTEE_REFERRAL, billEventData.getBillActionType());
+    }
+
+
 
     @Test
     public void testParsesChiefSponsorFromFiledWithClerkAction(){
@@ -109,7 +146,6 @@ public class TestBillEventParser {
         Assert.assertTrue(billEventData.isChiefSponsorship());
         Assert.assertEquals("Toi W. Hutchinson", billEventData.getRawLegislatorName());
     }
-
 
     @Test
     public void testParsesChiefCosponsor(){
