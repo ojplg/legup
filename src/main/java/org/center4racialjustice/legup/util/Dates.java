@@ -9,8 +9,12 @@ import java.time.ZonedDateTime;
 public class Dates {
 
     public static LocalDate localDateOf(Instant instant){
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        LocalDateTime localDateTime = localDateTimeOf(instant);
         return localDateTime.toLocalDate();
+    }
+
+    public static LocalDateTime localDateTimeOf(Instant instant){
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }
 
     public static Instant instantOf(LocalDate localDate){

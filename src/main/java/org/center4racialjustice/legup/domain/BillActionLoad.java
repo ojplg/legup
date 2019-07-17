@@ -1,10 +1,10 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.util.Dates;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Data
@@ -45,7 +45,7 @@ public class BillActionLoad {
     }
 
     public LocalDateTime getLoadTime(){
-        return LocalDateTime.ofInstant(loadInstant, ZoneId.systemDefault());
+        return Dates.localDateTimeOf(loadInstant);
     }
 
     public String getFormattedLoadTime() {
