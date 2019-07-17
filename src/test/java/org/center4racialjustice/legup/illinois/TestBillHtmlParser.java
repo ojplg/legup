@@ -20,7 +20,7 @@ public class TestBillHtmlParser {
     public static String HouseBill2771BaseUrl =
             "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
-    private static String HouseBill2771FileName =
+    public static String HouseBill2771FileName =
             "/html/illinois_house_bill_2771.html";
 
     public static String SenateBill889BaseUrl =

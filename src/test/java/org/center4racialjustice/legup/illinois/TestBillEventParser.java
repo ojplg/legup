@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
@@ -22,14 +23,18 @@ public class TestBillEventParser {
 
         Assert.assertEquals(59, events.size());
 
-//        for(BillEvent billEvent : events){
-//            System.out.println(billEvent.getRawContents());
-//        }
+        BillEventParser billEventParser = new BillEventParser();
+        for(BillEvent billEvent : events){
+            BillEventData billEventData = billEventParser.parse(billEvent);
+            if( billEventData.getBillActionType().equals(BillActionType.UNCLASSIFIED)) {
+                System.out.println(billEvent.getRawContents());
+            }
+        }
     }
 
     @Test
     public void testAllSponsorEventsFound_HouseBill2771(){
-        InputStream inputStream = this.getClass().getResourceAsStream("/html/illinois_house_bill_2771.html");
+        InputStream inputStream = this.getClass().getResourceAsStream(TestBillHtmlParser.HouseBill2771FileName);
         BillHtmlParser billHtmlParser = new BillHtmlParser(inputStream, TestBillHtmlParser.HouseBill2771BaseUrl);
 
         List<BillEvent> events = billHtmlParser.getBillEvents();
