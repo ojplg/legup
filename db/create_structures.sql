@@ -264,3 +264,7 @@ select nextval('legislator_bill_action_seq'), id, legislator_id, bill_action_typ
 alter table bill_actions drop constraint uniq_bill_action;
 alter table bill_actions drop column legislator_id;
 alter table bill_actions drop column bill_action_detail;
+
+-- changeset ojplg:12
+
+alter table bill_actions add column chamber text;

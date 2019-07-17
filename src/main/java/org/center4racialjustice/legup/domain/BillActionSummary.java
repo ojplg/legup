@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.util.Lists;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO: Get rid of this class. Replace with BillHistory.
 public class BillActionSummary {
 
     private final List<BillAction> billActions;

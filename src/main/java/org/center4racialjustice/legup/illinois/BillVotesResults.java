@@ -1,13 +1,12 @@
 package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
-import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillEventKey;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteType;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -19,11 +18,7 @@ public class BillVotesResults {
     private final long checksum;
     private final Chamber chamber;
     private final VoteType voteType;
-    private final Instant actionDate;
-
-    public String generateKey(Bill bill){
-        return BillActionLoad.formKey(bill, url, true);
-    }
+    private final LocalDate actionDate;
 
     public int getCollatedCount(){
         return collatedVotes.size();
@@ -36,4 +31,9 @@ public class BillVotesResults {
     public String getRawData(){
         return voteType.getRawData();
     }
+
+    public BillEventKey generateEventKey(){
+        return new BillEventKey(actionDate, chamber, voteType.getRawData());
+    }
+
 }

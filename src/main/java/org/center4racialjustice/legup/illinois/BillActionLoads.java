@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.util.ArrayList;

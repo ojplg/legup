@@ -1,9 +1,11 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.util.Dates;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class BillAction {
     private BillActionType billActionType;
     private String rawActionData;
     private Instant actionDate;
+    private Chamber chamber;
     private BillActionLoad billActionLoad;
 
     private List<LegislatorBillAction> legislatorBillActions;
@@ -35,6 +38,18 @@ public class BillAction {
 
     public LegislatorBillAction getLegislatorAction(Legislator legislator){
         return Lists.findfirst(legislatorBillActions, legislatorBillAction -> legislator.equals(legislatorBillAction.getLegislator()));
+    }
+
+    public boolean matchesEvent(BillEvent billEvent){
+        return billEvent.generateEventKey().equals(generateBillEventKey());
+    }
+
+    public BillEventKey generateBillEventKey(){
+        return new BillEventKey(getActionDateAsLocalDate(), chamber, rawActionData);
+    }
+
+    public LocalDate getActionDateAsLocalDate(){
+        return Dates.localDateOf(actionDate);
     }
 
 }

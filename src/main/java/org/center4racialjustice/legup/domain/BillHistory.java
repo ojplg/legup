@@ -3,13 +3,22 @@ package org.center4racialjustice.legup.domain;
 import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.service.BillActionCollator;
 
+import java.util.Collections;
 import java.util.List;
 
 public class BillHistory {
 
+    public static final BillHistory EMPTY = new BillHistory();
+
     private final Bill bill;
     private final BillActionLoads loads;
     private final BillActionCollator actions;
+
+    private BillHistory(){
+        this.bill = null;
+        this.loads = new BillActionLoads();
+        this.actions = new BillActionCollator(Collections.emptyList());
+    }
 
     public BillHistory(Bill bill, List<BillActionLoad> loads, List<BillAction> actions) {
         this.bill = bill;
@@ -41,5 +50,10 @@ public class BillHistory {
         float all = actions.getVotes(chamber).size();
         float count = getVoteCount(chamber, voteSide);
         return count/all;
+    }
+
+    public boolean recognizedEvent(BillEvent billEvent){
+        BillAction action = actions.getMatchingAction(billEvent);
+        return action != null;
     }
 }

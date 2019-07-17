@@ -52,11 +52,7 @@ public class BillSearcherParser {
 
         List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators, billEvents);
 
-        BillPersistence billPersistence = new BillPersistence(connectionPool);
-        Tuple<Bill,List<BillActionLoad>> savedBillInfo = billPersistence.checkForPriorLoads(billHtmlParser.getBill());
-        log.info("Found prior loads for: " + legislationType + "." + billNumber + ": " + savedBillInfo);
-
-        return new BillSearchResults(billHtmlParser, legislators, votesResults, savedBillInfo);
+        return new BillSearchResults(billHtmlParser, legislators, votesResults, billEvents);
 
     }
 
@@ -90,6 +86,6 @@ public class BillSearcherParser {
 
         log.info("Chamber " + votingChamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
 
-        return new BillVotesResults(collatedVotes, uncollatedVotes, linkUrl, billVotes.getChecksum(), votingChamber, voteType, billEvent.getDateAsInstant());
+        return new BillVotesResults(collatedVotes, uncollatedVotes, linkUrl, billVotes.getChecksum(), votingChamber, voteType, billEvent.getDate());
     }
 }

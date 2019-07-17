@@ -167,8 +167,8 @@ public class DaoBuilders {
                 .withJoinColumn("BILL_ACTION_LOAD_ID", BillAction::getBillActionLoad, BillAction::setBillActionLoad, BILL_ACTION_LOADS)
                 .withInstantColumn("ACTION_DATE", BillAction::getActionDate, BillAction::setActionDate)
                 .withStringColumn("RAW_ACTION_DATA", BillAction::getRawActionData, BillAction::setRawActionData)
-                .withChildren(BillAction::getLegislatorBillActions, BillAction::setLegislatorBillActions, LEGISLATOR_BILL_ACTIONS);
-
+                .withChildren(BillAction::getLegislatorBillActions, BillAction::setLegislatorBillActions, LEGISLATOR_BILL_ACTIONS)
+                .withConvertingStringColumn("CHAMBER", BillAction::getChamber, BillAction::setChamber, Chamber.Converter);
     }
 
 }

@@ -290,7 +290,7 @@ public class BillVotesParser {
             }
         }
 
-        return new BillIdentity(chamber, session, number);
+        return new BillIdentity(session, chamber, number);
     }
 
     private ExpectedVoteCounts parseExpectedVoteCounts(List<String> lines){

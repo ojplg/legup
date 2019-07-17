@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.db;
 
+import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.illinois.BillIdentity;
 import org.hrorm.Dao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.hrorm.Where;
@@ -7,6 +9,9 @@ import org.hrorm.Where;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
+
+import static org.hrorm.Where.where;
+import static org.hrorm.Operator.EQUALS;
 
 public class BillDao {
 
@@ -37,6 +42,12 @@ public class BillDao {
 
     public Bill read(long id) {
         return innerDao.selectOne(id);
+    }
+
+    public Bill read(BillIdentity billIdentity){
+        return innerDao.selectOne(where("SESSION_NUMBER", EQUALS, billIdentity.getSession())
+                .and("CHAMBER", EQUALS, billIdentity.getChamber().getName())
+                .and("BILL_NUMBER", EQUALS, billIdentity.getNumber()));
     }
 
     public List<Bill> readAll() {

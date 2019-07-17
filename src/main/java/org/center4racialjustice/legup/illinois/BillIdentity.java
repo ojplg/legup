@@ -6,8 +6,8 @@ import org.center4racialjustice.legup.domain.Chamber;
 @Data
 public class BillIdentity {
 
-    private final Chamber chamber;
     private final long session;
+    private final Chamber chamber;
     private final long number;
 
 }

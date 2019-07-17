@@ -49,13 +49,13 @@ public class ViewBillSearchResults implements Responder {
         Long number = submission.getLongRequestParameter( "number");
 
         BillSearchResults billSearchResults = doSearch(legislationType, number);
-        if( BillSearchResults.MatchStatus.UnmatchedValues.equals(billSearchResults.getBillHtmlLoadStatus()) ){
-            // Sometimes we get a mis-match that is erroneous.
-            // I am not sure why. Perhaps the server is unreliable.
-            // Perhaps there are problems with my local network or even
-            // just the machine I am testing on. Very confusing.
-            billSearchResults = doReSearch(legislationType, number, billSearchResults);
-        }
+//        if( BillSearchResults.MatchStatus.UnmatchedValues.equals(billSearchResults.getBillHtmlLoadStatus()) ){
+//            // Sometimes we get a mis-match that is erroneous.
+//            // I am not sure why. Perhaps the server is unreliable.
+//            // Perhaps there are problems with my local network or even
+//            // just the machine I am testing on. Very confusing.
+//            billSearchResults = doReSearch(legislationType, number, billSearchResults);
+//        }
 
         String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
@@ -63,7 +63,7 @@ public class ViewBillSearchResults implements Responder {
 
         response.putVelocityData("billSearchResults", billSearchResults);
         response.putVelocityData("bill", billSearchResults.getParsedBill());
-        response.putVelocityData("priorVoteLoads", billSearchResults.getPriorVoteLoads());
+//        response.putVelocityData("priorVoteLoads", billSearchResults.getPriorVoteLoads());
 
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
@@ -90,42 +90,42 @@ public class ViewBillSearchResults implements Responder {
         return response;
     }
 
-    private BillSearchResults doReSearch(LegislationType legislationType, Long number, BillSearchResults billSearchResults){
-        BillActionLoad billActionLoad = billSearchResults.getBillHtmlLoad();
-        StringBuilder buf = new StringBuilder();
-        buf.append("Re-searching for bill html do to mismatch that could be erroneous. ");
-        buf.append("Chamber: ");
-        buf.append(legislationType);
-        buf.append(" Number: ");
-        buf.append(number);
-        buf.append(" Persisted checksum: ");
-        buf.append(billActionLoad.getCheckSum());
-        buf.append(" Persisted URL: ");
-        buf.append(billActionLoad.getUrl());
-        buf.append(" Persisted load time: ");
-        buf.append(billActionLoad.getLoadTime());
-        buf.append(" Current URL: ");
-        buf.append(billSearchResults.getUrl());
-        buf.append(" Current checksum: ");
-        buf.append(billSearchResults.getChecksum());
-        log.warn(buf.toString());
-
-        BillSearchResults retriedBillSearchResults = doSearch(legislationType, number);
-
-        StringBuilder buf2 = new StringBuilder();
-        buf2.append("Searched again for Chamber: ");
-        buf2.append(legislationType);
-        buf2.append(" Number: ");
-        buf2.append(number);
-        buf2.append(" URL: ");
-        buf2.append(retriedBillSearchResults.getUrl());
-        buf2.append(" Checksum: ");
-        buf2.append(retriedBillSearchResults.getChecksum());
-
-        log.warn(buf2.toString());
-
-        return retriedBillSearchResults;
-    }
+//    private BillSearchResults doReSearch(LegislationType legislationType, Long number, BillSearchResults billSearchResults){
+//        BillActionLoad billActionLoad = billSearchResults.getBillHtmlLoad();
+//        StringBuilder buf = new StringBuilder();
+//        buf.append("Re-searching for bill html do to mismatch that could be erroneous. ");
+//        buf.append("Chamber: ");
+//        buf.append(legislationType);
+//        buf.append(" Number: ");
+//        buf.append(number);
+//        buf.append(" Persisted checksum: ");
+//        buf.append(billActionLoad.getCheckSum());
+//        buf.append(" Persisted URL: ");
+//        buf.append(billActionLoad.getUrl());
+//        buf.append(" Persisted load time: ");
+//        buf.append(billActionLoad.getLoadTime());
+//        buf.append(" Current URL: ");
+//        buf.append(billSearchResults.getUrl());
+//        buf.append(" Current checksum: ");
+//        buf.append(billSearchResults.getChecksum());
+//        log.warn(buf.toString());
+//
+//        BillSearchResults retriedBillSearchResults = doSearch(legislationType, number);
+//
+//        StringBuilder buf2 = new StringBuilder();
+//        buf2.append("Searched again for Chamber: ");
+//        buf2.append(legislationType);
+//        buf2.append(" Number: ");
+//        buf2.append(number);
+//        buf2.append(" URL: ");
+//        buf2.append(retriedBillSearchResults.getUrl());
+//        buf2.append(" Checksum: ");
+//        buf2.append(retriedBillSearchResults.getChecksum());
+//
+//        log.warn(buf2.toString());
+//
+//        return retriedBillSearchResults;
+//    }
 
     private BillSearchResults doSearch(LegislationType legislationType, Long number){
         BillSearcherParser billSearcherParser = new BillSearcherParser(connectionPool, nameParser);

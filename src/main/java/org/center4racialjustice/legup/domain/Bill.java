@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.domain;
 
 import lombok.Data;
+import org.center4racialjustice.legup.illinois.BillIdentity;
 import org.center4racialjustice.legup.illinois.LegislationType;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
@@ -41,6 +42,10 @@ public class Bill implements Comparable<Bill> {
 
     public String getShortBillId(){
         return chamber + "." + number;
+    }
+
+    public BillIdentity getBillIdentity(){
+        return new BillIdentity(session, chamber, number);
     }
 
     public LegislationType getLegislationType(){
