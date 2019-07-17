@@ -67,6 +67,6 @@ public class BillEventParser implements BillEventInterpreter {
 
         }
 
-        return null;
+        return new UnclassifiedEventData(rawContents);
     }
 }

@@ -9,6 +9,9 @@ public class BillActionType {
     public static final String VoteCode = "Vote";
     public static final String SponsorCode = "Sponsor";
     public static final String ChiefSponsorCode = "Chief Sponsor";
+
+    public static final String UnclassifiedCode = "Unclassified";
+
     public static final String FirstReading = "First Reading";
     public static final String CommitteeReferral = "Committee Referral";
     public static final String CommitteeAssignment = "Committee Assignment";
@@ -17,9 +20,13 @@ public class BillActionType {
     public static final String Postponed = "Postponed";
     public static final String DeadlineEstablished = "Deadline Established";
 
+
     public final static BillActionType VOTE = new BillActionType(VoteCode);
     public final static BillActionType SPONSOR = new BillActionType(SponsorCode);
     public final static BillActionType CHIEF_SPONSOR = new BillActionType(ChiefSponsorCode);
+
+    public final static BillActionType UNCLASSIFIED = new BillActionType(UnclassifiedCode);
+
     public final static BillActionType FIRST_READING = new BillActionType(FirstReading);
     public final static BillActionType COMMITTEE_REFERRAL = new BillActionType(CommitteeReferral);
     public final static BillActionType COMMITTEE_ASSIGNMENT = new BillActionType(CommitteeAssignment);
