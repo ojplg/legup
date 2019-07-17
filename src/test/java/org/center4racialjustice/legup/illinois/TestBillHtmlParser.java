@@ -17,7 +17,7 @@ public class TestBillHtmlParser {
         System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
     }
 
-    private static String HouseBill2771BaseUrl =
+    public static String HouseBill2771BaseUrl =
             "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2771&GAID=14&DocTypeID=HB&LegId=104095&SessionID=91&GA=100";
 
     private static String HouseBill2771FileName =
@@ -102,20 +102,10 @@ public class TestBillHtmlParser {
 
         Assert.assertEquals(137, events.size());
 
-        int uncategorizedCount = 0;
-
         for(BillEvent event : events){
-            BillEventParser billEventParser = new BillEventParser();
-            BillActionType actionType = billEventParser.readActionType(event);
-
-            if( actionType == null ){
-                System.out.println("   " + event.getRawContents() );
-                uncategorizedCount++;
-            }
-
+            System.out.println(event.getRawContents());
         }
 
-        System.out.println("UNCATEGORIZED " + uncategorizedCount);
     }
 
     @Test
@@ -127,22 +117,9 @@ public class TestBillHtmlParser {
 
         Assert.assertEquals(59, events.size());
 
-        int uncategorizedCount = 0;
-
         for(BillEvent event : events){
-            BillEventParser billEventParser = new BillEventParser();
-            BillActionType actionType = billEventParser.readActionType(event);
-
-            if( actionType == null ){
-                System.out.println("   " + event.getRawContents() );
-                uncategorizedCount++;
-            } else {
-                System.out.println("CATEGORIZED " + event.getRawContents() + " AS " + actionType.getCode());
-            }
-
+            System.out.println(" " + event.getRawContents());
         }
-
-        System.out.println("UNCATEGORIZED " + uncategorizedCount);
     }
 
 

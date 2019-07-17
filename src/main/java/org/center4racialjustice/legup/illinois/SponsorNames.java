@@ -92,4 +92,21 @@ public class SponsorNames {
         }
         return incompletes;
     }
+
+    public List<String> getAllRawNames(){
+        List<String> rawNames = new ArrayList<>();
+        if( chiefHouseSponsor != null ){
+            rawNames.add(chiefHouseSponsor.getRawName());
+        }
+        if( chiefSenateSponsor != null ){
+            rawNames.add(chiefSenateSponsor.getRawName());
+        }
+        for(SponsorName houseName : houseSponsors){
+            rawNames.add(houseName.getRawName());
+        }
+        for(SponsorName senateName : senateSponsors){
+            rawNames.add(senateName.getRawName());
+        }
+        return rawNames;
+    }
 }

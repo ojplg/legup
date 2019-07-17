@@ -21,4 +21,8 @@ public class BillEvent {
     public BillEventKey generateEventKey(){
         return new BillEventKey(date, chamber, rawContents);
     }
+
+    public boolean isSponsorshipEvent(){
+        return false;
+    }
 }
