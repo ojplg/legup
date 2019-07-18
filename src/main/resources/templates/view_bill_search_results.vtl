@@ -33,26 +33,26 @@
 <h5>Uncollated Votes and Sponsors</h5>
 <div class="pure-g">
     <div class="pure-u-1-2">
-        #if ( $hasUncollatedVotes )
+        #if ( ${billStatusComputer.hasUncollatedVotes()} )
             <ul>
-                #foreach ($legislator in $uncollatedVotes)
-                    <li>$legislator.Display</li>
+                #foreach ($name in $uncollatedVotes)
+                    <li>$name.Display</li>
                 #end
             </ul>
         #else
-            <span>No uncollated votes.</span>
+            <span>All votes collated.</span>
         #end
     </div>
 
     <div class="pure-u-1-2">
-        #if ( $hasUncollatedSponsors )
+        #if ( ${billStatusComputer.hasUncollatedSponsors()} )
             <ul>
                 #foreach ($name in $uncollatedSponsors )
-                    <li>$name</li>
+                    <li>$name.rawName</li>
                 #end
             </ul>
         #else
-            <span>No uncollated sponsors.</span>
+            <span>All sponsors collated.</span>
         #end
     </div>
 </div>

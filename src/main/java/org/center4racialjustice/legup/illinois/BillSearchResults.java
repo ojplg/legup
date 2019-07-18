@@ -93,4 +93,8 @@ public class BillSearchResults {
         return uncollatedVotes;
     }
 
+    public List<SponsorName> getUncollatedSponsors(){
+        return sponsorNames.getUncollated();
+    }
+
 }

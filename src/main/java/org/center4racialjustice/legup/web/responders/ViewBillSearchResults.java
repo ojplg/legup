@@ -83,12 +83,6 @@ public class ViewBillSearchResults implements Responder {
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
-        response.putVelocityData("uncollatedSponsors", sponsorNames.getUncollated());
-        response.putVelocityData("hasUncollatedSponsors", sponsorNames.getUncollated().size() > 0);
-
-        response.putVelocityData("uncollatedVotes", billSearchResults.getUncollatedVotes());
-        response.putVelocityData("hasUncollatedVotes", billSearchResults.getUncollatedVotes().size() > 0);
-
 
         response.putVelocityData("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
         response.putVelocityData("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
