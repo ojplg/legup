@@ -43,6 +43,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern CommitteeAmendmentPattern =
             Pattern.compile("(?:Senate|House) Committee Amendment No. \\d+ Filed with (?:Clerk|Secretary) by (?:Sen|Rep). (.*)");
 
+    private static final Pattern CommitteeVotePattern =
+            Pattern.compile("(?:Do Pass as Amended|Recommends Do Pass|Reported Back To|Do Pass / Short Debate)? ([\\w\\s-/]+); \\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
+
     private static final Pattern VotePattern =
             Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
 
@@ -82,6 +85,9 @@ public class BillEventParser implements BillEventInterpreter {
         NameGrabbingPatterns.put(
                 CommitteeAmendmentPattern,
                 (raw, grab) -> new CommitteeAmendmentFiledBillEvent(raw, grab));
+        NameGrabbingPatterns.put(
+                CommitteeVotePattern,
+                (raw, grab) -> CommitteeBillEvent.vote(raw, grab));
 
         NoGrabPatterns = new HashMap<>();
         NoGrabPatterns.put(
