@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEvent;
+import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
@@ -49,10 +50,14 @@ public class BillSearcherParser {
         List<Legislator> legislators = legislatorsBySession(billHtmlParser.getSession());
 
         List<BillEvent> billEvents = billHtmlParser.getBillEvents();
+        BillEventParser billEventParser = new BillEventParser();
+        List<Tuple<BillEvent, BillEventData>> eventTuples =
+                Lists.map(billEvents, event -> new Tuple(event, billEventParser.parse(event)));
+        ParsedBillEvents parsedBillEvents = new ParsedBillEvents(eventTuples);
 
-        List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators, billEvents);
+        List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators, parsedBillEvents);
 
-        return new BillSearchResults(billHtmlParser, legislators, votesResults, billEvents);
+        return new BillSearchResults(billHtmlParser, legislators, votesResults, parsedBillEvents);
 
     }
 
@@ -63,10 +68,11 @@ public class BillSearcherParser {
         });
     }
 
-    private List<BillVotesResults> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, List<BillEvent> billEvents) {
+    private List<BillVotesResults> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, ParsedBillEvents billEvents) {
         List<BillVotesResults> votesList = new ArrayList<>();
         for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet() ){
-            BillEvent billEvent = Lists.findfirst(billEvents, event -> urlPair.getValue().equals(event.getLink()));
+            // TODO: THIS NEEDS FIXING
+            BillEvent billEvent =  null; // Lists.findfirst(billEvents, event -> urlPair.getValue().equals(event.getLink()));
             BillVotesResults results = findVoteResults(urlPair.getKey(), urlPair.getValue(), legislators, billEvent);
             votesList.add(results);
         }

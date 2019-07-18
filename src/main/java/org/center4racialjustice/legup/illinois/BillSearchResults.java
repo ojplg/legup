@@ -22,12 +22,12 @@ public class BillSearchResults {
     private final long checksum;
     private final String url;
     private final List<BillVotesResults> votesResults;
-    private final List<BillEvent> billEvents;
+    private final ParsedBillEvents billEvents;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              List<Legislator> legislators,
                              List<BillVotesResults> votesResults,
-                             List<BillEvent> billEvents){
+                             ParsedBillEvents billEvents){
         this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislators);
@@ -41,7 +41,9 @@ public class BillSearchResults {
         return parsedBill.getBillIdentity();
     }
 
-    public List<BillEvent> getBillEvents(){
+    public List<BillEvent> getRawBillEvents() { return billEvents.getRawEvents(); }
+
+    public ParsedBillEvents getBillEvents(){
         return billEvents;
     }
 

@@ -23,7 +23,7 @@ public class BillStatusComputer {
 
     public List<BillEvent> unpersistedEvents(){
         List<BillEvent> unpersisted = new ArrayList<>();
-        for(BillEvent billEvent : billSearchResults.getBillEvents()){
+        for(BillEvent billEvent : billSearchResults.getRawBillEvents()){
             if( ! billHistory.recognizedEvent(billEvent) ){
                 unpersisted.add(billEvent);
             }
