@@ -54,7 +54,7 @@ public class ViewBillSearchResults implements Responder {
 
         // FIXME: hard-coded session
         Long session = 101L;
-        BillIdentity billIdentity = new BillIdentity(session, chamber, number);
+        BillIdentity billIdentity = new BillIdentity(session, chamber, legislationType, number);
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         BillHistory billHistory = billPersistence.loadBillHistory(billIdentity);
 

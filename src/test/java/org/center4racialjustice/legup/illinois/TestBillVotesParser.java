@@ -34,7 +34,7 @@ public class TestBillVotesParser {
     }
 
     private static BillVotes houseBill4324(){
-        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.House, 4324L);
+        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.House, null, 4324L );
         ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
                 .expectedYeas(88)
                 .expectedNays(3)
@@ -46,7 +46,7 @@ public class TestBillVotesParser {
     }
 
     private BillVotes senateBill8(){
-        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.Senate,  8L);
+        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.Senate, null,  8L);
         ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
                 .expectedYeas(34)
                 .expectedNays(14)
@@ -58,7 +58,7 @@ public class TestBillVotesParser {
     }
 
     private BillVotes houseBill3179(){
-        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.House,3179L);
+        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.House,null, 3179L);
         ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
                 .expectedYeas(48)
                 .expectedNays(0)
@@ -70,7 +70,7 @@ public class TestBillVotesParser {
     }
 
     private BillVotes houseBill2771(){
-        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.House, 2771L);
+        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.House, null, 2771L);
         ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
                 .expectedYeas(66)
                 .expectedNays(51)
@@ -82,7 +82,7 @@ public class TestBillVotesParser {
     }
 
     private BillVotes senateBill1781(){
-        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.Senate,  1781L);
+        BillIdentity  billIdentity = new BillIdentity(100L, Chamber.Senate,  null, 1781L);
         ExpectedVoteCounts expectedVoteCounts = ExpectedVoteCounts.builder()
                 .expectedYeas(61)
                 .expectedNays(55)

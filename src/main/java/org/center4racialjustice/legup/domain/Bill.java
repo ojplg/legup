@@ -45,7 +45,7 @@ public class Bill implements Comparable<Bill> {
     }
 
     public BillIdentity getBillIdentity(){
-        return new BillIdentity(session, chamber, number);
+        return new BillIdentity(session, chamber, getLegislationType(), number);
     }
 
     public LegislationType getLegislationType(){

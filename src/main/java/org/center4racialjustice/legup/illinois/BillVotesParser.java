@@ -290,7 +290,8 @@ public class BillVotesParser {
             }
         }
 
-        return new BillIdentity(session, chamber, number);
+        // FIXME: Legislation type?
+        return new BillIdentity(session, chamber, null, number);
     }
 
     private ExpectedVoteCounts parseExpectedVoteCounts(List<String> lines){

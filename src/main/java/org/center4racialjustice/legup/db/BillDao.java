@@ -47,7 +47,8 @@ public class BillDao {
     public Bill read(BillIdentity billIdentity){
         return innerDao.selectOne(where("SESSION_NUMBER", EQUALS, billIdentity.getSession())
                 .and("CHAMBER", EQUALS, billIdentity.getChamber().getName())
-                .and("BILL_NUMBER", EQUALS, billIdentity.getNumber()));
+                .and("BILL_NUMBER", EQUALS, billIdentity.getNumber())
+                .and("SUB_TYPE", EQUALS, billIdentity.getSubType()));
     }
 
     public List<Bill> readAll() {
