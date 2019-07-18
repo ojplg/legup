@@ -57,42 +57,42 @@ public class BillEventParser implements BillEventInterpreter {
         NameGrabbingPatterns = new HashMap<>();
         NameGrabbingPatterns.put(
                 FiledWithClerkPattern,
-                (raw, grab) -> new ChiefSponsorshipBillEvent(raw, grab));
+                ChiefSponsorshipBillEvent::new);
         NameGrabbingPatterns.put(
                 AddedChiefSponsorPattern,
-                (raw, grab) -> new ChiefSponsorshipBillEvent(raw, grab));
+                ChiefSponsorshipBillEvent::new);
         NameGrabbingPatterns.put(
                 AddedSponsorPattern,
-                (raw, grab) -> new SponsorshipBillEvent(raw, grab));
+                SponsorshipBillEvent::new);
         NameGrabbingPatterns.put(
                 ChiefSenateSponsorPattern,
-                (raw, grab) -> new ChiefSponsorshipBillEvent(raw, grab));
+                ChiefSponsorshipBillEvent::new);
         NameGrabbingPatterns.put(
                 AddedAlternateCoSponsorPattern,
-                (raw, grab) -> new SponsorshipBillEvent(raw, grab));
+                SponsorshipBillEvent::new);
         NameGrabbingPatterns.put(
                 AddedAlternateChiefCoSponsorPattern,
-                (raw, grab) -> new ChiefSponsorshipBillEvent(raw, grab));
+                ChiefSponsorshipBillEvent::new);
         NameGrabbingPatterns.put(
                 CommitteeReferralPattern,
-                (raw, grab) -> CommitteeBillEvent.referral(raw, grab));
+                CommitteeBillEvent::referral);
         NameGrabbingPatterns.put(
                 CommitteeAssignmentPattern,
-                (raw, grab) -> CommitteeBillEvent.assignment(raw, grab));
+                CommitteeBillEvent::assignment);
         NameGrabbingPatterns.put(
                 CommitteePostponementPattern,
-                (raw, grab) -> CommitteeBillEvent.postponement(raw, grab));
+                CommitteeBillEvent::postponement);
         NameGrabbingPatterns.put(
                 CommitteeAmendmentPattern,
-                (raw, grab) -> new CommitteeAmendmentFiledBillEvent(raw, grab));
+                CommitteeAmendmentFiledBillEvent::new);
         NameGrabbingPatterns.put(
                 CommitteeVotePattern,
-                (raw, grab) -> CommitteeBillEvent.vote(raw, grab));
+                CommitteeBillEvent::vote);
 
         NoGrabPatterns = new HashMap<>();
         NoGrabPatterns.put(
                 VotePattern,
-                raw -> new VoteBillEvent(raw));
+                VoteBillEvent::new);
     }
 
     @Override
