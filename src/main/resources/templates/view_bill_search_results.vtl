@@ -3,7 +3,7 @@
 
 #parse( "/templates/insert_bill_identification.vtl" )
 
-#if ( $billStatusComputer.hasHistory )
+#if ( ${billStatusComputer.hasHistory()} )
     <h5>Prior Save Data</h5>
     <table class="pure-table pure-table-horizontal">
         <thead>
@@ -20,14 +20,14 @@
                 <tr>
                     <td>$load.Id</td>
                     <td>$load.formattedLoadTime</td>
-                    <td>$voteLoad.CheckSum</td>
-                    <td>$voteLoad.Url</td>
+                    <td>$load.CheckSum</td>
+                    <td>$load.Url</td>
                 </tr>
             #end
         </tbody>
     </table>
 #else
-    <h5>No history for this bill.</h5>
+    <h5>No saved history for this bill</h5>
 #end
 
 <h5>Uncollated Votes and Sponsors</h5>

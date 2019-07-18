@@ -58,6 +58,8 @@ public class ViewBillSearchResults implements Responder {
         BillPersistence billPersistence = new BillPersistence(connectionPool);
         BillHistory billHistory = billPersistence.loadBillHistory(billIdentity);
 
+        log.info("Found stored bill " + billHistory.getBill());
+
         BillSearchResults billSearchResults = doSearch(legislationType, number);
 //        if( BillSearchResults.MatchStatus.UnmatchedValues.equals(billSearchResults.getBillHtmlLoadStatus()) ){
 //            // Sometimes we get a mis-match that is erroneous.
