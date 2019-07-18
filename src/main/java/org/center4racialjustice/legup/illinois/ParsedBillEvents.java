@@ -32,4 +32,7 @@ public class ParsedBillEvents {
         return billEventList;
     }
 
+    public BillEventData getEventData(BillEvent billEvent){
+        return dataMap.get(billEvent);
+    }
 }

@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.LegislatorDao;
-import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
@@ -13,13 +11,11 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteType;
-import org.center4racialjustice.legup.service.BillPersistence;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class BillSearcherParser {
 
@@ -45,7 +41,7 @@ public class BillSearcherParser {
 
         log.info("Found " + billHtmlParser.getSponsorNames().totalSponsorCount() + " total sponsors");
 
-        Map<String, String> votesUrlsMap = searcher.searchForVotesUrls(votesUrl);
+        List<VoteLinkInfo> votesLinks = searcher.searchForVoteLinks(votesUrl);
 
         List<Legislator> legislators = legislatorsBySession(billHtmlParser.getSession());
 
@@ -55,7 +51,7 @@ public class BillSearcherParser {
                 Lists.map(billEvents, event -> new Tuple(event, billEventParser.parse(event)));
         ParsedBillEvents parsedBillEvents = new ParsedBillEvents(eventTuples);
 
-        List<BillVotesResults> votesResults = findVotes(votesUrlsMap, legislators, parsedBillEvents);
+        List<BillVotesResults> votesResults = findVotes(votesLinks, legislators);
 
         return new BillSearchResults(billHtmlParser, legislators, votesResults, parsedBillEvents);
 
@@ -68,20 +64,20 @@ public class BillSearcherParser {
         });
     }
 
-    private List<BillVotesResults> findVotes(Map<String, String> votesMapUrl, List<Legislator> legislators, ParsedBillEvents billEvents) {
+    private List<BillVotesResults> findVotes(List<VoteLinkInfo> votesLinks, List<Legislator> legislators) {
         List<BillVotesResults> votesList = new ArrayList<>();
-        for( Map.Entry<String,String> urlPair : votesMapUrl.entrySet() ){
-            // TODO: THIS NEEDS FIXING
-            BillEvent billEvent =  null; // Lists.findfirst(billEvents, event -> urlPair.getValue().equals(event.getLink()));
-            BillVotesResults results = findVoteResults(urlPair.getKey(), urlPair.getValue(), legislators, billEvent);
+        for( VoteLinkInfo voteLinkInfo : votesLinks ){
+            BillVotesResults results = findVoteResults(voteLinkInfo, legislators);
             votesList.add(results);
         }
         return votesList;
     }
 
-    private BillVotesResults findVoteResults(String linkText, String linkUrl, List<Legislator> legislators, BillEvent billEvent){
-        VoteType voteType = new VoteType(linkText);
-        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(linkUrl, nameParser, voteType);
+    private BillVotesResults findVoteResults(VoteLinkInfo voteLinkInfo, List<Legislator> legislators){
+        // FIXME: VoteType is still anemic
+        // Maybe just pass along the VoteLinkInfo?
+        VoteType voteType = new VoteType(voteLinkInfo.getVoteDescription());
+        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(voteLinkInfo.getPdfUrl(), nameParser, voteType);
         Chamber votingChamber = billVotes.getVotingChamber();
 
         VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
@@ -92,6 +88,7 @@ public class BillSearcherParser {
 
         log.info("Chamber " + votingChamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
 
-        return new BillVotesResults(collatedVotes, uncollatedVotes, linkUrl, billVotes.getChecksum(), votingChamber, voteType, billEvent.getDate());
+        return new BillVotesResults(collatedVotes, uncollatedVotes, voteLinkInfo.getPdfUrl(), billVotes.getChecksum(),
+                votingChamber, voteType, voteLinkInfo.getVoteDate());
     }
 }

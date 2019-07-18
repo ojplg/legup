@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import java.util.List;
 import java.util.Map;
 
 public class BillSearcher {
@@ -7,6 +8,11 @@ public class BillSearcher {
     public Map<String, String> searchForVotesUrls(String votesPageUrl){
         BillVotesListParser billVotesListParser = new BillVotesListParser(votesPageUrl);
         return billVotesListParser.grabAllVotesUrls();
+    }
+
+    public List<VoteLinkInfo> searchForVoteLinks(String votesPageUrl){
+        BillVotesListParser billVotesListParser = new BillVotesListParser(votesPageUrl);
+        return billVotesListParser.parseVoteLinks();
     }
 
     public String convertToVotesPage(String billHomePage){

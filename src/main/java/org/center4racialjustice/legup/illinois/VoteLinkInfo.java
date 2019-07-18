@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import lombok.Builder;
 import lombok.Data;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.VoteType;
 
 import java.time.LocalDate;
 
