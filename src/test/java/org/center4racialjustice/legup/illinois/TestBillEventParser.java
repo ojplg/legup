@@ -32,8 +32,10 @@ public class TestBillEventParser {
                 missing++;
             }
         }
-        Assert.assertTrue(missing < 36);
+        Assert.assertTrue(missing < 30);
     }
+
+
 
     @Test
     public void testEventsFound_House2771(){
@@ -123,6 +125,16 @@ public class TestBillEventParser {
         Assert.assertEquals(BillActionType.COMMITTEE_REFERRAL, billEventData.getBillActionType());
     }
 
+    @Test
+    public void testParsesCommitteeNamesWithHyphens(){
+        BillEvent billEvent = newBillEvent("Assigned to Judiciary - Civil Committee");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEventData billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertTrue(billEventData.hasCommittee());
+        Assert.assertEquals("Judiciary - Civil Committee", billEventData.getRawCommitteeName());
+        Assert.assertEquals(BillActionType.COMMITTEE_ASSIGNMENT, billEventData.getBillActionType());
+    }
 
 
     @Test
@@ -211,4 +223,25 @@ public class TestBillEventParser {
     private BillEvent newBillEvent(String rawContents){
         return new BillEvent(LocalDate.now(), Chamber.House, rawContents, "");
     }
+
+    @Test
+    public void testRecognizesVoteEvents_Senate889(){
+        InputStream inputStream = this.getClass().getResourceAsStream(TestBillHtmlParser.SenateBill889BaseFileName);
+        BillHtmlParser parser = new BillHtmlParser(inputStream, TestBillHtmlParser.SenateBill889BaseUrl);
+
+        List<BillEvent> events = parser.getBillEvents();
+
+        Assert.assertEquals(59, events.size());
+
+        int voteEventCount = 0;
+        BillEventParser billEventParser = new BillEventParser();
+        for(BillEvent billEvent : events){
+            BillEventData billEventData = billEventParser.parse(billEvent);
+            if( billEventData.isVote()) {
+                voteEventCount++;
+            }
+        }
+        Assert.assertEquals(6, voteEventCount);
+    }
+
 }

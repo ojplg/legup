@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.domain.BillEventInterpreter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,18 +32,23 @@ public class BillEventParser implements BillEventInterpreter {
             Pattern.compile("Added (?:as )?Alternate Chief Co-Sponsor (?:Sen|Rep). (.*)");
 
     private static final Pattern CommitteeReferralPattern =
-            Pattern.compile("Referred to ([\\w\\s]+)");
+            Pattern.compile("Referred to ([\\w\\s-]+)");
 
     private static final Pattern CommitteeAssignmentPattern =
-            Pattern.compile("Assigned to ([\\w\\s]+)");
+            Pattern.compile("Assigned to ([\\w\\s-]+)");
 
     private static final Pattern CommitteePostponementPattern =
-            Pattern.compile("Postponed - ([\\w\\s]+)");
+            Pattern.compile("Postponed - ([\\w\\s-]+)");
 
     private static final Pattern CommitteeAmendmentPattern =
             Pattern.compile("(?:Senate|House) Committee Amendment No. \\d+ Filed with (?:Clerk|Secretary) by (?:Sen|Rep). (.*)");
 
+    private static final Pattern VotePattern =
+            Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
+
     private static final Map<Pattern, BiFunction<String, String, BillEventData>> NameGrabbingPatterns;
+
+    private static final Map<Pattern, Function<String, BillEventData>> NoGrabPatterns;
 
     static {
         NameGrabbingPatterns = new HashMap<>();
@@ -77,6 +83,10 @@ public class BillEventParser implements BillEventInterpreter {
                 CommitteeAmendmentPattern,
                 (raw, grab) -> new CommitteeAmendmentFiledBillEvent(raw, grab));
 
+        NoGrabPatterns = new HashMap<>();
+        NoGrabPatterns.put(
+                VotePattern,
+                raw -> new VoteBillEvent(raw));
     }
 
     @Override
@@ -89,7 +99,13 @@ public class BillEventParser implements BillEventInterpreter {
                 String grabbed = matcher.group(1);
                 return parserEntry.getValue().apply(rawContents, grabbed);
             }
+        }
 
+        for(Map.Entry<Pattern, Function<String, BillEventData>> parserEntry : NoGrabPatterns.entrySet()){
+            Matcher matcher = parserEntry.getKey().matcher(rawContents);
+            if( matcher.matches() ){
+                return parserEntry.getValue().apply(rawContents);
+            }
         }
 
         return new UnclassifiedEventData(rawContents);
