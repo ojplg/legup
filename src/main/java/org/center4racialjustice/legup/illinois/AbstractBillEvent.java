@@ -18,7 +18,7 @@ public abstract class AbstractBillEvent implements BillEventData {
 
     @Override
     public boolean hasLegislator() {
-        return false;
+        return getRawLegislatorName() != null;
     }
 
     @Override

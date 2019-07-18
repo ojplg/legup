@@ -183,6 +183,31 @@ public class TestBillEventParser {
         Assert.assertEquals("Toi W. Hutchinson", billEventData.getRawLegislatorName());
     }
 
+    @Test
+    public void testParsesCommitteeAmendment(){
+        BillEvent billEvent = newBillEvent("Senate Committee Amendment No. 1 Filed with Secretary by Sen. Toi W. Hutchinson");
+
+        BillEventParser billEventParser = new BillEventParser();
+        BillEventData billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertTrue(billEventData.hasLegislator());
+        Assert.assertFalse(billEventData.hasCommittee());
+        Assert.assertEquals("Toi W. Hutchinson", billEventData.getRawLegislatorName());
+    }
+
+    @Test
+    public void testParsesCommitteeAmendment_WorksForHouse(){
+        BillEvent billEvent = newBillEvent("House Committee Amendment No. 1 Filed with Clerk by Rep. Christian L. Mitchell");
+
+        BillEventParser billEventParser = new BillEventParser();
+        BillEventData billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertTrue(billEvent.getRawContents(), billEventData.hasLegislator());
+        Assert.assertFalse(billEventData.hasCommittee());
+        Assert.assertEquals("Christian L. Mitchell", billEventData.getRawLegislatorName());
+    }
+
+
     private BillEvent newBillEvent(String rawContents){
         return new BillEvent(LocalDate.now(), Chamber.House, rawContents, "");
     }

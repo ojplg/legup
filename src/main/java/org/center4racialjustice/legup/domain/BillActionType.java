@@ -24,6 +24,8 @@ public class BillActionType {
     public final static BillActionType COMMITTEE_ASSIGNMENT = new BillActionType("Committee Assignment");
     public final static BillActionType COMMITTEE_POSTPONEMENT = new BillActionType("Committee Postponement");
 
+    public final static BillActionType COMMITTEE_AMENDMENT_FILED = new BillActionType("Committee Amendment Filed");
+
     public final static BillActionType UNCLASSIFIED = new BillActionType("Unclassified");
 
     public final static BillActionType FIRST_READING = new BillActionType(FirstReading);

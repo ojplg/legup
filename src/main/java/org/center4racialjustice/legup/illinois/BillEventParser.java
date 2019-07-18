@@ -39,6 +39,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern CommitteePostponementPattern =
             Pattern.compile("Postponed - ([\\w\\s]+)");
 
+    private static final Pattern CommitteeAmendmentPattern =
+            Pattern.compile("(?:Senate|House) Committee Amendment No. \\d+ Filed with (?:Clerk|Secretary) by (?:Sen|Rep). (.*)");
+
     private static final Map<Pattern, BiFunction<String, String, BillEventData>> NameGrabbingPatterns;
 
     static {
@@ -70,6 +73,9 @@ public class BillEventParser implements BillEventInterpreter {
         NameGrabbingPatterns.put(
                 CommitteePostponementPattern,
                 (raw, grab) -> CommitteeBillEvent.postponement(raw, grab));
+        NameGrabbingPatterns.put(
+                CommitteeAmendmentPattern,
+                (raw, grab) -> new CommitteeAmendmentFiledBillEvent(raw, grab));
 
     }
 
