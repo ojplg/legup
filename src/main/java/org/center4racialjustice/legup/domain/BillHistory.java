@@ -26,6 +26,14 @@ public class BillHistory {
         this.actions = new BillActionCollator(actions);
     }
 
+    public boolean isKnownBill(){
+        return bill != null;
+    }
+
+    public List<BillActionLoad> getPriorLoads(){
+        return loads.getAllLoads();
+    }
+
     public Bill getBill(){
         return bill;
     }

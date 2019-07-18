@@ -4,12 +4,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.illinois.BillIdentity;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillSearcherParser;
 import org.center4racialjustice.legup.illinois.LegislationType;
 import org.center4racialjustice.legup.illinois.SponsorNames;
+import org.center4racialjustice.legup.service.BillPersistence;
+import org.center4racialjustice.legup.service.BillStatusComputer;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSession;
@@ -48,6 +52,12 @@ public class ViewBillSearchResults implements Responder {
         LegislationType legislationType = LegislationType.fromChamberAndSubType(chamber, legislationSubType);
         Long number = submission.getLongRequestParameter( "number");
 
+        // FIXME: hard-coded session
+        Long session = 101L;
+        BillIdentity billIdentity = new BillIdentity(session, chamber, number);
+        BillPersistence billPersistence = new BillPersistence(connectionPool);
+        BillHistory billHistory = billPersistence.loadBillHistory(billIdentity);
+
         BillSearchResults billSearchResults = doSearch(legislationType, number);
 //        if( BillSearchResults.MatchStatus.UnmatchedValues.equals(billSearchResults.getBillHtmlLoadStatus()) ){
 //            // Sometimes we get a mis-match that is erroneous.
@@ -57,10 +67,13 @@ public class ViewBillSearchResults implements Responder {
 //            billSearchResults = doReSearch(legislationType, number, billSearchResults);
 //        }
 
+        BillStatusComputer billStatusComputer = new BillStatusComputer(billSearchResults, billHistory);
+
         String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
 
+        response.putVelocityData("billStatusComputer", billStatusComputer);
         response.putVelocityData("billSearchResults", billSearchResults);
         response.putVelocityData("bill", billSearchResults.getParsedBill());
 //        response.putVelocityData("priorVoteLoads", billSearchResults.getPriorVoteLoads());

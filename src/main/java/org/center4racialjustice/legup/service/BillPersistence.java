@@ -103,7 +103,7 @@ public class BillPersistence {
 
             SponsorSaveResults sponsorsSaved;
 
-            if( billStatusComputer.hasNoHistory() ){
+            if( ! billStatusComputer.hasHistory() ){
                 bill = insertNewBill( connection, billSearchResults.getParsedBill());
                 billActionLoad = insertNewBillLoadAction(connection, bill, billSearchResults.getUrl(), billSearchResults.getChecksum() );
             } else {

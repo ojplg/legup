@@ -157,9 +157,11 @@ public class BillVotesListParser {
     public List<VoteLinkInfo> parseVoteLinks(){
         Elements tables = document.select("table");
         Element fullChamberVotesTable = tables.get(6);
-        Element committeeVotesTable = tables.get(7);
         List<VoteLinkInfo> infos = parseTable(fullChamberVotesTable, false);
-        infos.addAll(parseTable(committeeVotesTable, true));
+        if( tables.size() > 7 ) {
+            Element committeeVotesTable = tables.get(7);
+            infos.addAll(parseTable(committeeVotesTable, true));
+        }
         return infos;
     }
 

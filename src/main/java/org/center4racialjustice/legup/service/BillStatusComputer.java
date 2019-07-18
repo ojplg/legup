@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.service;
 
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
@@ -17,8 +18,12 @@ public class BillStatusComputer {
         this.billHistory = billHistory;
     }
 
-    public boolean hasNoHistory(){
-        return billHistory.getBill() == null;
+    public boolean hasHistory(){
+        return billHistory.getBill() != null;
+    }
+
+    public List<BillActionLoad> getPriorLoads(){
+        return billHistory.getPriorLoads();
     }
 
     public List<BillEvent> unpersistedEvents(){

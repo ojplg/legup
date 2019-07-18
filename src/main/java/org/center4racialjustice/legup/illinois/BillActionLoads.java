@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.util.Lists;
@@ -35,6 +36,10 @@ public class BillActionLoads {
 
     public List<BillActionLoad> getVoteLoads(){
         return Lists.filter(loads, BillActionLoad::isVoteLoad);
+    }
+
+    public List<BillActionLoad> getAllLoads(){
+        return loads;
     }
 
 }

@@ -3,36 +3,32 @@
 
 #parse( "/templates/insert_bill_identification.vtl" )
 
-<h5>Prior Save Data</h5>
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <td>Type</td>
-            <td>Status</td>
-            <td>Time</td>
-            <td>URL</td>
-            <td>Check Sum</td>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr>
-            <td>Bill and Sponsors</td>
-            <td>$billSearchResults.BillHtmlLoadStatus</td>
-            <td>$!{billSearchResults.getBillHtmlLoad().getLoadTime().format($DateTimeFormatter)}</td>
-            <td>$!billSearchResults.BillHtmlLoad.Url</td>
-            <td>$!billSearchResults.BillHtmlLoad.CheckSum</td>
-        </tr>
-        #foreach ($voteLoad in $priorVoteLoads)
+#if ( $billStatusComputer.hasHistory )
+    <h5>Prior Save Data</h5>
+    <table class="pure-table pure-table-horizontal">
+        <thead>
             <tr>
-                <td>FIXME needs status</td>
-                <td>${voteLoad.getLoadTime().format($DateTimeFormatter)}</td>
-                <td>$voteLoad.Url</td>
-                <td>$voteLoad.CheckSum</td>
+                <td>ID</td>
+                <td>Time</td>
+                <td>Check Sum</td>
+                <td>Link</td>
             </tr>
-        #end
-    </tbody>
-</table>
+        </thead>
+
+        <tbody>
+            #foreach ($load in $billStatusComputer.priorLoads)
+                <tr>
+                    <td>$load.Id</td>
+                    <td>$load.formattedLoadTime</td>
+                    <td>$voteLoad.CheckSum</td>
+                    <td>$voteLoad.Url</td>
+                </tr>
+            #end
+        </tbody>
+    </table>
+#else
+    <h5>No history for this bill.</h5>
+#end
 
 <h5>Uncollated Votes and Sponsors</h5>
 <div class="pure-g">
