@@ -113,7 +113,7 @@ public class BillPersistence {
                 }
             }
 
-            for( BillEvent billEvent : billStatusComputer.unpersistedEvents() ){
+            for( BillEvent billEvent : billStatusComputer.getUnpersistedEvents() ){
 
             }
 

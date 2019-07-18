@@ -44,7 +44,7 @@ public class BillStatusComputer {
         return billSearchResults.getUncollatedSponsors();
     }
 
-    public List<BillEvent> unpersistedEvents(){
+    public List<BillEvent> getUnpersistedEvents(){
         List<BillEvent> unpersisted = new ArrayList<>();
         for(BillEvent billEvent : billSearchResults.getRawBillEvents()){
             if( ! billHistory.recognizedEvent(billEvent) ){
@@ -55,7 +55,7 @@ public class BillStatusComputer {
     }
 
     public boolean hasUnpersistedEvents(){
-        return unpersistedEvents().size() > 0;
+        return getUnpersistedEvents().size() > 0;
     }
 
 

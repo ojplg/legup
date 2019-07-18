@@ -9,11 +9,17 @@ import java.time.ZonedDateTime;
 public class Dates {
 
     public static LocalDate localDateOf(Instant instant){
+        if (instant == null ){
+            return null;
+        }
         LocalDateTime localDateTime = localDateTimeOf(instant);
         return localDateTime.toLocalDate();
     }
 
     public static LocalDateTime localDateTimeOf(Instant instant){
+        if (instant == null ){
+            return null;
+        }
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }
 

@@ -11,7 +11,20 @@ public class BillEventKey {
     private final String keyValue;
 
     public BillEventKey(LocalDate localDate, Chamber chamber, String rawContents){
-        keyValue = localDate.format(KEY_FORMAT) + "|" + chamber.lowerCaseName() + "|" + rawContents;
+        String dateString;
+        if ( localDate != null ){
+            dateString = localDate.format(KEY_FORMAT);
+        } else {
+            dateString = "UNKNOWN DATE";
+        }
+        String chamberString;
+        if ( chamber != null){
+            chamberString = chamber.lowerCaseName();
+        } else {
+            chamberString = "UNKNOWN CHAMBER";
+        }
+
+        keyValue = dateString + "|" + chamberString + "|" + rawContents;
     }
 
     @Override
