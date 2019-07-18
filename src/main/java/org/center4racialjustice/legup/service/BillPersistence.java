@@ -11,6 +11,7 @@ import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
+import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.domain.Chamber;
@@ -113,7 +114,7 @@ public class BillPersistence {
                 }
             }
 
-            for( BillEvent billEvent : billStatusComputer.getUnpersistedEvents() ){
+            for( BillEventData billEvent : billStatusComputer.getUnpersistedEvents() ){
 
             }
 

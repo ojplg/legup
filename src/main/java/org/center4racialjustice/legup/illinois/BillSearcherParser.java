@@ -47,13 +47,11 @@ public class BillSearcherParser {
 
         List<BillEvent> billEvents = billHtmlParser.getBillEvents();
         BillEventParser billEventParser = new BillEventParser();
-        List<Tuple<BillEvent, BillEventData>> eventTuples =
-                Lists.map(billEvents, event -> new Tuple<>(event, billEventParser.parse(event)));
-        ParsedBillEvents parsedBillEvents = new ParsedBillEvents(eventTuples);
+        List<BillEventData> eventDataList = Lists.map(billEvents, billEventParser::parse);
 
         List<BillVotesResults> votesResults = findVotes(votesLinks, legislators);
 
-        return new BillSearchResults(billHtmlParser, legislators, votesResults, parsedBillEvents);
+        return new BillSearchResults(billHtmlParser, legislators, votesResults, eventDataList);
 
     }
 

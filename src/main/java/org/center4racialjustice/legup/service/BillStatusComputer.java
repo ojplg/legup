@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEvent;
+import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
@@ -44,9 +45,9 @@ public class BillStatusComputer {
         return billSearchResults.getUncollatedSponsors();
     }
 
-    public List<BillEvent> getUnpersistedEvents(){
-        List<BillEvent> unpersisted = new ArrayList<>();
-        for(BillEvent billEvent : billSearchResults.getRawBillEvents()){
+    public List<BillEventData> getUnpersistedEvents(){
+        List<BillEventData> unpersisted = new ArrayList<>();
+        for(BillEventData billEvent : billSearchResults.getBillEvents()){
             if( ! billHistory.recognizedEvent(billEvent) ){
                 unpersisted.add(billEvent);
             }

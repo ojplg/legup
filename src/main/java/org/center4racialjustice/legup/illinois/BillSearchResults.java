@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEvent;
+import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventKey;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
@@ -22,12 +23,12 @@ public class BillSearchResults {
     private final long checksum;
     private final String url;
     private final List<BillVotesResults> votesResults;
-    private final ParsedBillEvents billEvents;
+    private final List<BillEventData> billEvents;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              List<Legislator> legislators,
                              List<BillVotesResults> votesResults,
-                             ParsedBillEvents billEvents){
+                             List<BillEventData> billEvents){
         this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislators);
@@ -41,9 +42,7 @@ public class BillSearchResults {
         return parsedBill.getBillIdentity();
     }
 
-    public List<BillEvent> getRawBillEvents() { return billEvents.getRawEvents(); }
-
-    public ParsedBillEvents getBillEvents(){
+    public List<BillEventData> getBillEvents(){
         return billEvents;
     }
 

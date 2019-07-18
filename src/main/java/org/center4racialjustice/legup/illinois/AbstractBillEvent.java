@@ -1,19 +1,44 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
+import org.center4racialjustice.legup.domain.BillEventKey;
+import org.center4racialjustice.legup.domain.Chamber;
+
+import java.time.LocalDate;
 
 public abstract class AbstractBillEvent implements BillEventData {
 
-    private final String rawData;
+    private final BillEvent underlyingEvent;
 
-    public AbstractBillEvent(String rawData){
-        this.rawData = rawData;
+    public AbstractBillEvent(BillEvent underlyingEvent){
+        this.underlyingEvent = underlyingEvent;
+    }
+
+    @Override
+    public LocalDate getDate() {
+        return underlyingEvent.getDate();
+    }
+
+    @Override
+    public Chamber getChamber() {
+        return underlyingEvent.getChamber();
+    }
+
+    @Override
+    public String getLink() {
+        return underlyingEvent.getLink();
     }
 
     @Override
     public String getRawData() {
-        return rawData;
+        return underlyingEvent.getRawContents();
+    }
+
+    @Override
+    public BillEventKey generateEventKey() {
+        return underlyingEvent.generateEventKey();
     }
 
     @Override

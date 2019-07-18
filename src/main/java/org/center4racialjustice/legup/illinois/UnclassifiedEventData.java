@@ -1,12 +1,13 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 
 public class UnclassifiedEventData extends AbstractBillEvent implements BillEventData {
 
-    public UnclassifiedEventData(String rawContents){
-        super(rawContents);
+    public UnclassifiedEventData(BillEvent underlyingEvent){
+        super(underlyingEvent);
     }
 
     @Override

@@ -49,9 +49,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern VotePattern =
             Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
 
-    private static final Map<Pattern, BiFunction<String, String, BillEventData>> NameGrabbingPatterns;
+    private static final Map<Pattern, BiFunction<BillEvent, String, BillEventData>> NameGrabbingPatterns;
 
-    private static final Map<Pattern, Function<String, BillEventData>> NoGrabPatterns;
+    private static final Map<Pattern, Function<BillEvent, BillEventData>> NoGrabPatterns;
 
     static {
         NameGrabbingPatterns = new HashMap<>();
@@ -99,21 +99,21 @@ public class BillEventParser implements BillEventInterpreter {
     public BillEventData parse(BillEvent billEvent) {
         String rawContents = billEvent.getRawContents();
 
-        for(Map.Entry<Pattern, BiFunction<String,String, BillEventData>> parserEntry : NameGrabbingPatterns.entrySet()){
+        for(Map.Entry<Pattern, BiFunction<BillEvent,String, BillEventData>> parserEntry : NameGrabbingPatterns.entrySet()){
             Matcher matcher = parserEntry.getKey().matcher(rawContents);
             if( matcher.matches() ){
                 String grabbed = matcher.group(1);
-                return parserEntry.getValue().apply(rawContents, grabbed);
+                return parserEntry.getValue().apply(billEvent, grabbed);
             }
         }
 
-        for(Map.Entry<Pattern, Function<String, BillEventData>> parserEntry : NoGrabPatterns.entrySet()){
+        for(Map.Entry<Pattern, Function<BillEvent, BillEventData>> parserEntry : NoGrabPatterns.entrySet()){
             Matcher matcher = parserEntry.getKey().matcher(rawContents);
             if( matcher.matches() ){
-                return parserEntry.getValue().apply(rawContents);
+                return parserEntry.getValue().apply(billEvent);
             }
         }
 
-        return new UnclassifiedEventData(rawContents);
+        return new UnclassifiedEventData(billEvent);
     }
 }
