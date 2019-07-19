@@ -200,4 +200,14 @@ public class TestNameParser {
         Assert.assertEquals("Costa Howard", name.getLastName());
     }
 
+
+    @Test
+    public void testLastNameFirstWithApostrophe(){
+        NameParser parser = new NameParser();
+        Name name = parser.fromLastNameFirstString("D'Amico, John C");
+        Assert.assertEquals("John", name.getFirstName());
+        Assert.assertEquals("D'Amico", name.getLastName());
+        Assert.assertEquals("C", name.getMiddle());
+    }
+
 }

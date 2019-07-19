@@ -67,9 +67,9 @@ public class BillVotes {
         return billIdentity.getNumber();
     }
 
-    public VoteType getVoteType(){
-        return billWebData.getVoteType();
-    }
+//    public VoteType getVoteType(){
+//        return billWebData.getVoteType();
+//    }
 
     public long getChecksum(){
         return billWebData.getChecksum();
@@ -91,6 +91,9 @@ public class BillVotes {
         return expectedVoteCounts.getExpectedPresent();
     }
 
+    public int getFullCount(){
+        return voteLists.getFullCount();
+    }
 
 
     public int getExpectedNotVoting(){

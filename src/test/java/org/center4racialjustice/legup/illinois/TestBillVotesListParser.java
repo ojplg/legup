@@ -20,6 +20,12 @@ public class TestBillVotesListParser {
     public static final String VOTES_LIST_HTML_100_HOUSE_3115_URL =
             "http://www.ilga.gov/legislation/votehistory.asp?DocNum=3115&GAID=14&DocTypeID=HB&LegId=104721&SessionID=91&GA=100";
 
+    public static final String VOTES_LIST_HTML_101_HOUSE_2040_FILE =
+            "/html/illinois_101_house_2040_votes_list.html";
+    public static final String VOTES_LIST_HTML_101_HOUSE_2040_URL =
+            "http://www.ilga.gov/legislation/votehistory.asp?DocNum=2040&DocTypeID=HB&LegID=117547&GAID=15&SessionID=108&GA=101&SpecSess=";
+
+
     static {
         System.setProperty("java.util.logging.manager","org.apache.logging.log4j.jul.LogManager");
     }
@@ -78,6 +84,15 @@ public class TestBillVotesListParser {
         Assert.assertFalse(firstInfo.isCommittee());
         Assert.assertEquals("http://www.ilga.gov/legislation/votehistory/100/house/10000HB2771sam001_05312018_028000C.pdf",
                 firstInfo.getPdfUrl());
+    }
+
+    @Test
+    public void testFullParse_101_House_2040(){
+        InputStream inputStream = this.getClass().getResourceAsStream(VOTES_LIST_HTML_101_HOUSE_2040_FILE);
+        BillVotesListParser billVotesListParser = new BillVotesListParser(inputStream, VOTES_LIST_HTML_101_HOUSE_2040_URL);
+
+        List<VoteLinkInfo> voteLinkInfos = billVotesListParser.parseVoteLinks();
+        Assert.assertEquals(6, voteLinkInfos.size());
     }
 
 }

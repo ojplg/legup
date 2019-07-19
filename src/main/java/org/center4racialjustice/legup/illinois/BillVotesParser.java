@@ -41,10 +41,12 @@ public class BillVotesParser {
         this.nameParser = nameParser;
     }
 
-    public static BillVotes readFromUrlAndParse(String url, NameParser nameParser, VoteType voteType) {
+    public static BillVotes readFromUrlAndParse(String url, NameParser nameParser) {
         String contents = BillVotesParser.readFileFromUrl(url);
         BillVotesParser parser = new BillVotesParser(nameParser);
-        return parser.parseFileContents(url, contents, voteType);
+        BillVotes billVotes = parser.parseFileContents(url, contents);
+        log.info("Found vote records " + billVotes.getFullCount());
+        return billVotes;
     }
 
     public static String readFileFromUrl(String url) {
@@ -228,7 +230,7 @@ public class BillVotesParser {
     public static BillVotes parseFile(String filename, NameParser nameParser, VoteType voteType) {
         String content = readFileToString(filename);
         BillVotesParser parser = new BillVotesParser(nameParser);
-        return parser.parseFileContents("",content, voteType);
+        return parser.parseFileContents("",content);
     }
 
     private static String[] houseVoteStrings = new String[]{ "HOUSE ROLL CALL" };
@@ -370,7 +372,7 @@ public class BillVotesParser {
     }
 
 
-    public BillVotes parseFileContents(String url, String content, VoteType voteType){
+    public BillVotes parseFileContents(String url, String content){
         String[] lines = content.split("\n");
         List<String> usefulLines = new ArrayList<>();
         for(int idx=0; idx<lines.length; idx++) {
@@ -388,7 +390,7 @@ public class BillVotesParser {
         }
 
         BillIdentity billIdentity = parseBillIdentity(usefulLines);
-        BillWebData billWebData = new BillWebData(url, content, voteType);
+        BillWebData billWebData = new BillWebData(url, content);
         ExpectedVoteCounts expectedVoteCounts = parseExpectedVoteCounts(usefulLines);
         Chamber votingChamber = parseVotingChamber(usefulLines);
         VoteLists voteLists = parseVoteLists(usefulLines);

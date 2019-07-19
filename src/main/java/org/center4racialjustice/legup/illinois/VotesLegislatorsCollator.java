@@ -42,7 +42,7 @@ public class VotesLegislatorsCollator {
                 if( legislator.getName().matches(voter)
                         && legislator.getChamber().equals(billVotes.getVotingChamber())){
                     CollatedVote collatedVote =
-                            new CollatedVote(vote, legislator, voter, billVotes.getVoteType());
+                            new CollatedVote(vote, legislator, voter, null );
                     collated.add(collatedVote);
                     found = true;
                     break;

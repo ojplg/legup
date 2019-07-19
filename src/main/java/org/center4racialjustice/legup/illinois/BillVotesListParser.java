@@ -30,7 +30,7 @@ public class BillVotesListParser {
     public static String IllinoisLegislationHome = "http://www.ilga.gov";
 
     private static final Pattern LinkTextPattern = Pattern.compile(
-            "(\\w+) - ([\\w\\s]+) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
+            "(\\w+) - ([\\w\\s\\&]+) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
     );
 
     private static final DateTimeFormatter LongDateFormatter =
@@ -148,6 +148,8 @@ public class BillVotesListParser {
                         .build();
 
                 voteLinkInfos.add(voteLinkInfo);
+            } else {
+                log.warn("no match for " + text);
             }
         }
 
@@ -160,8 +162,10 @@ public class BillVotesListParser {
         List<VoteLinkInfo> infos = parseTable(fullChamberVotesTable, false);
         if( tables.size() > 7 ) {
             Element committeeVotesTable = tables.get(7);
-            infos.addAll(parseTable(committeeVotesTable, true));
+            List<VoteLinkInfo> committeeInfos = parseTable(committeeVotesTable, true);
+            infos.addAll(committeeInfos);
         }
+        log.info("Discovered vote links: " + infos.size());
         return infos;
     }
 

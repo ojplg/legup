@@ -6,6 +6,7 @@ import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
+import org.center4racialjustice.legup.illinois.BillVotesResults;
 import org.center4racialjustice.legup.illinois.SponsorName;
 
 import java.util.ArrayList;
@@ -57,6 +58,18 @@ public class BillStatusComputer {
 
     public boolean hasUnpersistedEvents(){
         return getUnpersistedEvents().size() > 0;
+    }
+
+    public PersistableAction getPersistableAction(BillEventData billEventData){
+        if( billEventData.isVote() ){
+            return billSearchResults.getBillVotesResults(billEventData);
+        }
+        return new DefaultPersistableAction();
+    }
+
+    public String getPersistableActionDisplay(BillEventData billEventData){
+        PersistableAction persistableAction = getPersistableAction(billEventData);
+        return persistableAction.getDisplay();
     }
 
 

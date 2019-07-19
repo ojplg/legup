@@ -72,10 +72,7 @@ public class BillSearcherParser {
     }
 
     private BillVotesResults findVoteResults(VoteLinkInfo voteLinkInfo, List<Legislator> legislators){
-        // FIXME: VoteType is still anemic
-        // Maybe just pass along the VoteLinkInfo?
-        VoteType voteType = new VoteType(voteLinkInfo.getVoteDescription());
-        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(voteLinkInfo.getPdfUrl(), nameParser, voteType);
+        BillVotes billVotes = BillVotesParser.readFromUrlAndParse(voteLinkInfo.getPdfUrl(), nameParser);
         Chamber votingChamber = billVotes.getVotingChamber();
 
         VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
@@ -86,7 +83,6 @@ public class BillSearcherParser {
 
         log.info("Chamber " + votingChamber + " had " + collatedVotes.size() + " collated votes and " + uncollatedVotes + " uncollated");
 
-        return new BillVotesResults(collatedVotes, uncollatedVotes, voteLinkInfo.getPdfUrl(), billVotes.getChecksum(),
-                votingChamber, voteType, voteLinkInfo.getVoteDate());
+        return new BillVotesResults(voteLinkInfo, collatedVotes, uncollatedVotes,  billVotes.getChecksum());
     }
 }

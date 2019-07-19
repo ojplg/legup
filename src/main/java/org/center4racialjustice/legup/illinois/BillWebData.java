@@ -8,7 +8,6 @@ public class BillWebData {
 
     private final String url;
     private final String pdfContents;
-    private final VoteType voteType;
 
     public long getChecksum(){
         return (long) pdfContents.hashCode();

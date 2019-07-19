@@ -19,7 +19,7 @@ public class TestVotesLegislatorsCollator {
 
     @Test
     public void correctlyMatchesByLastName(){
-        BillWebData billWebData = new BillWebData("url", "contents", new VoteType("Third Reading"));
+        BillWebData billWebData = new BillWebData("url", "contents");
 
         VoteLists voteLists = new VoteLists();
         voteLists.addVoteRecord(
@@ -43,7 +43,7 @@ public class TestVotesLegislatorsCollator {
 
     @Test
     public void reportsUncollatedVotes(){
-        BillWebData billWebData = new BillWebData("url", "contents", new VoteType("Third Reading"));
+        BillWebData billWebData = new BillWebData("url", "contents");
         VoteLists voteLists = new VoteLists();
         voteLists.addVoteRecord(
                 new VoteRecord(new Name(null, null, "McGee","H", null), VoteSide.Nay)

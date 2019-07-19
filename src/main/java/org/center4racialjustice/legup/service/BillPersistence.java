@@ -238,7 +238,7 @@ public class BillPersistence {
         billAction.setBillActionType(BillActionType.VOTE);
         billAction.setBill(billActionLoad.getBill());
         billAction.setLegislatorBillActions(legislatorBillActions);
-        billAction.setRawActionData(billVotesResults.getRawData());
+        billAction.setRawActionData("FIXME");
         billAction.setActionDate(Dates.instantOf(billVotesResults.getActionDate()));
 
         billActionDao.insert(billAction);

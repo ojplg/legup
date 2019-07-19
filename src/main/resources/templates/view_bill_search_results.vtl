@@ -74,6 +74,7 @@
                     <td>$event.date</td>
                     <td>$event.chamber</td>
                     <td>$event.billActionType.code</td>
+                    <td>${billStatusComputer.getPersistableActionDisplay($event)}</td>
                     <td>$event.rawData</td>
                 </tr>
             #end

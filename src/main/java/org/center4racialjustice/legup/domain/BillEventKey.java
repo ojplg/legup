@@ -39,4 +39,11 @@ public class BillEventKey {
     public int hashCode() {
         return Objects.hash(keyValue);
     }
+
+    @Override
+    public String toString() {
+        return "BillEventKey{" +
+                "keyValue='" + keyValue + '\'' +
+                '}';
+    }
 }

@@ -71,6 +71,15 @@ public class VoteLists {
         return absents;
     }
 
+    public int getFullCount(){
+        return nays.size()
+                + yeas.size()
+                + presents.size()
+                + notVotings.size()
+                + excuseds.size()
+                + absents.size();
+    }
+
     public void checkVoteCounts(ExpectedVoteCounts expectedVoteCounts){
         if (nays.size() != expectedVoteCounts.getExpectedNays()){
             throw new RuntimeException("Bad Nays count. Expected " + expectedVoteCounts.getExpectedNays() + " calculated " + nays.size());
