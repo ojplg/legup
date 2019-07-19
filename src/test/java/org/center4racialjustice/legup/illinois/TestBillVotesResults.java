@@ -31,17 +31,30 @@ public class TestBillVotesResults {
 
     private static final BillEventParser EventParser = new BillEventParser();
 
-    @Test
-    public void testMatching(){
-        VoteLinkInfo voteLinkInfo = VoteLinkInfo.create(VoteLinkTexts_101_House_2040.get(0),Chamber.House, true,"pdfUrl");
-        BillEvent billEvent = new BillEvent(LocalDate.of(2019, 5, 16),
-                Chamber.House, VoteEventsDescriptions_101_House_2040.get(0), "empty_link");
-        BillEventData billEventData = EventParser.parse(billEvent);
+    private BillVotesResults fromLinkText(String linkText, Chamber chamber, boolean committee){
+        VoteLinkInfo voteLinkInfo = VoteLinkInfo.create(linkText,chamber, committee,"pdfUrl");
 
         BillVotesResults billVotesResults = new BillVotesResults(voteLinkInfo,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 0L);
+
+        return billVotesResults;
+    }
+
+    private BillEventData fromVoteEventDescription(String voteEventDescription, LocalDate localDate, Chamber chamber){
+        BillEvent billEvent = new BillEvent(
+                localDate, chamber, voteEventDescription, "empty_link");
+        BillEventData billEventData = EventParser.parse(billEvent);
+        return billEventData;
+    }
+
+    @Test
+    public void testMatching(){
+        BillVotesResults billVotesResults = fromLinkText(
+                VoteLinkTexts_101_House_2040.get(0),Chamber.House, true);
+        BillEventData billEventData = fromVoteEventDescription(
+                VoteEventsDescriptions_101_House_2040.get(0), LocalDate.of(2019, 5, 16), Chamber.House);
 
         Assert.assertTrue(billVotesResults.matches(billEventData));
     }
