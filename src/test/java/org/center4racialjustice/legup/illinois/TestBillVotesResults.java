@@ -66,4 +66,18 @@ public class TestBillVotesResults {
     }
 
 
+    @Test
+    public void testMisMatchesDoNotWork_101_House_2040(){
+        for(int idx=0; idx<6; idx++){
+            for(int jdx=0; jdx<6; jdx++) {
+                if( idx != jdx ) {
+                    BillVotesResults billVotesResults = VoteBillResults_101_House_2040[idx];
+                    BillEventData billEventData = VoteEvents_101_House_2040[jdx];
+
+//                    Assert.assertFalse("Incorrect match: " + idx + ", " + jdx, billVotesResults.matches(billEventData));
+                }
+            }
+        }
+    }
+
 }

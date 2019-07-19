@@ -87,7 +87,7 @@ public class BillEventParser implements BillEventInterpreter {
                 CommitteeAmendmentFiledBillEvent::new);
         NameGrabbingPatterns.put(
                 CommitteeVotePattern,
-                CommitteeBillEvent::vote);
+                CommitteeVoteEvent::new);
 
         NoGrabPatterns = new HashMap<>();
         NoGrabPatterns.put(

@@ -3,12 +3,14 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 
-public class VoteBillEvent extends AbstractBillEvent implements VoteEventCounts {
+public class CommitteeVoteEvent extends AbstractBillEvent implements VoteEventCounts {
 
     private final VoteEventCountExtractor voteCounts;
+    private final String rawCommitteeName;
 
-    public VoteBillEvent(BillEvent underlyingEvent) {
+    public CommitteeVoteEvent(BillEvent underlyingEvent, String rawCommitteeName) {
         super(underlyingEvent);
+        this.rawCommitteeName = rawCommitteeName;
         this.voteCounts = new VoteEventCountExtractor(underlyingEvent.getRawContents());
     }
 
@@ -30,5 +32,10 @@ public class VoteBillEvent extends AbstractBillEvent implements VoteEventCounts 
     @Override
     public int getOtherCount() {
         return voteCounts.getOtherCount();
+    }
+
+    @Override
+    public String getRawCommitteeName() {
+        return rawCommitteeName;
     }
 }

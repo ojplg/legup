@@ -17,10 +17,6 @@ public class CommitteeBillEvent extends AbstractBillEvent {
         return new CommitteeBillEvent(underlyingEvent, BillActionType.COMMITTEE_POSTPONEMENT, rawCommitteeName);
     }
 
-    public static CommitteeBillEvent vote(BillEvent underlyingEvent, String rawCommitteeName){
-        return new CommitteeBillEvent(underlyingEvent, BillActionType.VOTE, rawCommitteeName);
-    }
-
     private final BillActionType billActionType;
     private final String rawCommitteeName;
 
