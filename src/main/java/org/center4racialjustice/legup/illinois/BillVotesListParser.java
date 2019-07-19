@@ -11,33 +11,16 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BillVotesListParser {
 
     private final Logger log = LogManager.getLogger(BillVotesListParser.class);
 
     public static String IllinoisLegislationHome = "http://www.ilga.gov";
-
-    private static final Pattern LinkTextPattern = Pattern.compile(
-            "(\\w+) - ([\\w\\s\\&]+) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
-    );
-
-    private static final DateTimeFormatter LongDateFormatter =
-            DateTimeFormatter.ofPattern("MMMM dd, yyyy", Locale.US);
-
-    private static final DateTimeFormatter ShortDateFormatter =
-            DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.US);
 
     private final Document document;
     private final String prefix;
@@ -87,7 +70,7 @@ public class BillVotesListParser {
         for (VoteLinkInfo linkInfo : linkInfos) {
             String key = linkInfo.getCode() + "."
                     + linkInfo.getVoteDescription() + "."
-                    + ShortDateFormatter.format(linkInfo.getVoteDate());
+                    + VoteLinkInfo.ShortDateFormatter.format(linkInfo.getVoteDate());
             urls.put(key, linkInfo.getPdfUrl());
         }
 
@@ -125,31 +108,11 @@ public class BillVotesListParser {
             String url = prefix + anchor.attr("href");
             String text = anchor.text();
 
-            Matcher matcher = LinkTextPattern.matcher(text);
-            if( matcher.matches() ){
-                String codeString = matcher.group(1);
-                String descriptionString = matcher.group(2);
-                String dateString = matcher.group(3);
+            VoteLinkInfo voteLinkInfo = VoteLinkInfo.create(
+                    text, chamber, committee, url);
 
-                LocalDate voteDate;
-                try {
-                    voteDate = LocalDate.parse(dateString, LongDateFormatter);
-                } catch (DateTimeParseException ignore){
-                    voteDate = LocalDate.parse(dateString, ShortDateFormatter);
-                }
-
-                VoteLinkInfo voteLinkInfo = VoteLinkInfo.builder()
-                        .voteDate(voteDate)
-                        .chamber(chamber)
-                        .committee(committee)
-                        .code(codeString)
-                        .voteDescription(descriptionString)
-                        .pdfUrl(url)
-                        .build();
-
+            if( voteLinkInfo != null ){
                 voteLinkInfos.add(voteLinkInfo);
-            } else {
-                log.warn("no match for " + text);
             }
         }
 

@@ -3,11 +3,13 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
+import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,11 @@ public class TestBillHtmlParser {
 
     public static String SenateBill889BaseFileName =
             "/html/illinois_senate_bill_889.html";
+
+    public static String Bill_101House2040_FileName = "/html/illinois_101_house_2040.html";
+
+    public static String Bill_101House2040_BaseUrl =
+            "http://www.ilga.gov/legislation/BillStatus.asp?DocNum=2040&GAID=15&DocTypeID=HB&LegId=117547&SessionID=108&GA=101";
 
     private static Bill houseBill2771(){
         Bill bill = new Bill();
@@ -102,10 +109,6 @@ public class TestBillHtmlParser {
 
         Assert.assertEquals(137, events.size());
 
-        for(BillEvent event : events){
-            System.out.println(event.getRawContents());
-        }
-
     }
 
     @Test
@@ -117,9 +120,6 @@ public class TestBillHtmlParser {
 
         Assert.assertEquals(59, events.size());
 
-        for(BillEvent event : events){
-            System.out.println(" " + event.getRawContents());
-        }
     }
 
 
@@ -131,5 +131,23 @@ public class TestBillHtmlParser {
     @Test
     public void testSenateBill889Parsing(){
         checkBill(senateBill889(), SenateBill889BaseFileName, SenateBill889BaseUrl);
+    }
+
+    @Test
+    public void testFindVoteEvents(){
+        InputStream inputStream = this.getClass().getResourceAsStream(Bill_101House2040_FileName);
+        BillHtmlParser parser = new BillHtmlParser(inputStream, Bill_101House2040_BaseUrl);
+
+        BillEventParser eventParser = new BillEventParser();
+
+        List<BillEventData> voteEvents = new ArrayList<>();
+        for(BillEvent event : parser.getBillEvents()){
+            BillEventData eventData = eventParser.parse(event);
+            if( eventData.isVote() ){
+                voteEvents.add(eventData);
+            }
+        }
+
+        Assert.assertEquals(6, voteEvents.size());
     }
 }
