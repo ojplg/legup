@@ -145,6 +145,7 @@ public class TestBillHtmlParser {
             BillEventData eventData = eventParser.parse(event);
             if( eventData.isVote() ){
                 voteEvents.add(eventData);
+                System.out.println(eventData.getDate() + " : " + eventData.getRawData() + " : " + eventData.getChamber());
             }
         }
 
