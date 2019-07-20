@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
@@ -69,12 +70,12 @@ public class SponsorNames {
         }
     }
 
-    public SponsorName findMatchingSponsor(String rawName){
-        SponsorName sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.getRawName().equals(rawName));
+    public SponsorName findMatchingSponsor(Name name){
+        SponsorName sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.matchesLegislatorName(name));
         if ( sponsorName != null ){
             return sponsorName;
         }
-        return Lists.findfirst(senateSponsors, sponsor -> sponsor.getRawName().equals(rawName));
+        return Lists.findfirst(senateSponsors, sponsor -> sponsor.matchesLegislatorName(name));
     }
 
     public List<SponsorName> getUncollated(){

@@ -85,8 +85,8 @@ public class BillSearchResults {
 //    }
 
     public SponsorName getSponsorName(BillEventData billEventData){
-        String rawName = billEventData.getRawLegislatorName();
-        SponsorName sponsorName = sponsorNames.findMatchingSponsor(rawName);
+        Name name = billEventData.getParsedLegislatorName();
+        SponsorName sponsorName = sponsorNames.findMatchingSponsor(name);
         return sponsorName;
     }
 

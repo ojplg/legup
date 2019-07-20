@@ -1,5 +1,10 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
@@ -31,10 +36,18 @@ public class BillHtmlParser {
     private LegislationIdentity legislationIdentity;
 
     public BillHtmlParser(String url){
+        CloseableHttpResponse httpResponse = null;
         try {
             this.url = url;
             log.info("Searching " + url);
-            this.document = Jsoup.connect(url).get();
+
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(url);
+            httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+
+            this.document = Jsoup.parse(httpEntity.getContent(), "windows-1252", url);
+
             legislationIdentity = parseBillIdentity();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -44,7 +57,7 @@ public class BillHtmlParser {
     public BillHtmlParser(InputStream htmlStream, String url){
         try {
             this.url = url;
-            this.document = Jsoup.parse(htmlStream, null, url);
+            this.document = Jsoup.parse(htmlStream, "windows-1252", url);
             legislationIdentity = parseBillIdentity();
         } catch (IOException ex){
             throw new RuntimeException(ex);

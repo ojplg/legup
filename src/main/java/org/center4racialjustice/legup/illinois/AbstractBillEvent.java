@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventKey;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.Name;
 
 import java.time.LocalDate;
 
@@ -75,6 +76,9 @@ public abstract class AbstractBillEvent implements BillEventData {
     public String getRawLegislatorName() {
         return null;
     }
+
+    @Override
+    public Name getParsedLegislatorName() { return null; }
 
     @Override
     public String toString() {

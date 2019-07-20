@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventInterpreter;
+import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.NameParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,57 +51,73 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern VotePattern =
             Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
 
-    private static final Map<Pattern, BiFunction<BillEvent, String, BillEventData>> NameGrabbingPatterns;
+    private final Map<Pattern, BiFunction<BillEvent, String, BillEventData>> nameGrabbingPatterns;
+    private final Map<Pattern, Function<BillEvent, BillEventData>> noGrabPatterns;
+    private final NameParser nameParser;
 
-    private static final Map<Pattern, Function<BillEvent, BillEventData>> NoGrabPatterns;
+    public BillEventParser() {
+        this(new NameParser());
+    }
 
-    static {
-        NameGrabbingPatterns = new HashMap<>();
-        NameGrabbingPatterns.put(
+    public BillEventParser(NameParser nameParser) {
+        this.nameParser = nameParser;
+
+        nameGrabbingPatterns = new HashMap<>();
+        nameGrabbingPatterns.put(
                 FiledWithClerkPattern,
-                ChiefSponsorshipBillEvent::new);
-        NameGrabbingPatterns.put(
+                this::newChiefSponsorshipEvent);
+        nameGrabbingPatterns.put(
                 AddedChiefSponsorPattern,
-                ChiefSponsorshipBillEvent::new);
-        NameGrabbingPatterns.put(
+                this::newChiefSponsorshipEvent);
+        nameGrabbingPatterns.put(
                 AddedSponsorPattern,
-                SponsorshipBillEvent::new);
-        NameGrabbingPatterns.put(
+                this::newSponsorshipEvent);
+        nameGrabbingPatterns.put(
                 ChiefSenateSponsorPattern,
-                ChiefSponsorshipBillEvent::new);
-        NameGrabbingPatterns.put(
+                this::newChiefSponsorshipEvent);
+        nameGrabbingPatterns.put(
                 AddedAlternateCoSponsorPattern,
-                SponsorshipBillEvent::new);
-        NameGrabbingPatterns.put(
+                this::newSponsorshipEvent);
+        nameGrabbingPatterns.put(
                 AddedAlternateChiefCoSponsorPattern,
-                ChiefSponsorshipBillEvent::new);
-        NameGrabbingPatterns.put(
+                this::newChiefSponsorshipEvent);
+        nameGrabbingPatterns.put(
                 CommitteeReferralPattern,
                 CommitteeBillEvent::referral);
-        NameGrabbingPatterns.put(
+        nameGrabbingPatterns.put(
                 CommitteeAssignmentPattern,
                 CommitteeBillEvent::assignment);
-        NameGrabbingPatterns.put(
+        nameGrabbingPatterns.put(
                 CommitteePostponementPattern,
                 CommitteeBillEvent::postponement);
-        NameGrabbingPatterns.put(
+        nameGrabbingPatterns.put(
                 CommitteeAmendmentPattern,
                 CommitteeAmendmentFiledBillEvent::new);
-        NameGrabbingPatterns.put(
+        nameGrabbingPatterns.put(
                 CommitteeVotePattern,
                 CommitteeVoteEvent::new);
 
-        NoGrabPatterns = new HashMap<>();
-        NoGrabPatterns.put(
+        noGrabPatterns = new HashMap<>();
+        noGrabPatterns.put(
                 VotePattern,
                 VoteBillEvent::new);
+    }
+
+    private ChiefSponsorshipBillEvent newChiefSponsorshipEvent(BillEvent billEvent, String rawName){
+        Name name = nameParser.fromRegularOrderString(rawName);
+        return new ChiefSponsorshipBillEvent(billEvent, rawName, name);
+    }
+
+    private SponsorshipBillEvent newSponsorshipEvent(BillEvent billEvent, String rawName){
+        Name name = nameParser.fromRegularOrderString(rawName);
+        return new SponsorshipBillEvent(billEvent, rawName, name);
     }
 
     @Override
     public BillEventData parse(BillEvent billEvent) {
         String rawContents = billEvent.getRawContents();
 
-        for(Map.Entry<Pattern, BiFunction<BillEvent,String, BillEventData>> parserEntry : NameGrabbingPatterns.entrySet()){
+        for(Map.Entry<Pattern, BiFunction<BillEvent,String, BillEventData>> parserEntry : nameGrabbingPatterns.entrySet()){
             Matcher matcher = parserEntry.getKey().matcher(rawContents);
             if( matcher.matches() ){
                 String grabbed = matcher.group(1);
@@ -107,7 +125,7 @@ public class BillEventParser implements BillEventInterpreter {
             }
         }
 
-        for(Map.Entry<Pattern, Function<BillEvent, BillEventData>> parserEntry : NoGrabPatterns.entrySet()){
+        for(Map.Entry<Pattern, Function<BillEvent, BillEventData>> parserEntry : noGrabPatterns.entrySet()){
             Matcher matcher = parserEntry.getKey().matcher(rawContents);
             if( matcher.matches() ){
                 return parserEntry.getValue().apply(billEvent);

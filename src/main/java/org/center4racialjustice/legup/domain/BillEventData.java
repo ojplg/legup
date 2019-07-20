@@ -14,6 +14,7 @@ public interface BillEventData {
 
     boolean hasLegislator();
     String getRawLegislatorName();
+    Name getParsedLegislatorName();
 
     boolean isSponsorship();
     boolean isChiefSponsorship();

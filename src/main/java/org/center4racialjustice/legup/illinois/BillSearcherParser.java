@@ -46,7 +46,7 @@ public class BillSearcherParser {
         List<Legislator> legislators = legislatorsBySession(billHtmlParser.getSession());
 
         List<BillEvent> billEvents = billHtmlParser.getBillEvents();
-        BillEventParser billEventParser = new BillEventParser();
+        BillEventParser billEventParser = new BillEventParser(nameParser);
         List<BillEventData> eventDataList = Lists.map(billEvents, billEventParser::parse);
 
         List<BillVotesResults> votesResults = findVotes(votesLinks, legislators);

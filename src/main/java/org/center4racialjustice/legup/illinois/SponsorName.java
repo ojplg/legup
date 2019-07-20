@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.PersistableAction;
 
 public class SponsorName implements PersistableAction {
@@ -45,6 +46,14 @@ public class SponsorName implements PersistableAction {
 
     public Legislator getLegislator() {
         return legislator;
+    }
+
+    public Name getLegislatorName(){
+        return legislator.getName();
+    }
+
+    public boolean matchesLegislatorName(Name name){
+        return getLegislatorName().matches(name);
     }
 
     @Override
