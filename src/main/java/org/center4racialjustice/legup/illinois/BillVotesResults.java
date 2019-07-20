@@ -5,11 +5,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Name;
-import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.service.PersistableAction;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Data
@@ -45,13 +45,21 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
         if ( ! billEventData.getChamber().equals(voteLinkInfo.getChamber()) ){
             return false;
         }
-        if ( ! billEventData.getDate().equals(voteLinkInfo.getVoteDate()) ){
-            // TODO: NEED SOME WIGGLE ROOM HERE
-            // There are some errors on the site
+        if ( ! closeDates(billEventData.getDate(),voteLinkInfo.getVoteDate()) ){
             return false;
         }
         // TODO: this is maybe not right. Need to check committee dang it
         return true;
+    }
+
+    /*
+     * The website sometimes puts events with dates that do not correctly
+     * match the votes page. Allow one day of wiggle room.
+     */
+    private boolean closeDates(LocalDate dateA, LocalDate dateB){
+        Period period = Period.between(dateA, dateB);
+        int days = Math.abs(period.getDays());
+        return days <= 1;
     }
 
     public LocalDate getActionDate(){

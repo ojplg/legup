@@ -31,8 +31,7 @@ public class TestBillVotesResults {
             fromVoteEventDescription("Third Reading - Short Debate - Passed 085-026-000",
                     LocalDate.of(2019,4,10), Chamber.House),
             fromVoteEventDescription("Do Pass Executive; 011-004-001",
-//                    LocalDate.of(2019,5,1), Chamber.Senate),
-                    LocalDate.of(2019,4,30), Chamber.Senate),
+                    LocalDate.of(2019,5,1), Chamber.Senate),
             fromVoteEventDescription("Third Reading - Passed; 034-014-000",
                     LocalDate.of(2019,5,16), Chamber.Senate)
     };
