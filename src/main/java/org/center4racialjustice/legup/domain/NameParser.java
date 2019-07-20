@@ -11,14 +11,19 @@ public class NameParser {
             "III", "II", "Jr.", "Sr."
     };
 
-    public static String simpleLastNameRegex = "([A-Z][A-Za-zéñ\\-' ]+)";
-    public static String firstInitialRegex = "([A-Z][A-Za-zñ\\-' ]+), ([A-Z])\\.";
-    public static String fullNameRegex = "([A-Z][A-Za-zéñ\\-' ]+), ?([A-Z][A-Za-zéñ\\-]+)\\s?([A-Z])?";
-    public static String fullNameWithMiddleRegex = "([A-Z][A-Za-zéñ\\-' ]+), ([A-Z][A-Za-zéñ\\-]+) ([A-Z][A-Za-zéñ\\-]+)";
+    private static String SpacelessNameCaptureRegex = "([A-Z][A-Za-zéñ\\-']+)";
+    private static String SpaceAllowedNameCaptureRegex = "([A-Z][A-Za-zéñ\\-' ]+)";
 
-    public static String firstAndLastRegularOrder = "([A-Z][A-Za-zé\\-']+) ([A-Z][A-Za-zéñ\\-']+)";
-    public static String threePartNameRegularOrder = firstAndLastRegularOrder + " ([A-Z][A-Za-z\\-']+)";
-    public static String fullNameRegularOrder = "([A-Z][a-z']+) ([A-Z])\\.? ([A-Z][A-Za-z']+)";
+    public static String simpleLastNameRegex = SpaceAllowedNameCaptureRegex;
+    public static String firstInitialRegex = SpaceAllowedNameCaptureRegex + ", ([A-Z])\\.";
+    public static String fullNameRegex = SpaceAllowedNameCaptureRegex + ", ?" + SpacelessNameCaptureRegex + "\\s?([A-Z])?";
+    public static String fullNameWithMiddleRegex = SpaceAllowedNameCaptureRegex + ", " +
+            SpacelessNameCaptureRegex + " " + SpacelessNameCaptureRegex;
+
+    public static String firstAndLastRegularOrder = SpacelessNameCaptureRegex + " " + SpaceAllowedNameCaptureRegex;
+    public static String threePartNameRegularOrder = SpacelessNameCaptureRegex + " " + SpacelessNameCaptureRegex
+            + " " + SpaceAllowedNameCaptureRegex;
+    public static String fullNameRegularOrder = SpacelessNameCaptureRegex + " ([A-Z])\\.? " + SpaceAllowedNameCaptureRegex;
 
     public static Pattern simpleLastNamePattern = Pattern.compile(simpleLastNameRegex);
     public static Pattern firstInitialPattern = Pattern.compile(firstInitialRegex);
@@ -27,7 +32,6 @@ public class NameParser {
     public static Pattern threePartNameRegularOrderPattern = Pattern.compile(threePartNameRegularOrder);
 
     public static Pattern fullNameRegularOrderPattern = Pattern.compile(fullNameRegularOrder);
-
     public static Pattern firstAndLastRegularOrderPattern = Pattern.compile(firstAndLastRegularOrder);
 
     private final Map<String, Name> specialOverides;
@@ -66,14 +70,6 @@ public class NameParser {
             return new Name(trimmedInput, firstName, null, lastName, null, detectedSuffix);
         }
 
-//        Matcher firstAndLastNameWithSuffixMatcher = firstAndLastRegularOrderWithSuffixPattern.matcher(trimmedInput);
-//        if( firstAndLastNameWithSuffixMatcher.matches()){
-//            String firstName = firstAndLastNameWithSuffixMatcher.group(1);
-//            String lastName = firstAndLastNameWithSuffixMatcher.group(2);
-//            String suffix = firstAndLastNameWithSuffixMatcher.group(3);
-//            return new Name(trimmedInput, firstName, null, lastName, null, suffix);
-//        }
-
         Matcher fullNameRegularOrderMatcher = fullNameRegularOrderPattern.matcher(trimmedInput);
         if( fullNameRegularOrderMatcher.matches() ){
             String firstName = fullNameRegularOrderMatcher.group(1);
@@ -81,15 +77,6 @@ public class NameParser {
             String lastName = fullNameRegularOrderMatcher.group(3);
             return new Name(trimmedInput, firstName, middleInitial, lastName, null, detectedSuffix);
         }
-
-//        Matcher fullNameRegularOrderWithSuffixMatcher = fullNameRegularOrderWithSuffixPattern.matcher(trimmedInput);
-//        if( fullNameRegularOrderWithSuffixMatcher.matches() ){
-//            String firstName = fullNameRegularOrderWithSuffixMatcher.group(1);
-//            String middleInitial = fullNameRegularOrderWithSuffixMatcher.group(2);
-//            String lastName = fullNameRegularOrderWithSuffixMatcher.group(3);
-//            String suffix = fullNameRegularOrderWithSuffixMatcher.group(4);
-//            return new Name(trimmedInput, firstName, middleInitial, lastName, null, suffix);
-//        }
 
         Matcher threePartNameRegularOrderMatcher = threePartNameRegularOrderPattern.matcher(trimmedInput);
         if( threePartNameRegularOrderMatcher.matches() ){
@@ -141,14 +128,6 @@ public class NameParser {
             String middleInitial = fullNameMatcher.group(3);
             return new Name(trimmedInput, firstName, middleInitial, lastName, null, detectedSuffix);
         }
-//        Matcher fullNameWithSuffixMatcher = fullNameWithSuffixPattern.matcher(trimmedInput);
-//        if( fullNameWithSuffixMatcher.matches() ){
-//            String lastName = fullNameWithSuffixMatcher.group(1);
-//            String suffix = fullNameWithSuffixMatcher.group(2);
-//            String firstName = fullNameWithSuffixMatcher.group(3);
-//            String middleInitial = fullNameWithSuffixMatcher.group(4);
-//            return new Name(trimmedInput, firstName, middleInitial, lastName, null, suffix);
-//        }
         Matcher fullNameWithMiddleMatcher = fullNameWithMiddlePattern.matcher(trimmedInput);
         if( fullNameWithMiddleMatcher.matches() ){
             String lastName = fullNameWithMiddleMatcher.group(1);
