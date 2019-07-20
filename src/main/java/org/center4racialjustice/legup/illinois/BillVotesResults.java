@@ -48,7 +48,10 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
         if ( ! closeDates(billEventData.getDate(),voteLinkInfo.getVoteDate()) ){
             return false;
         }
-        // TODO: this is maybe not right. Need to check committee dang it
+        if ( ! countsMatch( (VoteEventCounts) billEventData )){
+            return false;
+        }
+
         return true;
     }
 
