@@ -75,4 +75,11 @@ public abstract class AbstractBillEvent implements BillEventData {
     public String getRawLegislatorName() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "AbstractBillEvent{" +
+                "underlyingEvent=" + underlyingEvent +
+                '}';
+    }
 }

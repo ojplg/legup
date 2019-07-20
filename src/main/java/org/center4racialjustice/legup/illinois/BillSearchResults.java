@@ -85,6 +85,8 @@ public class BillSearchResults {
 //    }
 
     public BillVotesResults getBillVotesResults(BillEventData billEventData){
+        log.info("Searching for " + billEventData);
+        votesResults.forEach(vr -> log.info("possible match " + vr));
         return Lists.findfirst(votesResults, vr -> vr.matches(billEventData));
     }
 

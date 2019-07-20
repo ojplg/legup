@@ -27,6 +27,7 @@ public class TestBillVotesParser {
     private final String house101Bill3704SenateCommitteeFileName = "/pdfs/10100HB3704_25968.pdf";
     private final String senateBillOne = "/pdfs/10100SB0001_02142019_003000T.pdf";
     private final String house101Bill2045CommitteeFileName = "/pdfs/10100HB2045_23584.pdf";
+    private final String house101Bill2040CommitteeFileName = "/pdfs/10100HB2040HFA3_25107.pdf";
 
     private static NameParser loadNameParser(){
         NameOverrides nameOverrides =  NameOverrides.load("conf/name.overrides");
@@ -271,4 +272,10 @@ public class TestBillVotesParser {
         Assert.assertEquals(4, chunks.size());
     }
 
+    @Test
+    public void testGoodParse_101House2040(){
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2040CommitteeFileName, loadNameParser(), new VoteType(""));
+        billVotes.checkVoteCounts();
+        Assert.assertEquals(17, billVotes.getYeas().size());
+    }
 }

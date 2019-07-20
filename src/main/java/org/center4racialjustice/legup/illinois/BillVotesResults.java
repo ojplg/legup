@@ -99,4 +99,19 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
     public int getOtherCount() {
         return Lists.countMatching(collatedVotes, v -> v.getVoteSide().isUncommittedVote());
     }
+
+    public boolean hasUncollatedVotes(){
+        return uncollatedNames.size() > 0;
+    }
+
+    @Override
+    public String toString() {
+        return "BillVotesResults{" +
+                "voteLinkInfo=" + voteLinkInfo +
+                ", checksum=" + checksum +
+                ", yeas=" + getYeaCount() +
+                ", nays=" + getNayCount() +
+                ", uncollatedCount=" + getUncollatedNames().stream() +
+                '}';
+    }
 }

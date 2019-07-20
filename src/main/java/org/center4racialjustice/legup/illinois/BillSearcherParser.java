@@ -51,6 +51,8 @@ public class BillSearcherParser {
 
         List<BillVotesResults> votesResults = findVotes(votesLinks, legislators);
 
+        votesResults.forEach(vr -> vr.getUncollatedNames().forEach(n -> log.warn("Could not collate " + n)));
+
         return new BillSearchResults(billHtmlParser, legislators, votesResults, eventDataList);
 
     }

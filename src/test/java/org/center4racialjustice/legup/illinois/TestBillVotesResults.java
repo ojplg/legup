@@ -14,10 +14,9 @@ import java.util.List;
 
 public class TestBillVotesResults {
 
-
     private static BillVotesResults[] VoteBillResults_101_House_2040 = {
             fromLinkText("HB2040 - Commerce and Innovation Subcommitte - Mar 20, 2019",
-                    Chamber.House, true, generateVoteList(7,0,0)),
+                    Chamber.House, true, generateVoteList(7,0,1)),
             fromLinkText("HB2040 - Labor & Commerce - Mar 20, 2019",
                     Chamber.House, true, generateVoteList(18, 10, 0)),
             fromLinkText("HFA0003 - Labor & Commerce - Apr 03, 2019",

@@ -62,7 +62,11 @@ public class BillStatusComputer {
 
     public PersistableAction getPersistableAction(BillEventData billEventData){
         if( billEventData.isVote() ){
-            return billSearchResults.getBillVotesResults(billEventData);
+            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData);
+            if( billVotesResults == null ){
+                return new ErrorPersistableAction("Unmatched: " + billEventData);
+            }
+            return billVotesResults;
         }
         return new DefaultPersistableAction();
     }

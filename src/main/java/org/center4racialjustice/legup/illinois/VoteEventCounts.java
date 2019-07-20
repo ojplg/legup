@@ -7,7 +7,8 @@ public interface VoteEventCounts {
     int getOtherCount();
 
     default boolean countsMatch(VoteEventCounts other){
+        // NOTE: innaccurate web site requires some slush
+        int otherCountDiff = Math.abs(getOtherCount() - other.getOtherCount());
         return getYeaCount() == other.getYeaCount()
-                && getNayCount() == other.getNayCount()
-                && getOtherCount() == other.getOtherCount(); }
+                && getNayCount() == other.getNayCount(); }
 }

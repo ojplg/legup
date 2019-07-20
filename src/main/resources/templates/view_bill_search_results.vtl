@@ -34,8 +34,9 @@
 <div class="pure-g">
     <div class="pure-u-1-2">
         #if ( ${billStatusComputer.hasUncollatedVotes()} )
+            <h6>Uncollated votes</h6>
             <ul>
-                #foreach ($name in $uncollatedVotes)
+                #foreach ($name in $billStatusComputer.uncollatedVotes)
                     <li>$name.Display</li>
                 #end
             </ul>
@@ -46,6 +47,7 @@
 
     <div class="pure-u-1-2">
         #if ( ${billStatusComputer.hasUncollatedSponsors()} )
+            <h6>Uncollated sponsors</h6>
             <ul>
                 #foreach ($name in $uncollatedSponsors )
                     <li>$name.rawName</li>
