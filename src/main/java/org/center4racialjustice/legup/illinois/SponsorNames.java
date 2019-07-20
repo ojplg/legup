@@ -71,6 +71,12 @@ public class SponsorNames {
     }
 
     public SponsorName findMatchingSponsor(Name name){
+        if( chiefSenateSponsor.matchesLegislatorName(name) ){
+            return chiefSenateSponsor;
+        }
+        if( chiefHouseSponsor.matchesLegislatorName(name)){
+            return chiefHouseSponsor;
+        }
         SponsorName sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.matchesLegislatorName(name));
         if ( sponsorName != null ){
             return sponsorName;

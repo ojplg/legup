@@ -33,4 +33,12 @@ public abstract class AbstractLegislatorBillEvent extends AbstractBillEvent {
         return billActionType;
     }
 
+    @Override
+    public String toString(){
+        return "AbstractLegislatorBillEvent extends + " + super.toString()
+                + ", rawLegislatorName=" + rawLegislatorName
+                + ", parsedLegislatorName=" + parsedLegislatorName
+                + ", billActionType=" + billActionType;
+    }
+
 }
