@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class TestNameParser {
 
@@ -71,15 +70,11 @@ public class TestNameParser {
         Assert.assertEquals("Jaime", name.getFirstName());
         Assert.assertEquals("M", name.getMiddle());
         Assert.assertEquals("Andrade", name.getLastName());
-        Assert.assertEquals("Jr", name.getSuffix());
+        Assert.assertEquals("Jr.", name.getSuffix());
     }
 
     @Test
     public void fullNameRegularOrderWithMiddleAndSuffix(){
-//        "Maurice A. West II"
-
-
-
         NameParser parser = new NameParser();
         Name curtis = parser.fromRegularOrderString("Curtis J. Tarver II");
         Assert.assertEquals("Curtis", curtis.getFirstName());
@@ -142,23 +137,7 @@ public class TestNameParser {
         Assert.assertNull(name.getFirstInitial());
         Assert.assertEquals("James", name.getFirstName());
         Assert.assertEquals("F", name.getMiddle());
-        Assert.assertEquals("Jr", name.getSuffix());
-    }
-
-    @Test
-    public void lastNameMatchesRegex(){
-        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Smith"));
-    }
-
-    @Test
-    public void fullNameMatchesRegex(){
-        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Jones, Samantha B"));
-        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Barickman, Jason A"));
-    }
-
-    @Test
-    public void fullNameWithSuffix(){
-        Assert.assertTrue(Pattern.matches(NameParser.unifiedRegex, "Clayborne Jr., James F"));
+        Assert.assertEquals("Jr.", name.getSuffix());
     }
 
     @Test
@@ -208,6 +187,17 @@ public class TestNameParser {
         Assert.assertEquals("John", name.getFirstName());
         Assert.assertEquals("D'Amico", name.getLastName());
         Assert.assertEquals("C", name.getMiddle());
+    }
+
+    @Test
+    public void testLastNameFirstWithSuffix(){
+        NameParser parser = new NameParser();
+        Name name = parser.fromLastNameFirstString("Tarver II, Curtis J");
+
+        Assert.assertEquals("Tarver", name.getLastName());
+        Assert.assertEquals("II", name.getSuffix());
+        Assert.assertEquals("Curtis", name.getFirstName());
+        Assert.assertEquals("J", name.getMiddle());
     }
 
 }
