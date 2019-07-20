@@ -69,6 +69,14 @@ public class SponsorNames {
         }
     }
 
+    public SponsorName findMatchingSponsor(String rawName){
+        SponsorName sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.getRawName().equals(rawName));
+        if ( sponsorName != null ){
+            return sponsorName;
+        }
+        return Lists.findfirst(senateSponsors, sponsor -> sponsor.getRawName().equals(rawName));
+    }
+
     public List<SponsorName> getUncollated(){
         List<SponsorName> incompletes = new ArrayList<>();
 

@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.domain.BillActionLoad;
-import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.Name;
@@ -67,6 +66,13 @@ public class BillStatusComputer {
                 return new ErrorPersistableAction("Unmatched: " + billEventData);
             }
             return billVotesResults;
+        }
+        if( billEventData.isSponsorship() || billEventData.isChiefSponsorship() ){
+            SponsorName sponsorName = billSearchResults.getSponsorName(billEventData);
+            if ( sponsorName == null ){
+                return new ErrorPersistableAction("Unmatched " + billEventData);
+            }
+            return sponsorName;
         }
         return new DefaultPersistableAction();
     }

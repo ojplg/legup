@@ -84,6 +84,12 @@ public class BillSearchResults {
 //        return BillActionLoad.create(bill, results.getUrl(), results.getChecksum());
 //    }
 
+    public SponsorName getSponsorName(BillEventData billEventData){
+        String rawName = billEventData.getRawLegislatorName();
+        SponsorName sponsorName = sponsorNames.findMatchingSponsor(rawName);
+        return sponsorName;
+    }
+
     public BillVotesResults getBillVotesResults(BillEventData billEventData){
         log.info("Searching for " + billEventData);
         votesResults.forEach(vr -> log.info("possible match " + vr));

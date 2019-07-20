@@ -1,8 +1,9 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.service.PersistableAction;
 
-public class SponsorName {
+public class SponsorName implements PersistableAction {
 
     private final String rawName;
     private final String memberId;
@@ -53,5 +54,10 @@ public class SponsorName {
                 ", memberId='" + memberId + '\'' +
                 ", legislator=" + legislator +
                 '}';
+    }
+
+    @Override
+    public String getDisplay() {
+        return "Name: " + rawName + " matched " + legislator.getDisplay();
     }
 }
