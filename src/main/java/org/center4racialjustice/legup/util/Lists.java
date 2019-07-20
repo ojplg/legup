@@ -67,4 +67,8 @@ public class Lists {
         return mapped;
     }
 
+    public static <T> int countMatching(List<T> items, Predicate<T> predicate){
+        return (int) items.stream().filter(predicate).count();
+    }
+
 }

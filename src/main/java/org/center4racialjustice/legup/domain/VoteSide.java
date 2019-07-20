@@ -55,6 +55,8 @@ public final class VoteSide {
         return NayCode.equals(code);
     }
 
+    public boolean isUncommittedVote() { return ! committedVote(); }
+
     public boolean committedVote(){
         return YeaCode.equals(code) || NayCode.equals(code);
     }

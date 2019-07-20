@@ -5,13 +5,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.service.PersistableAction;
+import org.center4racialjustice.legup.util.Lists;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class BillVotesResults implements PersistableAction {
+public class BillVotesResults implements PersistableAction, VoteEventCounts {
 
     private static final Logger log = LogManager.getLogger(BillVotesResults.class);
 
@@ -70,5 +72,20 @@ public class BillVotesResults implements PersistableAction {
         buf.append(collatedVotes.size());
         buf.append("<br//>");
         return buf.toString();
+    }
+
+    @Override
+    public int getYeaCount() {
+        return Lists.countMatching(collatedVotes, v -> v.getVoteSide().isYes());
+    }
+
+    @Override
+    public int getNayCount() {
+        return Lists.countMatching(collatedVotes, v -> v.getVoteSide().isNo());
+    }
+
+    @Override
+    public int getOtherCount() {
+        return Lists.countMatching(collatedVotes, v -> v.getVoteSide().isUncommittedVote());
     }
 }
