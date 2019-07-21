@@ -56,8 +56,8 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern VotePattern =
             Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
 
-    private Map<Pattern, BiFunction<RawBillEvent, String, BillEvent>> nameGrabbingEventBuilders = new HashMap<>();
-    private Map<Pattern, Function<RawBillEvent, BillEvent>> noGrabEventBuilders = new HashMap<>();
+    private final Map<Pattern, BiFunction<RawBillEvent, String, BillEvent>> nameGrabbingEventBuilders = new HashMap<>();
+    private final Map<Pattern, Function<RawBillEvent, BillEvent>> noGrabEventBuilders = new HashMap<>();
 
     private final NameParser nameParser;
 
@@ -68,10 +68,9 @@ public class BillEventParser implements BillEventInterpreter {
     public BillEventParser(NameParser nameParser) {
         this.nameParser = nameParser;
 
-        noGrabEventBuilders = new HashMap<>();
         noGrabEventBuilders.put(
                 VotePattern,
-                rawBillEvent -> forVoteEvent(rawBillEvent));
+                this::forVoteEvent);
 
         nameGrabbingEventBuilders.put(FiledWithClerkPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
@@ -99,16 +98,6 @@ public class BillEventParser implements BillEventInterpreter {
         nameGrabbingEventBuilders.put(CommitteeVotePattern,
                 (rawEvent, rawName) -> forCommitteeBillEvent(rawEvent, rawName, BillActionType.VOTE));
 
-    }
-
-    private ChiefSponsorshipBillEvent newChiefSponsorshipEvent(BillEvent billEvent, String rawName){
-        Name name = nameParser.fromRegularOrderString(rawName);
-        return new ChiefSponsorshipBillEvent(billEvent, rawName, name);
-    }
-
-    private SponsorshipBillEvent newSponsorshipEvent(BillEvent billEvent, String rawName){
-        Name name = nameParser.fromRegularOrderString(rawName);
-        return new SponsorshipBillEvent(billEvent, rawName, name);
     }
 
     public BillEvent parse(RawBillEvent rawBillEvent){
@@ -165,26 +154,4 @@ public class BillEventParser implements BillEventInterpreter {
     private BillEvent forVoteEvent(RawBillEvent rawBillEvent){
         return new BillEvent(rawBillEvent, BillActionType.VOTE, BillEventLegislatorData.EMPTY, BillEventCommitteeData.EMPTY);
     }
-
-//    @Override
-//    public BillEventData parse(BillEvent billEvent) {
-//        String rawContents = billEvent.getRawContents();
-//
-//        for(Map.Entry<Pattern, BiFunction<BillEvent,String, BillEventData>> parserEntry : nameGrabbingPatterns.entrySet()){
-//            Matcher matcher = parserEntry.getKey().matcher(rawContents);
-//            if( matcher.matches() ){
-//                String grabbed = matcher.group(1);
-//                return parserEntry.getValue().apply(billEvent, grabbed);
-//            }
-//        }
-//
-//        for(Map.Entry<Pattern, Function<BillEvent, BillEventData>> parserEntry : noGrabPatterns.entrySet()){
-//            Matcher matcher = parserEntry.getKey().matcher(rawContents);
-//            if( matcher.matches() ){
-//                return parserEntry.getValue().apply(billEvent);
-//            }
-//        }
-//
-//        return new UnclassifiedEventData(billEvent);
-//    }
 }
