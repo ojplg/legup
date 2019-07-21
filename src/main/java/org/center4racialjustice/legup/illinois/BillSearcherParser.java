@@ -11,6 +11,8 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteType;
+import org.center4racialjustice.legup.service.LegislativeStructure;
+import org.center4racialjustice.legup.service.LegislatorPersistence;
 import org.center4racialjustice.legup.util.Lists;
 import org.center4racialjustice.legup.util.Tuple;
 
@@ -43,41 +45,39 @@ public class BillSearcherParser {
 
         List<VoteLinkInfo> votesLinks = searcher.searchForVoteLinks(votesUrl);
 
-        List<Legislator> legislators = legislatorsBySession(billHtmlParser.getSession());
+        LegislativeStructure legislativeStructure = sessionStructure(billHtmlParser.getSession());
 
         List<BillEvent> billEvents = billHtmlParser.getBillEvents();
         BillEventParser billEventParser = new BillEventParser(nameParser);
         List<BillEventData> eventDataList = Lists.map(billEvents, billEventParser::parse);
 
-        List<BillVotesResults> votesResults = findVotes(votesLinks, legislators);
+        List<BillVotesResults> votesResults = findVotes(votesLinks, legislativeStructure);
 
         votesResults.forEach(vr -> vr.getUncollatedNames().forEach(n -> log.warn("Could not collate " + n)));
 
-        return new BillSearchResults(billHtmlParser, legislators, votesResults, eventDataList);
+        return new BillSearchResults(billHtmlParser, legislativeStructure, votesResults, eventDataList);
 
     }
 
-    private List<Legislator> legislatorsBySession(long sessionNumber){
-        return connectionPool.useConnection(connection -> {
-            LegislatorDao legislatorDao = new LegislatorDao(connection);
-            return legislatorDao.readBySession(sessionNumber);
-        });
+    private LegislativeStructure sessionStructure(long sessionNumber){
+        LegislatorPersistence legislatorPersistence = new LegislatorPersistence(connectionPool);
+        return legislatorPersistence.loadStructure(sessionNumber);
     }
 
-    private List<BillVotesResults> findVotes(List<VoteLinkInfo> votesLinks, List<Legislator> legislators) {
+    private List<BillVotesResults> findVotes(List<VoteLinkInfo> votesLinks, LegislativeStructure legislature) {
         List<BillVotesResults> votesList = new ArrayList<>();
         for( VoteLinkInfo voteLinkInfo : votesLinks ){
-            BillVotesResults results = findVoteResults(voteLinkInfo, legislators);
+            BillVotesResults results = findVoteResults(voteLinkInfo, legislature);
             votesList.add(results);
         }
         return votesList;
     }
 
-    private BillVotesResults findVoteResults(VoteLinkInfo voteLinkInfo, List<Legislator> legislators){
+    private BillVotesResults findVoteResults(VoteLinkInfo voteLinkInfo, LegislativeStructure legislature){
         BillVotes billVotes = BillVotesParser.readFromUrlAndParse(voteLinkInfo.getPdfUrl(), nameParser);
         Chamber votingChamber = billVotes.getVotingChamber();
 
-        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislators, billVotes);
+        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislature, billVotes);
         collator.collate();
 
         List<CollatedVote> collatedVotes = collator.getAllCollatedVotes();

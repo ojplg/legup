@@ -3,12 +3,11 @@ package org.center4racialjustice.legup.illinois;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillActionLoad;
-import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventKey;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.util.ArrayList;
@@ -31,12 +30,12 @@ public class BillSearchResults {
     private final List<BillEventData> billEvents;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
-                             List<Legislator> legislators,
+                             LegislativeStructure legislativeStructure,
                              List<BillVotesResults> votesResults,
                              List<BillEventData> billEvents){
         this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
-        this.sponsorNames.completeAll(legislators);
+        this.sponsorNames.completeAll(legislativeStructure);
         this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
         this.votesResults = votesResults;
@@ -86,7 +85,8 @@ public class BillSearchResults {
 
     public SponsorName getSponsorName(BillEventData billEventData){
         Name name = billEventData.getParsedLegislatorName();
-        SponsorName sponsorName = sponsorNames.findMatchingSponsor(name);
+        String memberId = billEventData.getLegislatorMemberID();
+        SponsorName sponsorName = sponsorNames.findMatchingSponsor(memberId, name);
         return sponsorName;
     }
 

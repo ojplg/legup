@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.domain.VoteType;
+import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +33,8 @@ public class TestVotesLegislatorsCollator {
         legislator.setLastName("McGee");
         legislator.setChamber(Chamber.Senate);
 
-        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(Collections.singletonList(legislator), bv);
+        LegislativeStructure legislativeStructure = new LegislativeStructure(Collections.singletonList(legislator), Collections.emptyList());
+        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislativeStructure, bv);
         collator.collate();
 
         List<CollatedVote> nays = collator.getNays();
@@ -61,7 +63,8 @@ public class TestVotesLegislatorsCollator {
         legislator.setLastName("McGee");
         legislator.setChamber(Chamber.Senate);
 
-        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(Collections.singletonList(legislator), bv);
+        LegislativeStructure legislativeStructure = new LegislativeStructure(Collections.singletonList(legislator), Collections.emptyList());
+        VotesLegislatorsCollator collator = new VotesLegislatorsCollator(legislativeStructure, bv);
         collator.collate();
 
         List<Name> uncollated = collator.getUncollated();

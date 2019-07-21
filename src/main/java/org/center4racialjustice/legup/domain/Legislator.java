@@ -60,6 +60,10 @@ public class Legislator implements Comparable<Legislator> {
         return 0;
     }
 
+    public boolean matchesName(Name name){
+        return this.getName().matches(name);
+    }
+
     public String getDisplay(){
         return getName().getDisplay();
     }

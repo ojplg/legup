@@ -3,8 +3,8 @@ package org.center4racialjustice.legup.illinois;
 import lombok.Data;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
+import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.center4racialjustice.legup.util.Lists;
-import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,27 +50,27 @@ public class SponsorNames {
         return sum + houseSponsors.size() + senateSponsors.size();
     }
 
-    public void completeAll(List<Legislator> legislators){
-        Map<String, Legislator> legislatorMap = Lists.asMap(legislators, Legislator::getMemberId);
-        if( chiefHouseSponsor != null && legislatorMap.containsKey(chiefHouseSponsor.getMemberId())){
-            chiefHouseSponsor.complete(legislatorMap.get(chiefHouseSponsor.getMemberId()));
-        }
-        if( chiefSenateSponsor != null && legislatorMap.containsKey(chiefSenateSponsor.getMemberId())){
-            chiefSenateSponsor.complete(legislatorMap.get(chiefSenateSponsor.getMemberId()));
-        }
-        for( SponsorName sponsorName : houseSponsors ){
-            if( legislatorMap.containsKey(sponsorName.getMemberId())){
-                sponsorName.complete(legislatorMap.get(sponsorName.getMemberId()));
-            }
-        }
-        for( SponsorName sponsorName : senateSponsors ){
-            if( legislatorMap.containsKey(sponsorName.getMemberId())){
-                sponsorName.complete(legislatorMap.get(sponsorName.getMemberId()));
-            }
+    private void completeOne(SponsorName sponsorName, LegislativeStructure legislativeStructure){
+        if( sponsorName != null ){
+            Legislator legislator = legislativeStructure.findLegislatorByMemberID(sponsorName.getMemberId());
+            sponsorName.complete(legislator);
         }
     }
 
-    public SponsorName findMatchingSponsor(Name name){
+    public void completeAll(LegislativeStructure legislativeStructure){
+        completeOne(chiefHouseSponsor, legislativeStructure);
+        completeOne(chiefSenateSponsor, legislativeStructure);
+        houseSponsors.forEach(
+                sponsorName -> completeOne(sponsorName, legislativeStructure)
+        );
+        senateSponsors.forEach(
+                sponsorName -> completeOne(sponsorName, legislativeStructure)
+        );
+    }
+
+    public SponsorName findMatchingSponsor(String memberID, Name name){
+        // first try to match by name, then try member id.
+        // TODO: Think about this. Maybe try both? Maybe something different?
         if( chiefSenateSponsor.matchesLegislatorName(name) ){
             return chiefSenateSponsor;
         }
@@ -81,7 +81,22 @@ public class SponsorNames {
         if ( sponsorName != null ){
             return sponsorName;
         }
-        return Lists.findfirst(senateSponsors, sponsor -> sponsor.matchesLegislatorName(name));
+        sponsorName = Lists.findfirst(senateSponsors, sponsor -> sponsor.matchesLegislatorName(name));
+        if ( sponsorName != null ){
+            return sponsorName;
+        }
+
+        if( chiefSenateSponsor.matchesMemberID(memberID) ){
+            return chiefSenateSponsor;
+        }
+        if( chiefHouseSponsor.matchesMemberID(memberID)){
+            return chiefHouseSponsor;
+        }
+        sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.matchesMemberID(memberID));
+        if ( sponsorName != null ){
+            return sponsorName;
+        }
+        return Lists.findfirst(senateSponsors, sponsor -> sponsor.matchesMemberID(memberID));
     }
 
     public List<SponsorName> getUncollated(){

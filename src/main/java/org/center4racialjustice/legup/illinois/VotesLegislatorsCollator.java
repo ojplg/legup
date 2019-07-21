@@ -4,13 +4,14 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteSide;
+import org.center4racialjustice.legup.service.LegislativeStructure;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VotesLegislatorsCollator {
 
-    private final List<Legislator> legislators;
+    private final LegislativeStructure legislativeStructure;
     private final BillVotes billVotes;
 
     private List<CollatedVote> yeas;
@@ -20,8 +21,8 @@ public class VotesLegislatorsCollator {
 
     private final List<Name> uncollated;
 
-    public VotesLegislatorsCollator(List<Legislator> legislators, BillVotes billVotes) {
-        this.legislators = new ArrayList<>(legislators);
+    public VotesLegislatorsCollator(LegislativeStructure legislativeStructure, BillVotes billVotes) {
+        this.legislativeStructure = legislativeStructure;
         this.billVotes = billVotes;
         this.uncollated = new ArrayList<>();
     }
@@ -37,18 +38,11 @@ public class VotesLegislatorsCollator {
     private List<CollatedVote> collate(VoteSide vote, List<Name> voters){
         List<CollatedVote> collated = new ArrayList<>();
         for(Name voter : voters){
-            boolean found = false;
-            for(Legislator legislator : legislators){
-                if( legislator.getName().matches(voter)
-                        && legislator.getChamber().equals(billVotes.getVotingChamber())){
-                    CollatedVote collatedVote =
-                            new CollatedVote(vote, legislator, voter, null );
-                    collated.add(collatedVote);
-                    found = true;
-                    break;
-                }
-            }
-            if ( ! found ) {
+            Legislator legislator = legislativeStructure.findByNameAndChamber(voter, billVotes.getVotingChamber());
+            if( legislator != null ){
+                CollatedVote collatedVote = new CollatedVote(vote, legislator, voter, null );
+                collated.add(collatedVote);
+            } else {
                 uncollated.add(voter);
             }
         }

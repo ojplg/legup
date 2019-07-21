@@ -1,12 +1,18 @@
 package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.db.ConnectionPool;
+import org.center4racialjustice.legup.db.DaoBuilders;
 import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.Committee;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.hrorm.Dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hrorm.Operator.EQUALS;
+import static org.hrorm.Where.where;
 
 public class LegislatorPersistence {
 
@@ -59,5 +65,17 @@ public class LegislatorPersistence {
                     LegislatorDao legislatorDao = new LegislatorDao(connection);
                     return legislatorDao.readByChamberAndSession(chamber, sessionNumber);
                 });
+    }
+
+    public LegislativeStructure loadStructure(Long sessionNumber){
+        return connectionPool.useConnection(connection ->
+        {
+            LegislatorDao legislatorDao = new LegislatorDao(connection);
+            Dao<Committee> committeeDao = DaoBuilders.COMMITTEE.buildDao(connection);
+            List<Legislator> legislators = legislatorDao.readBySession(sessionNumber);
+            List<Committee> committees = committeeDao.select(where("SESSION_NUMBER", EQUALS, sessionNumber));
+
+            return new LegislativeStructure(legislators, committees);
+        });
     }
 }

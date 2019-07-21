@@ -4,6 +4,8 @@ import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Name;
 
+import java.util.regex.Matcher;
+
 public abstract class AbstractLegislatorBillEvent extends AbstractBillEvent {
 
     private final String rawLegislatorName;
@@ -38,7 +40,17 @@ public abstract class AbstractLegislatorBillEvent extends AbstractBillEvent {
         return "AbstractLegislatorBillEvent extends + " + super.toString()
                 + ", rawLegislatorName=" + rawLegislatorName
                 + ", parsedLegislatorName=" + parsedLegislatorName
+                + ", legislatorMemberId=" + getLegislatorMemberID()
                 + ", billActionType=" + billActionType;
+    }
+
+    @Override
+    public String getLegislatorMemberID(){
+        Matcher matcher = MemberHtmlParser.MemberIdExtractionPattern.matcher(getLink());
+        if( matcher.matches() ){
+            return matcher.group(1);
+        }
+        return null;
     }
 
 }

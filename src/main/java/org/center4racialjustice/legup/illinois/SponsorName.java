@@ -56,6 +56,10 @@ public class SponsorName implements PersistableAction {
         return getLegislatorName().matches(name);
     }
 
+    public boolean matchesMemberID(String idToTest){
+        return this.memberId.equals(idToTest);
+    }
+
     @Override
     public String toString() {
         return "SponsorName{" +
