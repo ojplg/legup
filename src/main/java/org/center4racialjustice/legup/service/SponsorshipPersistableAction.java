@@ -22,6 +22,15 @@ public class SponsorshipPersistableAction implements PersistableAction {
                     + " which parsed to " + completedBillEventData.getParsedLegislatorName()
                     + " and had member ID " + completedBillEventData.getLegislatorMemberID();
         }
-        return completedBillEventData.getBillActionType() + " for " + legislator.getDisplay();
+        StringBuilder buf = new StringBuilder();
+
+        buf.append(completedBillEventData.getChamber());
+        buf.append("<br//>");
+        buf.append(completedBillEventData.getBillActionType().getCode());
+        buf.append("<br//>");
+        buf.append(completedBillEventData.getLegislator().getDisplay());
+        buf.append("<br//>");
+
+        return buf.toString();
     }
 }

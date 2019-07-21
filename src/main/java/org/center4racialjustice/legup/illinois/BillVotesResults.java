@@ -73,13 +73,12 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
     public String getDisplay() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("Chamber ");
         buf.append(voteLinkInfo.getChamber());
         buf.append("<br//>");
-        buf.append("Uncollated count ");
+        buf.append("Uncollated count: ");
         buf.append(uncollatedNames.size());
         buf.append("<br//>");
-        buf.append("Collated count ");
+        buf.append("Collated count: ");
         buf.append(collatedVotes.size());
         buf.append("<br//>");
         return buf.toString();
