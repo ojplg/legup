@@ -1,10 +1,13 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
+import org.center4racialjustice.legup.domain.BillEventCommitteeData;
 import org.center4racialjustice.legup.domain.BillEventInterpreter;
+import org.center4racialjustice.legup.domain.BillEventLegislatorData;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.domain.RawBillEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BillEventParser implements BillEventInterpreter {
+
+    public static final Pattern CommitteeIdExtractionPattern = Pattern.compile(".*CommitteeID=(\\d+).*");
 
     private static final Pattern FiledWithClerkPattern =
             Pattern.compile("Filed with (?:the Clerk|Secretary) by (?:Sen|Rep). (.*)");
@@ -51,8 +56,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern VotePattern =
             Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
 
-    private final Map<Pattern, BiFunction<BillEvent, String, BillEventData>> nameGrabbingPatterns;
-    private final Map<Pattern, Function<BillEvent, BillEventData>> noGrabPatterns;
+    private Map<Pattern, BiFunction<RawBillEvent, String, BillEvent>> nameGrabbingEventBuilders = new HashMap<>();
+    private Map<Pattern, Function<RawBillEvent, BillEvent>> noGrabEventBuilders = new HashMap<>();
+
     private final NameParser nameParser;
 
     public BillEventParser() {
@@ -62,45 +68,37 @@ public class BillEventParser implements BillEventInterpreter {
     public BillEventParser(NameParser nameParser) {
         this.nameParser = nameParser;
 
-        nameGrabbingPatterns = new HashMap<>();
-        nameGrabbingPatterns.put(
-                FiledWithClerkPattern,
-                this::newChiefSponsorshipEvent);
-        nameGrabbingPatterns.put(
-                AddedChiefSponsorPattern,
-                this::newChiefSponsorshipEvent);
-        nameGrabbingPatterns.put(
-                AddedSponsorPattern,
-                this::newSponsorshipEvent);
-        nameGrabbingPatterns.put(
-                ChiefSenateSponsorPattern,
-                this::newChiefSponsorshipEvent);
-        nameGrabbingPatterns.put(
-                AddedAlternateCoSponsorPattern,
-                this::newSponsorshipEvent);
-        nameGrabbingPatterns.put(
-                AddedAlternateChiefCoSponsorPattern,
-                this::newChiefSponsorshipEvent);
-        nameGrabbingPatterns.put(
-                CommitteeReferralPattern,
-                CommitteeBillEvent::referral);
-        nameGrabbingPatterns.put(
-                CommitteeAssignmentPattern,
-                CommitteeBillEvent::assignment);
-        nameGrabbingPatterns.put(
-                CommitteePostponementPattern,
-                CommitteeBillEvent::postponement);
-        nameGrabbingPatterns.put(
-                CommitteeAmendmentPattern,
-                CommitteeAmendmentFiledBillEvent::new);
-        nameGrabbingPatterns.put(
-                CommitteeVotePattern,
-                CommitteeVoteEvent::new);
-
-        noGrabPatterns = new HashMap<>();
-        noGrabPatterns.put(
+        noGrabEventBuilders = new HashMap<>();
+        noGrabEventBuilders.put(
                 VotePattern,
-                VoteBillEvent::new);
+                rawBillEvent -> forVoteEvent(rawBillEvent));
+
+        nameGrabbingEventBuilders.put(FiledWithClerkPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
+        nameGrabbingEventBuilders.put(AddedChiefSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
+        nameGrabbingEventBuilders.put(ChiefSenateSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
+        nameGrabbingEventBuilders.put(AddedAlternateChiefCoSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
+
+        nameGrabbingEventBuilders.put(AddedSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.SPONSOR));
+        nameGrabbingEventBuilders.put(AddedAlternateCoSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.SPONSOR));
+
+        nameGrabbingEventBuilders.put(CommitteeAmendmentPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.COMMITTEE_AMENDMENT_FILED));
+
+        nameGrabbingEventBuilders.put(CommitteeReferralPattern,
+                (rawEvent, rawName) -> forCommitteeBillEvent(rawEvent, rawName, BillActionType.COMMITTEE_REFERRAL));
+        nameGrabbingEventBuilders.put(CommitteeAssignmentPattern,
+                (rawEvent, rawName) -> forCommitteeBillEvent(rawEvent, rawName, BillActionType.COMMITTEE_ASSIGNMENT));
+        nameGrabbingEventBuilders.put(CommitteePostponementPattern,
+                (rawEvent, rawName) -> forCommitteeBillEvent(rawEvent, rawName, BillActionType.COMMITTEE_POSTPONEMENT));
+        nameGrabbingEventBuilders.put(CommitteeVotePattern,
+                (rawEvent, rawName) -> forCommitteeBillEvent(rawEvent, rawName, BillActionType.VOTE));
+
     }
 
     private ChiefSponsorshipBillEvent newChiefSponsorshipEvent(BillEvent billEvent, String rawName){
@@ -113,25 +111,80 @@ public class BillEventParser implements BillEventInterpreter {
         return new SponsorshipBillEvent(billEvent, rawName, name);
     }
 
-    @Override
-    public BillEventData parse(BillEvent billEvent) {
-        String rawContents = billEvent.getRawContents();
+    public BillEvent parse(RawBillEvent rawBillEvent){
+        String rawContents = rawBillEvent.getRawContents();
 
-        for(Map.Entry<Pattern, BiFunction<BillEvent,String, BillEventData>> parserEntry : nameGrabbingPatterns.entrySet()){
+        for(Map.Entry<Pattern, BiFunction<RawBillEvent, String, BillEvent>> parserEntry : nameGrabbingEventBuilders.entrySet()){
             Matcher matcher = parserEntry.getKey().matcher(rawContents);
             if( matcher.matches() ){
                 String grabbed = matcher.group(1);
-                return parserEntry.getValue().apply(billEvent, grabbed);
+                return parserEntry.getValue().apply(rawBillEvent, grabbed);
             }
         }
 
-        for(Map.Entry<Pattern, Function<BillEvent, BillEventData>> parserEntry : noGrabPatterns.entrySet()){
+        for(Map.Entry<Pattern, Function<RawBillEvent, BillEvent>> parserEntry : noGrabEventBuilders.entrySet()){
             Matcher matcher = parserEntry.getKey().matcher(rawContents);
             if( matcher.matches() ){
-                return parserEntry.getValue().apply(billEvent);
+                return parserEntry.getValue().apply(rawBillEvent);
             }
         }
 
-        return new UnclassifiedEventData(billEvent);
+        return new BillEvent(rawBillEvent, BillActionType.UNCLASSIFIED, BillEventLegislatorData.EMPTY, BillEventCommitteeData.EMPTY);
     }
+
+    private BillEvent forCommitteeBillEvent(RawBillEvent rawBillEvent, String rawCommitteeName, BillActionType billActionType){
+        String committeeId = null;
+
+        Matcher commiteeIdMatcher = CommitteeIdExtractionPattern.matcher(rawBillEvent.getLink());
+        if( commiteeIdMatcher.matches() ){
+            committeeId = commiteeIdMatcher.group(1);
+        }
+        BillEventCommitteeData billEventCommitteeData = BillEventCommitteeData.builder()
+                .rawCommitteeName(rawCommitteeName)
+                .committeeId(committeeId)
+                .build();
+        return new BillEvent(rawBillEvent, billActionType, BillEventLegislatorData.EMPTY, billEventCommitteeData);
+    }
+
+    private BillEvent forLegislatorBillEvent(RawBillEvent rawBillEvent, String rawLegislatorName, BillActionType billActionType){
+        Name parsedLegislatorName = nameParser.fromRegularOrderString(rawLegislatorName);
+        String memberId = null;
+
+        Matcher memberIdMatcher = MemberHtmlParser.MemberIdExtractionPattern.matcher(rawBillEvent.getLink());
+        if( memberIdMatcher.matches() ){
+            memberId =  memberIdMatcher.group(1);
+        }
+        BillEventLegislatorData billEventLegislatorData = BillEventLegislatorData.builder()
+                .rawLegislatorName(rawLegislatorName)
+                .parsedLegislatorName(parsedLegislatorName)
+                .legislatorMemberId(memberId)
+                .build();
+        return new BillEvent(rawBillEvent, billActionType, billEventLegislatorData, BillEventCommitteeData.EMPTY);
+    }
+
+    private BillEvent forVoteEvent(RawBillEvent rawBillEvent){
+        return new BillEvent(rawBillEvent, BillActionType.VOTE, BillEventLegislatorData.EMPTY, BillEventCommitteeData.EMPTY);
+    }
+
+//    @Override
+//    public BillEventData parse(BillEvent billEvent) {
+//        String rawContents = billEvent.getRawContents();
+//
+//        for(Map.Entry<Pattern, BiFunction<BillEvent,String, BillEventData>> parserEntry : nameGrabbingPatterns.entrySet()){
+//            Matcher matcher = parserEntry.getKey().matcher(rawContents);
+//            if( matcher.matches() ){
+//                String grabbed = matcher.group(1);
+//                return parserEntry.getValue().apply(billEvent, grabbed);
+//            }
+//        }
+//
+//        for(Map.Entry<Pattern, Function<BillEvent, BillEventData>> parserEntry : noGrabPatterns.entrySet()){
+//            Matcher matcher = parserEntry.getKey().matcher(rawContents);
+//            if( matcher.matches() ){
+//                return parserEntry.getValue().apply(billEvent);
+//            }
+//        }
+//
+//        return new UnclassifiedEventData(billEvent);
+//    }
 }

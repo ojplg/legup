@@ -4,17 +4,17 @@ import java.time.LocalDate;
 
 public class CompletedBillEventData implements BillEventData {
 
-    private final BillEventData billEventData;
+    private final BillEvent billEventData;
     private final Legislator legislator;
     private final Committee committee;
 
-    public CompletedBillEventData(BillEventData billEventData, Legislator legislator, Committee committee) {
+    public CompletedBillEventData(BillEvent billEventData, Legislator legislator, Committee committee) {
         this.billEventData = billEventData;
         this.legislator = legislator;
         this.committee = committee;
     }
 
-    public BillEventData getBillEventData() {
+    public BillEvent getBillEventData() {
         return billEventData;
     }
 
@@ -33,7 +33,7 @@ public class CompletedBillEventData implements BillEventData {
 
     @Override
     public String getRawData() {
-        return billEventData.getRawData();
+        return billEventData.getRawContents();
     }
 
     @Override
@@ -78,17 +78,18 @@ public class CompletedBillEventData implements BillEventData {
 
     @Override
     public boolean isSponsorship() {
-        return billEventData.isSponsorship();
+        return billEventData.getBillActionType() == BillActionType.SPONSOR;
     }
 
     @Override
     public boolean isChiefSponsorship() {
-        return billEventData.isChiefSponsorship();
+
+        return billEventData.getBillActionType() == BillActionType.CHIEF_SPONSOR;
     }
 
     @Override
     public boolean isVote() {
-        return billEventData.isVote();
+        return billEventData.getBillActionType() == BillActionType.VOTE;
     }
 
     @Override

@@ -11,6 +11,8 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.LegislationIdentity;
+import org.center4racialjustice.legup.domain.NameParser;
+import org.center4racialjustice.legup.domain.RawBillEvent;
 import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,11 +33,15 @@ public class BillHtmlParser {
 
     private static final Logger log = LogManager.getLogger(BillHtmlParser.class);
 
+    private static final DateTimeFormatter BILL_EVENT_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
+
     private final String url;
     private final Document document;
+    private final NameParser nameParser;
+
     private LegislationIdentity legislationIdentity;
 
-    public BillHtmlParser(String url){
+    public BillHtmlParser(String url, NameParser nameParser){
         CloseableHttpResponse httpResponse = null;
         try {
             this.url = url;
@@ -47,6 +53,7 @@ public class BillHtmlParser {
             HttpEntity httpEntity = httpResponse.getEntity();
 
             this.document = Jsoup.parse(httpEntity.getContent(), "windows-1252", url);
+            this.nameParser = nameParser;
 
             legislationIdentity = parseBillIdentity();
         } catch (IOException ex) {
@@ -58,6 +65,7 @@ public class BillHtmlParser {
         try {
             this.url = url;
             this.document = Jsoup.parse(htmlStream, "windows-1252", url);
+            this.nameParser = new NameParser();
             legislationIdentity = parseBillIdentity();
         } catch (IOException ex){
             throw new RuntimeException(ex);
@@ -210,9 +218,7 @@ public class BillHtmlParser {
         return sponsorNames;
     }
 
-    private static final DateTimeFormatter BILL_EVENT_DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
-
-    public List<BillEvent> getBillEvents(){
+    public List<RawBillEvent> getRawBillEvents(){
         Elements tables = document.select("table")
                 .select("[width=600]")
                 .select("[cellspacing=0]")
@@ -223,7 +229,7 @@ public class BillHtmlParser {
 
         Elements rows = table.select("tr").next();
 
-        List<BillEvent> events = new ArrayList<>();
+        List<RawBillEvent> events = new ArrayList<>();
 
         for(Element row : rows){
             Elements cells = row.select("td");
@@ -244,7 +250,20 @@ public class BillHtmlParser {
                 link = anchor.attr("href");
             }
 
-            BillEvent billEvent = new BillEvent(date, chamber, contentString, link);
+            RawBillEvent rawBillEvent = new RawBillEvent(date, chamber, contentString, link);
+            events.add(rawBillEvent);
+        }
+        return events;
+    }
+
+    public List<BillEvent> getBillEvents(){
+
+        List<RawBillEvent> rawBillEvents = getRawBillEvents();
+        BillEventParser billEventParser = new BillEventParser(nameParser);
+
+        List<BillEvent> events = new ArrayList<>();
+        for(RawBillEvent rawBillEvent : rawBillEvents){
+            BillEvent billEvent = billEventParser.parse(rawBillEvent);
             events.add(billEvent);
         }
 

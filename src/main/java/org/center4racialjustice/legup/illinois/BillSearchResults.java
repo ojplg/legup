@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventKey;
 import org.center4racialjustice.legup.domain.CompletedBillEventData;
@@ -91,7 +92,7 @@ public class BillSearchResults {
         return sponsorName;
     }
 
-    public BillVotesResults getBillVotesResults(BillEventData billEventData){
+    public BillVotesResults getBillVotesResults(BillEvent billEventData){
         log.info("Searching for " + billEventData);
         votesResults.forEach(vr -> log.info("possible match " + vr));
         return Lists.findfirst(votesResults, vr -> vr.matches(billEventData));

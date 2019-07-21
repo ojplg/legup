@@ -1,28 +1,81 @@
 package org.center4racialjustice.legup.domain;
 
-import lombok.Data;
 import org.center4racialjustice.legup.util.Dates;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
-@Data
 public class BillEvent {
 
-    private final LocalDate date;
-    private final Chamber chamber;
-    private final String rawContents;
-    private final String link;
+    private final RawBillEvent rawBillEvent;
+    private final BillActionType billActionType;
+    private final BillEventLegislatorData billEventLegislatorData;
+    private final BillEventCommitteeData billEventCommitteeData;
+
+    public BillEvent(RawBillEvent rawBillEvent,
+                     BillActionType billActionType,
+                     BillEventLegislatorData billEventLegislatorData,
+                     BillEventCommitteeData billEventCommitteeData) {
+        this.rawBillEvent = rawBillEvent;
+        this.billActionType = billActionType;
+        this.billEventLegislatorData = billEventLegislatorData;
+        this.billEventCommitteeData = billEventCommitteeData;
+    }
+
+    public LocalDate getDate(){
+        return rawBillEvent.getDate();
+    }
+
+    public Chamber getChamber(){
+        return rawBillEvent.getChamber();
+    }
+
+    public String getRawContents(){
+        return rawBillEvent.getRawContents();
+    }
+
+    public String getLink(){
+        return rawBillEvent.getLink();
+    }
 
     public Instant getDateAsInstant(){
-        return Dates.instantOf(date);
+        return Dates.instantOf(rawBillEvent.getDate());
     }
 
     public BillEventKey generateEventKey(){
-        return new BillEventKey(date, chamber, rawContents);
+        return new BillEventKey(rawBillEvent.getDate(), rawBillEvent.getChamber(), rawBillEvent.getRawContents());
     }
 
-    public boolean isSponsorshipEvent(){
-        return false;
+    public BillActionType getBillActionType(){
+        return billActionType;
     }
+
+    public boolean hasLegislator() {
+        return getRawLegislatorName() != null;
+    }
+
+    public String getRawLegislatorName(){
+        return billEventLegislatorData.getRawLegislatorName();
+    }
+
+    public Name getParsedLegislatorName(){
+        return billEventLegislatorData.getParsedLegislatorName();
+    }
+
+    public String getLegislatorMemberID(){
+        return billEventLegislatorData.getLegislatorMemberId();
+    }
+
+    public boolean hasCommittee(){
+        return getRawCommitteeName() != null;
+    }
+
+    public String getRawCommitteeName(){
+        return billEventCommitteeData.getRawCommitteeName();
+    }
+
+    public String getCommitteeID(){
+        return billEventCommitteeData.getCommitteeId();
+    }
+
 }

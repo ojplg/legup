@@ -38,7 +38,7 @@ public class BillSearcherParser {
         String billHomePageUrl = searcher.searchForBaseUrl(legislationType, billNumber);
         String votesUrl = searcher.convertToVotesPage(billHomePageUrl);
 
-        BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl);
+        BillHtmlParser billHtmlParser = new BillHtmlParser(billHomePageUrl, nameParser);
 
         log.info("Found " + billHtmlParser.getSponsorNames().totalSponsorCount() + " total sponsors");
 
@@ -57,10 +57,8 @@ public class BillSearcherParser {
     }
 
     private List<CompletedBillEventData> completeEvents(List<BillEvent> billEvents, LegislativeStructure legislativeStructure){
-        BillEventParser billEventParser = new BillEventParser(nameParser);
-        List<BillEventData> eventDataList = Lists.map(billEvents, billEventParser::parse);
         List<CompletedBillEventData> completedEventList = new ArrayList<>();
-        for(BillEventData billEventData : eventDataList){
+        for(BillEvent billEventData : billEvents){
             if( billEventData.hasLegislator() ){
                 Legislator legislator = legislativeStructure.findLegislatorByMemberID(billEventData.getLegislatorMemberID());
                 completedEventList.add(new CompletedBillEventData(billEventData, legislator, null));

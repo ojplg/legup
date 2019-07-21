@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.illinois;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.PersistableAction;
@@ -36,10 +38,10 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
         return collatedVotes.size();
     }
 
-    public boolean matches(BillEventData billEventData){
+    public boolean matches(BillEvent billEventData){
         log.debug("Checking for match of " + billEventData + " against " + voteLinkInfo);
 
-        if ( ! billEventData.isVote() ){
+        if ( ! billEventData.getBillActionType().equals(BillActionType.VOTE) ){
             return false;
         }
         if ( ! billEventData.getChamber().equals(voteLinkInfo.getChamber()) ){

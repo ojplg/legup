@@ -138,14 +138,10 @@ public class TestBillHtmlParser {
         InputStream inputStream = this.getClass().getResourceAsStream(Bill_101House2040_FileName);
         BillHtmlParser parser = new BillHtmlParser(inputStream, Bill_101House2040_BaseUrl);
 
-        BillEventParser eventParser = new BillEventParser();
-
-        List<BillEventData> voteEvents = new ArrayList<>();
+        List<BillEvent> voteEvents = new ArrayList<>();
         for(BillEvent event : parser.getBillEvents()){
-            BillEventData eventData = eventParser.parse(event);
-            if( eventData.isVote() ){
-                voteEvents.add(eventData);
-                System.out.println(eventData.getDate() + " : " + eventData.getRawData() + " : " + eventData.getChamber());
+            if( event.getBillActionType().equals(BillActionType.VOTE) ){
+                voteEvents.add(event);
             }
         }
 

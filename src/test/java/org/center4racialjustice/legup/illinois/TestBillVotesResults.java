@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.RawBillEvent;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class TestBillVotesResults {
                     Chamber.Senate, false, generateVoteList(34, 14, 0))
     };
 
-    private static BillEventData[] VoteEvents_101_House_2040 = {
+    private static BillEvent[] VoteEvents_101_House_2040 = {
             fromVoteEventDescription("Recommends Do Pass Subcommittee/ Labor & Commerce Committee; 007-000-000",
                     LocalDate.of(2019,3,20), Chamber.House),
             fromVoteEventDescription("Do Pass as Amended / Short Debate Labor & Commerce Committee; 018-010-000",
@@ -69,10 +70,10 @@ public class TestBillVotesResults {
         return collatedVotes;
     }
 
-    private static BillEventData fromVoteEventDescription(String voteEventDescription, LocalDate localDate, Chamber chamber){
-        BillEvent billEvent = new BillEvent(
+    private static BillEvent fromVoteEventDescription(String voteEventDescription, LocalDate localDate, Chamber chamber){
+        RawBillEvent billEvent = new RawBillEvent(
                 localDate, chamber, voteEventDescription, "empty_link");
-        BillEventData billEventData = new BillEventParser().parse(billEvent);
+        BillEvent billEventData = new BillEventParser().parse(billEvent);
         return billEventData;
     }
 
@@ -80,7 +81,7 @@ public class TestBillVotesResults {
     public void testMatchesWork_101_House_2040(){
         for(int idx=0; idx<6; idx++){
             BillVotesResults billVotesResults = VoteBillResults_101_House_2040[idx];
-            BillEventData billEventData = VoteEvents_101_House_2040[idx];
+            BillEvent billEventData = VoteEvents_101_House_2040[idx];
 
             Assert.assertTrue("Not matching: " + idx, billVotesResults.matches(billEventData));
         }
@@ -93,7 +94,7 @@ public class TestBillVotesResults {
             for(int jdx=0; jdx<6; jdx++) {
                 if( idx != jdx ) {
                     BillVotesResults billVotesResults = VoteBillResults_101_House_2040[idx];
-                    BillEventData billEventData = VoteEvents_101_House_2040[jdx];
+                    BillEvent billEventData = VoteEvents_101_House_2040[jdx];
 
                     Assert.assertFalse("Incorrect match: " + idx + ", " + jdx, billVotesResults.matches(billEventData));
                 }
