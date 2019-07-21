@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.service;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
+import org.center4racialjustice.legup.domain.CompletedBillEventData;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillVotesResults;
@@ -59,25 +60,21 @@ public class BillStatusComputer {
         return getUnpersistedEvents().size() > 0;
     }
 
-    public PersistableAction getPersistableAction(BillEventData billEventData){
+    public PersistableAction getPersistableAction(CompletedBillEventData billEventData){
         if( billEventData.isVote() ){
-            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData);
+            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData.getBillEventData());
             if( billVotesResults == null ){
                 return new ErrorPersistableAction("Unmatched: " + billEventData);
             }
             return billVotesResults;
         }
         if( billEventData.isSponsorship() || billEventData.isChiefSponsorship() ){
-            SponsorName sponsorName = billSearchResults.getSponsorName(billEventData);
-            if ( sponsorName == null ){
-                return new ErrorPersistableAction("Unmatched " + billEventData);
-            }
-            return sponsorName;
+            return new SponsorshipPersistableAction(billEventData);
         }
         return new DefaultPersistableAction();
     }
 
-    public String getPersistableActionDisplay(BillEventData billEventData){
+    public String getPersistableActionDisplay(CompletedBillEventData billEventData){
         PersistableAction persistableAction = getPersistableAction(billEventData);
         return persistableAction.getDisplay();
     }

@@ -9,7 +9,6 @@ import org.center4racialjustice.legup.util.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class SponsorNames {

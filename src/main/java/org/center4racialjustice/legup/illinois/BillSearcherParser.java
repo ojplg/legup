@@ -3,18 +3,17 @@ package org.center4racialjustice.legup.illinois;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
-import org.center4racialjustice.legup.db.LegislatorDao;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.Committee;
+import org.center4racialjustice.legup.domain.CompletedBillEventData;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
-import org.center4racialjustice.legup.domain.VoteType;
 import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.center4racialjustice.legup.service.LegislatorPersistence;
 import org.center4racialjustice.legup.util.Lists;
-import org.center4racialjustice.legup.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,15 +47,31 @@ public class BillSearcherParser {
         LegislativeStructure legislativeStructure = sessionStructure(billHtmlParser.getSession());
 
         List<BillEvent> billEvents = billHtmlParser.getBillEvents();
-        BillEventParser billEventParser = new BillEventParser(nameParser);
-        List<BillEventData> eventDataList = Lists.map(billEvents, billEventParser::parse);
+        List<CompletedBillEventData> completedEvents = completeEvents(billEvents, legislativeStructure);
 
         List<BillVotesResults> votesResults = findVotes(votesLinks, legislativeStructure);
-
         votesResults.forEach(vr -> vr.getUncollatedNames().forEach(n -> log.warn("Could not collate " + n)));
 
-        return new BillSearchResults(billHtmlParser, legislativeStructure, votesResults, eventDataList);
+        return new BillSearchResults(billHtmlParser, legislativeStructure, votesResults, completedEvents);
 
+    }
+
+    private List<CompletedBillEventData> completeEvents(List<BillEvent> billEvents, LegislativeStructure legislativeStructure){
+        BillEventParser billEventParser = new BillEventParser(nameParser);
+        List<BillEventData> eventDataList = Lists.map(billEvents, billEventParser::parse);
+        List<CompletedBillEventData> completedEventList = new ArrayList<>();
+        for(BillEventData billEventData : eventDataList){
+            if( billEventData.hasLegislator() ){
+                Legislator legislator = legislativeStructure.findLegislatorByMemberID(billEventData.getLegislatorMemberID());
+                completedEventList.add(new CompletedBillEventData(billEventData, legislator, null));
+            } else if ( billEventData.hasCommittee() ){
+                Committee committee = legislativeStructure.findCommitteeByCommitteeID(billEventData.getCommitteeID());
+                completedEventList.add(new CompletedBillEventData(billEventData, null, committee));
+            } else {
+                completedEventList.add(new CompletedBillEventData(billEventData, null, null));
+            }
+        }
+        return completedEventList;
     }
 
     private LegislativeStructure sessionStructure(long sessionNumber){

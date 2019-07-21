@@ -73,6 +73,9 @@ public abstract class AbstractBillEvent implements BillEventData {
     }
 
     @Override
+    public String getCommitteeID() { return null; }
+
+    @Override
     public String getRawLegislatorName() {
         return null;
     }

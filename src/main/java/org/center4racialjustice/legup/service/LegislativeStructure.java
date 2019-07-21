@@ -32,4 +32,11 @@ public class LegislativeStructure {
         }
         return Lists.findfirst(legislators, l -> memberId.equals(l.getMemberId()));
     }
+
+    public Committee findCommitteeByCommitteeID(String committeeId){
+        if( committeeId == null ){
+            return null;
+        }
+        return Lists.findfirst(committees, c -> committeeId.equals(c.getCommitteeId()));
+    }
 }

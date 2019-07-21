@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventKey;
+import org.center4racialjustice.legup.domain.CompletedBillEventData;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.LegislativeStructure;
@@ -27,12 +28,12 @@ public class BillSearchResults {
     private final long checksum;
     private final String url;
     private final List<BillVotesResults> votesResults;
-    private final List<BillEventData> billEvents;
+    private final List<CompletedBillEventData> billEvents;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              LegislativeStructure legislativeStructure,
                              List<BillVotesResults> votesResults,
-                             List<BillEventData> billEvents){
+                             List<CompletedBillEventData> billEvents){
         this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislativeStructure);
@@ -46,7 +47,7 @@ public class BillSearchResults {
         return parsedBill.getBillIdentity();
     }
 
-    public List<BillEventData> getBillEvents(){
+    public List<CompletedBillEventData> getBillEvents(){
         return billEvents;
     }
 

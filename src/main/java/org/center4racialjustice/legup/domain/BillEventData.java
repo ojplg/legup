@@ -23,4 +23,5 @@ public interface BillEventData {
 
     boolean hasCommittee();
     String getRawCommitteeName();
+    String getCommitteeID();
 }
