@@ -1,9 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.RawBillEvent;
 import org.junit.Assert;
@@ -60,7 +58,7 @@ public class TestBillEventParser {
                 missing++;
             }
         }
-        Assert.assertTrue(missing < 30);
+        Assert.assertTrue(missing < 75);
     }
 
 

@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.RawBillEvent;
 import org.center4racialjustice.legup.domain.VoteSide;

@@ -3,7 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class VoteEventCountExtractor {
+public class VoteEventCountExtractor implements VoteEventCounts {
 
     private static final Pattern VOTE_COUNT_PATTERN =
             Pattern.compile(".*(\\d\\d\\d)-(\\d\\d\\d)-(\\d\\d\\d)");

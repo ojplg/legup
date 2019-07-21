@@ -50,7 +50,8 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
         if ( ! closeDates(billEventData.getDate(),voteLinkInfo.getVoteDate()) ){
             return false;
         }
-        if ( ! countsMatch( (VoteEventCounts) billEventData )){
+        VoteEventCountExtractor voteEventCountExtractor = new VoteEventCountExtractor(billEventData.getRawContents());
+        if ( ! countsMatch( voteEventCountExtractor )){
             return false;
         }
 
