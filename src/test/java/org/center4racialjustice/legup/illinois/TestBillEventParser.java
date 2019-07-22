@@ -255,4 +255,15 @@ public class TestBillEventParser {
         Assert.assertTrue(billEventData.hasCommittee());
         Assert.assertEquals("Subcommittee/ Judiciary - Civil Committee", billEventData.getRawCommitteeName());
     }
+
+    @Test
+    public void testParsesSponsorshipRemoval(){
+        RawBillEvent billEvent = newRawBillEvent("Removed Co-Sponsor Rep. Jerry Costello, II");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.REMOVE_SPONSOR, billEventData.getBillActionType());
+        Assert.assertTrue(billEventData.hasLegislator());
+        Assert.assertEquals("Jerry Costello, II", billEventData.getRawLegislatorName());
+    }
 }

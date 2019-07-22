@@ -81,22 +81,23 @@ public class SponsorNames {
         return allNames;
     }
 
-    public List<String> findSponsorshipMismatches(List<CompletedBillEvent> events){
+    public List<String> findSponsorshipMismatches(List<CompletedBillEvent> sponsorEvents, List<CompletedBillEvent> removalEvents){
         List<Legislator> sponsors = Lists.mapWithoutNulls(allSponsorNames(), SponsorName::getLegislator);
         List<String> errors = new ArrayList<>();
         List<Legislator> eventLegislators = new ArrayList<>();
-        for(CompletedBillEvent event : events){
+        List<Legislator> removedLegislators = Lists.map(removalEvents, CompletedBillEvent::getLegislator);
+        for(CompletedBillEvent event : sponsorEvents){
             Legislator legislator = event.getLegislator();
             if( legislator != null ){
                 eventLegislators.add(legislator);
-                if( ! sponsors.contains(legislator)) {
+                if( ! sponsors.contains(legislator) && ! removedLegislators.contains(legislator)) {
                     errors.add("Could not find event for sponsor " + legislator);
                 }
             }
         }
-        for(Legislator legislator : eventLegislators){
-            if( ! sponsors.contains(legislator)){
-                errors.add("Incorrect sponsor event " + legislator);
+        for(Legislator sponsor : sponsors){
+            if( ! eventLegislators.contains(sponsor)){
+                errors.add("Incorrect sponsor event " + sponsor);
             }
         }
         return errors;

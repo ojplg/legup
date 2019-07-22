@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.illinois;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventKey;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
@@ -34,9 +35,9 @@ public class BillSearchResults {
                              List<BillVotesResults> votesResults,
                              List<CompletedBillEvent> billEvents){
         this.parsedBill = billHtmlParser.getBill();
+        this.checksum = billHtmlParser.getChecksum();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislativeStructure);
-        this.checksum = billHtmlParser.getChecksum();
         this.url = billHtmlParser.getUrl();
         this.votesResults = votesResults;
         this.billEvents = billEvents;
@@ -54,10 +55,16 @@ public class BillSearchResults {
         return Collections.emptyList();
     }
 
-
-    private List<CompletedBillEvent> findSponsorshipBillEvents(){
+    private List<CompletedBillEvent> findSponsorshipEvents(){
         return Lists.filter(billEvents, event -> event.isSponsorship() || event.isChiefSponsorship());
     }
+
+    private List<CompletedBillEvent> findSponsorshipRemovalEvents(){
+        return Lists.filter(billEvents,
+                event -> event.getBillActionType().equals(BillActionType.REMOVE_SPONSOR)
+                        || event.getBillActionType().equals(BillActionType.REMOVE_CHIEF_SPONSOR));
+    }
+
 
 //    public BillVotesResults getSearchedResults(BillEventKey key){
 //        log.info("Searching for bill event key " + key);
@@ -108,7 +115,7 @@ public class BillSearchResults {
 
     public List<String> getErrors(){
         List<String> errors = new ArrayList<>();
-        errors.addAll(sponsorNames.findSponsorshipMismatches(findSponsorshipBillEvents()));
+        errors.addAll(sponsorNames.findSponsorshipMismatches(findSponsorshipEvents(), findSponsorshipRemovalEvents()));
         return errors;
     }
 

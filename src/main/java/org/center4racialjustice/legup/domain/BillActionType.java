@@ -20,6 +20,9 @@ public class BillActionType {
     public final static BillActionType SPONSOR = new BillActionType("Sponsor");
     public final static BillActionType CHIEF_SPONSOR = new BillActionType("Chief Sponsor");
 
+    public final static BillActionType REMOVE_SPONSOR = new BillActionType("Remove Sponsor");
+    public final static BillActionType REMOVE_CHIEF_SPONSOR = new BillActionType("Remove Chief Sponsor");
+
     public final static BillActionType COMMITTEE_REFERRAL = new BillActionType("Committee Referral");
     public final static BillActionType COMMITTEE_ASSIGNMENT = new BillActionType("Committee Assignment");
     public final static BillActionType COMMITTEE_POSTPONEMENT = new BillActionType("Committee Postponement");
@@ -28,15 +31,16 @@ public class BillActionType {
 
     public final static BillActionType UNCLASSIFIED = new BillActionType("Unclassified");
 
-    public final static BillActionType FIRST_READING = new BillActionType(FirstReading);
-
-    public final static BillActionType AMENDMENT = new BillActionType(Amendment);
-    public final static BillActionType CALENDAR_SCHEDULING = new BillActionType(CalendarScheduling);
-    public final static BillActionType POSTPONED = new BillActionType(Postponed);
-    public final static BillActionType DEADLINE_ESTABLISHED = new BillActionType(DeadlineEstablished);
+//    public final static BillActionType FIRST_READING = new BillActionType(FirstReading);
+//
+//    public final static BillActionType AMENDMENT = new BillActionType(Amendment);
+//    public final static BillActionType CALENDAR_SCHEDULING = new BillActionType(CalendarScheduling);
+//    public final static BillActionType POSTPONED = new BillActionType(Postponed);
+//    public final static BillActionType DEADLINE_ESTABLISHED = new BillActionType(DeadlineEstablished);
 
     private static final List<BillActionType> ALL_ACTIONS = Arrays.asList(
             VOTE, SPONSOR, CHIEF_SPONSOR,
+            REMOVE_SPONSOR, REMOVE_CHIEF_SPONSOR,
             COMMITTEE_REFERRAL, COMMITTEE_ASSIGNMENT,
             UNCLASSIFIED
     );
