@@ -61,7 +61,7 @@ public class BillStatusComputer {
 
     public PersistableAction getPersistableAction(CompletedBillEvent billEventData){
         if( billEventData.isVote() ){
-            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData.getBillEventData());
+            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData.getBillEvent());
             if( billVotesResults == null ){
                 return new ErrorPersistableAction("Unmatched: " + billEventData);
             }

@@ -12,4 +12,5 @@ public class BillEventLegislatorData {
     private final String rawLegislatorName;
     private final Name parsedLegislatorName;
     private final String legislatorMemberId;
+
 }

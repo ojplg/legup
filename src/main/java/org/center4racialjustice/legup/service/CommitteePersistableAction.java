@@ -48,4 +48,9 @@ public class CommitteePersistableAction implements PersistableAction {
 
         return buf.toString();
     }
+
+    @Override
+    public List<String> getErrors() {
+        return completedBillEventData.getErrors();
+    }
 }

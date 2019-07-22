@@ -4,6 +4,9 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.PersistableAction;
 
+import java.util.Collections;
+import java.util.List;
+
 public class SponsorName implements PersistableAction {
 
     private final String rawName;
@@ -72,5 +75,14 @@ public class SponsorName implements PersistableAction {
     @Override
     public String getDisplay() {
         return "Name: " + rawName + " matched " + legislator.getDisplay();
+    }
+
+    @Override
+    public List<String> getErrors() {
+        if( legislator == null ){
+            return Collections.singletonList("Unmatched: " + rawName);
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

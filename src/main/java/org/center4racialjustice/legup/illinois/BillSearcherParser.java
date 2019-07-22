@@ -59,12 +59,12 @@ public class BillSearcherParser {
         for(BillEvent billEventData : billEvents){
             if( billEventData.hasLegislator() ){
                 Legislator legislator = legislativeStructure.findLegislatorByMemberID(billEventData.getLegislatorMemberID());
-                completedEventList.add(new CompletedBillEvent(billEventData, legislator, null));
+                completedEventList.add(CompletedBillEvent.forLegislator(billEventData, legislator));
             } else if ( billEventData.hasCommittee() ){
                 Committee committee = legislativeStructure.findCommitteeByCommitteeID(billEventData.getCommitteeID());
-                completedEventList.add(new CompletedBillEvent(billEventData, null, committee));
+                completedEventList.add(CompletedBillEvent.forCommittee(billEventData, committee));
             } else {
-                completedEventList.add(new CompletedBillEvent(billEventData, null, null));
+                completedEventList.add(CompletedBillEvent.forStandalone(billEventData));
             }
         }
         return completedEventList;

@@ -3,6 +3,8 @@ package org.center4racialjustice.legup.service;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
 
+import java.util.List;
+
 public class SponsorshipPersistableAction implements PersistableAction {
 
     private final CompletedBillEvent completedBillEventData;
@@ -32,5 +34,10 @@ public class SponsorshipPersistableAction implements PersistableAction {
         buf.append("<br//>");
 
         return buf.toString();
+    }
+
+    @Override
+    public List<String> getErrors() {
+        return completedBillEventData.getErrors();
     }
 }

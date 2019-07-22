@@ -78,6 +78,15 @@ public class BillEvent {
         return billEventCommitteeData.getCommitteeId();
     }
 
+    public String legislatorToString(){
+        return billEventLegislatorData.toString();
+    }
+
+    public String committeeToString(){
+        return billEventCommitteeData.toString();
+    }
+
+
     @Override
     public String toString() {
         return "BillEvent{" +

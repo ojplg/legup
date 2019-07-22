@@ -115,4 +115,9 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
                 ", uncollatedCount=" + getUncollatedNames().stream() +
                 '}';
     }
+
+    @Override
+    public List<String> getErrors() {
+        return Lists.map(uncollatedNames, name -> "Uncollated: " + name.getDisplay());
+    }
 }
