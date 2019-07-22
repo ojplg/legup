@@ -142,9 +142,7 @@ public class BillVotesParser {
         }
         List<Integer> intersection = null;
         for( int idx=0 ; idx<voteLines.size() - 1 ; idx++ ){
-            System.out.println("vote line " + voteLines.get(idx));
             List<Integer> possibleDividingPoints = findPossibleDividingPoints(voteLines.get(idx));
-            //System.out.println("        Possible dividers " + possibleDividingPoints);
             if( idx == 0 ) {
                 intersection = possibleDividingPoints;
             } else {
