@@ -89,4 +89,13 @@ public class CompletedBillEvent {
     public String getCommitteeID() {
         return billEventData.getCommitteeID();
     }
+
+    @Override
+    public String toString() {
+        return "CompletedBillEvent{" +
+                "billEventData=" + billEventData +
+                ", legislator=" + legislator +
+                ", committee=" + committee +
+                '}';
+    }
 }

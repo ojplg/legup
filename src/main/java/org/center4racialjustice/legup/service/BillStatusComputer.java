@@ -70,6 +70,10 @@ public class BillStatusComputer {
         if( billEventData.isSponsorship() || billEventData.isChiefSponsorship() ){
             return new SponsorshipPersistableAction(billEventData);
         }
+        if( CommitteePersistableAction.supports(billEventData.getBillActionType()) ){
+            return new CommitteePersistableAction(billEventData);
+        }
+
         return new DefaultPersistableAction();
     }
 

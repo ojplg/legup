@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class BillEventParser implements BillEventInterpreter {
 
-    public static final Pattern CommitteeIdExtractionPattern = Pattern.compile(".*CommitteeID=(\\d+).*");
+    public static final Pattern CommitteeIdExtractionPattern = Pattern.compile(".*committeeID=(\\d+).*");
 
     private static final Pattern FiledWithClerkPattern =
             Pattern.compile("Filed with (?:the Clerk|Secretary) by (?:Sen|Rep). (.*)");

@@ -78,4 +78,13 @@ public class BillEvent {
         return billEventCommitteeData.getCommitteeId();
     }
 
+    @Override
+    public String toString() {
+        return "BillEvent{" +
+                "rawBillEvent=" + rawBillEvent +
+                ", billActionType=" + billActionType +
+                ", billEventLegislatorData=" + billEventLegislatorData +
+                ", billEventCommitteeData=" + billEventCommitteeData +
+                '}';
+    }
 }
