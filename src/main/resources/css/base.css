@@ -13,6 +13,10 @@ div.contents {
     margin-left: 12px;
 }
 
+div.error {
+    background-color: #de5d5d;
+}
+
 div.footer {
     position: fixed;
     bottom: 15px;

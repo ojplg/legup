@@ -59,6 +59,18 @@
     </div>
 </div>
 
+#if ( ${billStatusComputer.hasErrors()} )
+    <div class='error'>
+        <h5>Other Parse Errors</h5>
+        <ul>
+            #foreach ($error in $billStatusComputer.errors )
+                <li>$error</li>
+            #end
+        </ul>
+    </div>
+#end
+
+
 <h5>Data to Save</h5>
 
 #if ( ${billStatusComputer.hasUnpersistedEvents()} )

@@ -82,5 +82,11 @@ public class BillStatusComputer {
         return persistableAction.getDisplay();
     }
 
+    public List<String> getErrors(){
+        return billSearchResults.getErrors();
+    }
 
+    public boolean hasErrors(){
+        return getErrors().size() > 0;
+    }
 }

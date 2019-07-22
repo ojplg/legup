@@ -71,4 +71,23 @@ public class Lists {
         return (int) items.stream().filter(predicate).count();
     }
 
+    public static <T> Tuple<List<T>, List<T>> findDifferencesIgnoringOrder(List<T> authority, List<T> test){
+        List<T> missing = new ArrayList<>();
+        List<T> extras = new ArrayList<>();
+
+        for(T auth : authority){
+            if( ! test.contains(auth) ){
+                missing.add(auth);
+            }
+        }
+
+        for(T t : test){
+            if( ! authority.contains(t)){
+                extras.add(t);
+            }
+        }
+
+        return new Tuple<>(missing, extras);
+    }
+
 }

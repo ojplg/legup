@@ -54,6 +54,11 @@ public class BillSearchResults {
         return Collections.emptyList();
     }
 
+
+    private List<CompletedBillEvent> findSponsorshipBillEvents(){
+        return Lists.filter(billEvents, event -> event.isSponsorship() || event.isChiefSponsorship());
+    }
+
 //    public BillVotesResults getSearchedResults(BillEventKey key){
 //        log.info("Searching for bill event key " + key);
 //        List<BillEventKey> possibleKeys = Lists.map(votesResults, BillVotesResults::generateEventKey);
@@ -99,6 +104,12 @@ public class BillSearchResults {
 
     public List<SponsorName> getUncollatedSponsors(){
         return sponsorNames.getUncollated();
+    }
+
+    public List<String> getErrors(){
+        List<String> errors = new ArrayList<>();
+        errors.addAll(sponsorNames.findSponsorshipMismatches(findSponsorshipBillEvents()));
+        return errors;
     }
 
 }

@@ -1,6 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.LegislativeStructure;
@@ -65,6 +66,40 @@ public class SponsorNames {
         senateSponsors.forEach(
                 sponsorName -> completeOne(sponsorName, legislativeStructure)
         );
+    }
+
+    private List<SponsorName> allSponsorNames(){
+        List<SponsorName> allNames = new ArrayList<>();
+        allNames.addAll(houseSponsors);
+        allNames.addAll(senateSponsors);
+        if( chiefHouseSponsor != null ){
+            allNames.add(chiefHouseSponsor);
+        }
+        if( chiefSenateSponsor != null) {
+            allNames.add(chiefSenateSponsor);
+        }
+        return allNames;
+    }
+
+    public List<String> findSponsorshipMismatches(List<CompletedBillEvent> events){
+        List<Legislator> sponsors = Lists.mapWithoutNulls(allSponsorNames(), SponsorName::getLegislator);
+        List<String> errors = new ArrayList<>();
+        List<Legislator> eventLegislators = new ArrayList<>();
+        for(CompletedBillEvent event : events){
+            Legislator legislator = event.getLegislator();
+            if( legislator != null ){
+                eventLegislators.add(legislator);
+                if( ! sponsors.contains(legislator)) {
+                    errors.add("Could not find event for sponsor " + legislator);
+                }
+            }
+        }
+        for(Legislator legislator : eventLegislators){
+            if( ! sponsors.contains(legislator)){
+                errors.add("Incorrect sponsor event " + legislator);
+            }
+        }
+        return errors;
     }
 
     public SponsorName findMatchingSponsor(String memberID, Name name){
