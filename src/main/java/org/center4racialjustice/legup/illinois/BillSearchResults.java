@@ -4,10 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillEventKey;
-import org.center4racialjustice.legup.domain.CompletedBillEventData;
-import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.center4racialjustice.legup.util.Lists;
@@ -29,12 +27,12 @@ public class BillSearchResults {
     private final long checksum;
     private final String url;
     private final List<BillVotesResults> votesResults;
-    private final List<CompletedBillEventData> billEvents;
+    private final List<CompletedBillEvent> billEvents;
 
     public BillSearchResults(BillHtmlParser billHtmlParser,
                              LegislativeStructure legislativeStructure,
                              List<BillVotesResults> votesResults,
-                             List<CompletedBillEventData> billEvents){
+                             List<CompletedBillEvent> billEvents){
         this.parsedBill = billHtmlParser.getBill();
         this.sponsorNames = billHtmlParser.getSponsorNames();
         this.sponsorNames.completeAll(legislativeStructure);
@@ -48,7 +46,7 @@ public class BillSearchResults {
         return parsedBill.getBillIdentity();
     }
 
-    public List<CompletedBillEventData> getBillEvents(){
+    public List<CompletedBillEvent> getBillEvents(){
         return billEvents;
     }
 
@@ -84,13 +82,6 @@ public class BillSearchResults {
 //        BillVotesResults results = getSearchedResults(key);
 //        return BillActionLoad.create(bill, results.getUrl(), results.getChecksum());
 //    }
-
-    public SponsorName getSponsorName(BillEventData billEventData){
-        Name name = billEventData.getParsedLegislatorName();
-        String memberId = billEventData.getLegislatorMemberID();
-        SponsorName sponsorName = sponsorNames.findMatchingSponsor(memberId, name);
-        return sponsorName;
-    }
 
     public BillVotesResults getBillVotesResults(BillEvent billEventData){
         log.info("Searching for " + billEventData);

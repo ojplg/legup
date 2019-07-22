@@ -1,9 +1,8 @@
 package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.domain.BillAction;
-import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.DisplayAction;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
@@ -105,7 +104,7 @@ public class BillActionCollator {
                 act -> act.getLegislator().getChamber().equals(chamber));
     }
 
-    public BillAction getMatchingAction(BillEventData billEvent){
+    public BillAction getMatchingAction(CompletedBillEvent billEvent){
         return Lists.findfirst(allActions, action -> action.matchesEvent(billEvent));
     }
 }

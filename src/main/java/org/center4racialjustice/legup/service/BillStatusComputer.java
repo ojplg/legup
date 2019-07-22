@@ -1,9 +1,8 @@
 package org.center4racialjustice.legup.service;
 
 import org.center4racialjustice.legup.domain.BillActionLoad;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
-import org.center4racialjustice.legup.domain.CompletedBillEventData;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillVotesResults;
@@ -46,9 +45,9 @@ public class BillStatusComputer {
         return billSearchResults.getUncollatedSponsors();
     }
 
-    public List<BillEventData> getUnpersistedEvents(){
-        List<BillEventData> unpersisted = new ArrayList<>();
-        for(BillEventData billEvent : billSearchResults.getBillEvents()){
+    public List<CompletedBillEvent> getUnpersistedEvents(){
+        List<CompletedBillEvent> unpersisted = new ArrayList<>();
+        for(CompletedBillEvent billEvent : billSearchResults.getBillEvents()){
             if( ! billHistory.recognizedEvent(billEvent) ){
                 unpersisted.add(billEvent);
             }
@@ -60,7 +59,7 @@ public class BillStatusComputer {
         return getUnpersistedEvents().size() > 0;
     }
 
-    public PersistableAction getPersistableAction(CompletedBillEventData billEventData){
+    public PersistableAction getPersistableAction(CompletedBillEvent billEventData){
         if( billEventData.isVote() ){
             BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData.getBillEventData());
             if( billVotesResults == null ){
@@ -74,7 +73,7 @@ public class BillStatusComputer {
         return new DefaultPersistableAction();
     }
 
-    public String getPersistableActionDisplay(CompletedBillEventData billEventData){
+    public String getPersistableActionDisplay(CompletedBillEvent billEventData){
         PersistableAction persistableAction = getPersistableAction(billEventData);
         return persistableAction.getDisplay();
     }

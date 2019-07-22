@@ -10,16 +10,12 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
-import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.BillSaveResults;
-import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.SponsorSaveResults;
-import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillIdentity;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillVotesResults;
@@ -33,7 +29,6 @@ import org.center4racialjustice.legup.util.Tuple;
 import java.sql.Connection;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BillPersistence {
@@ -112,10 +107,6 @@ public class BillPersistence {
                 if( billStatusComputer.hasUnpersistedEvents() ){
                     billActionLoad = insertNewBillLoadAction(connection, bill, billSearchResults.getUrl(), billSearchResults.getChecksum());
                 }
-            }
-
-            for( BillEventData billEvent : billStatusComputer.getUnpersistedEvents() ){
-
             }
 
 //            if( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ){

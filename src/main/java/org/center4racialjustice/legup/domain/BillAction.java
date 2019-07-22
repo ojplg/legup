@@ -40,7 +40,7 @@ public class BillAction {
         return Lists.findfirst(legislatorBillActions, legislatorBillAction -> legislator.equals(legislatorBillAction.getLegislator()));
     }
 
-    public boolean matchesEvent(BillEventData billEvent){
+    public boolean matchesEvent(CompletedBillEvent billEvent){
         return billEvent.generateEventKey().equals(generateBillEventKey());
     }
 

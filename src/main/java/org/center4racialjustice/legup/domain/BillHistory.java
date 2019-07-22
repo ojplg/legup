@@ -60,7 +60,7 @@ public class BillHistory {
         return count/all;
     }
 
-    public boolean recognizedEvent(BillEventData billEvent){
+    public boolean recognizedEvent(CompletedBillEvent billEvent){
         BillAction action = actions.getMatchingAction(billEvent);
         return action != null;
     }

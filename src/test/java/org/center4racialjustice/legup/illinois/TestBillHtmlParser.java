@@ -3,7 +3,6 @@ package org.center4racialjustice.legup.illinois;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
-import org.center4racialjustice.legup.domain.BillEventData;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,13 +1,13 @@
 package org.center4racialjustice.legup.service;
 
-import org.center4racialjustice.legup.domain.CompletedBillEventData;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
 
 public class SponsorshipPersistableAction implements PersistableAction {
 
-    private final CompletedBillEventData completedBillEventData;
+    private final CompletedBillEvent completedBillEventData;
 
-    public SponsorshipPersistableAction(CompletedBillEventData completedBillEventData) {
+    public SponsorshipPersistableAction(CompletedBillEvent completedBillEventData) {
         if( ! (completedBillEventData.isChiefSponsorship() || completedBillEventData.isSponsorship() ) ){
             throw new RuntimeException("Not a sponsorship: " + completedBillEventData);
         }
