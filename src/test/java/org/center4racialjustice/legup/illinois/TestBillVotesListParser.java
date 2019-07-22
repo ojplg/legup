@@ -95,4 +95,16 @@ public class TestBillVotesListParser {
         Assert.assertEquals(6, voteLinkInfos.size());
     }
 
+    @Test
+    public void testRemoteOneOff(){
+
+        BillVotesListParser parser = new BillVotesListParser(
+            "http://www.ilga.gov/legislation/votehistory.asp?DocNum=2244&DocTypeID=HB&LegID=118034&GAID=15&SessionID=108&GA=101&SpecSess="
+        );
+
+        List<VoteLinkInfo> infos = parser.parseVoteLinks();
+
+        Assert.assertEquals(4, infos.size());
+    }
+
 }

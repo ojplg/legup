@@ -27,14 +27,14 @@ public class VoteLinkInfo {
     private static final Logger log = LogManager.getLogger(VoteLinkInfo.class);
 
     private static final Pattern LinkTextPattern = Pattern.compile(
-            "(\\w+) - ([\\w\\s\\&]+) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
+            "(\\w+) - ([\\w\\s\\&-]+?) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
     );
 
     public static final DateTimeFormatter LongDateFormatter =
-            DateTimeFormatter.ofPattern("MMMM dd, yyyy", Locale.US);
+            DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.US);
 
     public static final DateTimeFormatter ShortDateFormatter =
-            DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.US);
+            DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US);
 
     public static VoteLinkInfo create(String linkText, Chamber chamber, boolean committee, String pdfUrl) {
         Matcher matcher = LinkTextPattern.matcher(linkText);

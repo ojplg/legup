@@ -78,6 +78,7 @@ public class BillVotesListParser {
     }
 
     private List<VoteLinkInfo> parseTable(Element voteLinkTable, boolean committee){
+
         List<VoteLinkInfo> voteLinkInfos = new ArrayList<>();
 
         Elements rows = voteLinkTable.select("tr");
@@ -87,10 +88,12 @@ public class BillVotesListParser {
         }
 
         for( int idx=1; idx<rows.size(); idx++ ){
+
             Element row = rows.get(idx);
             Elements cells = row.select("td");
 
             if( cells.size() <= 1 ){
+                log.warn("Not enough cells " + row);
                 continue;
             }
 
@@ -98,6 +101,7 @@ public class BillVotesListParser {
             Element anchor = linkCell.selectFirst("a");
 
             if( anchor == null ){
+                log.warn("No anchor found " + row);
                 continue;
             }
 
@@ -113,6 +117,8 @@ public class BillVotesListParser {
 
             if( voteLinkInfo != null ){
                 voteLinkInfos.add(voteLinkInfo);
+            } else {
+                log.warn("Could not match " + text);
             }
         }
 
