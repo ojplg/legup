@@ -72,7 +72,13 @@
     <table class="pure-table pure-table-horizontal">
         <tbody>
             #foreach ($event in $billStatusComputer.unpersistedEvents)
-                <tr>
+                <tr
+                    #if ( ${event.billActionType.code.equals("Unclassified")} )
+                        bgcolor='#e6e600'
+                    #elseif ( ${billStatusComputer.getPersistableActionDisplay($event).equals("default")} )
+                        bgcolor='#88cc00'
+                    #end
+                >
                     <td>$event.date</td>
                     <td>$event.chamber</td>
                     <td>$event.billActionType.code</td>
