@@ -73,7 +73,9 @@
         <tbody>
             #foreach ($event in $billStatusComputer.unpersistedEvents)
                 <tr
-                    #if ( ${event.billActionType.code.equals("Unclassified")} )
+                    #if ( ${event.hasErrors()} )
+                        bgcolor='#de5d5d'
+                    #elseif ( ${event.billActionType.code.equals("Unclassified")} )
                         bgcolor='#e6e600'
                     #elseif ( ${billStatusComputer.getPersistableActionDisplay($event).equals("default")} )
                         bgcolor='#88cc00'
@@ -82,7 +84,15 @@
                     <td>$event.date</td>
                     <td>$event.chamber</td>
                     <td>$event.billActionType.code</td>
-                    <td>${billStatusComputer.getPersistableActionDisplay($event)}</td>
+                    <td>
+                        #if ( ${event.hasErrors()} )
+                            #foreach ( $error in $event.errors )
+                                $error<br/>
+                            #end
+                        #else
+                            ${billStatusComputer.getPersistableActionDisplay($event)}
+                        #end
+                    </td>
                     <td>$event.rawData</td>
                 </tr>
             #end
