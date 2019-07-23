@@ -177,6 +177,9 @@ public class CompletedBillEvent implements PersistableAction {
         billAction.setActionDate(getDateAsInstant());
         billAction.setRawActionData(getRawData());
         billAction.setChamber(getChamber());
+        if( committee != null ){
+            billAction.setCommitteeId(committee.getId());
+        }
 
         return billAction;
     }

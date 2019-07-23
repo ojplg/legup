@@ -21,6 +21,7 @@ public class BillAction {
     private Instant actionDate;
     private Chamber chamber;
     private BillActionLoad billActionLoad;
+    private Long committeeId;
 
     private List<LegislatorBillAction> legislatorBillActions;
 

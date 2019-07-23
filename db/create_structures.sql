@@ -268,3 +268,7 @@ alter table bill_actions drop column bill_action_detail;
 -- changeset ojplg:12
 
 alter table bill_actions add column chamber text;
+
+-- changeset ojplg:13
+
+alter table bill_actions add column committee_id integer;
