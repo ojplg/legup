@@ -257,6 +257,30 @@ public class TestBillEventParser {
     }
 
     @Test
+    public void testRecognizesCommitteeVote_ExampleTwo() {
+        RawBillEvent billEvent = newRawBillEvent("Do Pass as Amended / Short Debate Labor & Commerce Committee; 018-010-000");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.VOTE, billEventData.getBillActionType());
+        Assert.assertTrue(billEventData.hasCommittee());
+        Assert.assertEquals("Labor & Commerce Committee", billEventData.getRawCommitteeName());
+    }
+
+
+    @Test
+    public void testRecognizesCommitteeVote_ExampleThree() {
+        RawBillEvent billEvent = newRawBillEvent("House Floor Amendment No. 3 Recommends Be Adopted Labor & Commerce Committee; 017-004-000");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.VOTE, billEventData.getBillActionType());
+        Assert.assertTrue(billEventData.hasCommittee());
+        Assert.assertEquals("Labor & Commerce Committee", billEventData.getRawCommitteeName());
+    }
+
+
+    @Test
     public void testParsesSponsorshipRemoval(){
         RawBillEvent billEvent = newRawBillEvent("Removed Co-Sponsor Rep. Jerry Costello, II");
         BillEventParser billEventParser = new BillEventParser();

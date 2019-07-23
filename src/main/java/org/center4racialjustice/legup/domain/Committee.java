@@ -23,5 +23,8 @@ public class Committee {
     public CommitteeMember getMembership(Legislator legislator) {
         return Lists.findfirst(members, member -> member.getLegislator().equals(legislator));
     }
-
+    @Override
+    public String toString(){
+        return  chamber + " committee: " + name + "(" + code + ")";
+    }
 }

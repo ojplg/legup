@@ -7,6 +7,7 @@ import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillVotesResults;
 import org.center4racialjustice.legup.illinois.SponsorName;
+import org.center4racialjustice.legup.illinois.VoteResultsEventDisplay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class BillStatusComputer {
             if( billVotesResults == null ){
                 return new ErrorPersistableAction("Unmatched: " + billEventData);
             }
-            return billVotesResults;
+            return new VoteResultsEventDisplay(billEventData, billVotesResults);
         }
         if( billEventData.isSponsorship() || billEventData.isChiefSponsorship() ){
             return new SponsorshipPersistableAction(billEventData);

@@ -9,7 +9,9 @@ import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.RawBillEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -53,8 +55,19 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern CommitteeAmendmentPattern =
             Pattern.compile("(?:Senate|House) Committee Amendment No. \\d+ Filed with (?:Clerk|Secretary) by (?:Sen|Rep). (.*)");
 
+    private static final List<String> CommitteeVotePrefixes = Arrays.asList(
+            "Do Pass as Amended / Short Debate",
+            "Recommends Do Pass",
+            "Reported Back To",
+            "Do Pass / Short Debate",
+            "Do Pass / Short Debate|Do Pass as Amended",
+            "House Floor Amendment No. \\d+ Recommends Be Adopted",
+            "Senate Floor Amendment No. \\d+ Recommends Be Adopted",
+            "Do Pass"
+    );
+
     private static final Pattern CommitteeVotePattern =
-            Pattern.compile("(?:Do Pass as Amended|Recommends Do Pass|Reported Back To|Do Pass / Short Debate)? ([\\w\\s-/]+); \\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
+            Pattern.compile("(?:" +  String.join("|", CommitteeVotePrefixes)  +  ")? ([\\w\\s-/\\&]+); \\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
 
     private static final Pattern VotePattern =
             Pattern.compile(".*\\d\\d\\d-\\d\\d\\d-\\d\\d\\d$");
