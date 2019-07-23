@@ -16,9 +16,10 @@ public class LegupSession {
     private static final Logger log = LogManager.getLogger(LegupSession.class);
 
     public static String UnknownLegislatorsKey = "UnknownLegislatorsKey";
-    public static String BillSearchResultsKey = "BillSearchResultsKey";
+//    public static String BillSearchResultsKey = "BillSearchResultsKey";
     public static String ReportCardGradesKey = "ReportCardGradesKey";
     public static String CommitteeDataKey = "CommiteeDataKey";
+    public static String BillStatusComputerKey = "BillStatusComputerKey";
 
     private int count = 1;
     private final Map<String, Tuple<String, Object>> storage = new HashMap<>();

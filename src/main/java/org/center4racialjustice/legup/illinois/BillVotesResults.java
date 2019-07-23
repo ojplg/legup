@@ -3,8 +3,13 @@ package org.center4racialjustice.legup.illinois;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
+import org.center4racialjustice.legup.domain.BillEventLegislatorData;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
+import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.PersistableAction;
 import org.center4racialjustice.legup.util.Lists;
@@ -119,5 +124,17 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
     @Override
     public List<String> getErrors() {
         return Lists.map(uncollatedNames, name -> "Uncollated: " + name.getDisplay());
+    }
+
+    public List<LegislatorBillAction> asLegislatorActions(){
+        if( hasError()){
+            throw new RuntimeException("Cannot persist with errors " + getErrors());
+        }
+        return Lists.map(collatedVotes, CollatedVote::asLegislatorBillAction);
+    }
+
+    @Override
+    public BillAction asBillAction(BillActionLoad persistedLoad) {
+        throw new UnsupportedOperationException();
     }
 }

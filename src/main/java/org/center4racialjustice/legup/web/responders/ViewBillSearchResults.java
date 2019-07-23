@@ -71,7 +71,7 @@ public class ViewBillSearchResults implements Responder {
 
         BillStatusComputer billStatusComputer = new BillStatusComputer(billSearchResults, billHistory);
 
-        String oneTimeKey = submission.setObject(LegupSession.BillSearchResultsKey, billSearchResults);
+        String oneTimeKey = submission.setObject(LegupSession.BillStatusComputerKey, billStatusComputer);
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks());
 

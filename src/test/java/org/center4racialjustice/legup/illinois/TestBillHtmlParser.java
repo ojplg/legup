@@ -4,6 +4,10 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -145,5 +149,32 @@ public class TestBillHtmlParser {
         }
 
         Assert.assertEquals(6, voteEvents.size());
+    }
+
+
+    private String Raw_Html =
+            "<html>"
+            + "<body>"
+            + "<table>"
+            + "<tr>"
+            + "<td class=\"content\" width=\"13%\" align=\"right\" valign=\"top\">&nbsp;&nbsp;2/19/2019</td>"
+            + "</tr>"
+            + "</table>"
+            + "</body>"
+            + "<html>";
+
+
+    @Test
+    public void testUnescaping(){
+
+        Document document = Jsoup.parse(Raw_Html);
+
+        Element cell = document.select("td").first();
+
+        System.out.println(cell);
+
+        System.out.println(cell.text());
+
+        System.out.println(Parser.unescapeEntities(cell.text(), false));
     }
 }

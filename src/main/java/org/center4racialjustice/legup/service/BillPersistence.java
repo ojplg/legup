@@ -12,6 +12,7 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.BillSaveResults;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
@@ -84,30 +85,38 @@ public class BillPersistence {
         });
     }
 
-    public BillSaveResults saveParsedData(BillSearchResults billSearchResults, boolean forceSave) {
+    public BillSaveResults saveParsedData(BillStatusComputer billStatusComputer, boolean forceSave) {
 
-        log.info("Doing save of " + billSearchResults.getBillIdentity() + " with force flag " + forceSave);
-
-        BillHistory billHistory = loadBillHistory(billSearchResults.getBillIdentity());
-        BillStatusComputer billStatusComputer = new BillStatusComputer(billSearchResults, billHistory);
+        log.info("Doing save of " + billStatusComputer.getBillIdentity() + " with force flag " + forceSave);
 
         return connectionPool.runAndCommit(connection -> {
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+            BillActionDao billActionDao = new BillActionDao(connection);
 
-            Bill bill;
+            Bill bill = null;
             BillActionLoad billActionLoad;
 
             SponsorSaveResults sponsorsSaved;
 
             if( ! billStatusComputer.hasHistory() ){
-                bill = insertNewBill( connection, billSearchResults.getParsedBill());
-                billActionLoad = insertNewBillLoadAction(connection, bill, billSearchResults.getUrl(), billSearchResults.getChecksum() );
-            } else {
-                bill = billHistory.getBill();
-                if( billStatusComputer.hasUnpersistedEvents() ){
-                    billActionLoad = insertNewBillLoadAction(connection, bill, billSearchResults.getUrl(), billSearchResults.getChecksum());
+                bill = insertNewBill( connection, billStatusComputer.getParsedBill());
+                billActionLoad = billStatusComputer.getMainPageLoadRecord(bill);
+                billActionLoadDao.insert(billActionLoad);
+
+                List<BillAction> actions = billStatusComputer.mainPageActionsToInsert(billActionLoad);
+                actions.forEach(billAction -> billActionDao.insert(billAction));
+
+                List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.voteLoadsToInsert(bill);
+
+                for(Tuple<CompletedBillEvent, BillActionLoad> tuple : votesToInsert){
+                    BillActionLoad voteLoad = tuple.getSecond();
+                    billActionLoadDao.insert(voteLoad);
+                    BillAction billAction = billStatusComputer.voteActionToInsert(tuple.getFirst(), voteLoad);
+                    billActionDao.insert(billAction);
                 }
             }
+
+
 
 //            if( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ){
 //                sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);

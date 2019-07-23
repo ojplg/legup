@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.service.PersistableAction;
@@ -84,5 +86,10 @@ public class SponsorName implements PersistableAction {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public BillAction asBillAction(BillActionLoad persistedLoad) {
+        throw new UnsupportedOperationException();
     }
 }

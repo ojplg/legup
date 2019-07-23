@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.service;
 
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Committee;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
@@ -52,5 +54,10 @@ public class CommitteePersistableAction implements PersistableAction {
     @Override
     public List<String> getErrors() {
         return completedBillEventData.getErrors();
+    }
+
+    @Override
+    public BillAction asBillAction(BillActionLoad persistedLoad) {
+        return completedBillEventData.asBillAction(persistedLoad);
     }
 }

@@ -1,8 +1,14 @@
 package org.center4racialjustice.legup.service;
 
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
+import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SponsorshipPersistableAction implements PersistableAction {
@@ -39,5 +45,24 @@ public class SponsorshipPersistableAction implements PersistableAction {
     @Override
     public List<String> getErrors() {
         return completedBillEventData.getErrors();
+    }
+
+    @Override
+    public BillAction asBillAction(BillActionLoad persistedLoad) {
+        BillAction billAction = completedBillEventData.asBillAction(persistedLoad);
+
+        LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+        LegislatorBillActionType legislatorBillActionType = null;
+        if( completedBillEventData.getBillActionType().equals(BillActionType.SPONSOR)){
+            legislatorBillActionType = LegislatorBillActionType.SPONSOR;
+        } else if (completedBillEventData.getBillActionType().equals(BillActionType.CHIEF_SPONSOR) ){
+            legislatorBillActionType = LegislatorBillActionType.CHIEF_SPONSOR;
+        }
+        legislatorBillAction.setLegislatorBillActionType(legislatorBillActionType);
+        legislatorBillAction.setLegislator(completedBillEventData.getLegislator());
+
+        billAction.setLegislatorBillActions(Collections.singletonList(legislatorBillAction));
+
+        return billAction;
     }
 }

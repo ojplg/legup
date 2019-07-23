@@ -2,6 +2,8 @@ package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.LegislatorBillAction;
+import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.Vote;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.Legislator;
@@ -24,5 +26,13 @@ public class CollatedVote {
         vote.setVoteSide(voteSide);
         vote.setVoteType(voteType);
         return vote;
+    }
+
+    public LegislatorBillAction asLegislatorBillAction(){
+        LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+        legislatorBillAction.setLegislator(getLegislator());
+        legislatorBillAction.setVoteSide(getVoteSide());
+        legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.VOTE);
+        return legislatorBillAction;
     }
 }

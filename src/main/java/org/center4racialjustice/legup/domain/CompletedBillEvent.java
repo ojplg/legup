@@ -1,7 +1,9 @@
 package org.center4racialjustice.legup.domain;
 
 import org.center4racialjustice.legup.service.PersistableAction;
+import org.center4racialjustice.legup.util.Dates;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +88,10 @@ public class CompletedBillEvent implements PersistableAction {
         return billEvent.getDate();
     }
 
+    public Instant getDateAsInstant(){
+        return Dates.instantOf(getDate());
+    }
+
     public Chamber getChamber() {
         return billEvent.getChamber();
     }
@@ -159,5 +165,19 @@ public class CompletedBillEvent implements PersistableAction {
                 ", legislator=" + legislator +
                 ", committee=" + committee +
                 '}';
+    }
+
+    @Override
+    public BillAction asBillAction(BillActionLoad persistedLoad) {
+        BillAction billAction = new BillAction();
+        billAction.setBill(persistedLoad.getBill());
+        billAction.setBillActionLoad(persistedLoad);
+
+        billAction.setBillActionType(getBillActionType());
+        billAction.setActionDate(getDateAsInstant());
+        billAction.setRawActionData(getRawData());
+        billAction.setChamber(getChamber());
+
+        return billAction;
     }
 }

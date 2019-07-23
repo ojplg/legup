@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.service.PersistableAction;
 
@@ -36,5 +38,12 @@ public class VoteResultsEventDisplay implements PersistableAction {
         errors.addAll(billVotesResults.getErrors());
         errors.addAll(completedBillEvent.getErrors());
         return errors;
+    }
+
+    @Override
+    public BillAction asBillAction(BillActionLoad persistedLoad) {
+        BillAction billAction = completedBillEvent.asBillAction(persistedLoad);
+        billAction.setLegislatorBillActions(billVotesResults.asLegislatorActions());
+        return billAction;
     }
 }
