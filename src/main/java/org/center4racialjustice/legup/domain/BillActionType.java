@@ -42,6 +42,7 @@ public class BillActionType {
             VOTE, SPONSOR, CHIEF_SPONSOR,
             REMOVE_SPONSOR, REMOVE_CHIEF_SPONSOR,
             COMMITTEE_REFERRAL, COMMITTEE_ASSIGNMENT,
+            COMMITTEE_AMENDMENT_FILED,
             UNCLASSIFIED
     );
 
