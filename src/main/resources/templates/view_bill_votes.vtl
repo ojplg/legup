@@ -45,7 +45,7 @@
         <div class="pure-u-1-6">
             <b>$side.DisplayString</b><br/>
             #foreach ($vote in ${billHistory.getVotes($voteDescription, $chamber, $side)})
-                <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
+                <a href="/legup/view_legislator_votes?legislator_id=$vote.Legislator.Id">
                     $vote.legislatorDisplayName - $vote.LegislatorParty
                 </a>
                 <br/>

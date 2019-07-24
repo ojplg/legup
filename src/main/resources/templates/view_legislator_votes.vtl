@@ -50,6 +50,7 @@
             <th>Chamber</th>
             <th>Bill Number</th>
             <th>Description</th>
+            <th>Vote Description</th>
             <th>Vote</th>
         </tr>
     </thead>
@@ -60,6 +61,7 @@
                 <td>$vote.Bill.Chamber</td>
                 <td><a href="/legup/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.Number</a></td>
                 <td><a href="/legup/view_bill_votes?bill_id=$vote.Bill.Id">$vote.Bill.ShortDescription</a></td>
+                <td>$vote.RawActionData</td>
                 <td>$vote.VoteSide.Code</td>
             </tr>
         #end

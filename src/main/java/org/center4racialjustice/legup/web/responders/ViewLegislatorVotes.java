@@ -40,7 +40,7 @@ public class ViewLegislatorVotes implements Responder {
 
             HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks(legislator.getSessionNumber()));
             // FIXME: Need some votes here
-            //response.putVelocityData("votes", collator.getVotes());
+            response.putVelocityData("votes", collator.getVotes());
             response.putVelocityData("sponsorships", collator.getSponsorships());
             response.putVelocityData("chiefSponsorships", collator.getChiefSponsorships());
             response.putVelocityData("legislator", legislator);

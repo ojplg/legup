@@ -123,6 +123,12 @@ public class BillActionCollator {
         return map;
     }
 
+    public List<DisplayAction> getVotes(){
+        ArrayList<DisplayAction> voteList = new ArrayList<>( votes.values());
+        Collections.sort(voteList, DisplayAction.ByBillComparator);
+        return voteList;
+    }
+
     @Data
     private class VoteKey {
         private final String description;
