@@ -5,6 +5,7 @@ import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.service.BillActionCollator;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,18 +15,18 @@ public class BillHistory {
 
     private final Bill bill;
     private final BillActionLoads loads;
-    private final BillActionCollator actions;
+    private final BillActionCollator actionCollator;
 
     private BillHistory(){
         this.bill = null;
         this.loads = new BillActionLoads();
-        this.actions = new BillActionCollator(Collections.emptyList());
+        this.actionCollator = new BillActionCollator(Collections.emptyList());
     }
 
     public BillHistory(Bill bill, List<BillActionLoad> loads, List<BillAction> actions) {
         this.bill = bill;
         this.loads = new BillActionLoads(loads);
-        this.actions = new BillActionCollator(actions);
+        this.actionCollator = new BillActionCollator(actions);
     }
 
     public boolean isKnownBill(){
@@ -37,7 +38,7 @@ public class BillHistory {
     }
 
     public Multimap<LocalDate,BillAction> getActionsByDate(){
-        return actions.getActionsByDate();
+        return actionCollator.getActionsByDate();
     }
 
     public Bill getBill(){
@@ -45,29 +46,46 @@ public class BillHistory {
     }
 
     public List<Legislator> getSponsors(Chamber chamber){
-        return actions.getSponsors(chamber);
+        return actionCollator.getSponsors(chamber);
     }
 
     public List<Legislator> getChiefSponsors(Chamber chamber){
-        return actions.getChiefSponsors(chamber);
+        return actionCollator.getChiefSponsors(chamber);
     }
 
-    public List<DisplayAction> getVotes(Chamber chamber, VoteSide voteSide){
-        return actions.getVotes(chamber, voteSide);
+    public List<String> getVoteDescriptions(){
+        return actionCollator.getVoteDescriptions();
     }
 
-    public int getVoteCount(Chamber chamber, VoteSide voteSide){
-        return getVotes(chamber, voteSide).size();
+    public Chamber getActionChamber(String rawActionData){
+        BillAction billAction = actionCollator.getActionFromRawData(rawActionData);
+        return billAction.getChamber();
     }
 
-    public float getVotePercentage(Chamber chamber, VoteSide voteSide){
-        float all = actions.getVotes(chamber).size();
-        float count = getVoteCount(chamber, voteSide);
-        return count/all;
+    public Collection<DisplayAction> getVotes(String description, Chamber chamber, VoteSide voteSide){
+        return actionCollator.getVotes(description, chamber, voteSide);
     }
+
+//    public List<DisplayAction> getVotes(Chamber chamber, VoteSide voteSide){
+//        return actionCollator.getVotes(chamber, voteSide);
+//    }
+//
+//    public List<String> getVoteDescriptions(){
+//
+//    }
+
+//    public int getVoteCount(Chamber chamber, VoteSide voteSide){
+//        return getVotes(chamber, voteSide).size();
+//    }
+//
+//    public float getVotePercentage(Chamber chamber, VoteSide voteSide){
+//        float all = actionCollator.getVotes(chamber).size();
+//        float count = getVoteCount(chamber, voteSide);
+//        return count/all;
+//    }
 
     public boolean recognizedEvent(CompletedBillEvent billEvent){
-        BillAction action = actions.getMatchingAction(billEvent);
+        BillAction action = actionCollator.getMatchingAction(billEvent);
         return action != null;
     }
 }

@@ -1,7 +1,9 @@
 package org.center4racialjustice.legup.service;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import lombok.Data;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
@@ -14,6 +16,7 @@ import org.center4racialjustice.legup.util.Lists;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +25,10 @@ public class BillActionCollator {
 
 
     private final List<BillAction> allActions;
-    private final List<DisplayAction> votes;
+    private final Multimap<VoteKey,DisplayAction> votes;
     private final List<DisplayAction> sponsorships;
     private final List<DisplayAction> chiefSponsorships;
+    private final List<String> voteDescriptions;
 
     public BillActionCollator(List<BillAction> actions){
         this(actions, null);
@@ -32,11 +36,15 @@ public class BillActionCollator {
 
     public BillActionCollator(List<BillAction> actions, Legislator legislator){
         allActions = actions;
-        List<DisplayAction> votes = new ArrayList<>();
+        ImmutableMultimap.Builder<VoteKey,DisplayAction> votesBldr = new ImmutableMultimap.Builder<>();
         List<DisplayAction> sponsorships = new ArrayList<>();
         List<DisplayAction> chiefSponsorships = new ArrayList<>();
+        List<String> voteDescriptionSet = new ArrayList<>();
 
         for(BillAction action : actions){
+            if( action.isVote() ){
+                voteDescriptionSet.add(action.getRawActionData());
+            }
             for( LegislatorBillAction legislatorBillAction : action.getLegislatorBillActions()) {
                 if( legislator != null ){
                     if ( ! legislator.equals(legislatorBillAction.getLegislator()) ){
@@ -46,7 +54,7 @@ public class BillActionCollator {
                 DisplayAction displayAction = new DisplayAction(action, legislatorBillAction);
                 switch (legislatorBillAction.getLegislatorBillActionType().getCode()) {
                     case LegislatorBillActionType.VoteCode:
-                        votes.add(displayAction);
+                        votesBldr.put(new VoteKey(displayAction), displayAction);
                         break;
                     case LegislatorBillActionType.SponsorCode:
                         sponsorships.add(displayAction);
@@ -60,18 +68,13 @@ public class BillActionCollator {
             }
         }
 
-        votes.sort(DisplayAction.ByBillComparator);
         sponsorships.sort(DisplayAction.ByBillComparator);
         chiefSponsorships.sort(DisplayAction.ByBillComparator);
 
-        this.votes = Collections.unmodifiableList(votes);
+        this.votes = votesBldr.build();
         this.sponsorships = Collections.unmodifiableList(sponsorships);
         this.chiefSponsorships = Collections.unmodifiableList(chiefSponsorships);
-
-    }
-
-    public List<DisplayAction> getVotes() {
-        return votes;
+        this.voteDescriptions = Collections.unmodifiableList(voteDescriptionSet);
     }
 
     public List<DisplayAction> getSponsorships() {
@@ -96,15 +99,18 @@ public class BillActionCollator {
                 .collect(Collectors.toList());
     }
 
-    public List<DisplayAction> getVotes(Chamber chamber, VoteSide voteSide){
-        return Lists.filter(votes,
-                    act -> act.getLegislator().getChamber().equals(chamber)
-                        && act.getVoteSide().equals(voteSide));
+    public Collection<DisplayAction> getVotes(String voteDescription, Chamber chamber, VoteSide voteSide){
+        VoteKey voteKey = new VoteKey(voteDescription, chamber, voteSide);
+        Collection<DisplayAction> particularVotes = votes.get(voteKey);
+        return particularVotes;
     }
 
-    public List<DisplayAction> getVotes(Chamber chamber){
-        return Lists.filter(votes,
-                act -> act.getLegislator().getChamber().equals(chamber));
+    public List<String> getVoteDescriptions(){
+        return voteDescriptions;
+    }
+
+    public BillAction getActionFromRawData(String rawActionData){
+        return Lists.findfirst(allActions, action -> action.getRawActionData().equals(rawActionData));
     }
 
     public BillAction getMatchingAction(CompletedBillEvent billEvent){
@@ -115,6 +121,25 @@ public class BillActionCollator {
         Multimap<LocalDate,BillAction> map = MultimapBuilder.treeKeys().arrayListValues().build();
         allActions.forEach(action -> map.put(action.getActionDateAsLocalDate(), action));
         return map;
+    }
+
+    @Data
+    private class VoteKey {
+        private final String description;
+        private final Chamber chamber;
+        private final VoteSide voteSide;
+
+        VoteKey(String description, Chamber chamber, VoteSide voteSide){
+            this.description = description;
+            this.chamber = chamber;
+            this.voteSide = voteSide;
+        }
+
+        VoteKey(DisplayAction displayAction){
+            this.description = displayAction.getRawActionData();
+            this.chamber = displayAction.getActionChamber();
+            this.voteSide = displayAction.getVoteSide();
+        }
     }
 
 }

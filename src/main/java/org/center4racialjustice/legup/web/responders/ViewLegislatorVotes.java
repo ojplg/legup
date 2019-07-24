@@ -39,7 +39,8 @@ public class ViewLegislatorVotes implements Responder {
             BillActionCollator collator = new BillActionCollator(billActions, legislator);
 
             HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks(legislator.getSessionNumber()));
-            response.putVelocityData("votes", collator.getVotes());
+            // FIXME: Need some votes here
+            //response.putVelocityData("votes", collator.getVotes());
             response.putVelocityData("sponsorships", collator.getSponsorships());
             response.putVelocityData("chiefSponsorships", collator.getChiefSponsorships());
             response.putVelocityData("legislator", legislator);

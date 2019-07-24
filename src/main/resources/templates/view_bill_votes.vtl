@@ -3,6 +3,7 @@
 
 <br/>
 
+#**
 <table class="pure-table pure-table-bordered">
     <thead>
         <tr>
@@ -31,41 +32,29 @@
         #end
     </tbody>
 </table>
-
 <br/>
+*#
 
-<h4>House</h4>
+#foreach ( $voteDescription in $billHistory.voteDescriptions )
+    #set ($chamber = $billHistory.getActionChamber($voteDescription) )
+    <h4>$chamber: $voteDescription</h4>
 
-<div class="pure-g">
+    <div class="pure-g">
 
-    #foreach ($side in $sides)
-    <div class="pure-u-1-6">
-        <b>$side.DisplayString</b><br/>
-        #foreach ($vote in ${billHistory.getVotes($house, $side)})
-            <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
-                $vote.legislatorDisplayName - $vote.LegislatorParty
-            </a>
-            <br/>
+        #foreach ($side in $sides)
+        <div class="pure-u-1-6">
+            <b>$side.DisplayString</b><br/>
+            #foreach ($vote in ${billHistory.getVotes($voteDescription, $chamber, $side)})
+                <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
+                    $vote.legislatorDisplayName - $vote.LegislatorParty
+                </a>
+                <br/>
+            #end
+        </div>
         #end
+
     </div>
-    #end
 
-</div>
+#end
 
-<h4>Senate</h4>
 
-<div class="pure-g">
-
-    #foreach ($side in $sides)
-    <div class="pure-u-1-6">
-        <b>$side.DisplayString</b><br/>
-        #foreach ($vote in ${billHistory.getVotes($senate, $side)})
-            <a href="/legup/view_legislator_votes?legislator_id=$vote.Id">
-                $vote.LegislatorDisplayName- $vote.LegislatorParty
-            </a>
-            <br/>
-        #end
-    </div>
-    #end
-
-</div>

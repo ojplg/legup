@@ -50,4 +50,8 @@ public class DisplayAction {
     public String getBillShortDescription(){
         return getBill().getShortDescription();
     }
+
+    public Chamber getActionChamber(){ return billAction.getChamber(); }
+
+    public String getRawActionData() { return billAction.getRawActionData(); }
 }
