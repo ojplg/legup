@@ -53,6 +53,11 @@ public class BillHistory {
         return actionCollator.getChiefSponsors(chamber);
     }
 
+    public List<Legislator> getIntroductions(Chamber chamber){
+        return actionCollator.getIntroductions(chamber);
+    }
+
+
     public List<String> getVoteDescriptions(){
         return actionCollator.getVoteDescriptions();
     }

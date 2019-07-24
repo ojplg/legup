@@ -9,6 +9,10 @@ public class Chamber implements Comparable<Chamber> {
     public static final Chamber House = new Chamber("House");
     public static final Chamber Senate = new Chamber("Senate");
 
+    public static final Chamber[] ALL_CHAMBERS = {
+            House, Senate
+    };
+
     public static final String[] ALL_CHAMBER_NAMES = {
         House.name,
         Senate.name

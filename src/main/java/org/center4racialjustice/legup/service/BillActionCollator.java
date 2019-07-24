@@ -28,6 +28,7 @@ public class BillActionCollator {
     private final Multimap<VoteKey,DisplayAction> votes;
     private final List<DisplayAction> sponsorships;
     private final List<DisplayAction> chiefSponsorships;
+    private final List<DisplayAction> introductions;
     private final List<String> voteDescriptions;
 
     public BillActionCollator(List<BillAction> actions){
@@ -39,6 +40,7 @@ public class BillActionCollator {
         ImmutableMultimap.Builder<VoteKey,DisplayAction> votesBldr = new ImmutableMultimap.Builder<>();
         List<DisplayAction> sponsorships = new ArrayList<>();
         List<DisplayAction> chiefSponsorships = new ArrayList<>();
+        List<DisplayAction> introductions = new ArrayList<>();
         List<String> voteDescriptionSet = new ArrayList<>();
 
         for(BillAction action : actions){
@@ -62,6 +64,9 @@ public class BillActionCollator {
                     case LegislatorBillActionType.ChiefSponsorCode:
                         chiefSponsorships.add(displayAction);
                         break;
+                    case LegislatorBillActionType.IntroduceCode:
+                        introductions.add(displayAction);
+                        break;
                     default:
                         throw new RuntimeException("Unknown bill action type " + action.getBillActionType());
                 }
@@ -75,6 +80,7 @@ public class BillActionCollator {
         this.sponsorships = Collections.unmodifiableList(sponsorships);
         this.chiefSponsorships = Collections.unmodifiableList(chiefSponsorships);
         this.voteDescriptions = Collections.unmodifiableList(voteDescriptionSet);
+        this.introductions = Collections.unmodifiableList(introductions);
     }
 
     public List<DisplayAction> getSponsorships() {
@@ -83,6 +89,10 @@ public class BillActionCollator {
 
     public List<DisplayAction> getChiefSponsorships() {
         return chiefSponsorships;
+    }
+
+    public List<DisplayAction> getIntroductions() {
+        return introductions;
     }
 
     public List<Legislator> getSponsors(Chamber chamber){
@@ -98,6 +108,14 @@ public class BillActionCollator {
                 .filter(leg -> leg.getChamber().equals(chamber))
                 .collect(Collectors.toList());
     }
+
+    public List<Legislator> getIntroductions(Chamber chamber){
+        return  getIntroductions().stream()
+                .map(DisplayAction::getLegislator)
+                .filter(leg -> leg.getChamber().equals(chamber))
+                .collect(Collectors.toList());
+    }
+
 
     public Collection<DisplayAction> getVotes(String voteDescription, Chamber chamber, VoteSide voteSide){
         VoteKey voteKey = new VoteKey(voteDescription, chamber, voteSide);

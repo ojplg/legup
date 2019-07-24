@@ -9,10 +9,12 @@ public class LegislatorBillActionType {
     public static final String VoteCode = "Vote";
     public static final String SponsorCode = "Sponsor";
     public static final String ChiefSponsorCode = "Chief Sponsor";
+    public static final String IntroduceCode = "Introduce";
 
     public final static LegislatorBillActionType VOTE = new LegislatorBillActionType(VoteCode);
     public final static LegislatorBillActionType SPONSOR = new LegislatorBillActionType(SponsorCode);
     public final static LegislatorBillActionType CHIEF_SPONSOR = new LegislatorBillActionType(ChiefSponsorCode);
+    public final static LegislatorBillActionType INTRODUCE = new LegislatorBillActionType(IntroduceCode);
 
     public final static LegislatorBillActionTypeConverter CONVERTER = new LegislatorBillActionTypeConverter();
 
@@ -23,6 +25,7 @@ public class LegislatorBillActionType {
             case VoteCode : return VOTE;
             case SponsorCode : return SPONSOR;
             case ChiefSponsorCode : return CHIEF_SPONSOR;
+            case IntroduceCode : return INTRODUCE;
             default : throw new RuntimeException("Unrecognized code " + code);
         }
     }
@@ -33,6 +36,7 @@ public class LegislatorBillActionType {
             case VoteCode : return 1;
             case SponsorCode : return 2;
             case ChiefSponsorCode : return 3;
+            case IntroduceCode : return 4;
             default : throw new RuntimeException("Unrecognized code " + billActionType.getCode());
         }
     }

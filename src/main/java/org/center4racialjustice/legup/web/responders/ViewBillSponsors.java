@@ -1,18 +1,10 @@
 package org.center4racialjustice.legup.web.responders;
 
-import org.center4racialjustice.legup.db.BillActionDao;
-import org.center4racialjustice.legup.db.BillDao;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
-import org.center4racialjustice.legup.domain.BillAction;
-import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.Chamber;
-import org.center4racialjustice.legup.domain.Legislator;
-import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.service.BillPersistence;
-import org.center4racialjustice.legup.util.Lists;
-import org.center4racialjustice.legup.util.Tuple;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
 import org.center4racialjustice.legup.web.LegupResponse;
 import org.center4racialjustice.legup.web.LegupSubmission;
@@ -20,9 +12,7 @@ import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ViewBillSponsors implements Responder {
 
@@ -37,28 +27,15 @@ public class ViewBillSponsors implements Responder {
         long billId = submission.getLongRequestParameter("bill_id");
 
         BillHistory billHistory = billPersistence.loadBillHistory(billId);
-
         Bill bill = billHistory.getBill();
-
-        List<Legislator> houseSponsors = billHistory.getSponsors(Chamber.House);
-        List<Legislator> senateSponsors = billHistory.getSponsors(Chamber.Senate);
-
-        List<Legislator> houseChiefSponsors = billHistory.getChiefSponsors(Chamber.House);
-        List<Legislator> senateChiefSponsors = billHistory.getChiefSponsors(Chamber.Senate);
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(),
                 submission.getLoggedInUser(), navLinks(billId, bill.getSession()));
 
-        if( houseChiefSponsors.size() > 0 ){
-            response.putVelocityData("chief_house_sponsor", houseChiefSponsors.get(0));
-        }
-        if( senateChiefSponsors.size() > 0 ){
-            response.putVelocityData("chief_senate_sponsor", senateChiefSponsors.get(0));
-        }
-
-        response.putVelocityData("house_sponsors", houseSponsors);
-        response.putVelocityData("senate_sponsors", senateSponsors);
         response.putVelocityData("bill", bill);
+        response.putVelocityData("billHistory", billHistory);
+
+        response.putVelocityData("chambers", Chamber.ALL_CHAMBERS);
 
         return response;
     }
