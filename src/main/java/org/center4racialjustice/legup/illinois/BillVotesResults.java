@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillEventLegislatorData;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.Name;
@@ -42,19 +43,19 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
         return collatedVotes.size();
     }
 
-    public boolean matches(BillEvent billEventData){
-        log.debug("Checking for match of " + billEventData + " against " + voteLinkInfo);
+    public boolean matches(CompletedBillEvent billEvent){
+        log.debug("Checking for match of " + billEvent + " against " + voteLinkInfo);
 
-        if ( ! billEventData.getBillActionType().equals(BillActionType.VOTE) ){
+        if ( ! billEvent.getBillActionType().equals(BillActionType.VOTE) ){
             return false;
         }
-        if ( ! billEventData.getChamber().equals(voteLinkInfo.getChamber()) ){
+        if ( ! billEvent.getChamber().equals(voteLinkInfo.getChamber()) ){
             return false;
         }
-        if ( ! closeDates(billEventData.getDate(),voteLinkInfo.getVoteDate()) ){
+        if ( ! closeDates(billEvent.getDate(),voteLinkInfo.getVoteDate()) ){
             return false;
         }
-        VoteEventCountExtractor voteEventCountExtractor = new VoteEventCountExtractor(billEventData.getRawContents());
+        VoteEventCountExtractor voteEventCountExtractor = new VoteEventCountExtractor(billEvent.getRawData());
         if ( ! countsMatch( voteEventCountExtractor )){
             return false;
         }

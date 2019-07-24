@@ -51,6 +51,15 @@ public class BillSearchResults {
         return billEvents;
     }
 
+    public List<CompletedBillEvent> getNonVoteBillEvents(){
+        return Lists.filter(billEvents, event -> !event.isVote());
+    }
+
+    public List<CompletedBillEvent> getVoteEvents(){
+        return Lists.filter(billEvents, event -> event.isVote());
+    }
+
+
     public List<BillEventKey> generateSearchedVoteLoadKeys(){
         return Collections.emptyList();
     }
@@ -95,10 +104,8 @@ public class BillSearchResults {
 //        return BillActionLoad.create(bill, results.getUrl(), results.getChecksum());
 //    }
 
-    public BillVotesResults getBillVotesResults(BillEvent billEventData){
-        log.info("Searching for " + billEventData);
-        votesResults.forEach(vr -> log.info("possible match " + vr));
-        return Lists.findfirst(votesResults, vr -> vr.matches(billEventData));
+    public BillVotesResults getBillVotesResults(CompletedBillEvent billEvent){
+        return Lists.findfirst(votesResults, vr -> vr.matches(billEvent));
     }
 
     public List<Name> getUncollatedVotes(){

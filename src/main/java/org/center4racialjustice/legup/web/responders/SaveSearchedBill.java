@@ -37,7 +37,6 @@ public class SaveSearchedBill implements Responder {
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), navLinks(sessionNumber));
         response.putVelocityData("bill", billSaveResults.getBill());
-        response.putVelocityData("sponsorSaveResults", billSaveResults.getSponsorSaveResults());
         response.putVelocityData("billSaveResults", billSaveResults);
         return response;
     }

@@ -108,7 +108,33 @@ public class BillPersistence {
             billActionDao.insert(billAction);
             loads.add(voteLoad);
         }
-        return new BillSaveResults(bill, 0,0, null, new BillActionLoads(loads));
+        return new BillSaveResults(bill, new BillActionLoads(loads), actions);
+    }
+
+    private BillSaveResults insertNewActions(Connection connection, BillStatusComputer billStatusComputer){
+        Bill bill = billStatusComputer.getPersistedBill();
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+        BillActionDao billActionDao = new BillActionDao(connection);
+
+        BillActionLoad billActionLoad = billStatusComputer.getMainPageLoadRecord(bill);
+        billActionLoadDao.insert(billActionLoad);
+
+        List<BillAction> actions = billStatusComputer.unpersistedNonVoteActions(billActionLoad);
+        actions.forEach(billAction -> billActionDao.insert(billAction));
+
+        List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.unpersistedVoteActions(bill);
+
+        List<BillActionLoad> loads = new ArrayList<>();
+        loads.add(billActionLoad);
+
+        for(Tuple<CompletedBillEvent, BillActionLoad> tuple : votesToInsert){
+            BillActionLoad voteLoad = tuple.getSecond();
+            billActionLoadDao.insert(voteLoad);
+            BillAction billAction = billStatusComputer.voteActionToInsert(tuple.getFirst(), voteLoad);
+            billActionDao.insert(billAction);
+            loads.add(voteLoad);
+        }
+        return new BillSaveResults(bill, new BillActionLoads(loads), actions);
     }
 
     private BillSaveResults doFirstInsert(BillStatusComputer billStatusComputer){
@@ -142,7 +168,9 @@ public class BillPersistence {
         }
 
 
-        return null;
+        return connectionPool.useConnection(connection -> {
+            return insertNewActions(connection, billStatusComputer);
+        });
     }
 
     private void deleteOldBillLoadsAndActions(Connection connection, Bill bill){

@@ -66,26 +66,12 @@ public class BillHistory {
         return actionCollator.getVotes(description, chamber, voteSide);
     }
 
-//    public List<DisplayAction> getVotes(Chamber chamber, VoteSide voteSide){
-//        return actionCollator.getVotes(chamber, voteSide);
-//    }
-//
-//    public List<String> getVoteDescriptions(){
-//
-//    }
-
-//    public int getVoteCount(Chamber chamber, VoteSide voteSide){
-//        return getVotes(chamber, voteSide).size();
-//    }
-//
-//    public float getVotePercentage(Chamber chamber, VoteSide voteSide){
-//        float all = actionCollator.getVotes(chamber).size();
-//        float count = getVoteCount(chamber, voteSide);
-//        return count/all;
-//    }
-
     public boolean recognizedEvent(CompletedBillEvent billEvent){
-        BillAction action = actionCollator.getMatchingAction(billEvent);
-        return action != null;
+        return actionCollator.getMatchingAction(billEvent) != null;
     }
+
+    public boolean unrecognizedEvent(CompletedBillEvent billEvent){
+        return actionCollator.getMatchingAction(billEvent) == null;
+    }
+
 }

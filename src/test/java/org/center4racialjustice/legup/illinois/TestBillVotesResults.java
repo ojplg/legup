@@ -2,6 +2,7 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.Chamber;
+import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.RawBillEvent;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.junit.Assert;
@@ -80,9 +81,10 @@ public class TestBillVotesResults {
     public void testMatchesWork_101_House_2040(){
         for(int idx=0; idx<6; idx++){
             BillVotesResults billVotesResults = VoteBillResults_101_House_2040[idx];
-            BillEvent billEventData = VoteEvents_101_House_2040[idx];
+            BillEvent billEvent = VoteEvents_101_House_2040[idx];
+            CompletedBillEvent completedBillEvent = CompletedBillEvent.forStandalone(billEvent);
 
-            Assert.assertTrue("Not matching: " + idx, billVotesResults.matches(billEventData));
+            Assert.assertTrue("Not matching: " + idx, billVotesResults.matches(completedBillEvent));
         }
     }
 
@@ -93,9 +95,10 @@ public class TestBillVotesResults {
             for(int jdx=0; jdx<6; jdx++) {
                 if( idx != jdx ) {
                     BillVotesResults billVotesResults = VoteBillResults_101_House_2040[idx];
-                    BillEvent billEventData = VoteEvents_101_House_2040[jdx];
+                    BillEvent billEvent = VoteEvents_101_House_2040[jdx];
+                    CompletedBillEvent completedBillEvent = CompletedBillEvent.forStandalone(billEvent);
 
-                    Assert.assertFalse("Incorrect match: " + idx + ", " + jdx, billVotesResults.matches(billEventData));
+                    Assert.assertFalse("Incorrect match: " + idx + ", " + jdx, billVotesResults.matches(completedBillEvent));
                 }
             }
         }

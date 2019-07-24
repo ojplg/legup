@@ -45,23 +45,53 @@ public class BillStatusComputer {
     }
 
     public List<BillAction> allNonVoteActions(BillActionLoad persistedLoad){
-        return billSearchResults.getBillEvents().stream()
-                .filter(action -> ! action.isVote())
-                .map(action -> getPersistableAction(action))
-                .map(persistableAction -> persistableAction.asBillAction(persistedLoad))
+        return billSearchResults.getNonVoteBillEvents().stream()
+                .map(event -> eventToAction(event, persistedLoad))
                 .collect(Collectors.toList());
+    }
+
+    public List<BillAction> unpersistedNonVoteActions(BillActionLoad persistedLoad){
+        return billSearchResults.getNonVoteBillEvents().stream()
+                .filter(billHistory::unrecognizedEvent)
+                .map(event -> eventToAction(event, persistedLoad))
+                .collect(Collectors.toList());
+    }
+
+    private BillAction eventToAction(CompletedBillEvent completedBillEvent, BillActionLoad persistedLoad){
+        if( completedBillEvent.isVote() ){
+            throw new IllegalArgumentException("Should not be used for votes " + completedBillEvent);
+        }
+        PersistableAction persistableAction = getPersistableAction(completedBillEvent);
+        return persistableAction.asBillAction(persistedLoad);
+    }
+
+    private BillActionLoad eventToVoteLoad(CompletedBillEvent completedBillEvent, Bill persistedBill){
+        if( ! completedBillEvent.isVote() ){
+            throw new IllegalArgumentException("Should only be used for votes " + completedBillEvent);
+        }
+        BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(completedBillEvent);
+        BillActionLoad billActionLoad = BillActionLoad.create(
+                persistedBill,
+                billVotesResults.getVoteLinkInfo().getPdfUrl(),
+                billVotesResults.getChecksum());
+        return billActionLoad;
     }
 
     public List<Tuple<CompletedBillEvent,BillActionLoad>> allVoteActions(Bill persistedBill){
         List<Tuple<CompletedBillEvent,BillActionLoad>> loads = new ArrayList<>();
-        for(CompletedBillEvent billEvent : billSearchResults.getBillEvents()) {
-            if (billEvent.isVote()) {
-                BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEvent.getBillEvent());
+        for(CompletedBillEvent billEvent : billSearchResults.getVoteEvents()) {
+            BillActionLoad billActionLoad = eventToVoteLoad(billEvent, persistedBill);
+            Tuple<CompletedBillEvent, BillActionLoad> tuple = new Tuple<>(billEvent, billActionLoad);
+            loads.add(tuple);
+        }
+        return loads;
+    }
 
-                BillActionLoad billActionLoad = BillActionLoad.create(
-                        persistedBill,
-                        billVotesResults.getVoteLinkInfo().getPdfUrl(),
-                        billVotesResults.getChecksum());
+    public List<Tuple<CompletedBillEvent,BillActionLoad>> unpersistedVoteActions(Bill persistedBill){
+        List<Tuple<CompletedBillEvent,BillActionLoad>> loads = new ArrayList<>();
+        for(CompletedBillEvent billEvent : billSearchResults.getVoteEvents()) {
+            if( billHistory.unrecognizedEvent(billEvent)) {
+                BillActionLoad billActionLoad = eventToVoteLoad(billEvent, persistedBill);
                 Tuple<CompletedBillEvent, BillActionLoad> tuple = new Tuple<>(billEvent, billActionLoad);
                 loads.add(tuple);
             }
@@ -70,7 +100,7 @@ public class BillStatusComputer {
     }
 
     public BillAction voteActionToInsert(CompletedBillEvent billEvent, BillActionLoad persistedLoad){
-        BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEvent.getBillEvent());
+        BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEvent);
         VoteResultsEventDisplay voteResultsEventDisplay = new VoteResultsEventDisplay(billEvent, billVotesResults);
         return voteResultsEventDisplay.asBillAction(persistedLoad);
     }
@@ -119,7 +149,7 @@ public class BillStatusComputer {
 
     public PersistableAction getPersistableAction(CompletedBillEvent billEventData){
         if( billEventData.isVote() ){
-            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData.getBillEvent());
+            BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData);
             if( billVotesResults == null ){
                 return new ErrorPersistableAction("Unmatched: " + billEventData);
             }
