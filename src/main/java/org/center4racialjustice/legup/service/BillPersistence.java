@@ -86,33 +86,48 @@ public class BillPersistence {
         });
     }
 
+    private BillSaveResults insertAllActions(Connection connection, Bill bill, BillStatusComputer billStatusComputer){
+        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
+        BillActionDao billActionDao = new BillActionDao(connection);
+
+        BillActionLoad billActionLoad = billStatusComputer.getMainPageLoadRecord(bill);
+        billActionLoadDao.insert(billActionLoad);
+
+        List<BillAction> actions = billStatusComputer.allNonVoteActions(billActionLoad);
+        actions.forEach(billAction -> billActionDao.insert(billAction));
+
+        List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.allVoteActions(bill);
+
+        List<BillActionLoad> loads = new ArrayList<>();
+        loads.add(billActionLoad);
+
+        for(Tuple<CompletedBillEvent, BillActionLoad> tuple : votesToInsert){
+            BillActionLoad voteLoad = tuple.getSecond();
+            billActionLoadDao.insert(voteLoad);
+            BillAction billAction = billStatusComputer.voteActionToInsert(tuple.getFirst(), voteLoad);
+            billActionDao.insert(billAction);
+            loads.add(voteLoad);
+        }
+        return new BillSaveResults(bill, 0,0, null, new BillActionLoads(loads));
+    }
+
     private BillSaveResults doFirstInsert(BillStatusComputer billStatusComputer){
         return connectionPool.runAndCommit(connection -> {
-            BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
-            BillActionDao billActionDao = new BillActionDao(connection);
-
-            Bill bill = insertNewBill( connection, billStatusComputer.getParsedBill());
-            BillActionLoad billActionLoad = billStatusComputer.getMainPageLoadRecord(bill);
-            billActionLoadDao.insert(billActionLoad);
-
-            List<BillAction> actions = billStatusComputer.mainPageActionsToInsert(billActionLoad);
-            actions.forEach(billAction -> billActionDao.insert(billAction));
-
-            List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.voteLoadsToInsert(bill);
-
-            List<BillActionLoad> loads = new ArrayList<>();
-            loads.add(billActionLoad);
-
-            for(Tuple<CompletedBillEvent, BillActionLoad> tuple : votesToInsert){
-                BillActionLoad voteLoad = tuple.getSecond();
-                billActionLoadDao.insert(voteLoad);
-                BillAction billAction = billStatusComputer.voteActionToInsert(tuple.getFirst(), voteLoad);
-                billActionDao.insert(billAction);
-                loads.add(voteLoad);
-            }
-            return new BillSaveResults(bill, 0,0, null, new BillActionLoads(loads));
+            Bill bill = insertNewBill(connection, billStatusComputer.getParsedBill());
+            return insertAllActions(connection, bill, billStatusComputer);
         });
+    }
 
+    private BillSaveResults doForcedUpdate(BillStatusComputer billStatusComputer){
+        Bill persistedBill = billStatusComputer.getPersistedBill();
+        persistedBill.setShortDescription(billStatusComputer.getParsedBill().getShortDescription());
+
+        return connectionPool.runAndCommit(connection -> {
+            BillDao billDao = new BillDao(connection);
+            billDao.update(persistedBill);
+            deleteOldBillLoadsAndActions(connection, persistedBill);
+            return insertAllActions(connection, persistedBill, billStatusComputer);
+        });
     }
 
     public BillSaveResults saveParsedData(BillStatusComputer billStatusComputer, boolean forceSave) {
@@ -122,10 +137,24 @@ public class BillPersistence {
         if (!billStatusComputer.hasHistory()) {
             return doFirstInsert(billStatusComputer);
         }
+        if ( forceSave ){
+            return doForcedUpdate(billStatusComputer);
+        }
+
+
         return null;
     }
 
+    private void deleteOldBillLoadsAndActions(Connection connection, Bill bill){
+        BillActionLoadDao loadDao = new BillActionLoadDao(connection);
+        BillActionDao billActionDao = new BillActionDao(connection);
 
+        List<BillAction> actions = billActionDao.readByBill(bill);
+        List<BillActionLoad> loads = loadDao.readByBill(bill);
+
+        actions.forEach(billActionDao::delete);
+        loads.forEach(loadDao::delete);
+    }
 
 
 

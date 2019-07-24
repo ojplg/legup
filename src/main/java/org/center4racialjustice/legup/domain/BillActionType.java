@@ -1,5 +1,6 @@
 package org.center4racialjustice.legup.domain;
 
+import com.sun.org.apache.bcel.internal.generic.BIPUSH;
 import org.hrorm.Converter;
 
 import java.util.Arrays;
@@ -71,6 +72,12 @@ public class BillActionType {
 
     public String getCode(){
         return code;
+    }
+
+    public static boolean isSponsoringEvent(BillActionType billActionType){
+        return billActionType.equals(BillActionType.INTRODUCE)
+                || billActionType.equals(BillActionType.SPONSOR)
+                || billActionType.equals(BillActionType.CHIEF_SPONSOR);
     }
 
     static class BillActionTypeConverter implements Converter<BillActionType, String> {

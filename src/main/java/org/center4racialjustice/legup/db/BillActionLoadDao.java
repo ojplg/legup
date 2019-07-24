@@ -46,5 +46,7 @@ public class BillActionLoadDao {
     public List<BillActionLoad> selectAll() {
         return innerDao.select();
     }
+
+    public void delete(BillActionLoad billActionLoad) { innerDao.delete(billActionLoad);}
 }
 

@@ -44,17 +44,17 @@ public class BillStatusComputer {
         return BillActionLoad.create(persistedBill, billSearchResults.getUrl(), billSearchResults.getChecksum());
     }
 
-    public List<BillAction> mainPageActionsToInsert(BillActionLoad persistedLoad){
-        return getUnpersistedEvents().stream()
+    public List<BillAction> allNonVoteActions(BillActionLoad persistedLoad){
+        return billSearchResults.getBillEvents().stream()
                 .filter(action -> ! action.isVote())
                 .map(action -> getPersistableAction(action))
                 .map(persistableAction -> persistableAction.asBillAction(persistedLoad))
                 .collect(Collectors.toList());
     }
 
-    public List<Tuple<CompletedBillEvent,BillActionLoad>> voteLoadsToInsert(Bill persistedBill){
+    public List<Tuple<CompletedBillEvent,BillActionLoad>> allVoteActions(Bill persistedBill){
         List<Tuple<CompletedBillEvent,BillActionLoad>> loads = new ArrayList<>();
-        for(CompletedBillEvent billEvent : getUnpersistedEvents()) {
+        for(CompletedBillEvent billEvent : billSearchResults.getBillEvents()) {
             if (billEvent.isVote()) {
                 BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEvent.getBillEvent());
 
@@ -77,6 +77,10 @@ public class BillStatusComputer {
 
     public boolean hasHistory(){
         return billHistory.getBill() != null;
+    }
+
+    public Bill getPersistedBill(){
+        return billHistory.getBill();
     }
 
     public List<BillActionLoad> getPriorLoads(){

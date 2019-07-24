@@ -77,7 +77,8 @@ public class TestBillEventParser {
                 continue;
             }
             if (BillActionType.CHIEF_SPONSOR.equals(billEventData.getBillActionType())
-                    || BillActionType.SPONSOR.equals(billEventData.getBillActionType())) {
+                    || BillActionType.SPONSOR.equals(billEventData.getBillActionType())
+                    || BillActionType.INTRODUCE.equals(billEventData.getBillActionType())) {
                 sponsorNames.add(billEventData.getRawLegislatorName());
             }
         }
@@ -103,8 +104,7 @@ public class TestBillEventParser {
             if (billEventData == null) {
                 continue;
             }
-            if (BillActionType.CHIEF_SPONSOR.equals(billEventData.getBillActionType())
-                    || BillActionType.SPONSOR.equals(billEventData.getBillActionType())) {
+            if (BillActionType.isSponsoringEvent(billEventData.getBillActionType())) {
                 sponsorNames.add(billEventData.getRawLegislatorName());
             }
         }
@@ -143,24 +143,24 @@ public class TestBillEventParser {
 
 
     @Test
-    public void testParsesChiefSponsorFromFiledWithClerkAction() {
+    public void testParsesIntroducerFromFiledWithClerkAction() {
         RawBillEvent billEvent = newRawBillEvent("Filed with the Clerk by Rep. Christian L. Mitchell");
         BillEventParser billEventParser = new BillEventParser();
         BillEvent billEventData = billEventParser.parse(billEvent);
 
         Assert.assertTrue(billEventData.hasLegislator());
-        Assert.assertTrue(billEventData.getBillActionType().equals(BillActionType.CHIEF_SPONSOR));
+        Assert.assertTrue(billEventData.getBillActionType().equals(BillActionType.INTRODUCE));
         Assert.assertEquals("Christian L. Mitchell", billEventData.getRawLegislatorName());
     }
 
     @Test
-    public void testParsesChiefSponsorFromFiledWithClerkActionWorksForSenators() {
+    public void testParsesIntroducerFromFiledWithClerkActionWorksForSenators() {
         RawBillEvent billEvent = newRawBillEvent("Filed with Secretary by Sen. Toi W. Hutchinson");
         BillEventParser billEventParser = new BillEventParser();
         BillEvent billEventData = billEventParser.parse(billEvent);
 
         Assert.assertTrue(billEventData.hasLegislator());
-        Assert.assertTrue(billEventData.getBillActionType().equals(BillActionType.CHIEF_SPONSOR));
+        Assert.assertTrue(billEventData.getBillActionType().equals(BillActionType.INTRODUCE));
         Assert.assertEquals("Toi W. Hutchinson", billEventData.getRawLegislatorName());
     }
 
