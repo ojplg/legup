@@ -1,8 +1,10 @@
 package org.center4racialjustice.legup.domain;
 
+import com.google.common.collect.Multimap;
 import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.service.BillActionCollator;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,6 +34,10 @@ public class BillHistory {
 
     public List<BillActionLoad> getPriorLoads(){
         return loads.getAllLoads();
+    }
+
+    public Multimap<LocalDate,BillAction> getActionsByDate(){
+        return actions.getActionsByDate();
     }
 
     public Bill getBill(){

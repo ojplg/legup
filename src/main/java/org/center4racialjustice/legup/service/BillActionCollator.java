@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.service;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
@@ -10,6 +12,7 @@ import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.VoteSide;
 import org.center4racialjustice.legup.util.Lists;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -107,4 +110,11 @@ public class BillActionCollator {
     public BillAction getMatchingAction(CompletedBillEvent billEvent){
         return Lists.findfirst(allActions, action -> action.matchesEvent(billEvent));
     }
+
+    public Multimap<LocalDate,BillAction> getActionsByDate(){
+        Multimap<LocalDate,BillAction> map = MultimapBuilder.treeKeys().arrayListValues().build();
+        allActions.forEach(action -> map.put(action.getActionDateAsLocalDate(), action));
+        return map;
+    }
+
 }

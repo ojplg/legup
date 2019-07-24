@@ -1,0 +1,30 @@
+
+#parse( "/templates/insert_bill_identification.vtl" )
+
+<br/>
+
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Chamber</th>
+            <th>Action Type</th>
+            <th>Raw Data</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        #set ( $actionsByDate = $billHistory.actionsByDate )
+        #foreach ( $date in ${actionsByDate.keySet()} )
+            #set ( $actions = ${actionsByDate.get($date)} )
+            #foreach ( $action in $actions )
+                <tr>
+                    <td>$date</td>
+                    <td>$action.Chamber</td>
+                    <td>$action.billActionType.Code</td>
+                    <td>$action.rawActionData</td>
+                </tr>
+            #end
+        #end
+    </tbody>
+</table>
