@@ -17,6 +17,7 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.SponsorSaveResults;
+import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillIdentity;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillVotesResults;
@@ -85,36 +86,47 @@ public class BillPersistence {
         });
     }
 
-    public BillSaveResults saveParsedData(BillStatusComputer billStatusComputer, boolean forceSave) {
-
-        log.info("Doing save of " + billStatusComputer.getBillIdentity() + " with force flag " + forceSave);
-
+    private BillSaveResults doFirstInsert(BillStatusComputer billStatusComputer){
         return connectionPool.runAndCommit(connection -> {
             BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
             BillActionDao billActionDao = new BillActionDao(connection);
 
-            Bill bill = null;
-            BillActionLoad billActionLoad;
+            Bill bill = insertNewBill( connection, billStatusComputer.getParsedBill());
+            BillActionLoad billActionLoad = billStatusComputer.getMainPageLoadRecord(bill);
+            billActionLoadDao.insert(billActionLoad);
 
-            SponsorSaveResults sponsorsSaved;
+            List<BillAction> actions = billStatusComputer.mainPageActionsToInsert(billActionLoad);
+            actions.forEach(billAction -> billActionDao.insert(billAction));
 
-            if( ! billStatusComputer.hasHistory() ){
-                bill = insertNewBill( connection, billStatusComputer.getParsedBill());
-                billActionLoad = billStatusComputer.getMainPageLoadRecord(bill);
-                billActionLoadDao.insert(billActionLoad);
+            List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.voteLoadsToInsert(bill);
 
-                List<BillAction> actions = billStatusComputer.mainPageActionsToInsert(billActionLoad);
-                actions.forEach(billAction -> billActionDao.insert(billAction));
+            List<BillActionLoad> loads = new ArrayList<>();
+            loads.add(billActionLoad);
 
-                List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.voteLoadsToInsert(bill);
-
-                for(Tuple<CompletedBillEvent, BillActionLoad> tuple : votesToInsert){
-                    BillActionLoad voteLoad = tuple.getSecond();
-                    billActionLoadDao.insert(voteLoad);
-                    BillAction billAction = billStatusComputer.voteActionToInsert(tuple.getFirst(), voteLoad);
-                    billActionDao.insert(billAction);
-                }
+            for(Tuple<CompletedBillEvent, BillActionLoad> tuple : votesToInsert){
+                BillActionLoad voteLoad = tuple.getSecond();
+                billActionLoadDao.insert(voteLoad);
+                BillAction billAction = billStatusComputer.voteActionToInsert(tuple.getFirst(), voteLoad);
+                billActionDao.insert(billAction);
+                loads.add(voteLoad);
             }
+            return new BillSaveResults(bill, 0,0, null, new BillActionLoads(loads));
+        });
+
+    }
+
+    public BillSaveResults saveParsedData(BillStatusComputer billStatusComputer, boolean forceSave) {
+
+        log.info("Doing save of " + billStatusComputer.getBillIdentity() + " with force flag " + forceSave);
+
+        if (!billStatusComputer.hasHistory()) {
+            return doFirstInsert(billStatusComputer);
+        }
+        return null;
+    }
+
+
+
 
 
 
@@ -158,9 +170,8 @@ public class BillPersistence {
 //
 //            BillActionLoads billActionLoads = new BillActionLoads(loads);
             // TODO: counts are all goofed up
-            return new BillSaveResults(bill, 0,0, null, null);
-        });
-    }
+
+//    }
 
     private Tuple<Bill, BillActionLoad> updateBill(Connection connection, Bill bill, BillActionLoad oldLoad, String url, long checkSum) {
         BillDao billDao = new BillDao(connection);

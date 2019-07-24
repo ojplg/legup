@@ -89,7 +89,7 @@ public class BillEventParser implements BillEventInterpreter {
                 this::forVoteEvent);
 
         nameGrabbingEventBuilders.put(FiledWithClerkPattern,
-                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.INTRODUCE));
         nameGrabbingEventBuilders.put(AddedChiefSponsorPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
         nameGrabbingEventBuilders.put(ChiefSenateSponsorPattern,

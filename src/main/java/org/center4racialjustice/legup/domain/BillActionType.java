@@ -8,17 +8,10 @@ import java.util.Objects;
 
 public class BillActionType {
 
-
-    public static final String FirstReading = "First Reading";
-    public static final String Amendment = "Amendment";
-    public static final String CalendarScheduling = "CalendarScheduling";
-    public static final String Postponed = "Postponed";
-    public static final String DeadlineEstablished = "Deadline Established";
-
-
     public final static BillActionType VOTE = new BillActionType("Vote");
     public final static BillActionType SPONSOR = new BillActionType("Sponsor");
     public final static BillActionType CHIEF_SPONSOR = new BillActionType("Chief Sponsor");
+    public final static BillActionType INTRODUCE = new BillActionType("Introduce");
 
     public final static BillActionType REMOVE_SPONSOR = new BillActionType("Remove Sponsor");
     public final static BillActionType REMOVE_CHIEF_SPONSOR = new BillActionType("Remove Chief Sponsor");
@@ -31,15 +24,8 @@ public class BillActionType {
 
     public final static BillActionType UNCLASSIFIED = new BillActionType("Unclassified");
 
-//    public final static BillActionType FIRST_READING = new BillActionType(FirstReading);
-//
-//    public final static BillActionType AMENDMENT = new BillActionType(Amendment);
-//    public final static BillActionType CALENDAR_SCHEDULING = new BillActionType(CalendarScheduling);
-//    public final static BillActionType POSTPONED = new BillActionType(Postponed);
-//    public final static BillActionType DEADLINE_ESTABLISHED = new BillActionType(DeadlineEstablished);
-
     private static final List<BillActionType> ALL_ACTIONS = Arrays.asList(
-            VOTE, SPONSOR, CHIEF_SPONSOR,
+            VOTE, SPONSOR, CHIEF_SPONSOR, INTRODUCE,
             REMOVE_SPONSOR, REMOVE_CHIEF_SPONSOR,
             COMMITTEE_REFERRAL, COMMITTEE_ASSIGNMENT,
             COMMITTEE_AMENDMENT_FILED,
