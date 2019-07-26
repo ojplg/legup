@@ -17,7 +17,6 @@ import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
 import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.SponsorSaveResults;
-import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.illinois.BillIdentity;
 import org.center4racialjustice.legup.illinois.BillSearchResults;
 import org.center4racialjustice.legup.illinois.BillVotesResults;
@@ -108,7 +107,7 @@ public class BillPersistence {
             billActionDao.insert(billAction);
             loads.add(voteLoad);
         }
-        return new BillSaveResults(bill, new BillActionLoads(loads), actions);
+        return new BillSaveResults(bill, loads, actions);
     }
 
     private BillSaveResults insertNewActions(Connection connection, BillStatusComputer billStatusComputer){
@@ -134,7 +133,7 @@ public class BillPersistence {
             billActionDao.insert(billAction);
             loads.add(voteLoad);
         }
-        return new BillSaveResults(bill, new BillActionLoads(loads), actions);
+        return new BillSaveResults(bill, loads, actions);
     }
 
     private BillSaveResults doFirstInsert(BillStatusComputer billStatusComputer){

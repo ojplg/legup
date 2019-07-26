@@ -3,6 +3,7 @@ package org.center4racialjustice.legup.service;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
@@ -155,7 +156,7 @@ public class BillStatusComputer {
             }
             return new VoteResultsEventDisplay(billEventData, billVotesResults);
         }
-        if( billEventData.isSponsorship() || billEventData.isChiefSponsorship() ){
+        if(BillActionType.isSponsoringEvent(billEventData.getBillActionType()) ){
             return new SponsorshipPersistableAction(billEventData);
         }
         if( CommitteePersistableAction.supports(billEventData.getBillActionType()) ){

@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.domain;
 
 import com.google.common.collect.Multimap;
-import org.center4racialjustice.legup.illinois.BillActionLoads;
 import org.center4racialjustice.legup.service.BillActionCollator;
 
 import java.time.LocalDate;
@@ -14,18 +13,18 @@ public class BillHistory {
     public static final BillHistory EMPTY = new BillHistory();
 
     private final Bill bill;
-    private final BillActionLoads loads;
+    private final List<BillActionLoad> loads;
     private final BillActionCollator actionCollator;
 
     private BillHistory(){
         this.bill = null;
-        this.loads = new BillActionLoads();
+        this.loads = Collections.emptyList();
         this.actionCollator = new BillActionCollator(Collections.emptyList());
     }
 
     public BillHistory(Bill bill, List<BillActionLoad> loads, List<BillAction> actions) {
         this.bill = bill;
-        this.loads = new BillActionLoads(loads);
+        this.loads = loads;
         this.actionCollator = new BillActionCollator(actions);
     }
 
@@ -34,7 +33,7 @@ public class BillHistory {
     }
 
     public List<BillActionLoad> getPriorLoads(){
-        return loads.getAllLoads();
+        return loads;
     }
 
     public Multimap<LocalDate,BillAction> getActionsByDate(){

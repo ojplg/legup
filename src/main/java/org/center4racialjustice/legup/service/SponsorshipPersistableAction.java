@@ -16,7 +16,7 @@ public class SponsorshipPersistableAction implements PersistableAction {
     private final CompletedBillEvent completedBillEventData;
 
     public SponsorshipPersistableAction(CompletedBillEvent completedBillEventData) {
-        if( ! (completedBillEventData.isChiefSponsorship() || completedBillEventData.isSponsorship() ) ){
+        if( ! BillActionType.isSponsoringEvent(completedBillEventData.getBillActionType()) ){
             throw new RuntimeException("Not a sponsorship: " + completedBillEventData);
         }
         this.completedBillEventData = completedBillEventData;
@@ -57,6 +57,8 @@ public class SponsorshipPersistableAction implements PersistableAction {
             legislatorBillActionType = LegislatorBillActionType.SPONSOR;
         } else if (completedBillEventData.getBillActionType().equals(BillActionType.CHIEF_SPONSOR) ){
             legislatorBillActionType = LegislatorBillActionType.CHIEF_SPONSOR;
+        } else if (completedBillEventData.getBillActionType().equals(BillActionType.INTRODUCE) ){
+            legislatorBillActionType = LegislatorBillActionType.INTRODUCE;
         }
         legislatorBillAction.setLegislatorBillActionType(legislatorBillActionType);
         legislatorBillAction.setLegislator(completedBillEventData.getLegislator());
