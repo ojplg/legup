@@ -3,31 +3,48 @@
 
 #parse( "/templates/insert_bill_identification.vtl" )
 
-<h5>Saved</h5>
+<h4>Saved</h4>
+
+<h5>Loads</h5>
 
 <table class="pure-table pure-table-horizontal">
-    <tr>
-        <td>Chief House Sponsor</td>
-        <td>$!sponsorSaveResults.chiefHouseSponsor.Display</td>
-    </tr>
-    <tr>
-        <td>Chief Senate Sponsor</td>
-        <td>$!sponsorSaveResults.chiefSenateSponsor.Display</td>
-    </tr>
-    <tr>
-        <td>House Sponsor Count</td>
-        <td>$sponsorSaveResults.houseSponsorCount</td>
-    </tr>
-    <tr>
-        <td>Senate Sponsor Count</td>
-        <td>$sponsorSaveResults.senateSponsorCount</td>
-    </tr>
-    <tr>
-        <td>House Vote Count</td>
-        <td>$billSaveResults.houseVotes</td>
-    </tr>
-    <tr>
-        <td>Senate Vote Count</td>
-        <td>$billSaveResults.senateVotes</td>
-    </tr>
+    <thead>
+        <tr>
+            <th>URL</th>
+            <t>Checksum</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        #foreach ( $load in $billSaveResults.billActionLoads )
+            <tr>
+                <td>$load.url</td>
+                <td>$load.checksum</td>
+            </tr>
+        #end
+    </tbody>
+</table>
+
+<h5>Actions</h5>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Chamber</th>
+            <th>Type</th>
+            <th>Raw Data</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        #foreach ( $action in $billSaveResults.billActions )
+            <tr>
+                <td>$action.actionDateAsLocalDate</td>
+                <td>$action.chamber</td>
+                <td>$action.billActionType.code</td>
+                <td>$action.rawActionData</td>
+            </tr>
+        #end
+    </tbody>
 </table>
