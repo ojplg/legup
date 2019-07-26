@@ -62,6 +62,7 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
     * Need to detect correct vote type for grading
   * Sponsors can be removed, upgraded, and downgraded
     * Handles properly on parse, still needs work on display
+    * Also needs to work properly for grading
 
 * User Fixes
   * Allow users to invite others to their organizations
