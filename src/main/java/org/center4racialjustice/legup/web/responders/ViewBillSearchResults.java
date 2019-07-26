@@ -78,14 +78,10 @@ public class ViewBillSearchResults implements Responder {
         response.putVelocityData("billStatusComputer", billStatusComputer);
         response.putVelocityData("billSearchResults", billSearchResults);
         response.putVelocityData("bill", billSearchResults.getParsedBill());
-//        response.putVelocityData("priorVoteLoads", billSearchResults.getPriorVoteLoads());
 
 
         SponsorNames sponsorNames = billSearchResults.getSponsorNames();
 
-
-        response.putVelocityData("chiefHouseSponsor", sponsorNames.getChiefHouseSponsor());
-        response.putVelocityData("chiefSenateSponsor", sponsorNames.getChiefSenateSponsor());
 
         response.putVelocityData("houseSponsorCount", sponsorNames.getHouseSponsors().size());
         response.putVelocityData("senateSponsorCount", sponsorNames.getSenateSponsors().size());

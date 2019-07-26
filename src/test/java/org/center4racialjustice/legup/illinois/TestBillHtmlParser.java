@@ -75,14 +75,13 @@ public class TestBillHtmlParser {
         BillHtmlParser parser = fromFileName(HouseBill2771FileName, HouseBill2771BaseUrl);
 
         SponsorNames sponsorNames = parser.getSponsorNames();
-        Assert.assertEquals("Christian L. Mitchell", sponsorNames.getChiefHouseSponsor().getRawName());
 
         List<String> sponsors = sponsorNames.getHouseSponsors().stream().map(SponsorName::getRawName).collect(Collectors.toList());
 
-        Assert.assertEquals(45, sponsors.size());
-        Assert.assertEquals("Camille Y. Lilly", sponsors.get(0));
+        Assert.assertEquals(46, sponsors.size());
+        Assert.assertEquals("Christian L. Mitchell", sponsors.get(0));
         Assert.assertTrue(sponsors.contains("Barbara Flynn Currie"));
-        Assert.assertEquals("Al Riley", sponsors.get(44));
+        Assert.assertEquals("Al Riley", sponsors.get(45));
     }
 
     @Test
@@ -92,15 +91,12 @@ public class TestBillHtmlParser {
 
         SponsorNames sponsorNames = parser.getSponsorNames();
 
-        Assert.assertEquals("Toi W. Hutchinson", sponsorNames.getChiefSenateSponsor().getRawName());
-
         List<SponsorName> sponsorTuples = sponsorNames.getSenateSponsors();
         List<String> sponsors = sponsorTuples.stream().map(SponsorName::getRawName).collect(Collectors.toList());
 
-        Assert.assertEquals(19, sponsors.size());
-        Assert.assertEquals("Iris Y. Martinez", sponsors.get(0));
+        Assert.assertEquals(20, sponsors.size());
+        Assert.assertTrue(sponsors.contains("Iris Y. Martinez"));
         Assert.assertTrue(sponsors.contains("Daniel Biss"));
-        Assert.assertEquals("Cristina Castro", sponsors.get(18));
     }
 
     @Test

@@ -76,16 +76,17 @@ public class TestBillEventParser {
             if (billEventData == null) {
                 continue;
             }
-            if (BillActionType.CHIEF_SPONSOR.equals(billEventData.getBillActionType())
-                    || BillActionType.SPONSOR.equals(billEventData.getBillActionType())
-                    || BillActionType.INTRODUCE.equals(billEventData.getBillActionType())) {
+            if (BillActionType.isSponsoringEvent(billEventData.getBillActionType())) {
                 sponsorNames.add(billEventData.getRawLegislatorName());
             }
         }
 
         List<String> expectedNames = billHtmlParser.getSponsorNames().getAllRawNames();
         for (String expectedName : expectedNames) {
-            Assert.assertTrue("missing " + expectedName, sponsorNames.contains(expectedName));
+            Assert.assertTrue("A missing " + expectedName, sponsorNames.contains(expectedName));
+        }
+        for (String sponsorName : sponsorNames) {
+            Assert.assertTrue("B missing " + sponsorName, expectedNames.contains(sponsorName));
         }
         Assert.assertEquals(expectedNames.size(), sponsorNames.size());
     }

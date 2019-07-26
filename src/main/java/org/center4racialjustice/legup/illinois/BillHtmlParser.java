@@ -205,7 +205,7 @@ public class BillHtmlParser {
                 if( matcher.matches()) {
                     String memberId = matcher.group(1);
                     SponsorName name = new SponsorName(
-                            text.replace("Rep. ", ""),
+                            text.replace("Rep. ", "").replace("Sen.",""),
                             memberId);
                     sponsorNames.add(name);
                 }

@@ -8,46 +8,21 @@ import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Data
 public class SponsorNames {
 
-    private SponsorName chiefHouseSponsor;
-    private SponsorName chiefSenateSponsor;
-
     private List<SponsorName> houseSponsors;
     private List<SponsorName> senateSponsors;
 
     public SponsorNames(List<SponsorName> houseNames, List<SponsorName> senateNames){
-        if( houseNames.size() > 0 ){
-            chiefHouseSponsor = houseNames.get(0);
-        }
-        if ( houseNames.size() > 1 ){
-            houseSponsors = new ArrayList<>(houseNames.subList(1, houseNames.size()));
-        } else {
-            houseSponsors = Collections.emptyList();
-        }
-        if( senateNames.size() > 0 ){
-            chiefSenateSponsor = senateNames.get(0);
-        }
-        if ( senateNames.size() > 1 ){
-            senateSponsors = new ArrayList<>(senateNames.subList(1, senateNames.size()));
-        } else {
-            senateSponsors = Collections.emptyList();
-        }
+        houseSponsors = new ArrayList<>(houseNames);
+        senateSponsors = new ArrayList<>(senateNames);
     }
 
     public int totalSponsorCount(){
-        int sum = 0;
-        if (chiefHouseSponsor != null){
-            sum++;
-        }
-        if ( chiefSenateSponsor != null){
-            sum++;
-        }
-        return sum + houseSponsors.size() + senateSponsors.size();
+        return  houseSponsors.size() + senateSponsors.size();
     }
 
     private void completeOne(SponsorName sponsorName, LegislativeStructure legislativeStructure){
@@ -58,8 +33,6 @@ public class SponsorNames {
     }
 
     public void completeAll(LegislativeStructure legislativeStructure){
-        completeOne(chiefHouseSponsor, legislativeStructure);
-        completeOne(chiefSenateSponsor, legislativeStructure);
         houseSponsors.forEach(
                 sponsorName -> completeOne(sponsorName, legislativeStructure)
         );
@@ -72,12 +45,6 @@ public class SponsorNames {
         List<SponsorName> allNames = new ArrayList<>();
         allNames.addAll(houseSponsors);
         allNames.addAll(senateSponsors);
-        if( chiefHouseSponsor != null ){
-            allNames.add(chiefHouseSponsor);
-        }
-        if( chiefSenateSponsor != null) {
-            allNames.add(chiefSenateSponsor);
-        }
         return allNames;
     }
 
@@ -106,12 +73,6 @@ public class SponsorNames {
     public SponsorName findMatchingSponsor(String memberID, Name name){
         // first try to match by name, then try member id.
         // TODO: Think about this. Maybe try both? Maybe something different?
-        if( chiefSenateSponsor.matchesLegislatorName(name) ){
-            return chiefSenateSponsor;
-        }
-        if( chiefHouseSponsor.matchesLegislatorName(name)){
-            return chiefHouseSponsor;
-        }
         SponsorName sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.matchesLegislatorName(name));
         if ( sponsorName != null ){
             return sponsorName;
@@ -121,12 +82,6 @@ public class SponsorNames {
             return sponsorName;
         }
 
-        if( chiefSenateSponsor.matchesMemberID(memberID) ){
-            return chiefSenateSponsor;
-        }
-        if( chiefHouseSponsor.matchesMemberID(memberID)){
-            return chiefHouseSponsor;
-        }
         sponsorName = Lists.findfirst(houseSponsors, sponsor -> sponsor.matchesMemberID(memberID));
         if ( sponsorName != null ){
             return sponsorName;
@@ -137,14 +92,6 @@ public class SponsorNames {
     public List<SponsorName> getUncollated(){
         List<SponsorName> incompletes = new ArrayList<>();
 
-        if( chiefHouseSponsor != null &&
-                ! chiefHouseSponsor.isComplete() ){
-            incompletes.add(chiefHouseSponsor);
-        }
-        if( chiefSenateSponsor != null &&
-                ! chiefSenateSponsor.isComplete() ){
-            incompletes.add(chiefSenateSponsor);
-        }
         for(SponsorName sponsorName : houseSponsors){
             if (!sponsorName.isComplete()){
                 incompletes.add(sponsorName);
@@ -160,12 +107,6 @@ public class SponsorNames {
 
     public List<String> getAllRawNames(){
         List<String> rawNames = new ArrayList<>();
-        if( chiefHouseSponsor != null ){
-            rawNames.add(chiefHouseSponsor.getRawName());
-        }
-        if( chiefSenateSponsor != null ){
-            rawNames.add(chiefSenateSponsor.getRawName());
-        }
         for(SponsorName houseName : houseSponsors){
             rawNames.add(houseName.getRawName());
         }

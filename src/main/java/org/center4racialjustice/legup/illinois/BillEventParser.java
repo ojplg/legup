@@ -35,7 +35,7 @@ public class BillEventParser implements BillEventInterpreter {
             Pattern.compile("Removed (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
 
     private static final Pattern ChiefSenateSponsorPattern =
-            Pattern.compile("Chief (?:House|Senate) Sponsor (?:Sen|Rep). (.*)");
+            Pattern.compile("Chief (?:House|Senate)? Sponsor (?:Sen|Rep). (.*)");
 
     private static final Pattern AddedAlternateCoSponsorPattern =
             Pattern.compile("Added (?:as )?Alternate Co-Sponsor (?:Sen|Rep). (.*)");
