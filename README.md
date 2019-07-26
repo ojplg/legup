@@ -58,14 +58,10 @@ LegUp exposes its functionality via a simple web application.
 Do not forget to grep the code for TODO and FIXME. There are always things there.
 * Persist all legislative maneuvers
   * Need to track vote type: cannot just be enumerated
-    * Committee versus chamber votes
-    * Name of committee
-    * Type of vote (third reading, etc)
-  * Some bill actions do not have a legislator associated with them
-  * Should always be additive: do not delete old data
-  * Persist both action date and load date
-  * There is more than one chief sponsor
+    * Still need to get more better at this - only saving raw data right now
+    * Need to detect correct vote type for grading
   * Sponsors can be removed, upgraded, and downgraded
+    * Handles properly on parse, still needs work on display
 
 * User Fixes
   * Allow users to invite others to their organizations
