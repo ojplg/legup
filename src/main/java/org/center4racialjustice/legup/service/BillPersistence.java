@@ -9,21 +9,12 @@ import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
-import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.BillSaveResults;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.LegislatorBillAction;
-import org.center4racialjustice.legup.domain.LegislatorBillActionType;
-import org.center4racialjustice.legup.domain.SponsorSaveResults;
 import org.center4racialjustice.legup.illinois.BillIdentity;
-import org.center4racialjustice.legup.illinois.BillSearchResults;
-import org.center4racialjustice.legup.illinois.BillVotesResults;
-import org.center4racialjustice.legup.illinois.CollatedVote;
-import org.center4racialjustice.legup.illinois.SponsorName;
-import org.center4racialjustice.legup.illinois.SponsorNames;
-import org.center4racialjustice.legup.util.Dates;
 import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.util.Tuple;
 
@@ -183,77 +174,10 @@ public class BillPersistence {
         loads.forEach(loadDao::delete);
     }
 
-
-
-
-//            if( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.NoPriorValues ){
-//                sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
-//                log.info("Saved sponsors: " + sponsorsSaved);
-//            } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.MatchedValues ){
-//                bill = billSearchResults.getSavedBill();
-//                billActionLoad = billSearchResults.getBillHtmlLoad();
-//                sponsorsSaved = SponsorSaveResults.EMPTY;
-//            } else if ( billSearchResults.getBillHtmlLoadStatus() == BillSearchResults.MatchStatus.UnmatchedValues
-//                        || forceSave ){
-//                Tuple<Bill, BillActionLoad> billSaveTuple = updateBill( connection,
-//                        billSearchResults.getUpdatedBill(),  billSearchResults.getBillHtmlLoad(),
-//                        billSearchResults.getUrl(), billSearchResults.getChecksum() );
-//                bill = billSaveTuple.getFirst();
-//                billActionLoad = billSaveTuple.getSecond();
-//                sponsorsSaved = saveSponsors(connection, billActionLoad, billSearchResults);
-//                log.info("Saved sponsors: " + sponsorsSaved);
-//            } else {
-//                throw new RuntimeException("Cannot persist match status " + billSearchResults.getBillHtmlLoadStatus());
-//            }
-//
-//            int houseVotesSaved = 0;
-//
-//            int senateVotesSaved = 0;
-//
-//            List<BillActionLoad> loads = new ArrayList<>();
-//            loads.add(billActionLoad);
-//            for(String key : billSearchResults.generateSearchedVoteLoadKeys()){
-//                BillSearchResults.MatchStatus matchStatus = billSearchResults.getVoteMatchStatus(key);
-//                if( matchStatus == BillSearchResults.MatchStatus.NoPriorValues){
-//                    BillActionLoad load = billSearchResults.createVoteBillActionLoad(bill, key);
-//                    BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(key);
-//                    billActionLoadDao.insert(load);
-//                    saveVotes(connection, load, billVotesResults);
-//                } else if ( matchStatus == BillSearchResults.MatchStatus.UnmatchedValues || forceSave ){
-//                    log.warn("Need to resave: " + key);
-//                }
-//            }
-//
-//            BillActionLoads billActionLoads = new BillActionLoads(loads);
-            // TODO: counts are all goofed up
-
-//    }
-
-    private Tuple<Bill, BillActionLoad> updateBill(Connection connection, Bill bill, BillActionLoad oldLoad, String url, long checkSum) {
-        BillDao billDao = new BillDao(connection);
-        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
-
-        billDao.update(bill);
-        oldLoad.setCheckSum(checkSum);
-        oldLoad.setLoadInstant(Instant.now());
-        oldLoad.setUrl(url);
-
-        billActionLoadDao.update(oldLoad);
-
-        return new Tuple<>(bill, oldLoad);
-    }
-
     private Bill insertNewBill(Connection connection, Bill bill) {
         BillDao billDao = new BillDao(connection);
         billDao.insert(bill);
         return bill;
-    }
-
-    private BillActionLoad insertNewBillLoadAction(Connection connection, Bill bill, String url, long checkSum){
-        BillActionLoadDao billActionLoadDao = new BillActionLoadDao(connection);
-        BillActionLoad billActionLoad = BillActionLoad.create(bill, url, checkSum);
-        billActionLoadDao.insert(billActionLoad);
-        return  billActionLoad;
     }
 
     public LookupTable<Legislator, String, String> generateBillActionSummary(long billId){
@@ -283,85 +207,4 @@ public class BillPersistence {
         });
     }
 
-    private int saveVotes(Connection connection, BillActionLoad billActionLoad, BillVotesResults billVotesResults) {
-        BillActionDao billActionDao = new BillActionDao(connection);
-
-        deleteOldActionRecords(billActionDao, billActionLoad);
-
-        List<CollatedVote> votes = billVotesResults.getCollatedVotes();
-
-        int savedCount = 0;
-
-        List<LegislatorBillAction> legislatorBillActions = new ArrayList<>();
-        for (CollatedVote collatedVote : votes) {
-            LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
-            legislatorBillAction.setLegislator(collatedVote.getLegislator());
-            legislatorBillAction.setVoteSide(collatedVote.getVoteSide());
-            legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.VOTE);
-            legislatorBillActions.add(legislatorBillAction);
-        }
-
-        BillAction billAction = new BillAction();
-        billAction.setBillActionType(BillActionType.VOTE);
-        billAction.setBill(billActionLoad.getBill());
-        billAction.setLegislatorBillActions(legislatorBillActions);
-        billAction.setRawActionData("FIXME");
-        billAction.setActionDate(Dates.instantOf(billVotesResults.getActionDate()));
-
-        billActionDao.insert(billAction);
-
-        return savedCount;
-    }
-
-    private SponsorSaveResults saveSponsors(Connection connection, BillActionLoad billActionLoad, BillSearchResults billSearchResults) {
-        BillActionDao billActionDao = new BillActionDao(connection);
-
-        deleteOldActionRecords(billActionDao, billActionLoad);
-
-        SponsorNames sponsorNames = billSearchResults.getSponsorNames();
-
-        Legislator chiefHouseSponsor = null;
-        Legislator chiefSenateSponsor = null;
-        int houseSponsorCount = 0;
-        int senateSponsorCount = 0;
-        if (sponsorNames.getChiefHouseSponsor() != null && sponsorNames.getChiefHouseSponsor().isComplete()) {
-            chiefHouseSponsor = sponsorNames.getChiefHouseSponsor().getLegislator();
-            saveBillAction(billActionDao, chiefHouseSponsor, billActionLoad, BillActionType.CHIEF_SPONSOR);
-        }
-        if (sponsorNames.getChiefSenateSponsor() != null && sponsorNames.getChiefSenateSponsor().isComplete()) {
-            chiefSenateSponsor = sponsorNames.getChiefSenateSponsor().getLegislator();
-            saveBillAction(billActionDao, chiefSenateSponsor, billActionLoad, BillActionType.CHIEF_SPONSOR);
-        }
-        for (SponsorName sponsorName : sponsorNames.getHouseSponsors()) {
-            if (sponsorName.isComplete()) {
-                saveBillAction(billActionDao, sponsorName.getLegislator(), billActionLoad, BillActionType.SPONSOR);
-                houseSponsorCount++;
-            }
-        }
-        for (SponsorName sponsorName : sponsorNames.getSenateSponsors()) {
-            if (sponsorName.isComplete()) {
-                saveBillAction(billActionDao, sponsorName.getLegislator(), billActionLoad, BillActionType.SPONSOR);
-                senateSponsorCount++;
-            }
-        }
-
-        return new SponsorSaveResults(chiefHouseSponsor, chiefSenateSponsor, houseSponsorCount, senateSponsorCount);
-    }
-
-    private void deleteOldActionRecords(BillActionDao billActionDao, BillActionLoad billActionLoad){
-        List<BillAction> oldActions = billActionDao.readByBillActionLoad(billActionLoad);
-        for(BillAction billAction : oldActions){
-            billActionDao.delete(billAction);
-        }
-    }
-
-    private void saveBillAction(BillActionDao billActionDao, Legislator legislator,
-                                BillActionLoad billActionLoad, BillActionType billActionType){
-        BillAction billAction = new BillAction();
-        billAction.setBill(billActionLoad.getBill());
-        billAction.setBillActionLoad(billActionLoad);
-        billAction.setBillActionType(billActionType);
-
-        billActionDao.insert(billAction);
-    }
 }

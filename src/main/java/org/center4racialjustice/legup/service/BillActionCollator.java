@@ -62,13 +62,9 @@ public class BillActionCollator {
                         sponsorships.add(displayAction);
                         break;
                     case LegislatorBillActionType.ChiefSponsorCode:
-                        System.out.println("CHIEF SPONSOR >>>>>>>>>>>>>>>>>>" + displayAction);
                         chiefSponsorships.add(displayAction);
                         break;
                     case LegislatorBillActionType.IntroduceCode:
-
-                        System.out.println("INTRODUCE >>>>>>>>>>>>>>>>>>" + displayAction);
-
                         introductions.add(displayAction);
                         break;
                     default:
