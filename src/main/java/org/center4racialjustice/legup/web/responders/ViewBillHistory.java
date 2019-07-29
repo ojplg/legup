@@ -45,6 +45,7 @@ public class ViewBillHistory implements Responder {
     private List<NavLink> navLinks(long billId, long sessionNumber){
         return Arrays.asList(
                 new NavLink("Bills Index", "/legup/view_bills?session_number=" +sessionNumber),
+                new NavLink("View Votes", "/legup/view_bill_votes?bill_id=" + billId),
                 new NavLink("View Sponsors", "/legup/view_bill_sponsors?bill_id=" + billId)
         );
     }

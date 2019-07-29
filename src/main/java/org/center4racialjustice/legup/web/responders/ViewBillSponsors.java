@@ -43,7 +43,8 @@ public class ViewBillSponsors implements Responder {
     private List<NavLink> navLinks(long billId, long sessionNumber){
         return Arrays.asList(
                 new NavLink("Bills Index", "/legup/view_bills?session_number=" + sessionNumber),
-                new NavLink("View Votes", "/legup/view_bill_votes?bill_id=" + billId)
+                new NavLink("View Votes", "/legup/view_bill_votes?bill_id=" + billId),
+                new NavLink("View History", "/legup/view_bill_history?bill_id=" + billId)
         );
     }
 
