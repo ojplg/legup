@@ -18,13 +18,13 @@
             #foreach ( $action in ${billHistory.getActionsOnDate($date)} )
                 <tr>
                     #if ( $foreach.first )
-                        <td class="overlined">$date</td>
+                        <td id="overlined">$date</td>
                     #else
                         <td></td>
                     #end
-                    <td>$action.Chamber</td>
-                    <td>$action.billActionType.Code</td>
-                    <td>$action.rawActionData</td>
+                    <td #if ( $foreach.first ) id="overlined" #end >$action.Chamber</td>
+                    <td #if ( $foreach.first ) id="overlined" #end >$action.billActionType.Code</td>
+                    <td #if ( $foreach.first ) id="overlined" #end >$action.rawActionData</td>
                 </tr>
             #end
         #end

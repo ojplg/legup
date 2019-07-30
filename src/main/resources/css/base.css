@@ -65,6 +65,6 @@ ul {
     margin-bottom: 3px;
 }
 
-td.overlined {
-    border-top: 1px solid black;
+td#overlined {
+    border-top: 1px solid #cbcbcb;
 }
