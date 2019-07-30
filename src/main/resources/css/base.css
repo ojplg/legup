@@ -64,3 +64,7 @@ ul {
     margin-top: 1px;
     margin-bottom: 3px;
 }
+
+td.overlined {
+    border-top: 1px solid black;
+}

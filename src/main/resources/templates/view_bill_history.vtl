@@ -3,7 +3,7 @@
 
 <br/>
 
-<table class="pure-table pure-table-bordered">
+<table class="pure-table">
     <thead>
         <tr>
             <th>Date</th>
@@ -14,12 +14,14 @@
     </thead>
 
     <tbody>
-        #set ( $actionsByDate = $billHistory.actionsByDate )
-        #foreach ( $date in ${actionsByDate.keySet()} )
-            #set ( $actions = ${actionsByDate.get($date)} )
-            #foreach ( $action in $actions )
+        #foreach ( $date in $billHistory.actionDates )
+            #foreach ( $action in ${billHistory.getActionsOnDate($date)} )
                 <tr>
-                    <td>$date</td>
+                    #if ( $foreach.first )
+                        <td class="overlined">$date</td>
+                    #else
+                        <td></td>
+                    #end
                     <td>$action.Chamber</td>
                     <td>$action.billActionType.Code</td>
                     <td>$action.rawActionData</td>

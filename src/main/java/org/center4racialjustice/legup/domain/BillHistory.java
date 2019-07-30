@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import org.center4racialjustice.legup.service.BillActionCollator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -76,6 +77,17 @@ public class BillHistory {
 
     public boolean unrecognizedEvent(CompletedBillEvent billEvent){
         return actionCollator.getMatchingAction(billEvent) == null;
+    }
+
+    public List<LocalDate> getActionDates(){
+        List<LocalDate> dates = new ArrayList<>();
+        dates.addAll(actionCollator.getActionsByDate().keySet());
+        Collections.sort(dates);
+        return dates;
+    }
+
+    public Collection<BillAction> getActionsOnDate(LocalDate date){
+        return getActionsByDate().get(date);
     }
 
 }
