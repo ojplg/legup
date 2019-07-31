@@ -80,6 +80,14 @@ public class BillActionType {
                 || billActionType.equals(BillActionType.CHIEF_SPONSOR);
     }
 
+    public static boolean isSponsoringRelated(BillActionType billActionType){
+        return billActionType.equals(BillActionType.INTRODUCE)
+                || billActionType.equals(BillActionType.SPONSOR)
+                || billActionType.equals(BillActionType.CHIEF_SPONSOR)
+                || billActionType.equals(BillActionType.REMOVE_SPONSOR)
+                || billActionType.equals(BillActionType.REMOVE_CHIEF_SPONSOR);
+    }
+
     static class BillActionTypeConverter implements Converter<BillActionType, String> {
         @Override
         public String from(BillActionType billActionType) {

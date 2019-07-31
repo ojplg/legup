@@ -15,7 +15,7 @@ public class LegislatorBillAction {
     }
 
     public int score(VoteSide preferredSide){
-        int scoreValue = LegislatorBillActionType.scoreValue(legislatorBillActionType);
+        int scoreValue = legislatorBillActionType.scoreValue();
         if( LegislatorBillActionType.VOTE.equals(legislatorBillActionType)){
             if( voteSide.isUncommittedVote() ){
                 return 0;

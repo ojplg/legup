@@ -1,7 +1,6 @@
 package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
-import org.center4racialjustice.legup.domain.VoteType;
 
 @Data
 public class BillWebData {

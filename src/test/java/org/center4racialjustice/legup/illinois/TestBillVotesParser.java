@@ -5,9 +5,8 @@ import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameOverrides;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteSide;
-import org.center4racialjustice.legup.domain.VoteType;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -106,7 +105,7 @@ public class TestBillVotesParser {
 
     @Test
     public void testHouseVotesOnConstitutionalAmendment(){
-        BillVotes billVotes = BillVotesParser.parseFile(senateBillOne, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(senateBillOne, loadNameParser());
         billVotes.checkVoteCounts();
         Assert.assertEquals(69, billVotes.getYeas().size());
         Assert.assertEquals(47, billVotes.getNays().size());
@@ -114,31 +113,31 @@ public class TestBillVotesParser {
 
     @Test
     public void testBill4234(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill4324FileName, loadNameParser());
         checkNonListFields(houseBill4324(), billVotes);
     }
 
     @Test
     public void testBill8(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(bill8FileName, loadNameParser());
         checkNonListFields(senateBill8(), billVotes);
     }
 
     @Test
     public void testBill3179(){
-        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(bill3179FileName, loadNameParser());
         checkNonListFields(houseBill3179(), billVotes);
     }
 
     @Test
     public void testBill2771(){
-        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(houseBill2771FileName, loadNameParser());
         checkNonListFields(houseBill2771(), billVotes);
     }
 
     @Test
     public void testBill1781(){
-        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(senateBill1781FileName, loadNameParser());
         checkNonListFields(senateBill1781(), billVotes);
     }
 
@@ -223,7 +222,7 @@ public class TestBillVotesParser {
 
     @Test
     public void parse101House3704Bill_Committee(){
-        BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill3704SenateCommitteeFileName, loadNameParser());
         billVotes.checkVoteCounts();
         Assert.assertEquals(10, billVotes.getYeas().size());
         Assert.assertEquals(Chamber.Senate, billVotes.getVotingChamber());
@@ -234,7 +233,7 @@ public class TestBillVotesParser {
 
     @Test
     public void parse101House2045Bill_Committee(){
-        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2045CommitteeFileName, loadNameParser(), new VoteType("Third Reading"));
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2045CommitteeFileName, loadNameParser());
         billVotes.checkVoteCounts();
         Assert.assertEquals(6, billVotes.getYeas().size());
         Assert.assertEquals(Chamber.House, billVotes.getVotingChamber());
@@ -274,7 +273,7 @@ public class TestBillVotesParser {
 
     @Test
     public void testGoodParse_101House2040(){
-        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2040CommitteeFileName, loadNameParser(), new VoteType(""));
+        BillVotes billVotes = BillVotesParser.parseFile(house101Bill2040CommitteeFileName, loadNameParser());
         billVotes.checkVoteCounts();
         Assert.assertEquals(17, billVotes.getYeas().size());
     }

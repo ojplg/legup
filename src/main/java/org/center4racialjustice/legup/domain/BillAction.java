@@ -24,6 +24,14 @@ public class BillAction implements Comparable<BillAction> {
     private Long committeeId;
     private List<LegislatorBillAction> legislatorBillActions;
 
+    public boolean isScoreable(){
+        if ( billActionType.equals(BillActionType.VOTE) ){
+            return rawActionData.contains("Third Reading");
+        } else {
+            return BillActionType.isSponsoringRelated(billActionType);
+        }
+    }
+
     public boolean isVote(){
         return BillActionType.VOTE.equals(billActionType);
     }

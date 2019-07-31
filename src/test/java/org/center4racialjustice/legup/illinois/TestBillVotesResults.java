@@ -59,13 +59,13 @@ public class TestBillVotesResults {
     private static List<CollatedVote> generateVoteList(int yeaCount, int nayCount, int notVotingCount){
         List<CollatedVote> collatedVotes = new ArrayList<>();
         for(int i=0; i<yeaCount; i++){
-            collatedVotes.add(new CollatedVote(VoteSide.Yea, null, null, null));
+            collatedVotes.add(new CollatedVote(VoteSide.Yea, null, null));
         }
         for(int i=0; i<nayCount; i++){
-            collatedVotes.add(new CollatedVote(VoteSide.Nay, null, null, null));
+            collatedVotes.add(new CollatedVote(VoteSide.Nay, null, null));
         }
         for(int i=0; i<notVotingCount; i++){
-            collatedVotes.add(new CollatedVote(VoteSide.NotVoting, null, null, null));
+            collatedVotes.add(new CollatedVote(VoteSide.NotVoting, null, null));
         }
         return collatedVotes;
     }

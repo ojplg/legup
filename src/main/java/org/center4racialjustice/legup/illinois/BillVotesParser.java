@@ -8,7 +8,6 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.VoteSide;
-import org.center4racialjustice.legup.domain.VoteType;
 import org.center4racialjustice.legup.util.Lists;
 
 import java.io.IOException;
@@ -225,7 +224,7 @@ public class BillVotesParser {
         return records;
     }
 
-    public static BillVotes parseFile(String filename, NameParser nameParser, VoteType voteType) {
+    public static BillVotes parseFile(String filename, NameParser nameParser) {
         String content = readFileToString(filename);
         BillVotesParser parser = new BillVotesParser(nameParser);
         return parser.parseFileContents("",content);

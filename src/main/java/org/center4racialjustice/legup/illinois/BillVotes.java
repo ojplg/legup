@@ -3,7 +3,6 @@ package org.center4racialjustice.legup.illinois;
 
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Name;
-import org.center4racialjustice.legup.domain.VoteType;
 
 import java.util.List;
 

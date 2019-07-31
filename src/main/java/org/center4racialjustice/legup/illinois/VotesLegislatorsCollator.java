@@ -40,7 +40,7 @@ public class VotesLegislatorsCollator {
         for(Name voter : voters){
             Legislator legislator = legislativeStructure.findByNameAndChamber(voter, billVotes.getVotingChamber());
             if( legislator != null ){
-                CollatedVote collatedVote = new CollatedVote(vote, legislator, voter, null );
+                CollatedVote collatedVote = new CollatedVote(vote, legislator, voter);
                 collated.add(collatedVote);
             } else {
                 uncollated.add(voter);

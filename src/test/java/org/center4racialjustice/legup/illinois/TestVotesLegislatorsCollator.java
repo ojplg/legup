@@ -4,7 +4,6 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
 import org.center4racialjustice.legup.domain.VoteSide;
-import org.center4racialjustice.legup.domain.VoteType;
 import org.center4racialjustice.legup.service.LegislativeStructure;
 import org.junit.Assert;
 import org.junit.Test;

@@ -17,18 +17,19 @@ public class LegislatorBillActionType {
     public static final String RemoveChiefSponsorCode = "Remove Chief Sponsor";
 
 
-    public final static LegislatorBillActionType VOTE = new LegislatorBillActionType(VoteCode);
-    public final static LegislatorBillActionType SPONSOR = new LegislatorBillActionType(SponsorCode);
-    public final static LegislatorBillActionType CHIEF_SPONSOR = new LegislatorBillActionType(ChiefSponsorCode);
-    public final static LegislatorBillActionType INTRODUCE = new LegislatorBillActionType(IntroduceCode);
+    public final static LegislatorBillActionType VOTE = new LegislatorBillActionType(VoteCode, 1);
+    public final static LegislatorBillActionType SPONSOR = new LegislatorBillActionType(SponsorCode, 2);
+    public final static LegislatorBillActionType CHIEF_SPONSOR = new LegislatorBillActionType(ChiefSponsorCode, 3);
+    public final static LegislatorBillActionType INTRODUCE = new LegislatorBillActionType(IntroduceCode, 4);
 
-    public final static LegislatorBillActionType REMOVE_SPONSOR = new LegislatorBillActionType(RemoveSponsorCode);
-    public final static LegislatorBillActionType REMOVE_CHIEF_SPONSOR = new LegislatorBillActionType(RemoveChiefSponsorCode);
+    public final static LegislatorBillActionType REMOVE_SPONSOR = new LegislatorBillActionType(RemoveSponsorCode, -2);
+    public final static LegislatorBillActionType REMOVE_CHIEF_SPONSOR = new LegislatorBillActionType(RemoveChiefSponsorCode, -3);
 
 
     public final static LegislatorBillActionTypeConverter CONVERTER = new LegislatorBillActionTypeConverter();
 
     private final String code;
+    private final int scoreValue;
 
     public static LegislatorBillActionType fromCode(String code){
         switch (code) {
@@ -42,21 +43,13 @@ public class LegislatorBillActionType {
         }
     }
 
-    public static int scoreValue(LegislatorBillActionType billActionType){
-        // These should maybe be configurable.
-        switch (billActionType.getCode()) {
-            case VoteCode : return 1;
-            case SponsorCode : return 2;
-            case ChiefSponsorCode : return 3;
-            case IntroduceCode : return 4;
-            case RemoveSponsorCode : return -2;
-            case RemoveChiefSponsorCode : return -3;
-            default : throw new RuntimeException("Unrecognized code " + billActionType.getCode());
-        }
+    public int scoreValue(){
+        return scoreValue;
     }
 
-    public LegislatorBillActionType(String code){
+    public LegislatorBillActionType(String code, int scoreValue){
         this.code = code;
+        this.scoreValue = scoreValue;
     }
 
     @Override
