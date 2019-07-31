@@ -291,4 +291,17 @@ public class TestBillEventParser {
         Assert.assertTrue(billEventData.hasLegislator());
         Assert.assertEquals("Jerry Costello, II", billEventData.getRawLegislatorName());
     }
+
+    @Test
+    public void testParsesChiefSponsorshipRemoval(){
+        RawBillEvent billEvent = newRawBillEvent("Remove Chief Co-Sponsor Rep. Jennifer Gong-Gershowitz");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.REMOVE_CHIEF_SPONSOR, billEventData.getBillActionType());
+        Assert.assertTrue(billEventData.hasLegislator());
+        Assert.assertEquals("Jennifer Gong-Gershowitz", billEventData.getRawLegislatorName());
+    }
+
+
 }

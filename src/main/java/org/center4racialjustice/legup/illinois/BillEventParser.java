@@ -32,7 +32,10 @@ public class BillEventParser implements BillEventInterpreter {
             Pattern.compile("Added (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
 
     private static final Pattern RemovedSponsorPattern =
-            Pattern.compile("Removed (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
+            Pattern.compile("Remove(?:d)? (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
+
+    private static final Pattern RemovedChiefSponsorPattern =
+            Pattern.compile("Remove(?:d)? Chief (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
 
     private static final Pattern ChiefSenateSponsorPattern =
             Pattern.compile("Chief (?:House|Senate)? Sponsor (?:Sen|Rep). (.*)");
@@ -104,6 +107,8 @@ public class BillEventParser implements BillEventInterpreter {
 
         nameGrabbingEventBuilders.put(RemovedSponsorPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.REMOVE_SPONSOR));
+        nameGrabbingEventBuilders.put(RemovedChiefSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.REMOVE_CHIEF_SPONSOR));
 
         nameGrabbingEventBuilders.put(CommitteeAmendmentPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.COMMITTEE_AMENDMENT_FILED));
