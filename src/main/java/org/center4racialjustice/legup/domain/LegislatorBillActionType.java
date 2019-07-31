@@ -14,7 +14,7 @@ public class LegislatorBillActionType {
     public static final String IntroduceCode = "Introduce";
 
     public static final String RemoveSponsorCode = "Remove Sponsor";
-    public static final String RemoveChiefSponsorCode = "Remoce Chief Sponsor";
+    public static final String RemoveChiefSponsorCode = "Remove Chief Sponsor";
 
 
     public final static LegislatorBillActionType VOTE = new LegislatorBillActionType(VoteCode);
@@ -49,6 +49,8 @@ public class LegislatorBillActionType {
             case SponsorCode : return 2;
             case ChiefSponsorCode : return 3;
             case IntroduceCode : return 4;
+            case RemoveSponsorCode : return -2;
+            case RemoveChiefSponsorCode : return -3;
             default : throw new RuntimeException("Unrecognized code " + billActionType.getCode());
         }
     }

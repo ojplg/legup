@@ -33,6 +33,25 @@ public class TestReportCard {
     }
 
     @Test
+    public void testCalculateRespectsSponsorshipRemoval(){
+
+        Bill bill = newBill(Chamber.Senate, 1L);
+        Legislator legislator = newLegislator(Chamber.House, "Smith", true);
+        ReportFactor factor = newFactor(bill, VoteSide.Yea);
+        ReportCard card = newReportCard( new ReportFactor[]{ factor }, new Legislator[]{ legislator } );
+
+        BillAction sponsorAction = newChiefSponsor(bill, legislator);
+        BillAction removeSponsorAction = newRemoveChiefSponsor(bill, legislator);
+
+        List<BillAction> actions = Arrays.asList(sponsorAction, removeSponsorAction);
+
+        LookupTable<Legislator,Bill,Integer> table = card.calculateScores(actions);
+
+        Assert.assertEquals(0, (int) table.get(legislator, bill));
+    }
+
+
+    @Test
     public void testCalculationComplicatedIncludingNulls(){
 
         Bill b1 = newBill(Chamber.Senate, 1L);
@@ -223,6 +242,20 @@ public class TestReportCard {
         action.setId(nextId());
         return action;
     }
+
+    private static BillAction newRemoveChiefSponsor(Bill bill, Legislator legislator){
+        LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
+        legislatorBillAction.setLegislator(legislator);
+        legislatorBillAction.setLegislatorBillActionType(LegislatorBillActionType.REMOVE_CHIEF_SPONSOR);
+
+        BillAction action = new BillAction();
+        action.setBillActionType(BillActionType.REMOVE_CHIEF_SPONSOR);
+        action.setBill(bill);
+        action.setLegislatorBillActions(Arrays.asList(legislatorBillAction));
+        action.setId(nextId());
+        return action;
+    }
+
 
     private static BillAction newVote(Bill bill, Legislator legislator, VoteSide voteSide){
         LegislatorBillAction legislatorBillAction = new LegislatorBillAction();
