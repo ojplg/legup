@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import lombok.Data;
 import org.center4racialjustice.legup.domain.BillAction;
+import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.DisplayAction;
@@ -96,17 +97,11 @@ public class BillActionCollator {
     }
 
     public List<Legislator> getSponsors(Chamber chamber){
-        return getSponsorships().stream()
-                .map(DisplayAction::getLegislator)
-                .filter(leg -> leg.getChamber().equals(chamber))
-                .collect(Collectors.toList());
+        return generateSponsorList(chamber, false);
     }
 
     public List<Legislator> getChiefSponsors(Chamber chamber){
-        return  getChiefSponsorships().stream()
-                .map(DisplayAction::getLegislator)
-                .filter(leg -> leg.getChamber().equals(chamber))
-                .collect(Collectors.toList());
+        return generateSponsorList(chamber, true);
     }
 
     public List<Legislator> getIntroductions(Chamber chamber){
@@ -116,6 +111,33 @@ public class BillActionCollator {
                 .collect(Collectors.toList());
     }
 
+    private List<Legislator> generateSponsorList(Chamber chamber, boolean chief){
+        BillActionType add;
+        BillActionType remove;
+        if( chief ){
+            add = BillActionType.CHIEF_SPONSOR;
+            remove = BillActionType.REMOVE_CHIEF_SPONSOR;
+        } else {
+            add = BillActionType.SPONSOR;
+            remove = BillActionType.REMOVE_SPONSOR;
+        }
+
+        List<Legislator> sponsorList = new ArrayList<>();
+        List<BillAction> orderedActions = new ArrayList<>();
+        orderedActions.addAll(allActions);
+        Collections.sort(orderedActions);
+        for(BillAction action : allActions ){
+            if( action.getBillActionType().equals(add) ){
+                Legislator legislator = action.getSingleLegislator();
+                sponsorList.add(legislator);
+            }
+            if ( action.getBillActionType().equals(remove) ){
+                Legislator legislator = action.getSingleLegislator();
+                sponsorList.remove(legislator);
+            }
+        }
+        return sponsorList;
+    }
 
     public Collection<DisplayAction> getVotes(String voteDescription, Chamber chamber, VoteSide voteSide){
         VoteKey voteKey = new VoteKey(voteDescription, chamber, voteSide);

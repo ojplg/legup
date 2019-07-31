@@ -4,6 +4,8 @@ import org.hrorm.Converter;
 
 import java.util.Objects;
 
+// FIXME: this class should not exist
+// and if it has to, the thing should work better
 public class LegislatorBillActionType {
 
     public static final String VoteCode = "Vote";
@@ -11,10 +13,18 @@ public class LegislatorBillActionType {
     public static final String ChiefSponsorCode = "Chief Sponsor";
     public static final String IntroduceCode = "Introduce";
 
+    public static final String RemoveSponsorCode = "Remove Sponsor";
+    public static final String RemoveChiefSponsorCode = "Remoce Chief Sponsor";
+
+
     public final static LegislatorBillActionType VOTE = new LegislatorBillActionType(VoteCode);
     public final static LegislatorBillActionType SPONSOR = new LegislatorBillActionType(SponsorCode);
     public final static LegislatorBillActionType CHIEF_SPONSOR = new LegislatorBillActionType(ChiefSponsorCode);
     public final static LegislatorBillActionType INTRODUCE = new LegislatorBillActionType(IntroduceCode);
+
+    public final static LegislatorBillActionType REMOVE_SPONSOR = new LegislatorBillActionType(RemoveSponsorCode);
+    public final static LegislatorBillActionType REMOVE_CHIEF_SPONSOR = new LegislatorBillActionType(RemoveChiefSponsorCode);
+
 
     public final static LegislatorBillActionTypeConverter CONVERTER = new LegislatorBillActionTypeConverter();
 
@@ -26,6 +36,8 @@ public class LegislatorBillActionType {
             case SponsorCode : return SPONSOR;
             case ChiefSponsorCode : return CHIEF_SPONSOR;
             case IntroduceCode : return INTRODUCE;
+            case RemoveChiefSponsorCode: return REMOVE_CHIEF_SPONSOR;
+            case RemoveSponsorCode : return REMOVE_SPONSOR;
             default : throw new RuntimeException("Unrecognized code " + code);
         }
     }

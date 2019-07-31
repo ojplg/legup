@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Data
-public class BillAction {
+public class BillAction implements Comparable<BillAction> {
 
     public static final Comparator<BillAction> ByBillComparator = Comparator.comparing(BillAction::getBill);
 
@@ -22,7 +22,6 @@ public class BillAction {
     private Chamber chamber;
     private BillActionLoad billActionLoad;
     private Long committeeId;
-
     private List<LegislatorBillAction> legislatorBillActions;
 
     public boolean isVote(){
@@ -53,4 +52,17 @@ public class BillAction {
         return Dates.localDateOf(actionDate);
     }
 
+    @Override
+    public int compareTo(BillAction o) {
+        return this.actionDate.compareTo(o.actionDate);
+    }
+
+    public Legislator getSingleLegislator(){
+        if ( legislatorBillActions.size() != 1 ){
+            throw new RuntimeException("Wrong number of legislative actions " + legislatorBillActions.size() + " in "
+                    + id + " for " + bill + " with type " + billActionType);
+        }
+        return legislatorBillActions.get(0).getLegislator();
+    }
 }
+
