@@ -57,10 +57,12 @@ public class ReportCard {
                 continue;
             }
 
-            for( LegislatorBillAction legislatorBillAction : action.getLegislatorBillActions() ) {
-                int score = legislatorBillAction.score(factor.getVoteSide());
-                if (isIncludedLegislator(legislatorBillAction.getLegislator())) {
-                    scoreTable.merge(legislatorBillAction.getLegislator(), bill, score, ScoreComputer);
+            if( action.isScoreable() ) {
+                for (LegislatorBillAction legislatorBillAction : action.getLegislatorBillActions()) {
+                    int score = legislatorBillAction.score(factor.getVoteSide());
+                    if (isIncludedLegislator(legislatorBillAction.getLegislator())) {
+                        scoreTable.merge(legislatorBillAction.getLegislator(), bill, score, ScoreComputer);
+                    }
                 }
             }
         }

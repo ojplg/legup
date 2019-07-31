@@ -268,6 +268,7 @@ public class TestReportCard {
         action.setBill(bill);
         action.setLegislatorBillActions(Arrays.asList(legislatorBillAction));
         action.setId(nextId());
+        action.setRawActionData("Some nonsense - Third Reading - 010-009-000");
         return action;
     }
 
