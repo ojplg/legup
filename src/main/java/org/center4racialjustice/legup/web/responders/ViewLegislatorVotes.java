@@ -12,7 +12,6 @@ import org.center4racialjustice.legup.web.LegupSubmission;
 import org.center4racialjustice.legup.web.NavLink;
 import org.center4racialjustice.legup.web.Responder;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +38,6 @@ public class ViewLegislatorVotes implements Responder {
             BillActionCollator collator = new BillActionCollator(billActions, legislator);
 
             HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(), submission.getLoggedInUser(), navLinks(legislator.getSessionNumber()));
-            // FIXME: Need some votes here
             response.putVelocityData("votes", collator.getVotes());
             response.putVelocityData("sponsorships", collator.getSponsorships());
             response.putVelocityData("chiefSponsorships", collator.getChiefSponsorships());
