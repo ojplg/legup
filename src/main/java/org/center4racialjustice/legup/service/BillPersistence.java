@@ -19,7 +19,6 @@ import org.center4racialjustice.legup.util.LookupTable;
 import org.center4racialjustice.legup.util.Tuple;
 
 import java.sql.Connection;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +83,7 @@ public class BillPersistence {
         billActionLoadDao.insert(billActionLoad);
 
         List<BillAction> actions = billStatusComputer.allNonVoteActions(billActionLoad);
-        actions.forEach(billAction -> billActionDao.insert(billAction));
+        actions.forEach(billActionDao::insert);
 
         List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.allVoteActions(bill);
 
@@ -110,7 +109,7 @@ public class BillPersistence {
         billActionLoadDao.insert(billActionLoad);
 
         List<BillAction> actions = billStatusComputer.unpersistedNonVoteActions(billActionLoad);
-        actions.forEach(billAction -> billActionDao.insert(billAction));
+        actions.forEach(billActionDao::insert);
 
         List<Tuple<CompletedBillEvent, BillActionLoad>> votesToInsert = billStatusComputer.unpersistedVoteActions(bill);
 
@@ -157,10 +156,7 @@ public class BillPersistence {
             return doForcedUpdate(billStatusComputer);
         }
 
-
-        return connectionPool.useConnection(connection -> {
-            return insertNewActions(connection, billStatusComputer);
-        });
+        return connectionPool.useConnection(connection -> insertNewActions(connection, billStatusComputer));
     }
 
     private void deleteOldBillLoadsAndActions(Connection connection, Bill bill){
@@ -195,7 +191,6 @@ public class BillPersistence {
             for (BillAction billAction : billActions) {
                 for (LegislatorBillAction legislatorBillAction : billAction.getLegislatorBillActions()) {
                     Legislator leg = legislatorBillAction.getLegislator();
-                    // FIXME: Need to do the right thing with votes here
                     if (billAction.isVote()) {
                         billActionTable.put(leg, "Vote",legislatorBillAction.getVoteSide().getDisplayString());
                     } else {
