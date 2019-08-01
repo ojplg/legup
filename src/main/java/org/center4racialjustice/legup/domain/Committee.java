@@ -27,4 +27,8 @@ public class Committee {
     public String toString(){
         return  chamber + " committee: " + name + "(" + code + ")";
     }
+
+    public String getLowerCaseChamber(){
+        return chamber.lowerCaseName();
+    }
 }

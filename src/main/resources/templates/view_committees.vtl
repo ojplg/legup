@@ -9,6 +9,7 @@
                 <td>$committee.Id</td>
                 <td><a href="/legup/view_committee?committee_id=$committee.Id">$committee.Name</a></td>
                 <td>$committee.Code</td>
+                <td><a href="http://www.ilga.gov/${committee.getLowerCaseChamber()}/committees/members.asp?CommitteeID=$committee.committeeId">&#9715;</a></td>
             </tr>
             #end
         </tbody>
