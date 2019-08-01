@@ -59,10 +59,10 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
 * Persist all legislative maneuvers
   * Need to track vote type: cannot just be enumerated
     * Still need to get more better at this - only saving raw data right now
-    * Need to detect correct vote type for grading
+    * Need to detect correct vote type for grading - done but very hacky
   * Sponsors can be removed, upgraded, and downgraded
-    * Handles properly on parse, still needs work on display
-    * Also needs to work properly for grading
+    * Handles properly on parse, still needs work on display - Works OK
+    * Also needs to work properly for grading - Works OK
 
 * User Fixes
   * Allow users to invite others to their organizations
@@ -76,8 +76,6 @@ Do not forget to grep the code for TODO and FIXME. There are always things there
   * Perhaps check for and perform updates when changes to legislator data are found
   * The legislator model includes a session id, but many legislators serve in multiple sessions.
     A way to link or mark people as the same would be helpful.
-* Bill Persistence
-  * Perhaps four (or 5) upload chunks, separating sponsors from bill itself
 * Scoring/Grading
   * Allow configuration for score options, either in config files or report cards: something
   other than 1 point for voting, 2 for sponsoring, and 3 for chief sponsors
