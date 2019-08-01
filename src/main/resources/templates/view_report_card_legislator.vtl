@@ -44,6 +44,7 @@
                 <th width="60px">Chamber</th>
                 <th width="60px">Number</th>
                 <th width="350px">Name</th>
+                <th width="75px">Introduce</th>
                 <th width="75px">Chief Sponsor</th>
                 <th width="75px">Sponsor</th>
                 <th width="75px">Vote</th>
@@ -56,6 +57,13 @@
                     <td>$bill.Chamber</td>
                     <td><a href="/legup/view_report_card_bill?bill_id=$bill.Id&one_time_key=$oneTimeKey">$bill.Number</a></td>
                     <td>$bill.ShortDescription</td>
+                    <td align="center">
+                        #if ( $!{billDetails.get($bill, $introductionKey)} == "Good" )
+                            <img src="/legup/icons/check.png" height="30" width="30">
+                        #elseif ( $!{billDetails.get($bill, $introductionKey)} == "Bad" )
+                            <img src="/legup/icons/x_mark.png"  height="30" width="30">
+                        #end
+                    </td>
                     <td align="center">
                         #if ( $!{billDetails.get($bill, $chiefSponsorKey)} == "Good" )
                             <img src="/legup/icons/check.png" height="30" width="30">

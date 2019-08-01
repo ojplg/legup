@@ -32,6 +32,9 @@ public class BillActionCollator {
     private final List<DisplayAction> introductions;
     private final List<String> voteDescriptions;
 
+    private final List<DisplayAction> sponsorRemovals;
+    private final List<DisplayAction> chiefSponsorRemovals;
+
     public BillActionCollator(List<BillAction> actions){
         this(actions, null);
     }
@@ -42,6 +45,11 @@ public class BillActionCollator {
         List<DisplayAction> sponsorships = new ArrayList<>();
         List<DisplayAction> chiefSponsorships = new ArrayList<>();
         List<DisplayAction> introductions = new ArrayList<>();
+
+        List<DisplayAction> sponsorRemovals = new ArrayList<>();
+        List<DisplayAction> chiefSponsorRemovals = new ArrayList<>();
+
+
         List<String> voteDescriptionSet = new ArrayList<>();
 
         for(BillAction action : actions){
@@ -68,6 +76,12 @@ public class BillActionCollator {
                     case LegislatorBillActionType.IntroduceCode:
                         introductions.add(displayAction);
                         break;
+                    case LegislatorBillActionType.RemoveSponsorCode:
+                        sponsorRemovals.add(displayAction);
+                        break;
+                    case LegislatorBillActionType.RemoveChiefSponsorCode:
+                        chiefSponsorRemovals.add(displayAction);
+                        break;
                     default:
                         throw new RuntimeException("Unknown bill action type " + action.getBillActionType());
                 }
@@ -81,6 +95,9 @@ public class BillActionCollator {
         this.sponsorships = Collections.unmodifiableList(sponsorships);
         this.chiefSponsorships = Collections.unmodifiableList(chiefSponsorships);
         this.voteDescriptions = Collections.unmodifiableList(voteDescriptionSet);
+
+        this.sponsorRemovals = Collections.unmodifiableList(sponsorRemovals);
+        this.chiefSponsorRemovals = Collections.unmodifiableList(chiefSponsorRemovals);
         this.introductions = Collections.unmodifiableList(introductions);
     }
 

@@ -31,6 +31,10 @@ public class LegislatorBillActionType {
     private final String code;
     private final int scoreValue;
 
+    public static LegislatorBillActionType fromBillActionType(BillActionType billActionType){
+        return fromCode(billActionType.getCode());
+    }
+
     public static LegislatorBillActionType fromCode(String code){
         switch (code) {
             case VoteCode : return VOTE;

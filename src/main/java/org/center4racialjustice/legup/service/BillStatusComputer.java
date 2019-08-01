@@ -156,7 +156,7 @@ public class BillStatusComputer {
             }
             return new VoteResultsEventDisplay(billEventData, billVotesResults);
         }
-        if(BillActionType.isSponsoringEvent(billEventData.getBillActionType()) ){
+        if(BillActionType.isSponsoringRelated(billEventData.getBillActionType()) ){
             return new SponsorshipPersistableAction(billEventData);
         }
         if( CommitteePersistableAction.supports(billEventData.getBillActionType()) ){

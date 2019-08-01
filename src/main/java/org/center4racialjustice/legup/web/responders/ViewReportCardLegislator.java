@@ -37,6 +37,7 @@ public class ViewReportCardLegislator implements Responder {
         response.putVelocityData("voteKey", BillActionType.VOTE);
         response.putVelocityData("sponsorKey", BillActionType.SPONSOR);
         response.putVelocityData("chiefSponsorKey", BillActionType.CHIEF_SPONSOR);
+        response.putVelocityData("introductionKey", BillActionType.INTRODUCE);
 
         return response;
     }
