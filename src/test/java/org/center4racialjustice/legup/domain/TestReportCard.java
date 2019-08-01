@@ -32,6 +32,31 @@ public class TestReportCard {
         Assert.assertEquals(1, (int) table.get(legislator, bill));
     }
 
+    // FIXME: Needs to be in a different file?
+    @Test
+    public void testGetLegislatorAnalysis(){
+        Bill bill = newBill(Chamber.Senate, 1L);
+        Legislator smith = newLegislator(Chamber.House, "Smith", true);
+        Legislator jones = newLegislator(Chamber.House, "Jones", true);
+
+        ReportFactor factor = newFactor(bill, VoteSide.Yea);
+        ReportCard card = newReportCard( new ReportFactor[]{ factor }, new Legislator[]{ smith, jones } );
+        BillAction smithAction = newVote(bill, smith, VoteSide.Yea);
+        BillAction jonesAction = newVote(bill, jones, VoteSide.Nay);
+        List<BillAction> actions = Arrays.asList(smithAction, jonesAction);
+
+        ReportCardGrades reportCardGrades = new ReportCardGrades(card, actions);
+
+        ReportCardLegislatorAnalysis analysis = reportCardGrades.getLegislatorAnalysis(smith.getId());
+
+        Assert.assertEquals(smith, analysis.getLegislator());
+
+        LookupTable<Bill, LegislatorBillActionType, String> table = analysis.supportedBillDetails();
+        String result = table.get(bill, LegislatorBillActionType.VOTE);
+
+        Assert.assertEquals("Good", result);
+    }
+
     @Test
     public void testCalculateRespectsSponsorshipRemoval(){
 
@@ -280,6 +305,7 @@ public class TestReportCard {
                 .map(TestReportCard::newReportCardLegislator)
                 .collect(Collectors.toList());
         card.setReportCardLegislators(rcList);
+        card.setGradeLevelList(GradeLevels.DEFAULTS);
         return card;
     }
 

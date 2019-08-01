@@ -27,7 +27,7 @@ public class Grader {
         }
         this.lowScore = min;
         this.highScore = max;
-        this.spread = highScore - lowScore;
+        this.spread = highScore - lowScore == 0 ? 1 : highScore - lowScore;
         if( scores.isEmpty()){
             this.mean = 0;
         } else {

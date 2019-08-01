@@ -87,7 +87,7 @@ public class ReportCardGrades {
         Multimap<Bill,LegislatorBillAction> legislatorActions = MultimapBuilder.hashKeys().arrayListValues().build();
         for( BillAction action : actions){
             LegislatorBillAction legislatorBillAction = action.getLegislatorAction(legislator);
-            if ( legislatorBillAction != null ){
+            if ( legislatorBillAction != null && legislatorBillAction.getLegislator().equals(legislator)){
                 legislatorActions.put(action.getBill(), legislatorBillAction);
             }
         }

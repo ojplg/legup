@@ -18,6 +18,7 @@ public class ReportCardLegislatorAnalysis {
         this.legislator = legislator;
         this.grade = grade;
         this.actions = actions;
+        System.out.println("ACTIONS " + actions);
     }
 
     public Legislator getLegislator() {
@@ -34,7 +35,7 @@ public class ReportCardLegislatorAnalysis {
         for(Bill bill : card.supportedBills()){
             for(LegislatorBillAction action : actions.get(bill)){
                 if( action.isVote() ){
-                    String voteNote = action.getVoteSide().equals(VoteSide.YeaCode) ?
+                    String voteNote = action.getVoteSide().equals(VoteSide.Yea) ?
                             "Good" : "Bad";
                     table.put(bill, LegislatorBillActionType.VOTE, voteNote);
                 } else {
@@ -52,7 +53,7 @@ public class ReportCardLegislatorAnalysis {
         for(Bill bill : card.opposedBills()){
             for(LegislatorBillAction action : actions.get(bill)){
                     if( action.isVote() ){
-                        String voteNote = action.getVoteSide().equals(VoteSide.NayCode) ?
+                        String voteNote = action.getVoteSide().equals(VoteSide.Nay) ?
                                 "Good" : "Bad";
                         table.put(bill, LegislatorBillActionType.VOTE, voteNote);
                     } else {
