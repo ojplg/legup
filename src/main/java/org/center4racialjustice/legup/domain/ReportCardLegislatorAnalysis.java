@@ -18,7 +18,6 @@ public class ReportCardLegislatorAnalysis {
         this.legislator = legislator;
         this.grade = grade;
         this.actions = actions;
-        System.out.println("ACTIONS " + actions);
     }
 
     public Legislator getLegislator() {
@@ -65,4 +64,13 @@ public class ReportCardLegislatorAnalysis {
         return table;
     }
 
+    @Override
+    public String toString() {
+        return "ReportCardLegislatorAnalysis{" +
+                "card=" + card.getName() +
+                ", legislator=" + legislator +
+                ", grade=" + grade +
+                ", actions=" + actions +
+                '}';
+    }
 }

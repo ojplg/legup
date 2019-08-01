@@ -1,6 +1,9 @@
 package org.center4racialjustice.legup.web.responders;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.BillActionType;
+import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.ReportCardGrades;
 import org.center4racialjustice.legup.domain.ReportCardLegislatorAnalysis;
 import org.center4racialjustice.legup.web.HtmlLegupResponse;
@@ -16,6 +19,8 @@ import java.util.List;
 
 public class ViewReportCardLegislator implements Responder {
 
+    private static final Logger log = LogManager.getLogger(ViewReportCardLegislator.class);
+
     @Override
     public LegupResponse handle(LegupSubmission submission) {
 
@@ -24,6 +29,8 @@ public class ViewReportCardLegislator implements Responder {
 
         ReportCardGrades reportCardGrades = (ReportCardGrades) submission.getObject(LegupSession.ReportCardGradesKey);
         ReportCardLegislatorAnalysis reportCardLegislatorAnalysis = reportCardGrades.getLegislatorAnalysis(legislatorId);
+
+        log.info("Generated analysis " + reportCardLegislatorAnalysis);
 
         HtmlLegupResponse response = HtmlLegupResponse.withLinks(this.getClass(),
                 submission.getLoggedInUser(), navLinks(reportCardGrades.getReportCard().getId()));
@@ -34,10 +41,10 @@ public class ViewReportCardLegislator implements Responder {
 
         response.putVelocityData("billComparator", Comparator.naturalOrder());
 
-        response.putVelocityData("voteKey", BillActionType.VOTE);
-        response.putVelocityData("sponsorKey", BillActionType.SPONSOR);
-        response.putVelocityData("chiefSponsorKey", BillActionType.CHIEF_SPONSOR);
-        response.putVelocityData("introductionKey", BillActionType.INTRODUCE);
+        response.putVelocityData("voteKey", LegislatorBillActionType.VOTE);
+        response.putVelocityData("sponsorKey", LegislatorBillActionType.SPONSOR);
+        response.putVelocityData("chiefSponsorKey", LegislatorBillActionType.CHIEF_SPONSOR);
+        response.putVelocityData("introductionKey", LegislatorBillActionType.INTRODUCE);
 
         return response;
     }
