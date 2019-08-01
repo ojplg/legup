@@ -303,5 +303,15 @@ public class TestBillEventParser {
         Assert.assertEquals("Jennifer Gong-Gershowitz", billEventData.getRawLegislatorName());
     }
 
+    @Test
+    public void testParsesFilerAlternate(){
+        RawBillEvent billEvent = newRawBillEvent("Prefiled with Clerk by Rep. Mary E. Flowers");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.INTRODUCE, billEventData.getBillActionType());
+        Assert.assertTrue(billEventData.hasLegislator());
+        Assert.assertEquals("Mary E. Flowers", billEventData.getRawLegislatorName());
+    }
 
 }

@@ -23,7 +23,7 @@ public class BillEventParser implements BillEventInterpreter {
     public static final Pattern CommitteeIdExtractionPattern = Pattern.compile(".*committeeID=(\\d+).*");
 
     private static final Pattern FiledWithClerkPattern =
-            Pattern.compile("Filed with (?:the Clerk|Secretary) by (?:Sen|Rep). (.*)");
+            Pattern.compile("(?:Pref|F)iled with (?:the )?(?:Clerk|Secretary)? by (?:Sen|Rep). (.*)");
 
     private static final Pattern AddedChiefSponsorPattern =
             Pattern.compile("Added (?:as )?Chief Co-Sponsor (?:Sen|Rep). (.*)");
