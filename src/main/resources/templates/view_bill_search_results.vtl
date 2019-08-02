@@ -85,7 +85,7 @@
         <tbody>
             #foreach ($event in $billStatusComputer.unpersistedEvents)
                 <tr
-                    #if ( ${event.hasErrors()} )
+                    #if ( ${event.hasError()} )
                         bgcolor='#de5d5d'
                     #elseif ( ${event.billActionType.code.equals("Unclassified")} )
                         bgcolor='#e6e600'
@@ -97,7 +97,7 @@
                     <td>$event.chamber</td>
                     <td>$event.billActionType.code</td>
                     <td>
-                        #if ( ${event.hasErrors()} )
+                        #if ( ${event.hasError()} )
                             #foreach ( $error in $event.errors )
                                 $error<br/>
                             #end

@@ -4,7 +4,6 @@ import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.BillActionType;
-import org.center4racialjustice.legup.domain.BillEvent;
 import org.center4racialjustice.legup.domain.BillHistory;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Name;
@@ -15,12 +14,8 @@ import org.center4racialjustice.legup.illinois.SponsorName;
 import org.center4racialjustice.legup.illinois.VoteResultsEventDisplay;
 import org.center4racialjustice.legup.util.Tuple;
 
-import javax.swing.plaf.basic.BasicScrollPaneUI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BillStatusComputer {

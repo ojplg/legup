@@ -70,7 +70,7 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
     private boolean closeDates(LocalDate dateA, LocalDate dateB){
         Period period = Period.between(dateA, dateB);
         int days = Math.abs(period.getDays());
-        return days <= 1;
+        return days <= 2;
     }
 
     public LocalDate getActionDate(){
