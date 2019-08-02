@@ -314,4 +314,16 @@ public class TestBillEventParser {
         Assert.assertEquals("Mary E. Flowers", billEventData.getRawLegislatorName());
     }
 
+    @Test
+    public void testParsesChiefSponsorChanged(){
+        RawBillEvent billEvent = newRawBillEvent("Chief Sponsor Changed to Rep. LaToya Greenwood");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.CHIEF_SPONSOR, billEventData.getBillActionType());
+        Assert.assertTrue(billEventData.hasLegislator());
+        Assert.assertEquals("LaToya Greenwood", billEventData.getRawLegislatorName());
+    }
+
+
 }

@@ -46,6 +46,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern AddedAlternateChiefCoSponsorPattern =
             Pattern.compile("Added (?:as )?Alternate Chief Co-Sponsor (?:Sen|Rep). (.*)");
 
+    private static final Pattern ChangedChiefSponsorPattern =
+            Pattern.compile("Chief Sponsor Changed to (?:Sen|Rep). (.*)");
+
     private static final Pattern CommitteeReferralPattern =
             Pattern.compile("Referred to ([\\w\\s-]+)");
 
@@ -98,6 +101,8 @@ public class BillEventParser implements BillEventInterpreter {
         nameGrabbingEventBuilders.put(ChiefSenateSponsorPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
         nameGrabbingEventBuilders.put(AddedAlternateChiefCoSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
+        nameGrabbingEventBuilders.put(ChangedChiefSponsorPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));
 
         nameGrabbingEventBuilders.put(AddedSponsorPattern,
