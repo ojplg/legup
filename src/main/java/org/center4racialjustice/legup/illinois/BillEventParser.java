@@ -34,6 +34,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern RemovedSponsorPattern =
             Pattern.compile("Remove(?:d)? (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
 
+    private static final Pattern AlternateSponsorRemovedPattern =
+            Pattern.compile("Sponsor Removed (?:Sen|Rep). (.*)");
+
     private static final Pattern RemovedChiefSponsorPattern =
             Pattern.compile("Remove(?:d)? Chief (?:as )?Co-Sponsor (?:Sen|Rep). (.*)");
 
@@ -111,6 +114,8 @@ public class BillEventParser implements BillEventInterpreter {
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.SPONSOR));
 
         nameGrabbingEventBuilders.put(RemovedSponsorPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.REMOVE_SPONSOR));
+        nameGrabbingEventBuilders.put(AlternateSponsorRemovedPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.REMOVE_SPONSOR));
         nameGrabbingEventBuilders.put(RemovedChiefSponsorPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.REMOVE_CHIEF_SPONSOR));

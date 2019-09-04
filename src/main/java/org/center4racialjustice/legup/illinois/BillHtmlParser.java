@@ -235,6 +235,13 @@ public class BillHtmlParser {
             Elements cells = row.select("td");
             Element dateCell = cells.get(0);
             String dateString = Parser.unescapeEntities(dateCell.text(), false);
+
+            // This hideousness is needed to fix mistakes in HTML of illinois gov site.
+            // FIXME: How to make this generic?
+            if( dateString.startsWith("&bsp? ")){
+                dateString = dateString.substring(6);
+            }
+
             LocalDate date = LocalDate.parse(dateString, BILL_EVENT_DATE_FORMAT);
 
             Element chamberCell = cells.get(1);

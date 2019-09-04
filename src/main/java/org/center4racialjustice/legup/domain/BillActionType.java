@@ -28,7 +28,7 @@ public class BillActionType {
     private static final List<BillActionType> ALL_ACTIONS = Arrays.asList(
             VOTE, SPONSOR, CHIEF_SPONSOR, INTRODUCE,
             REMOVE_SPONSOR, REMOVE_CHIEF_SPONSOR,
-            COMMITTEE_REFERRAL, COMMITTEE_ASSIGNMENT,
+            COMMITTEE_REFERRAL, COMMITTEE_ASSIGNMENT, COMMITTEE_POSTPONEMENT,
             COMMITTEE_AMENDMENT_FILED,
             UNCLASSIFIED
     );
