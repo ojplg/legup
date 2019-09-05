@@ -64,6 +64,9 @@ public class BillEventParser implements BillEventInterpreter {
     private static final Pattern CommitteeAmendmentPattern =
             Pattern.compile("(?:Senate|House) Committee Amendment No. \\d+ Filed with (?:Clerk|Secretary) by (?:Sen|Rep). (.*)");
 
+    private static final Pattern IntroducePattern =
+            Pattern.compile("(?:Senate|House) Introduce (.*)");
+
     private static final List<String> CommitteeVotePrefixes = Arrays.asList(
             "Do Pass as Amended / Short Debate",
             "Recommends Do Pass",
@@ -98,6 +101,8 @@ public class BillEventParser implements BillEventInterpreter {
                 this::forVoteEvent);
 
         nameGrabbingEventBuilders.put(FiledWithClerkPattern,
+                (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.INTRODUCE));
+        nameGrabbingEventBuilders.put(IntroducePattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.INTRODUCE));
         nameGrabbingEventBuilders.put(AddedChiefSponsorPattern,
                 (rawEvent, rawName) -> forLegislatorBillEvent(rawEvent, rawName, BillActionType.CHIEF_SPONSOR));

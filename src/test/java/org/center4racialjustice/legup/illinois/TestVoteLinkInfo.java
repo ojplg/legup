@@ -25,4 +25,14 @@ public class TestVoteLinkInfo {
         Assert.assertEquals("Judiciary - Criminal", voteLinkInfo.getVoteDescription());
     }
 
+    @Test
+    public void testIgnoresWordyDayOfWeekWithoutQualifier(){
+        VoteLinkInfo voteLinkInfo = VoteLinkInfo.create("HB1115 - Thursday, April 11, 2019",
+                Chamber.House, false, "url");
+
+
+        Assert.assertNotNull(voteLinkInfo);
+        Assert.assertEquals(LocalDate.of(2019, 4, 11), voteLinkInfo.getVoteDate());
+
+    }
 }

@@ -30,6 +30,10 @@ public class VoteLinkInfo {
             "(\\w+) - ([\\w\\s\\&-]+?) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
     );
 
+    private static final Pattern UndescribedLinkTextPattern = Pattern.compile(
+            "(\\w+) - (?:\\w+, )?([A-Z][a-z]+ \\d+, \\d+)"
+    );
+
     public static final DateTimeFormatter LongDateFormatter =
             DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.US);
 
@@ -43,12 +47,7 @@ public class VoteLinkInfo {
             String descriptionString = matcher.group(2);
             String dateString = matcher.group(3);
 
-            LocalDate voteDate;
-            try {
-                voteDate = LocalDate.parse(dateString, LongDateFormatter);
-            } catch (DateTimeParseException ignore) {
-                voteDate = LocalDate.parse(dateString, ShortDateFormatter);
-            }
+            LocalDate voteDate = parseOutDate(dateString);
 
             VoteLinkInfo voteLinkInfo = VoteLinkInfo.builder()
                     .voteDate(voteDate)
@@ -61,8 +60,39 @@ public class VoteLinkInfo {
             return voteLinkInfo;
         }
 
+        matcher = UndescribedLinkTextPattern.matcher(linkText);
+        if( matcher.matches()){
+            String codeString = matcher.group(1);
+            String dateString = matcher.group(2);
+            LocalDate voteDate = parseOutDate(dateString);
+
+            VoteLinkInfo voteLinkInfo = VoteLinkInfo.builder()
+                    .voteDate(voteDate)
+                    .chamber(chamber)
+                    .committee(committee)
+                    .code(codeString)
+                    .voteDescription("Third Reading")
+                    .pdfUrl(pdfUrl)
+                    .build();
+            return voteLinkInfo;
+        }
+
         log.warn("no match for " + linkText);
         return null;
+    }
+
+    private static LocalDate parseOutDate(String dateString){
+        try {
+            return LocalDate.parse(dateString, LongDateFormatter);
+        } catch (DateTimeParseException ignore) {
+        }
+
+        try {
+            return LocalDate.parse(dateString, ShortDateFormatter);
+        } catch (DateTimeParseException ignore) {
+        }
+
+        throw new RuntimeException("Could not parse a date from " + dateString);
     }
 
 }

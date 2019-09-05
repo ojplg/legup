@@ -325,5 +325,13 @@ public class TestBillEventParser {
         Assert.assertEquals("LaToya Greenwood", billEventData.getRawLegislatorName());
     }
 
+    @Test
+    public void testParseCommitteeAmendmentReferral(){
+        RawBillEvent billEvent = newRawBillEvent("House Committee Amendment No. 1 Referred to Rules Committee");
+        BillEventParser billEventParser = new BillEventParser();
+        BillEvent billEventData = billEventParser.parse(billEvent);
+
+        Assert.assertEquals(BillActionType.UNCLASSIFIED, billEventData.getBillActionType());
+    }
 
 }
