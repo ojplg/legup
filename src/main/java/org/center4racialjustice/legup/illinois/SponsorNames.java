@@ -1,6 +1,8 @@
 package org.center4racialjustice.legup.illinois;
 
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
 import org.center4racialjustice.legup.domain.Legislator;
 import org.center4racialjustice.legup.domain.Name;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Data
 public class SponsorNames {
+
+    private static final Logger log = LogManager.getLogger(SponsorNames.class);
 
     private List<SponsorName> houseSponsors;
     private List<SponsorName> senateSponsors;
@@ -28,6 +32,9 @@ public class SponsorNames {
     private void completeOne(SponsorName sponsorName, LegislativeStructure legislativeStructure){
         if( sponsorName != null ){
             Legislator legislator = legislativeStructure.findLegislatorByMemberID(sponsorName.getMemberId());
+            if( legislator == null ){
+                log.warn("Cannot match " + sponsorName);
+            }
             sponsorName.complete(legislator);
         }
     }
