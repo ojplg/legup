@@ -4,7 +4,8 @@ public class BadHtmlCleaner {
 
     private static String[] BAD_PREFIXES = {
             "&bsp? ",
-            "&p; "
+            "&p; ",
+            "&p;"
     };
 
     public static String cleanDateString(String dirtyDate){
