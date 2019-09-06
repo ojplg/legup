@@ -68,7 +68,7 @@ public class BillStatusComputer {
         BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(completedBillEvent);
         BillActionLoad billActionLoad = BillActionLoad.create(
                 persistedBill,
-                billVotesResults.getVoteLinkInfo().getPdfUrl(),
+                billVotesResults.getVoteLinkPdfUrl(),
                 billVotesResults.getChecksum());
         return billActionLoad;
     }
@@ -146,9 +146,6 @@ public class BillStatusComputer {
     public PersistableAction getPersistableAction(CompletedBillEvent billEventData){
         if( billEventData.isVote() ){
             BillVotesResults billVotesResults = billSearchResults.getBillVotesResults(billEventData);
-            if( billVotesResults == null ){
-                return new ErrorPersistableAction("Unmatched: " + billEventData);
-            }
             return new VoteResultsEventDisplay(billEventData, billVotesResults);
         }
         if(BillActionType.isSponsoringRelated(billEventData.getBillActionType()) ){

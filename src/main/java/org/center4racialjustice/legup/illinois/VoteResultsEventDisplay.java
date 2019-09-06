@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.illinois;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.BillAction;
 import org.center4racialjustice.legup.domain.BillActionLoad;
 import org.center4racialjustice.legup.domain.CompletedBillEvent;
@@ -10,12 +12,19 @@ import java.util.List;
 
 public class VoteResultsEventDisplay implements PersistableAction {
 
+    private static final Logger log = LogManager.getLogger(VoteResultsEventDisplay.class);
+
     private final CompletedBillEvent completedBillEvent;
     private final BillVotesResults billVotesResults;
 
     public VoteResultsEventDisplay(CompletedBillEvent completedBillEvent, BillVotesResults billVotesResults) {
         this.completedBillEvent = completedBillEvent;
-        this.billVotesResults = billVotesResults;
+        if( billVotesResults == null ){
+            log.warn("No matching bill vote results for " + completedBillEvent);
+            this.billVotesResults = BillVotesResults.EMPTY;
+        } else {
+            this.billVotesResults = billVotesResults;
+        }
     }
 
     @Override

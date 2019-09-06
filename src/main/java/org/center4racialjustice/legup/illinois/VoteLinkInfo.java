@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 @Data
 public class VoteLinkInfo {
 
+    public static final VoteLinkInfo EMPTY = new VoteLinkInfo("", "", null, null, false, "");
+
     private final String code;
     private final String voteDescription;
     private final LocalDate voteDate;

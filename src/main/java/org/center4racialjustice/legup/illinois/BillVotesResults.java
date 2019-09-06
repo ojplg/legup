@@ -17,6 +17,7 @@ import org.center4racialjustice.legup.util.Lists;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -28,6 +29,13 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
     private final List<CollatedVote> collatedVotes;
     private final List<Name> uncollatedNames;
     private final long checksum;
+
+    public static final BillVotesResults EMPTY = new BillVotesResults(
+        VoteLinkInfo.EMPTY,
+            Collections.emptyList(),
+            Collections.emptyList(),
+            0
+    );
 
     public BillVotesResults(VoteLinkInfo voteLinkInfo,
                             List<CollatedVote> collatedVotes,
@@ -132,6 +140,10 @@ public class BillVotesResults implements PersistableAction, VoteEventCounts {
             throw new RuntimeException("Cannot persist with errors " + getErrors());
         }
         return Lists.map(collatedVotes, CollatedVote::asLegislatorBillAction);
+    }
+
+    public String getVoteLinkPdfUrl(){
+        return voteLinkInfo.getPdfUrl();
     }
 
     @Override

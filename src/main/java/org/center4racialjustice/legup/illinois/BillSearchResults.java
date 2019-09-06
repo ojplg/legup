@@ -1,7 +1,5 @@
 package org.center4racialjustice.legup.illinois;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillActionType;
 import org.center4racialjustice.legup.domain.BillEventKey;
@@ -16,7 +14,7 @@ import java.util.List;
 
 public class BillSearchResults {
 
-    private static final Logger log = LogManager.getLogger(BillSearchResults.class);
+//    private static final Logger log = LogManager.getLogger(BillSearchResults.class);
 
     private final Bill parsedBill;
     private final SponsorNames sponsorNames;
@@ -51,7 +49,7 @@ public class BillSearchResults {
     }
 
     public List<CompletedBillEvent> getVoteEvents(){
-        return Lists.filter(billEvents, event -> event.isVote());
+        return Lists.filter(billEvents, CompletedBillEvent::isVote);
     }
 
 
@@ -86,7 +84,12 @@ public class BillSearchResults {
     }
 
     public BillVotesResults getBillVotesResults(CompletedBillEvent billEvent){
-        return Lists.findfirst(votesResults, vr -> vr.matches(billEvent));
+        BillVotesResults results = Lists.findfirst(votesResults, vr -> vr.matches(billEvent));
+        if (results != null ){
+            return results;
+        } else {
+            return BillVotesResults.EMPTY;
+        }
     }
 
     public List<Name> getUncollatedVotes(){
@@ -102,9 +105,7 @@ public class BillSearchResults {
     }
 
     public List<String> getErrors(){
-        List<String> errors = new ArrayList<>();
-        errors.addAll(sponsorNames.findSponsorshipMismatches(findSponsorshipEvents(), findSponsorshipRemovalEvents()));
-        return errors;
+        return new ArrayList<>(sponsorNames.findSponsorshipMismatches(findSponsorshipEvents(), findSponsorshipRemovalEvents()));
     }
 
 }

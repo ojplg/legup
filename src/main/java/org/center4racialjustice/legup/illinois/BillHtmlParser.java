@@ -13,7 +13,6 @@ import org.center4racialjustice.legup.domain.Chamber;
 import org.center4racialjustice.legup.domain.LegislationIdentity;
 import org.center4racialjustice.legup.domain.NameParser;
 import org.center4racialjustice.legup.domain.RawBillEvent;
-import org.center4racialjustice.legup.util.Tuple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -58,6 +57,14 @@ public class BillHtmlParser {
             legislationIdentity = parseBillIdentity();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            if( httpResponse != null ) {
+                try {
+                    httpResponse.close();
+                } catch (IOException ex){
+                    log.error(ex);
+                }
+            }
         }
     }
 
@@ -88,13 +95,6 @@ public class BillHtmlParser {
 
     public long getChecksum(){
         return document.outerHtml().hashCode();
-    }
-
-    public Tuple<String, Long> getCheckTuple(){
-        return new Tuple<>(
-                document.outerHtml(),
-                (long) document.outerHtml().hashCode()
-        );
     }
 
     public long getSession(){
