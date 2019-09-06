@@ -51,6 +51,8 @@ public class TestBillActionCollator {
         Bill bill = new Bill();
         bill.setNumber(123L);
         bill.setChamber(Chamber.House);
+        bill.setSession(100L);
+        bill.setLegislationSubType("Bill");
 
         Legislator legislator = new Legislator();
         legislator.setLastName("Brown");
