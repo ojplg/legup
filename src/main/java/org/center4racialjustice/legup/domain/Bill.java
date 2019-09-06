@@ -21,9 +21,16 @@ public class Bill implements Comparable<Bill> {
 
     @Override
     public int compareTo(Bill o) {
+        if ( this.session != o.session ){
+            return (int) this.session - (int) o.session;
+        }
         int chamberCompare = this.chamber.compareTo(o.chamber);
         if ( chamberCompare != 0 ){
             return chamberCompare;
+        }
+        int subTypeCompare = this.legislationSubType.compareTo(o.legislationSubType);
+        if ( subTypeCompare != 0 ){
+            return subTypeCompare;
         }
         return (int) this.number - (int) o.number;
     }

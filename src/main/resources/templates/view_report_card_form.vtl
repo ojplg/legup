@@ -92,6 +92,7 @@
         <table class="pure-table">
             <tr>
                 <th>Bill Chamber</th>
+                <th>Type</th>
                 <th>Bill Number</th>
                 <th>Short Description</th>
                 <th>Session</th>
@@ -103,6 +104,7 @@
                 #set ( $setting = $pair.Value )
                 <tr>
                     <td>$bill.Chamber</td>
+                    <td>$bill.LegislationSubType</td>
                     <td>$bill.Number</td>
                     <td>$bill.ShortDescription</td>
                     <td>$bill.Session</td>
