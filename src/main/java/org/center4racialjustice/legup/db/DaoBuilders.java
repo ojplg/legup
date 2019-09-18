@@ -8,6 +8,7 @@ import org.center4racialjustice.legup.domain.LegislatorBillActionType;
 import org.center4racialjustice.legup.domain.Organization;
 import org.center4racialjustice.legup.domain.User;
 import org.hrorm.AssociationDaoBuilder;
+import org.hrorm.ChildSelectStrategy;
 import org.hrorm.DaoBuilder;
 import org.center4racialjustice.legup.domain.Bill;
 import org.center4racialjustice.legup.domain.BillAction;
@@ -94,7 +95,8 @@ public class DaoBuilders {
                 .withParentColumn("ORGANIZATION_ID", ReportCard::getOrganization, ReportCard::setOrganization)
                 .withChildren(ReportCard::getReportFactors, ReportCard::setReportFactors, REPORT_FACTORS)
                 .withChildren(ReportCard::getReportCardLegislators, ReportCard::setReportCardLegislators, REPORT_CARD_LEGISLATORS)
-                .withChildren(ReportCard::getGradeLevelList, ReportCard::setGradeLevelList, GRADE_LEVELS);
+                .withChildren(ReportCard::getGradeLevelList, ReportCard::setGradeLevelList, GRADE_LEVELS)
+                .withChildSelectStrategy(ChildSelectStrategy.ByKeysInClause);
     }
 
     private static DaoBuilder<BillActionLoad> billActionLoadDaoBuilder(){
@@ -110,7 +112,8 @@ public class DaoBuilders {
         return new DaoBuilder<>("ORGANIZATIONS", Organization::new)
                 .withPrimaryKey("ID", "organization_seq", Organization::getId, Organization::setId)
                 .withStringColumn("NAME", Organization::getName, Organization::setName)
-                .withChildren(Organization::getReportCards, Organization::setReportCards, REPORT_CARDS);
+                .withChildren(Organization::getReportCards, Organization::setReportCards, REPORT_CARDS)
+                .withChildSelectStrategy(ChildSelectStrategy.ByKeysInClause);
     }
 
     private static DaoBuilder<User> userDaoBuilder(){
@@ -146,7 +149,8 @@ public class DaoBuilders {
                 .withStringColumn("CODE", Committee::getCode, Committee::setCode).notNull()
                 .withLongColumn("SESSION_NUMBER", Committee::getSessionNumber, Committee::setSessionNumber).notNull()
                 .withStringColumn("COMMITTEE_ID", Committee::getCommitteeId, Committee::setCommitteeId).notNull()
-                .withConvertingStringColumn("CHAMBER", Committee::getChamber, Committee::setChamber, Chamber.Converter).notNull();
+                .withConvertingStringColumn("CHAMBER", Committee::getChamber, Committee::setChamber, Chamber.Converter).notNull()
+                .withChildSelectStrategy(ChildSelectStrategy.SubSelectInClause);
     }
 
     private static DaoBuilder<LegislatorBillAction> legislatorBillActionDaoBuilder(){
