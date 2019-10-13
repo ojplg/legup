@@ -26,6 +26,9 @@
             <th>Load Data</th>
             <th>Table</th>
             <th>CSV</th>
+            #if ( $isSuperUser )
+                <th>Hard Reload</th>
+            #end
          </tr>
         </thead>
 
@@ -41,6 +44,9 @@
             <td><a href="/legup/view_bill_load_data?bill_id=$bill.Id">Load Data</a></td>
             <td><a href="/legup/view_bill_data_table?bill_id=$bill.Id">Table</a></td>
             <td><a href="/legup/view_bill_data_csv?bill_id=$bill.Id">CSV</a></td>
+            #if ( $isSuperUser )
+                <td><a href="/legup/hard_reload_bill?bill_id=$bill.Id">Hard Reload</a></td>
+            #end
         </tr>
         #end
         </tbody>

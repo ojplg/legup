@@ -1,5 +1,7 @@
 package org.center4racialjustice.legup.web.responders;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.center4racialjustice.legup.db.ConnectionPool;
 import org.center4racialjustice.legup.db.DaoBuilders;
 import org.center4racialjustice.legup.domain.Committee;
@@ -13,6 +15,8 @@ import org.hrorm.Dao;
 import java.util.List;
 
 public class SaveCommittees implements Responder {
+
+    private final static Logger log = LogManager.getLogger(SaveCommittees.class);
 
     private final ConnectionPool connectionPool;
 
@@ -28,6 +32,9 @@ public class SaveCommittees implements Responder {
             int savedCount = 0;
             Dao<Committee> committeeDao = DaoBuilders.COMMITTEE.buildDao(connection);
             for(Committee committee : committeeList){
+
+                log.info("About to insert " + committee);
+
                 committeeDao.insert(committee);
                 savedCount++;
             }

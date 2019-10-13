@@ -21,6 +21,7 @@ import org.center4racialjustice.legup.util.Tuple;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BillPersistence {
 
@@ -30,6 +31,15 @@ public class BillPersistence {
 
     public BillPersistence(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
+    }
+
+    public Bill loadBill(long billId){
+        return connectionPool.useConnection( connection -> {
+            log.info("Loading bill for " + billId);
+
+            BillDao billDao = new BillDao(connection);
+            return billDao.read(billId);
+        });
     }
 
     public BillHistory loadBillHistory(long billId){
@@ -157,6 +167,11 @@ public class BillPersistence {
         }
 
         return connectionPool.useConnection(connection -> insertNewActions(connection, billStatusComputer));
+    }
+
+    public void deleteHistory(Bill bill){
+        connectionPool.runAndCommit((Consumer<Connection>) con ->
+                deleteOldBillLoadsAndActions(con, bill));
     }
 
     private void deleteOldBillLoadsAndActions(Connection connection, Bill bill){

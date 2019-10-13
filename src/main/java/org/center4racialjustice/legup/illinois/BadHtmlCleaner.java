@@ -6,7 +6,8 @@ public class BadHtmlCleaner {
             "&bsp? ",
             "&p; ",
             "&p;",
-            "&sp;"
+            "&sp;",
+            "&bsp;"
     };
 
     public static String cleanDateString(String dirtyDate){
