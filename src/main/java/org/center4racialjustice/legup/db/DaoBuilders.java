@@ -121,7 +121,8 @@ public class DaoBuilders {
                 .withPrimaryKey("ID", "user_seq", User::getId, User::setId)
                 .withStringColumn("EMAIL", User::getEmail, User::setEmail)
                 .withStringColumn("SALT", User::getSalt, User::setSalt)
-                .withStringColumn("PASSWORD", User::getPassword, User::setPassword);
+                .withStringColumn("PASSWORD", User::getPassword, User::setPassword)
+                .withChildSelectStrategy(ChildSelectStrategy.ByKeysInClause);
     }
 
     private static AssociationDaoBuilder<User, Organization> userOrganizationAssociationDaoBuilder(){
@@ -130,7 +131,8 @@ public class DaoBuilders {
                 .withSequenceName("user_organization_association_seq")
                 .withTableName("user_organization_associations")
                 .withLeftColumnName("user_id")
-                .withRightColumnName("organization_id");
+                .withRightColumnName("organization_id")
+                .withChildSelectStrategy(ChildSelectStrategy.ByKeysInClause);
     }
 
     private static DaoBuilder<CommitteeMember> committeeMemberDaoBuilder(){
@@ -150,7 +152,7 @@ public class DaoBuilders {
                 .withLongColumn("SESSION_NUMBER", Committee::getSessionNumber, Committee::setSessionNumber).notNull()
                 .withStringColumn("COMMITTEE_ID", Committee::getCommitteeId, Committee::setCommitteeId).notNull()
                 .withConvertingStringColumn("CHAMBER", Committee::getChamber, Committee::setChamber, Chamber.Converter).notNull()
-                .withChildSelectStrategy(ChildSelectStrategy.SubSelectInClause);
+                .withChildSelectStrategy(ChildSelectStrategy.ByKeysInClause);
     }
 
     private static DaoBuilder<LegislatorBillAction> legislatorBillActionDaoBuilder(){
